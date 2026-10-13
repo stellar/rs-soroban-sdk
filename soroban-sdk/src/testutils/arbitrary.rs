@@ -92,6 +92,7 @@
 //! [`Vec`]: crate::Vec
 //! [`Map`]: crate::Map
 //! [`Address`]: crate::Address
+//! [`MuxedAddress`]: crate::MuxedAddress
 //! [`Symbol`]: crate::Symbol
 //! [`Val`]: crate::Val
 //!
@@ -168,6 +169,10 @@
 //! addresses; and [`ArbitraryAddressAccount`], which generates only account
 //! (`G...`) addresses.
 //!
+//! [`MuxedAddress`] has two prototypes: [`ArbitraryMuxedAddress`], its
+//! default; and [`ArbitraryMuxedAddressContract`], which generates only
+//! contract (`C...`) and muxed contract (`W...`) addresses.
+//!
 //! ```
 //! use soroban_sdk::{Address, Env, IntoVal, Vec};
 //! use soroban_sdk::testutils::arbitrary::{
@@ -220,7 +225,7 @@ pub use api::*;
 pub use fuzz_test_helpers::*;
 pub use objects::{
     ArbitraryAddress, ArbitraryAddressAccount, ArbitraryAddressContract, ArbitraryMap,
-    ArbitraryMuxedAddress, ArbitraryOption, ArbitraryVec,
+    ArbitraryMuxedAddress, ArbitraryMuxedAddressContract, ArbitraryOption, ArbitraryVec,
 };
 
 /// The traits that must be implemented on Soroban types to support fuzzing.
@@ -755,6 +760,35 @@ mod objects {
                         ed25519: Uint256(*ed25519),
                         id: *id,
                     }))
+                }
+            };
+            Ok(sc_addr.into_val(env))
+        }
+    }
+
+    /// A prototype of a [`MuxedAddress`] that is always a contract address,
+    /// `C...`, or a muxed contract address, `W...`.
+    ///
+    /// Convert it to a `MuxedAddress` with [`IntoVal`] or [`FromVal`].
+    ///
+    /// [`IntoVal`]: crate::IntoVal
+    /// [`FromVal`]: crate::FromVal
+    #[derive(Arbitrary, Debug, Clone, Eq, PartialEq, Ord, PartialOrd)]
+    pub struct ArbitraryMuxedAddressContract {
+        contract_id: [u8; 32],
+        id: Option<u64>,
+    }
+
+    impl TryFromVal<Env, ArbitraryMuxedAddressContract> for MuxedAddress {
+        type Error = ConversionError;
+        fn try_from_val(env: &Env, v: &ArbitraryMuxedAddressContract) -> Result<Self, Self::Error> {
+            use crate::env::xdr::{ContractId, Hash, MuxedContract, ScAddress};
+
+            let contract_id = ContractId(Hash(v.contract_id));
+            let sc_addr = match v.id {
+                None => ScVal::Address(ScAddress::Contract(contract_id)),
+                Some(id) => {
+                    ScVal::Address(ScAddress::MuxedContract(MuxedContract { id, contract_id }))
                 }
             };
             Ok(sc_addr.into_val(env))
@@ -1595,8 +1629,8 @@ mod tests {
     use crate::token::{Client as TokenClient, StellarAssetClient};
     use crate::xdr::{self, ScAddress};
     use crate::{
-        Address, Bytes, BytesN, Duration, Error, Map, String, Symbol, Timepoint, Val, Vec, I256,
-        U256,
+        Address, Bytes, BytesN, Duration, Error, Map, MuxedAddress, String, Symbol, Timepoint, Val,
+        Vec, I256, U256,
     };
     use crate::{Env, IntoVal};
     use arbitrary::{Arbitrary, Unstructured};
@@ -1738,6 +1772,34 @@ mod tests {
             let address: Address = proto.into_val(&env);
             assert!(matches!(ScAddress::from(&address), ScAddress::Contract(_)));
         }
+    }
+
+    #[test]
+    fn test_muxed_address() {
+        run_test::<MuxedAddress>()
+    }
+
+    #[test]
+    fn test_muxed_address_contract_is_always_a_contract() {
+        let env = Env::default();
+        let protos = gen_prototypes::<ArbitraryMuxedAddressContract>(100);
+        let sc_addrs: RustVec<ScAddress> = protos
+            .into_iter()
+            .map(|proto| {
+                let address: MuxedAddress = proto.into_val(&env);
+                match xdr::ScVal::from(&address) {
+                    xdr::ScVal::Address(a) => a,
+                    _ => unreachable!(),
+                }
+            })
+            .collect();
+        assert!(sc_addrs
+            .iter()
+            .all(|a| matches!(a, ScAddress::Contract(_) | ScAddress::MuxedContract(_))));
+        assert!(sc_addrs.iter().any(|a| matches!(a, ScAddress::Contract(_))));
+        assert!(sc_addrs
+            .iter()
+            .any(|a| matches!(a, ScAddress::MuxedContract(_))));
     }
 
     /// A generated account address holds no asset until it has a trustline for

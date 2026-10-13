@@ -1,6 +1,6 @@
-use soroban_sdk_macros::{contract, contractimpl, contracttype};
+use soroban_sdk_macros::{contract, contractevent, contractimpl, contracttype};
 
-use crate::testutils::{Address as _, MuxedAddress as _};
+use crate::testutils::{Address as _, Events as _, MuxedAddress as _};
 use crate::{self as soroban_sdk, Bytes, String};
 use crate::{
     env::xdr::{
@@ -8,7 +8,7 @@ use crate::{
         ScSymbol, ScVal, ScVec, Uint256,
     },
     token::{StellarAssetClient, TokenClient},
-    Address, ConversionError, Env, MuxedAddress, TryFromVal,
+    Address, ConversionError, Env, Event, MuxedAddress, TryFromVal,
 };
 
 #[derive(Clone, Debug, Eq, PartialEq)]
@@ -159,8 +159,15 @@ fn test_muxed_contract_address() {
 
     let strkey = muxed_address.to_strkey();
     assert!(strkey.to_string().starts_with('W'));
-    assert!(format!("{:?}", muxed_address).contains(&strkey.to_string()));
+    assert_eq!(
+        format!("{:?}", muxed_address),
+        format!("MuxedContract({})", strkey.to_string())
+    );
     assert_eq!(MuxedAddress::from_string(&strkey), muxed_address);
+
+    let muxed_address_with_another_id = MuxedAddress::new(muxed_address, u64::MAX);
+    assert_eq!(muxed_address_with_another_id.address(), contract);
+    assert_eq!(muxed_address_with_another_id.id(), Some(u64::MAX));
 }
 
 #[test]
@@ -176,8 +183,33 @@ fn test_sac_transfer_to_muxed_contract_address() {
     StellarAssetClient::new(&env, &sac.address()).mint(&from, &100);
     let token = TokenClient::new(&env, &sac.address());
     token.transfer(&from, &muxed_address, &40);
+    assert_eq!(
+        env.events().all(),
+        std::vec![SacTransfer {
+            from: from.clone(),
+            to: contract.clone(),
+            name: token.name(),
+            amount: 40,
+            to_muxed_id: 123456,
+        }
+        .to_xdr(&env, &sac.address())]
+    );
     assert_eq!(token.balance(&from), 60);
     assert_eq!(token.balance(&contract), 40);
+}
+
+/// The event the Stellar Asset Contract publishes for a transfer to a muxed
+/// address.
+#[contractevent(topics = ["transfer"])]
+struct SacTransfer {
+    #[topic]
+    from: Address,
+    #[topic]
+    to: Address,
+    #[topic]
+    name: String,
+    amount: i128,
+    to_muxed_id: u64,
 }
 
 #[test]
