@@ -85,12 +85,17 @@ impl Value {
         const { Value::__SPEC_XDR_ENTRY.const_to_xdr() }
     }
 }
+impl soroban_sdk::SpecAnchor for Value {
+    #[inline(never)]
+    fn spec_anchor() {}
+}
 impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for Value {
     type Error = soroban_sdk::ConversionError;
     fn try_from_val(
         env: &soroban_sdk::Env,
         val: &soroban_sdk::Val,
     ) -> Result<Self, soroban_sdk::ConversionError> {
+        <Value as soroban_sdk::SpecAnchor>::spec_anchor();
         use soroban_sdk::{ConversionError, EnvBase, MapObject, TryIntoVal, Val};
         const KEYS: [&'static str; 1usize] = ["value"];
         let mut vals: [Val; 1usize] = [Val::VOID.to_val(); 1usize];
@@ -110,6 +115,7 @@ impl soroban_sdk::TryFromVal<soroban_sdk::Env, Value> for soroban_sdk::Val {
         env: &soroban_sdk::Env,
         val: &Value,
     ) -> Result<Self, soroban_sdk::ConversionError> {
+        <Value as soroban_sdk::SpecAnchor>::spec_anchor();
         use soroban_sdk::{ConversionError, EnvBase, TryIntoVal, Val};
         const KEYS: [&'static str; 1usize] = ["value"];
         let vals: [Val; 1usize] = [(&val.value)

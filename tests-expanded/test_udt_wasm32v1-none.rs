@@ -106,6 +106,10 @@ impl UdtEnum2 {
         const { UdtEnum2::__SPEC_XDR_ENTRY.const_to_xdr() }
     }
 }
+impl soroban_sdk::SpecAnchor for UdtEnum2 {
+    #[inline(never)]
+    fn spec_anchor() {}
+}
 impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for UdtEnum2 {
     type Error = soroban_sdk::ConversionError;
     #[inline(always)]
@@ -113,6 +117,7 @@ impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for UdtEnum2 {
         env: &soroban_sdk::Env,
         val: &soroban_sdk::Val,
     ) -> Result<Self, soroban_sdk::ConversionError> {
+        <UdtEnum2 as soroban_sdk::SpecAnchor>::spec_anchor();
         use soroban_sdk::TryIntoVal;
         let discriminant: u32 = val.try_into_val(env)?;
         Ok(match discriminant {
@@ -129,6 +134,7 @@ impl soroban_sdk::TryFromVal<soroban_sdk::Env, UdtEnum2> for soroban_sdk::Val {
         env: &soroban_sdk::Env,
         val: &UdtEnum2,
     ) -> Result<Self, soroban_sdk::ConversionError> {
+        <UdtEnum2 as soroban_sdk::SpecAnchor>::spec_anchor();
         Ok(match val {
             UdtEnum2::A => 10u32.into(),
             UdtEnum2::B => 15u32.into(),
@@ -297,6 +303,10 @@ impl UdtEnum {
         const { UdtEnum::__SPEC_XDR_ENTRY.const_to_xdr() }
     }
 }
+impl soroban_sdk::SpecAnchor for UdtEnum {
+    #[inline(never)]
+    fn spec_anchor() {}
+}
 impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for UdtEnum {
     type Error = soroban_sdk::ConversionError;
     #[inline(always)]
@@ -304,6 +314,7 @@ impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for UdtEnum {
         env: &soroban_sdk::Env,
         val: &soroban_sdk::Val,
     ) -> Result<Self, soroban_sdk::ConversionError> {
+        <UdtEnum as soroban_sdk::SpecAnchor>::spec_anchor();
         use soroban_sdk::{EnvBase, TryFromVal, TryIntoVal};
         const CASES: &'static [&'static str] = &["UdtA", "UdtB", "UdtC", "UdtD"];
         let vec: soroban_sdk::Vec<soroban_sdk::Val> = val.try_into_val(env)?;
@@ -364,6 +375,7 @@ impl soroban_sdk::TryFromVal<soroban_sdk::Env, UdtEnum> for soroban_sdk::Val {
         env: &soroban_sdk::Env,
         val: &UdtEnum,
     ) -> Result<Self, soroban_sdk::ConversionError> {
+        <UdtEnum as soroban_sdk::SpecAnchor>::spec_anchor();
         use soroban_sdk::{TryFromVal, TryIntoVal};
         match val {
             UdtEnum::UdtA => {
@@ -499,6 +511,10 @@ impl UdtTuple {
         const { UdtTuple::__SPEC_XDR_ENTRY.const_to_xdr() }
     }
 }
+impl soroban_sdk::SpecAnchor for UdtTuple {
+    #[inline(never)]
+    fn spec_anchor() {}
+}
 impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for UdtTuple {
     type Error = soroban_sdk::ConversionError;
     #[inline(always)]
@@ -506,6 +522,7 @@ impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for UdtTuple {
         env: &soroban_sdk::Env,
         val: &soroban_sdk::Val,
     ) -> Result<Self, soroban_sdk::ConversionError> {
+        <UdtTuple as soroban_sdk::SpecAnchor>::spec_anchor();
         use soroban_sdk::{ConversionError, EnvBase, TryIntoVal, Val, VecObject};
         let vec: VecObject = (*val).try_into().map_err(|_| ConversionError)?;
         let mut vals: [Val; 2usize] = [Val::VOID.to_val(); 2usize];
@@ -524,6 +541,7 @@ impl soroban_sdk::TryFromVal<soroban_sdk::Env, UdtTuple> for soroban_sdk::Val {
         env: &soroban_sdk::Env,
         val: &UdtTuple,
     ) -> Result<Self, soroban_sdk::ConversionError> {
+        <UdtTuple as soroban_sdk::SpecAnchor>::spec_anchor();
         use soroban_sdk::{ConversionError, EnvBase, TryIntoVal, Val};
         let vals: [Val; 2usize] = [
             (&val.0).try_into_val(env).map_err(|_| ConversionError)?,
@@ -658,12 +676,17 @@ impl UdtStruct {
         const { UdtStruct::__SPEC_XDR_ENTRY.const_to_xdr() }
     }
 }
+impl soroban_sdk::SpecAnchor for UdtStruct {
+    #[inline(never)]
+    fn spec_anchor() {}
+}
 impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for UdtStruct {
     type Error = soroban_sdk::ConversionError;
     fn try_from_val(
         env: &soroban_sdk::Env,
         val: &soroban_sdk::Val,
     ) -> Result<Self, soroban_sdk::ConversionError> {
+        <UdtStruct as soroban_sdk::SpecAnchor>::spec_anchor();
         use soroban_sdk::{ConversionError, EnvBase, MapObject, TryIntoVal, Val};
         const KEYS: [&'static str; 3usize] = ["a", "b", "c"];
         let mut vals: [Val; 3usize] = [Val::VOID.to_val(); 3usize];
@@ -689,6 +712,7 @@ impl soroban_sdk::TryFromVal<soroban_sdk::Env, UdtStruct> for soroban_sdk::Val {
         env: &soroban_sdk::Env,
         val: &UdtStruct,
     ) -> Result<Self, soroban_sdk::ConversionError> {
+        <UdtStruct as soroban_sdk::SpecAnchor>::spec_anchor();
         use soroban_sdk::{ConversionError, EnvBase, TryIntoVal, Val};
         const KEYS: [&'static str; 3usize] = ["a", "b", "c"];
         let vals: [Val; 3usize] = [
@@ -817,12 +841,17 @@ impl UdtRecursive {
         const { UdtRecursive::__SPEC_XDR_ENTRY.const_to_xdr() }
     }
 }
+impl soroban_sdk::SpecAnchor for UdtRecursive {
+    #[inline(never)]
+    fn spec_anchor() {}
+}
 impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for UdtRecursive {
     type Error = soroban_sdk::ConversionError;
     fn try_from_val(
         env: &soroban_sdk::Env,
         val: &soroban_sdk::Val,
     ) -> Result<Self, soroban_sdk::ConversionError> {
+        <UdtRecursive as soroban_sdk::SpecAnchor>::spec_anchor();
         use soroban_sdk::{ConversionError, EnvBase, MapObject, TryIntoVal, Val};
         const KEYS: [&'static str; 2usize] = ["a", "b"];
         let mut vals: [Val; 2usize] = [Val::VOID.to_val(); 2usize];
@@ -845,6 +874,7 @@ impl soroban_sdk::TryFromVal<soroban_sdk::Env, UdtRecursive> for soroban_sdk::Va
         env: &soroban_sdk::Env,
         val: &UdtRecursive,
     ) -> Result<Self, soroban_sdk::ConversionError> {
+        <UdtRecursive as soroban_sdk::SpecAnchor>::spec_anchor();
         use soroban_sdk::{ConversionError, EnvBase, TryIntoVal, Val};
         const KEYS: [&'static str; 2usize] = ["a", "b"];
         let vals: [Val; 2usize] = [
@@ -972,12 +1002,17 @@ impl RecursiveToEnum {
         const { RecursiveToEnum::__SPEC_XDR_ENTRY.const_to_xdr() }
     }
 }
+impl soroban_sdk::SpecAnchor for RecursiveToEnum {
+    #[inline(never)]
+    fn spec_anchor() {}
+}
 impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for RecursiveToEnum {
     type Error = soroban_sdk::ConversionError;
     fn try_from_val(
         env: &soroban_sdk::Env,
         val: &soroban_sdk::Val,
     ) -> Result<Self, soroban_sdk::ConversionError> {
+        <RecursiveToEnum as soroban_sdk::SpecAnchor>::spec_anchor();
         use soroban_sdk::{ConversionError, EnvBase, MapObject, TryIntoVal, Val};
         const KEYS: [&'static str; 2usize] = ["a", "b"];
         let mut vals: [Val; 2usize] = [Val::VOID.to_val(); 2usize];
@@ -1000,6 +1035,7 @@ impl soroban_sdk::TryFromVal<soroban_sdk::Env, RecursiveToEnum> for soroban_sdk:
         env: &soroban_sdk::Env,
         val: &RecursiveToEnum,
     ) -> Result<Self, soroban_sdk::ConversionError> {
+        <RecursiveToEnum as soroban_sdk::SpecAnchor>::spec_anchor();
         use soroban_sdk::{ConversionError, EnvBase, TryIntoVal, Val};
         const KEYS: [&'static str; 2usize] = ["a", "b"];
         let vals: [Val; 2usize] = [
@@ -1143,6 +1179,10 @@ impl RecursiveEnum {
         const { RecursiveEnum::__SPEC_XDR_ENTRY.const_to_xdr() }
     }
 }
+impl soroban_sdk::SpecAnchor for RecursiveEnum {
+    #[inline(never)]
+    fn spec_anchor() {}
+}
 impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for RecursiveEnum {
     type Error = soroban_sdk::ConversionError;
     #[inline(always)]
@@ -1150,6 +1190,7 @@ impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for RecursiveEn
         env: &soroban_sdk::Env,
         val: &soroban_sdk::Val,
     ) -> Result<Self, soroban_sdk::ConversionError> {
+        <RecursiveEnum as soroban_sdk::SpecAnchor>::spec_anchor();
         use soroban_sdk::{EnvBase, TryFromVal, TryIntoVal};
         const CASES: &'static [&'static str] = &["NotRecursive", "Recursive"];
         let vec: soroban_sdk::Vec<soroban_sdk::Val> = val.try_into_val(env)?;
@@ -1190,6 +1231,7 @@ impl soroban_sdk::TryFromVal<soroban_sdk::Env, RecursiveEnum> for soroban_sdk::V
         env: &soroban_sdk::Env,
         val: &RecursiveEnum,
     ) -> Result<Self, soroban_sdk::ConversionError> {
+        <RecursiveEnum as soroban_sdk::SpecAnchor>::spec_anchor();
         use soroban_sdk::{TryFromVal, TryIntoVal};
         match val {
             RecursiveEnum::NotRecursive => {

@@ -202,8 +202,13 @@ impl<'a> soroban_sdk::SpecShakingMarker for Transfer<'a> {
     #[inline(always)]
     fn spec_shaking_marker() {}
 }
+impl<'a> soroban_sdk::SpecAnchor for Transfer<'a> {
+    #[inline(never)]
+    fn spec_anchor() {}
+}
 impl<'a> soroban_sdk::Event for Transfer<'a> {
     fn topics(&self, env: &soroban_sdk::Env) -> soroban_sdk::Vec<soroban_sdk::Val> {
+        <Self as soroban_sdk::SpecAnchor>::spec_anchor();
         use soroban_sdk::IntoVal;
         (
             &{
@@ -223,6 +228,7 @@ impl<'a> soroban_sdk::Event for Transfer<'a> {
             .into_val(env)
     }
     fn data(&self, env: &soroban_sdk::Env) -> soroban_sdk::Val {
+        <Self as soroban_sdk::SpecAnchor>::spec_anchor();
         use soroban_sdk::{unwrap::UnwrapInfallible, EnvBase, IntoVal};
         const KEYS: [&'static str; 2usize] = ["amount", "to_muxed_id"];
         let vals: [soroban_sdk::Val; 2usize] =

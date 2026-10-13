@@ -100,12 +100,17 @@ impl AttributeType {
         const { AttributeType::__SPEC_XDR_ENTRY.const_to_xdr() }
     }
 }
+impl soroban_sdk::SpecAnchor for AttributeType {
+    #[inline(never)]
+    fn spec_anchor() {}
+}
 impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for AttributeType {
     type Error = soroban_sdk::ConversionError;
     fn try_from_val(
         env: &soroban_sdk::Env,
         val: &soroban_sdk::Val,
     ) -> Result<Self, soroban_sdk::ConversionError> {
+        <AttributeType as soroban_sdk::SpecAnchor>::spec_anchor();
         use soroban_sdk::{ConversionError, EnvBase, MapObject, TryIntoVal, Val};
         const KEYS: [&'static str; 1usize] = ["value"];
         let mut vals: [Val; 1usize] = [Val::VOID.to_val(); 1usize];
@@ -125,6 +130,7 @@ impl soroban_sdk::TryFromVal<soroban_sdk::Env, AttributeType> for soroban_sdk::V
         env: &soroban_sdk::Env,
         val: &AttributeType,
     ) -> Result<Self, soroban_sdk::ConversionError> {
+        <AttributeType as soroban_sdk::SpecAnchor>::spec_anchor();
         use soroban_sdk::{ConversionError, EnvBase, TryIntoVal, Val};
         const KEYS: [&'static str; 1usize] = ["value"];
         let vals: [Val; 1usize] = [(&val.value)
@@ -227,8 +233,13 @@ impl soroban_sdk::SpecShakingMarker for AttributeEvent {
         }
     }
 }
+impl soroban_sdk::SpecAnchor for AttributeEvent {
+    #[inline(never)]
+    fn spec_anchor() {}
+}
 impl soroban_sdk::Event for AttributeEvent {
     fn topics(&self, env: &soroban_sdk::Env) -> soroban_sdk::Vec<soroban_sdk::Val> {
+        <Self as soroban_sdk::SpecAnchor>::spec_anchor();
         use soroban_sdk::IntoVal;
         (&{ soroban_sdk::Symbol::new(env, "attribute_event") }, {
             let v: soroban_sdk::Val = self.topic.into_val(env);
@@ -237,6 +248,7 @@ impl soroban_sdk::Event for AttributeEvent {
             .into_val(env)
     }
     fn data(&self, env: &soroban_sdk::Env) -> soroban_sdk::Val {
+        <Self as soroban_sdk::SpecAnchor>::spec_anchor();
         use soroban_sdk::{unwrap::UnwrapInfallible, EnvBase, IntoVal};
         const KEYS: [&'static str; 1usize] = ["value"];
         let vals: [soroban_sdk::Val; 1usize] = [self.value.into_val(env)];
