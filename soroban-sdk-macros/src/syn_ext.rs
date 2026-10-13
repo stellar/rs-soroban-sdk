@@ -13,6 +13,10 @@ use syn::{
     AngleBracketedGenericArguments, Attribute, GenericArgument, LitStr, Path, PathArguments,
     PathSegment, ReturnType, Signature, Token, TypePath,
 };
+use syn::{
+    visit::{self, Visit},
+    visit_mut::{self, VisitMut},
+};
 
 /// Gets methods from the implementation that have public visibility. For
 /// methods that are inherently implemented this is methods that have a pub
@@ -165,14 +169,23 @@ impl HasFnsItem {
 
     pub fn fns(&self) -> Vec<Fn> {
         match self {
-            HasFnsItem::Trait(t) => trait_methods(t)
-                .map(|m| Fn {
-                    ident: m.sig.ident.clone(),
-                    attrs: m.attrs.clone(),
-                    inputs: m.sig.inputs.clone(),
-                    output: m.sig.output.clone(),
-                })
-                .collect(),
+            // Fns that mention the trait's generic type params are left out,
+            // because the params aren't in scope outside the trait and can't be
+            // expressed in a spec. They're generated for each impl instead,
+            // where the impl's args are known.
+            HasFnsItem::Trait(t) => {
+                let type_params: Vec<Ident> =
+                    t.generics.type_params().map(|p| p.ident.clone()).collect();
+                trait_methods(t)
+                    .map(|m| Fn {
+                        ident: m.sig.ident.clone(),
+                        attrs: m.attrs.clone(),
+                        inputs: m.sig.inputs.clone(),
+                        output: m.sig.output.clone(),
+                    })
+                    .filter(|f| !fn_mentions_type_params(f, &type_params))
+                    .collect()
+            }
             HasFnsItem::Impl(i) => impl_pub_methods(i)
                 .iter()
                 .map(|m| Fn {
@@ -443,6 +456,68 @@ pub fn ident_to_type(ident: Ident) -> Type {
         },
     })
 }
+
+/// Whether the fn's input or output types mention any of the given type params,
+/// such as `T` in `Vec<T>` or `T::Assoc`.
+pub fn fn_mentions_type_params(f: &Fn, params: &[Ident]) -> bool {
+    struct Mentions<'a> {
+        params: &'a [Ident],
+        found: bool,
+    }
+    impl<'ast> Visit<'ast> for Mentions<'_> {
+        fn visit_type_path(&mut self, ty: &'ast TypePath) {
+            if ty.qself.is_none()
+                && ty.path.leading_colon.is_none()
+                && ty
+                    .path
+                    .segments
+                    .first()
+                    .is_some_and(|s| self.params.contains(&s.ident))
+            {
+                self.found = true;
+            }
+            visit::visit_type_path(self, ty);
+        }
+    }
+    if params.is_empty() {
+        return false;
+    }
+    let mut v = Mentions {
+        params,
+        found: false,
+    };
+    for input in &f.inputs {
+        v.visit_fn_arg(input);
+    }
+    v.visit_return_type(&f.output);
+    v.found
+}
+
+/// Replaces the given type params in the fn's input and output types with
+/// their types, such as `Vec<T>` with `Vec<u32>` for `T` as `u32`.
+pub fn fn_substitute_type_params(f: &mut Fn, params: &HashMap<Ident, Type>) {
+    struct Substitute<'a>(&'a HashMap<Ident, Type>);
+    impl VisitMut for Substitute<'_> {
+        fn visit_type_mut(&mut self, ty: &mut Type) {
+            if let Type::Path(TypePath { qself: None, path }) = ty {
+                if let Some(param) = path.get_ident().and_then(|i| self.0.get(i)) {
+                    *ty = param.clone();
+                    return;
+                }
+            }
+            visit_mut::visit_type_mut(self, ty);
+        }
+    }
+    if params.is_empty() {
+        return;
+    }
+    let mut v = Substitute(params);
+    for input in f.inputs.iter_mut() {
+        v.visit_fn_arg_mut(input);
+    }
+    v.visit_return_type_mut(&mut f.output);
+}
+
 #[cfg(test)]
 mod test_fns_parse {
     use super::*;
