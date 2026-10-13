@@ -160,8 +160,8 @@ fn test_muxed_contract_address() {
     let strkey = muxed_address.to_strkey();
     assert!(strkey.to_string().starts_with('W'));
     assert_eq!(
-        format!("{:?}", muxed_address),
-        format!("MuxedContract({})", strkey.to_string())
+        format!("{muxed_address:?}"),
+        format!("MuxedContract({strkey})")
     );
     assert_eq!(MuxedAddress::from_string(&strkey), muxed_address);
 
