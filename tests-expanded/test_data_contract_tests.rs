@@ -4,11 +4,13 @@
 extern crate core;
 #[prelude_import]
 use core::prelude::rust_2021::*;
-use soroban_sdk::{contract, contractimpl, contracttype};
+use soroban_sdk::{contract, contractimpl, contracttype, Map, Vec};
 use test_data_enum_lib::Enum;
 use test_data_int_enum_lib::IntEnum;
+use test_data_map_elem_lib::{MapKey, MapVal};
 use test_data_nested_lib::Outer;
 use test_data_tuple_lib::Tuple;
+use test_data_vec_elem_lib::VecElem;
 use test_data_wrapped_lib::Wrapped;
 pub struct Wrapper(pub Wrapped);
 impl soroban_sdk::SpecName for Wrapper {
@@ -149,6 +151,12 @@ impl Contract {
     }
     pub fn wrapper(v: Wrapper) -> u32 {
         v.0 .0
+    }
+    pub fn vec_elem(v: Vec<VecElem>) -> u32 {
+        v.len()
+    }
+    pub fn map_elem(v: Map<MapKey, MapVal>) -> u32 {
+        v.len()
     }
 }
 #[doc(hidden)]
@@ -336,6 +344,80 @@ impl Contract {
         const { Contract::__SPEC_XDR_ENTRY_wrapper.const_to_xdr() }
     }
 }
+#[doc(hidden)]
+#[allow(non_snake_case)]
+#[allow(dead_code)]
+mod __Contract__vec_elem__spec {
+    #[doc(hidden)]
+    #[allow(non_snake_case)]
+    #[allow(non_upper_case_globals)]
+    #[allow(dead_code)]
+    static __SPEC_XDR_FN_VEC_ELEM: [u8; super::Contract::spec_xdr_vec_elem().len()] =
+        super::Contract::spec_xdr_vec_elem();
+}
+impl Contract {
+    #[allow(non_upper_case_globals)]
+    const __SPEC_XDR_ENTRY_vec_elem: soroban_sdk::xdr::r#const::ScSpecEntry =
+        soroban_sdk::xdr::r#const::ScSpecEntry::FunctionV0(
+            soroban_sdk::xdr::r#const::ScSpecFunctionV0 {
+                doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
+                name: soroban_sdk::xdr::r#const::ScSymbol(
+                    soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b"vec_elem"),
+                ),
+                inputs: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[
+                    soroban_sdk::xdr::r#const::ScSpecFunctionInputV0 {
+                        doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
+                        name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b"v"),
+                        type_: <Vec<VecElem> as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
+                    },
+                ]),
+                outputs: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[
+                    <u32 as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
+                ]),
+            },
+        );
+    #[allow(non_snake_case)]
+    pub const fn spec_xdr_vec_elem() -> [u8; Contract::__SPEC_XDR_ENTRY_vec_elem.const_xdr_len()] {
+        const { Contract::__SPEC_XDR_ENTRY_vec_elem.const_to_xdr() }
+    }
+}
+#[doc(hidden)]
+#[allow(non_snake_case)]
+#[allow(dead_code)]
+mod __Contract__map_elem__spec {
+    #[doc(hidden)]
+    #[allow(non_snake_case)]
+    #[allow(non_upper_case_globals)]
+    #[allow(dead_code)]
+    static __SPEC_XDR_FN_MAP_ELEM: [u8; super::Contract::spec_xdr_map_elem().len()] =
+        super::Contract::spec_xdr_map_elem();
+}
+impl Contract {
+    #[allow(non_upper_case_globals)]
+    const __SPEC_XDR_ENTRY_map_elem: soroban_sdk::xdr::r#const::ScSpecEntry =
+        soroban_sdk::xdr::r#const::ScSpecEntry::FunctionV0(
+            soroban_sdk::xdr::r#const::ScSpecFunctionV0 {
+                doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
+                name: soroban_sdk::xdr::r#const::ScSymbol(
+                    soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b"map_elem"),
+                ),
+                inputs: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[
+                    soroban_sdk::xdr::r#const::ScSpecFunctionInputV0 {
+                        doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
+                        name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b"v"),
+                        type_: <Map<MapKey, MapVal> as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
+                    },
+                ]),
+                outputs: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[
+                    <u32 as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
+                ]),
+            },
+        );
+    #[allow(non_snake_case)]
+    pub const fn spec_xdr_map_elem() -> [u8; Contract::__SPEC_XDR_ENTRY_map_elem.const_xdr_len()] {
+        const { Contract::__SPEC_XDR_ENTRY_map_elem.const_to_xdr() }
+    }
+}
 impl<'a> ContractClient<'a> {
     pub fn int_enum(&self, v: &IntEnum) -> IntEnum {
         use core::ops::Not;
@@ -508,6 +590,72 @@ impl<'a> ContractClient<'a> {
         );
         res
     }
+    pub fn vec_elem(&self, v: &Vec<VecElem>) -> u32 {
+        use core::ops::Not;
+        use soroban_sdk::{FromVal, IntoVal};
+        let res = self.env.invoke_contract(
+            &self.address,
+            &{
+                #[allow(deprecated)]
+                const SYMBOL: soroban_sdk::Symbol = soroban_sdk::Symbol::short("vec_elem");
+                SYMBOL
+            },
+            ::soroban_sdk::Vec::from_array(&self.env, [v.into_val(&self.env)]),
+        );
+        res
+    }
+    pub fn try_vec_elem(
+        &self,
+        v: &Vec<VecElem>,
+    ) -> Result<
+        Result<u32, <u32 as soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val>>::Error>,
+        Result<soroban_sdk::Error, soroban_sdk::InvokeError>,
+    > {
+        use soroban_sdk::{FromVal, IntoVal};
+        let res = self.env.try_invoke_contract(
+            &self.address,
+            &{
+                #[allow(deprecated)]
+                const SYMBOL: soroban_sdk::Symbol = soroban_sdk::Symbol::short("vec_elem");
+                SYMBOL
+            },
+            ::soroban_sdk::Vec::from_array(&self.env, [v.into_val(&self.env)]),
+        );
+        res
+    }
+    pub fn map_elem(&self, v: &Map<MapKey, MapVal>) -> u32 {
+        use core::ops::Not;
+        use soroban_sdk::{FromVal, IntoVal};
+        let res = self.env.invoke_contract(
+            &self.address,
+            &{
+                #[allow(deprecated)]
+                const SYMBOL: soroban_sdk::Symbol = soroban_sdk::Symbol::short("map_elem");
+                SYMBOL
+            },
+            ::soroban_sdk::Vec::from_array(&self.env, [v.into_val(&self.env)]),
+        );
+        res
+    }
+    pub fn try_map_elem(
+        &self,
+        v: &Map<MapKey, MapVal>,
+    ) -> Result<
+        Result<u32, <u32 as soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val>>::Error>,
+        Result<soroban_sdk::Error, soroban_sdk::InvokeError>,
+    > {
+        use soroban_sdk::{FromVal, IntoVal};
+        let res = self.env.try_invoke_contract(
+            &self.address,
+            &{
+                #[allow(deprecated)]
+                const SYMBOL: soroban_sdk::Symbol = soroban_sdk::Symbol::short("map_elem");
+                SYMBOL
+            },
+            ::soroban_sdk::Vec::from_array(&self.env, [v.into_val(&self.env)]),
+        );
+        res
+    }
 }
 impl ContractArgs {
     #[inline(always)]
@@ -533,6 +681,16 @@ impl ContractArgs {
     #[inline(always)]
     #[allow(clippy::unused_unit)]
     pub fn wrapper<'i>(v: &'i Wrapper) -> (&'i Wrapper,) {
+        (v,)
+    }
+    #[inline(always)]
+    #[allow(clippy::unused_unit)]
+    pub fn vec_elem<'i>(v: &'i Vec<VecElem>) -> (&'i Vec<VecElem>,) {
+        (v,)
+    }
+    #[inline(always)]
+    #[allow(clippy::unused_unit)]
+    pub fn map_elem<'i>(v: &'i Map<MapKey, MapVal>) -> (&'i Map<MapKey, MapVal>,) {
         (v,)
     }
 }
@@ -680,4 +838,62 @@ pub extern "C" fn __Contract__wrapper__invoke_raw_extern(
 ) -> soroban_sdk::Val {
     #[allow(deprecated)]
     __Contract__wrapper__invoke_raw(soroban_sdk::Env::default(), arg_0)
+}
+#[doc(hidden)]
+#[allow(non_snake_case)]
+#[deprecated(note = "use `ContractClient::new(&env, &contract_id).vec_elem` instead")]
+#[allow(deprecated)]
+pub fn __Contract__vec_elem__invoke_raw(
+    env: soroban_sdk::Env,
+    arg_0: soroban_sdk::Val,
+) -> soroban_sdk::Val {
+    soroban_sdk::IntoValForContractFn::into_val_for_contract_fn(
+        <Contract>::vec_elem(
+            <_ as soroban_sdk::unwrap::UnwrapOptimized>::unwrap_optimized(
+                <_ as soroban_sdk::TryFromValForContractFn<
+                    soroban_sdk::Env,
+                    soroban_sdk::Val,
+                >>::try_from_val_for_contract_fn(&env, &arg_0),
+            ),
+        ),
+        &env,
+    )
+}
+#[doc(hidden)]
+#[allow(non_snake_case)]
+#[deprecated(note = "use `ContractClient::new(&env, &contract_id).vec_elem` instead")]
+pub extern "C" fn __Contract__vec_elem__invoke_raw_extern(
+    arg_0: soroban_sdk::Val,
+) -> soroban_sdk::Val {
+    #[allow(deprecated)]
+    __Contract__vec_elem__invoke_raw(soroban_sdk::Env::default(), arg_0)
+}
+#[doc(hidden)]
+#[allow(non_snake_case)]
+#[deprecated(note = "use `ContractClient::new(&env, &contract_id).map_elem` instead")]
+#[allow(deprecated)]
+pub fn __Contract__map_elem__invoke_raw(
+    env: soroban_sdk::Env,
+    arg_0: soroban_sdk::Val,
+) -> soroban_sdk::Val {
+    soroban_sdk::IntoValForContractFn::into_val_for_contract_fn(
+        <Contract>::map_elem(
+            <_ as soroban_sdk::unwrap::UnwrapOptimized>::unwrap_optimized(
+                <_ as soroban_sdk::TryFromValForContractFn<
+                    soroban_sdk::Env,
+                    soroban_sdk::Val,
+                >>::try_from_val_for_contract_fn(&env, &arg_0),
+            ),
+        ),
+        &env,
+    )
+}
+#[doc(hidden)]
+#[allow(non_snake_case)]
+#[deprecated(note = "use `ContractClient::new(&env, &contract_id).map_elem` instead")]
+pub extern "C" fn __Contract__map_elem__invoke_raw_extern(
+    arg_0: soroban_sdk::Val,
+) -> soroban_sdk::Val {
+    #[allow(deprecated)]
+    __Contract__map_elem__invoke_raw(soroban_sdk::Env::default(), arg_0)
 }

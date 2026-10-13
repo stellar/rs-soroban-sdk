@@ -1,9 +1,11 @@
 #![no_std]
-use soroban_sdk::{contract, contractimpl, contracttype};
+use soroban_sdk::{contract, contractimpl, contracttype, Map, Vec};
 use test_data_enum_lib::Enum;
 use test_data_int_enum_lib::IntEnum;
+use test_data_map_elem_lib::{MapKey, MapVal};
 use test_data_nested_lib::Outer;
 use test_data_tuple_lib::Tuple;
+use test_data_vec_elem_lib::VecElem;
 use test_data_wrapped_lib::Wrapped;
 
 #[contracttype]
@@ -40,5 +42,16 @@ impl Contract {
 
     pub fn wrapper(v: Wrapper) -> u32 {
         v.0 .0
+    }
+
+    // The conversions of a Vec and a Map to and from Val do not convert their
+    // elements, so a type used only as an element type, with no element read
+    // or written, never has its spec anchor called.
+    pub fn vec_elem(v: Vec<VecElem>) -> u32 {
+        v.len()
+    }
+
+    pub fn map_elem(v: Map<MapKey, MapVal>) -> u32 {
+        v.len()
     }
 }

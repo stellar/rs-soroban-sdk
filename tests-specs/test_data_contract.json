@@ -50,6 +50,35 @@
   {
     "function_v0": {
       "doc": "",
+      "name": "map_elem",
+      "inputs": [
+        {
+          "doc": "",
+          "name": "v",
+          "type": {
+            "map": {
+              "key_type": {
+                "udt": {
+                  "name": "::test_data_map_elem_lib::MapKey"
+                }
+              },
+              "value_type": {
+                "udt": {
+                  "name": "::test_data_map_elem_lib::MapVal"
+                }
+              }
+            }
+          }
+        }
+      ],
+      "outputs": [
+        "u32"
+      ]
+    }
+  },
+  {
+    "function_v0": {
+      "doc": "",
       "name": "outer",
       "inputs": [
         {
@@ -88,6 +117,30 @@
             "name": "::test_data_tuple_lib::Tuple"
           }
         }
+      ]
+    }
+  },
+  {
+    "function_v0": {
+      "doc": "",
+      "name": "vec_elem",
+      "inputs": [
+        {
+          "doc": "",
+          "name": "v",
+          "type": {
+            "vec": {
+              "element_type": {
+                "udt": {
+                  "name": "::test_data_vec_elem_lib::VecElem"
+                }
+              }
+            }
+          }
+        }
+      ],
+      "outputs": [
+        "u32"
       ]
     }
   },
@@ -239,6 +292,34 @@
     "udt_struct_v0": {
       "doc": "",
       "lib": "",
+      "name": "::test_data_map_elem_lib::MapKey",
+      "fields": [
+        {
+          "doc": "",
+          "name": "0",
+          "type": "u32"
+        }
+      ]
+    }
+  },
+  {
+    "udt_struct_v0": {
+      "doc": "",
+      "lib": "",
+      "name": "::test_data_map_elem_lib::MapVal",
+      "fields": [
+        {
+          "doc": "",
+          "name": "0",
+          "type": "u32"
+        }
+      ]
+    }
+  },
+  {
+    "udt_struct_v0": {
+      "doc": "",
+      "lib": "",
       "name": "::test_data_nested_lib::Outer",
       "fields": [
         {
@@ -298,6 +379,20 @@
         {
           "doc": "",
           "name": "1",
+          "type": "u32"
+        }
+      ]
+    }
+  },
+  {
+    "udt_struct_v0": {
+      "doc": "",
+      "lib": "",
+      "name": "::test_data_vec_elem_lib::VecElem",
+      "fields": [
+        {
+          "doc": "",
+          "name": "0",
           "type": "u32"
         }
       ]

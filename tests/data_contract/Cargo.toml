@@ -16,7 +16,9 @@ test = false
 soroban-sdk = {path = "../../soroban-sdk"}
 test_data_enum_lib = {path = "../data_enum_lib"}
 test_data_int_enum_lib = {path = "../data_int_enum_lib"}
+test_data_map_elem_lib = {path = "../data_map_elem_lib"}
 test_data_nested_lib = {path = "../data_nested_lib"}
 test_data_tuple_lib = {path = "../data_tuple_lib"}
+test_data_vec_elem_lib = {path = "../data_vec_elem_lib"}
 test_data_wrapped_lib = {path = "../data_wrapped_lib"}
 

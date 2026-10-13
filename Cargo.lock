@@ -2305,8 +2305,10 @@ dependencies = [
  "soroban-sdk 30.0.0",
  "test_data_enum_lib",
  "test_data_int_enum_lib",
+ "test_data_map_elem_lib",
  "test_data_nested_lib",
  "test_data_tuple_lib",
+ "test_data_vec_elem_lib",
  "test_data_wrapped_lib",
 ]
 
@@ -2348,6 +2350,13 @@ dependencies = [
 ]
 
 [[package]]
+name = "test_data_map_elem_lib"
+version = "30.0.0"
+dependencies = [
+ "soroban-sdk 30.0.0",
+]
+
+[[package]]
 name = "test_data_nested_lib"
 version = "30.0.0"
 dependencies = [
@@ -2364,6 +2373,13 @@ dependencies = [
 
 [[package]]
 name = "test_data_tuple_lib"
+version = "30.0.0"
+dependencies = [
+ "soroban-sdk 30.0.0",
+]
+
+[[package]]
+name = "test_data_vec_elem_lib"
 version = "30.0.0"
 dependencies = [
  "soroban-sdk 30.0.0",
