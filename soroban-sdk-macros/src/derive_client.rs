@@ -211,14 +211,12 @@ pub fn derive_client_impl(crate_path: &Path, name: &str, fns: &[syn_ext::Fn]) ->
                 .filter(|attr| pass_through_attr_to_gen_code(attr))
                 .partition(|attr| is_attr_doc(attr));
             let fn_call_doc = format!(" Call `{fn_name}` function on the contract.");
-            let fn_contract_docs = if fn_doc_attrs.is_empty() {
-                quote! {}
-            } else {
+            let fn_contract_docs = (!fn_doc_attrs.is_empty()).then(|| {
                 quote! {
                     #[doc = ""]
                     #(#fn_doc_attrs)*
                 }
-            };
+            });
             let fn_try_doc =
                 format!(" Use [`Self::{fn_try_ident}`] to receive errors instead of panicking.");
             let fn_docs = quote! {
