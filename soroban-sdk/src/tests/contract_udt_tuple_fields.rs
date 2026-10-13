@@ -32,77 +32,73 @@ impl Contract {
     }
 }
 
-fn values() -> (Struct, TupleStruct, Enum) {
-    (
-        Struct { tuple: (1, -2) },
-        TupleStruct((3, -4)),
-        Enum::Tuple((5, -6)),
-    )
-}
-
 #[test]
 fn test_val_roundtrip() {
     let env = Env::default();
-    let (s, t, e) = values();
 
+    let s = Struct { tuple: (1, -2) };
     let val: Val = s.clone().into_val(&env);
     assert_eq!(Struct::try_from_val(&env, &val), Ok(s));
+
+    let t = TupleStruct((3, -4));
     let val: Val = t.clone().into_val(&env);
     assert_eq!(TupleStruct::try_from_val(&env, &val), Ok(t));
+
+    let e = Enum::Tuple((5, -6));
     let val: Val = e.clone().into_val(&env);
     assert_eq!(Enum::try_from_val(&env, &val), Ok(e));
-}
-
-fn scvec(items: std::vec::Vec<ScVal>) -> ScVal {
-    ScVal::Vec(Some(ScVec(items.try_into().unwrap())))
-}
-
-fn symbol(s: &str) -> ScVal {
-    ScVal::Symbol(ScSymbol(s.try_into().unwrap()))
 }
 
 #[test]
 fn test_scval_roundtrip() {
     let env = Env::default();
-    let (s, t, e) = values();
 
+    let s = Struct { tuple: (1, -2) };
     let scval: ScVal = (&s).try_into().unwrap();
     assert_eq!(
         scval,
         ScVal::Map(Some(
             ScMap::sorted_from(std::vec![ScMapEntry {
-                key: symbol("tuple"),
-                val: scvec(std::vec![ScVal::U32(1), ScVal::I64(-2)]),
+                key: ScVal::Symbol(ScSymbol("tuple".try_into().unwrap())),
+                val: ScVal::Vec(Some(ScVec(
+                    std::vec![ScVal::U32(1), ScVal::I64(-2)].try_into().unwrap()
+                ))),
             }])
             .unwrap()
         ))
     );
     assert_eq!(Struct::try_from_val(&env, &scval), Ok(s));
 
+    let t = TupleStruct((3, -4));
     let scval: ScVal = (&t).try_into().unwrap();
     assert_eq!(
         scval,
-        scvec(std::vec![scvec(std::vec![ScVal::U32(3), ScVal::I64(-4)])])
+        ScVal::Vec(Some(ScVec(
+            std::vec![ScVal::Vec(Some(ScVec(
+                std::vec![ScVal::U32(3), ScVal::I64(-4)].try_into().unwrap()
+            )))]
+            .try_into()
+            .unwrap()
+        )))
     );
     assert_eq!(TupleStruct::try_from_val(&env, &scval), Ok(t));
 
+    let e = Enum::Tuple((5, -6));
     let scval: ScVal = (&e).try_into().unwrap();
     assert_eq!(
         scval,
-        scvec(std::vec![
-            symbol("Tuple"),
-            scvec(std::vec![ScVal::U32(5), ScVal::I64(-6)]),
-        ])
+        ScVal::Vec(Some(ScVec(
+            std::vec![
+                ScVal::Symbol(ScSymbol("Tuple".try_into().unwrap())),
+                ScVal::Vec(Some(ScVec(
+                    std::vec![ScVal::U32(5), ScVal::I64(-6)].try_into().unwrap()
+                ))),
+            ]
+            .try_into()
+            .unwrap()
+        )))
     );
     assert_eq!(Enum::try_from_val(&env, &scval), Ok(e));
-}
-
-fn tuple_type() -> ScSpecTypeDef {
-    ScSpecTypeDef::Tuple(Box::new(ScSpecTypeTuple {
-        value_types: std::vec![ScSpecTypeDef::U32, ScSpecTypeDef::I64]
-            .try_into()
-            .unwrap(),
-    }))
 }
 
 #[test]
@@ -119,7 +115,9 @@ fn test_spec() {
             fields: [ScSpecUdtStructFieldV0 {
                 doc: "".try_into().unwrap(),
                 name: "tuple".try_into().unwrap(),
-                type_: tuple_type(),
+                type_: ScSpecTypeDef::Tuple(Box::new(ScSpecTypeTuple {
+                    value_types: [ScSpecTypeDef::U32, ScSpecTypeDef::I64].try_into().unwrap(),
+                })),
             }]
             .try_into()
             .unwrap(),
@@ -138,7 +136,9 @@ fn test_spec() {
             fields: [ScSpecUdtStructFieldV0 {
                 doc: "".try_into().unwrap(),
                 name: "0".try_into().unwrap(),
-                type_: tuple_type(),
+                type_: ScSpecTypeDef::Tuple(Box::new(ScSpecTypeTuple {
+                    value_types: [ScSpecTypeDef::U32, ScSpecTypeDef::I64].try_into().unwrap(),
+                })),
             }]
             .try_into()
             .unwrap(),
@@ -157,7 +157,11 @@ fn test_spec() {
             cases: [ScSpecUdtUnionCaseV0::TupleV0(ScSpecUdtUnionCaseTupleV0 {
                 doc: "".try_into().unwrap(),
                 name: "Tuple".try_into().unwrap(),
-                type_: [tuple_type()].try_into().unwrap(),
+                type_: [ScSpecTypeDef::Tuple(Box::new(ScSpecTypeTuple {
+                    value_types: [ScSpecTypeDef::U32, ScSpecTypeDef::I64].try_into().unwrap(),
+                }))]
+                .try_into()
+                .unwrap(),
             })]
             .try_into()
             .unwrap(),
@@ -171,6 +175,8 @@ fn test_functional() {
     let contract_id = env.register(Contract, ());
     let client = ContractClient::new(&env, &contract_id);
 
-    let (s, t, e) = values();
+    let s = Struct { tuple: (1, -2) };
+    let t = TupleStruct((3, -4));
+    let e = Enum::Tuple((5, -6));
     assert_eq!(client.echo(&s, &t, &e), (s, t, e));
 }
