@@ -87,3 +87,12 @@ debug-assertions = true
 [profile.release-without-lto]
 inherits = "release"
 lto = "off"
+
+# The release-without-lto-multi-cgu profile is the release-without-lto profile
+# with each crate split into multiple codegen units, and so into multiple object
+# files. The build-test-wasms make target also builds the test wasms with it, so
+# that their specs can be checked to match the specs built with lto when the
+# linker includes object files individually.
+[profile.release-without-lto-multi-cgu]
+inherits = "release-without-lto"
+codegen-units = 16

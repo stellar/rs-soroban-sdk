@@ -42,7 +42,8 @@ build-test-wasms: fmt
 	# binary stability for tests. The spec shaking v2 var is for the
 	# test_spec_shaking_v2 contract, built with soroban-sdk 28.0.0, which needs it.
 	# The test wasms are built again with LTO off, in the release-without-lto profile,
-	# so that their specs can be checked to match the specs built with LTO.
+	# and again in the release-without-lto-multi-cgu profile with multiple codegen
+	# units, so that their specs can be checked to match the specs built with LTO.
 	STELLAR_CLI_VERSION=$(VERSION_MAJOR).0.0 \
 	SOROBAN_SDK_BUILD_SYSTEM_SUPPORTS_SPEC_SHAKING_V2=1 \
 	RUSTUP_TOOLCHAIN=$(TEST_CRATES_RUSTUP_TOOLCHAIN) \
@@ -53,6 +54,11 @@ build-test-wasms: fmt
 	RUSTUP_TOOLCHAIN=$(TEST_CRATES_RUSTUP_TOOLCHAIN) \
 	RUSTFLAGS='--cfg soroban_sdk_internal_no_rssdkver_meta' \
 		cargo hack build --profile release-without-lto --target wasm32v1-none $(foreach c,$(TEST_CRATES),--package $(c)) && \
+	STELLAR_CLI_VERSION=$(VERSION_MAJOR).0.0 \
+	SOROBAN_SDK_BUILD_SYSTEM_SUPPORTS_SPEC_SHAKING_V2=1 \
+	RUSTUP_TOOLCHAIN=$(TEST_CRATES_RUSTUP_TOOLCHAIN) \
+	RUSTFLAGS='--cfg soroban_sdk_internal_no_rssdkver_meta' \
+		cargo hack build --profile release-without-lto-multi-cgu --target wasm32v1-none $(foreach c,$(TEST_CRATES),--package $(c)) && \
 	cd target/wasm32v1-none/release/ && \
 		for i in *.wasm ; do \
 			ls -l "$$i"; \
@@ -121,11 +127,15 @@ spec-snapshots-from-built-wasms:
 	# Check the spec of each test vector contract built without LTO matches the
 	# spec built with LTO, because without LTO the linker only includes the spec
 	# entries of a dependency crate when the contract references a symbol in the
-	# same object file.
+	# same object file. The check is repeated for the specs built without LTO and
+	# with multiple codegen units, where each crate is split across object files.
 	for name in $(TEST_CRATES); do \
 		[ -f "target/wasm32v1-none/release/$$name.wasm" ] || continue; \
 		wasm=target/wasm32v1-none/release-without-lto/$$name.wasm; \
 		echo "Checking spec of $$name built without LTO"; \
+		cargo run --quiet --package spec-json -- $$wasm | diff -u tests-specs/$$name.json - || exit 1; \
+		wasm=target/wasm32v1-none/release-without-lto-multi-cgu/$$name.wasm; \
+		echo "Checking spec of $$name built without LTO with multiple codegen units"; \
 		cargo run --quiet --package spec-json -- $$wasm | diff -u tests-specs/$$name.json - || exit 1; \
 	done
 
