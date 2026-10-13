@@ -65,7 +65,7 @@ else
 		--platform linux/amd64 \
 		-v "$(CURDIR)":/workspace:ro \
 		-v "$(CURDIR)/target":/workspace/target \
-		-v soroban-sdk-test-wasms-rustup:/usr/local/rustup \
+		-v soroban-sdk-test-wasms-rustup-linux-amd64:/usr/local/rustup \
 		-v soroban-sdk-test-wasms-cargo-registry:/usr/local/cargo/registry \
 		-v soroban-sdk-test-wasms-cargo-git:/usr/local/cargo/git \
 		-w /workspace \
