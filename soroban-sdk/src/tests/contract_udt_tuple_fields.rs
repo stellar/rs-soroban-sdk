@@ -58,10 +58,10 @@ fn test_scval_roundtrip() {
     assert_eq!(
         scval,
         ScVal::Map(Some(
-            ScMap::sorted_from(std::vec![ScMapEntry {
+            ScMap::sorted_from([ScMapEntry {
                 key: ScVal::Symbol(ScSymbol("tuple".try_into().unwrap())),
                 val: ScVal::Vec(Some(ScVec(
-                    std::vec![ScVal::U32(1), ScVal::I64(-2)].try_into().unwrap()
+                    [ScVal::U32(1), ScVal::I64(-2)].try_into().unwrap()
                 ))),
             }])
             .unwrap()
@@ -74,8 +74,8 @@ fn test_scval_roundtrip() {
     assert_eq!(
         scval,
         ScVal::Vec(Some(ScVec(
-            std::vec![ScVal::Vec(Some(ScVec(
-                std::vec![ScVal::U32(3), ScVal::I64(-4)].try_into().unwrap()
+            [ScVal::Vec(Some(ScVec(
+                [ScVal::U32(3), ScVal::I64(-4)].try_into().unwrap()
             )))]
             .try_into()
             .unwrap()
@@ -88,10 +88,10 @@ fn test_scval_roundtrip() {
     assert_eq!(
         scval,
         ScVal::Vec(Some(ScVec(
-            std::vec![
+            [
                 ScVal::Symbol(ScSymbol("Tuple".try_into().unwrap())),
                 ScVal::Vec(Some(ScVec(
-                    std::vec![ScVal::U32(5), ScVal::I64(-6)].try_into().unwrap()
+                    [ScVal::U32(5), ScVal::I64(-6)].try_into().unwrap()
                 ))),
             ]
             .try_into()
