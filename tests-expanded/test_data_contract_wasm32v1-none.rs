@@ -5,7 +5,11 @@ extern crate core;
 #[prelude_import]
 use core::prelude::rust_2021::*;
 use soroban_sdk::{contract, contractimpl, contracttype};
-use test_data_lib::{Enum, IntEnum, Outer, Tuple, Wrapped};
+use test_data_enum_lib::Enum;
+use test_data_int_enum_lib::IntEnum;
+use test_data_nested_lib::Outer;
+use test_data_tuple_lib::Tuple;
+use test_data_wrapped_lib::Wrapped;
 pub struct Wrapper(pub Wrapped);
 #[automatically_derived]
 impl ::core::clone::Clone for Wrapper {

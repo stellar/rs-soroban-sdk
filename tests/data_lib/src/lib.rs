@@ -1,48 +1,18 @@
-//! A data library: a crate that only provides types, errors and events, for
-//! contracts to use.
+//! A data library: a crate that only provides errors and events, for contracts
+//! to use.
 //!
-//! The types are only of the kinds whose conversions to and from `Val` are
-//! inlined into the contract using them, so that the contract need not call
-//! into this crate at all. A named-field struct is left out because its
-//! conversions are not inlined.
+//! The error, the event and the event with a lifetime are each used by a
+//! separate contract, test_data_error_contract, test_data_event_contract and
+//! test_data_ref_event_contract, because a contract that calls into this crate
+//! for one of them links in the spec entries of all of them.
 //!
-//! The types, the error, the event and the event with a lifetime are each used
-//! by a separate contract, test_data_contract, test_data_error_contract,
-//! test_data_event_contract and test_data_ref_event_contract, because a contract
-//! that calls into this crate for one of them links in the spec entries of all
-//! of them.
+//! The types are each in a data library of their own, used by
+//! test_data_contract, for the same reason. They are only of the kinds whose
+//! conversions to and from `Val` are inlined into the contract using them, so
+//! that the contract need not call into their crates at all. A named-field
+//! struct is left out because its conversions are not inlined.
 #![no_std]
-use soroban_sdk::{contracterror, contractevent, contracttype};
-
-#[contracttype]
-#[derive(Clone, Copy, Debug, Eq, PartialEq)]
-pub enum IntEnum {
-    A = 1,
-    B = 2,
-}
-
-#[contracttype]
-#[derive(Clone, Copy, Debug, Eq, PartialEq)]
-pub enum Enum {
-    A(u32),
-    B(u32),
-}
-
-#[contracttype]
-#[derive(Clone, Copy, Debug, Eq, PartialEq)]
-pub struct Tuple(pub u32, pub u32);
-
-#[contracttype]
-#[derive(Clone, Copy, Debug, Eq, PartialEq)]
-pub struct Inner(pub u32);
-
-#[contracttype]
-#[derive(Clone, Copy, Debug, Eq, PartialEq)]
-pub struct Outer(pub Inner);
-
-#[contracttype]
-#[derive(Clone, Copy, Debug, Eq, PartialEq)]
-pub struct Wrapped(pub u32);
+use soroban_sdk::{contracterror, contractevent};
 
 #[contracterror]
 #[derive(Clone, Copy, Debug, Eq, PartialEq, PartialOrd, Ord)]

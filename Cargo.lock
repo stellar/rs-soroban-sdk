@@ -2163,7 +2163,18 @@ name = "test_data_contract"
 version = "30.0.0"
 dependencies = [
  "soroban-sdk 30.0.0",
- "test_data_lib",
+ "test_data_enum_lib",
+ "test_data_int_enum_lib",
+ "test_data_nested_lib",
+ "test_data_tuple_lib",
+ "test_data_wrapped_lib",
+]
+
+[[package]]
+name = "test_data_enum_lib"
+version = "30.0.0"
+dependencies = [
+ "soroban-sdk 30.0.0",
 ]
 
 [[package]]
@@ -2183,7 +2194,21 @@ dependencies = [
 ]
 
 [[package]]
+name = "test_data_int_enum_lib"
+version = "30.0.0"
+dependencies = [
+ "soroban-sdk 30.0.0",
+]
+
+[[package]]
 name = "test_data_lib"
+version = "30.0.0"
+dependencies = [
+ "soroban-sdk 30.0.0",
+]
+
+[[package]]
+name = "test_data_nested_lib"
 version = "30.0.0"
 dependencies = [
  "soroban-sdk 30.0.0",
@@ -2195,6 +2220,20 @@ version = "30.0.0"
 dependencies = [
  "soroban-sdk 30.0.0",
  "test_data_lib",
+]
+
+[[package]]
+name = "test_data_tuple_lib"
+version = "30.0.0"
+dependencies = [
+ "soroban-sdk 30.0.0",
+]
+
+[[package]]
+name = "test_data_wrapped_lib"
+version = "30.0.0"
+dependencies = [
+ "soroban-sdk 30.0.0",
 ]
 
 [[package]]

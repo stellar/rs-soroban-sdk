@@ -125,38 +125,6 @@
   },
   {
     "udt_struct_v0": {
-      "doc": "",
-      "lib": "",
-      "name": "::test_data_lib::Inner",
-      "fields": [
-        {
-          "doc": "",
-          "name": "0",
-          "type": "u32"
-        }
-      ]
-    }
-  },
-  {
-    "udt_struct_v0": {
-      "doc": "",
-      "lib": "",
-      "name": "::test_data_lib::Outer",
-      "fields": [
-        {
-          "doc": "",
-          "name": "0",
-          "type": {
-            "udt": {
-              "name": "::test_data_lib::Inner"
-            }
-          }
-        }
-      ]
-    }
-  },
-  {
-    "udt_struct_v0": {
       "doc": "Value of contract node in InvokerContractAuthEntry tree.",
       "lib": "",
       "name": "::soroban_sdk::auth::SubContractInvocation",
@@ -182,39 +150,6 @@
               }
             }
           }
-        }
-      ]
-    }
-  },
-  {
-    "udt_struct_v0": {
-      "doc": "",
-      "lib": "",
-      "name": "::test_data_lib::Tuple",
-      "fields": [
-        {
-          "doc": "",
-          "name": "0",
-          "type": "u32"
-        },
-        {
-          "doc": "",
-          "name": "1",
-          "type": "u32"
-        }
-      ]
-    }
-  },
-  {
-    "udt_struct_v0": {
-      "doc": "",
-      "lib": "",
-      "name": "::test_data_lib::Wrapped",
-      "fields": [
-        {
-          "doc": "",
-          "name": "0",
-          "type": "u32"
         }
       ]
     }
@@ -306,33 +241,6 @@
     "udt_union_v0": {
       "doc": "",
       "lib": "",
-      "name": "::test_data_lib::Enum",
-      "cases": [
-        {
-          "tuple_v0": {
-            "doc": "",
-            "name": "A",
-            "type": [
-              "u32"
-            ]
-          }
-        },
-        {
-          "tuple_v0": {
-            "doc": "",
-            "name": "B",
-            "type": [
-              "u32"
-            ]
-          }
-        }
-      ]
-    }
-  },
-  {
-    "udt_union_v0": {
-      "doc": "",
-      "lib": "",
       "name": "::soroban_sdk::address::Executable",
       "cases": [
         {
@@ -407,25 +315,6 @@
               }
             ]
           }
-        }
-      ]
-    }
-  },
-  {
-    "udt_enum_v0": {
-      "doc": "",
-      "lib": "",
-      "name": "::test_data_lib::IntEnum",
-      "cases": [
-        {
-          "doc": "",
-          "name": "A",
-          "value": 1
-        },
-        {
-          "doc": "",
-          "name": "B",
-          "value": 2
         }
       ]
     }
