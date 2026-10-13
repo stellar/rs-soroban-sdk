@@ -59,7 +59,7 @@ fn key(from: &Address, to: &MuxedAddress) -> Key {
 
 #[contractimpl]
 impl Contract {
-    pub fn record_deposit(env: Env, from: Address, to: MuxedAddress, amount: i128) {
+    pub fn deposit(env: Env, from: Address, to: MuxedAddress, amount: i128) {
         assert!(amount > 0);
         Deposit {
             from: from.clone(),
@@ -75,7 +75,7 @@ impl Contract {
         storage.set(&k, &Record { from, to, amount });
     }
 
-    pub fn record_withdraw(env: Env, from: Address, to: MuxedAddress, amount: i128) {
+    pub fn withdraw(env: Env, from: Address, to: MuxedAddress, amount: i128) {
         assert!(amount > 0);
         Withdraw {
             from: from.clone(),
@@ -99,12 +99,8 @@ impl Contract {
     pub fn chain(env: Env, actions: Vec<Action>) {
         for action in actions.iter() {
             match action {
-                Action::Deposit(from, to, amount) => {
-                    Self::record_deposit(env.clone(), from, to, amount)
-                }
-                Action::Withdraw(from, to, amount) => {
-                    Self::record_withdraw(env.clone(), from, to, amount)
-                }
+                Action::Deposit(from, to, amount) => Self::deposit(env.clone(), from, to, amount),
+                Action::Withdraw(from, to, amount) => Self::withdraw(env.clone(), from, to, amount),
             }
         }
     }
