@@ -42,7 +42,7 @@
 //!     use soroban_sdk::testutils::{Events as _, MuxedAddress as _};
 //!     use soroban_sdk::{Env, Event, MuxedAddress};
 //!
-//!     use super::*;
+//!     use super::{Contract, ContractClient, Deposit};
 //!
 //!     #[test]
 //!     fn test_deposit_to_muxed_contract() {
@@ -53,14 +53,12 @@
 //!         let to = MuxedAddress::new(&contract, 123);
 //!         assert!(to.to_strkey().to_string().starts_with('W'));
 //!         client.deposit(&to);
-//!         assert_eq!(
-//!             env.events().all(),
-//!             [Deposit {
-//!                 to: contract.clone(),
-//!                 to_muxed_id: Some(123),
-//!             }
-//!             .to_xdr(&env, &contract)],
-//!         );
+//!         let event = Deposit {
+//!             to: contract.clone(),
+//!             to_muxed_id: Some(123),
+//!         };
+//!         assert!(event.to.to_string().to_string().starts_with('C'));
+//!         assert_eq!(env.events().all(), [event.to_xdr(&env, &contract)]);
 //!     }
 //! }
 //! # fn main() { }
