@@ -185,7 +185,7 @@ fn test_sac_transfer_to_muxed_contract_address() {
     token.transfer(&from, &muxed_address, &40);
     assert_eq!(
         env.events().all(),
-        std::vec![SacTransfer {
+        [SacTransfer {
             from: from.clone(),
             to: contract.clone(),
             name: token.name(),
