@@ -40,7 +40,7 @@ build-libs: fmt
 build-test-wasms: fmt
 	# Build the test wasms with MSRV by default, with some meta disabled for
 	# binary stability for tests. The spec shaking v2 var is for the
-	# test_spec_shaking_v2 contract, built with soroban-sdk 28.0.0, which needs it.
+	# test_spec_shaking_v2 contract, built with soroban-sdk 29.0.1, which needs it.
 	# The test wasms are built again with LTO off, in the release-without-lto profile,
 	# and again in the release-without-lto-multi-cgu profile with multiple codegen
 	# units, so that their specs can be checked to match the specs built with LTO.

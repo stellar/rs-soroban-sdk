@@ -58,6 +58,7 @@ impl Debug for Address {
                         write!(f, "Contract({})", strkey.to_string())?;
                     }
                     ScAddress::MuxedAccount(_)
+                    | ScAddress::MuxedContract(_)
                     | ScAddress::ClaimableBalance(_)
                     | ScAddress::LiquidityPool(_) => {
                         return Err(core::fmt::Error);
