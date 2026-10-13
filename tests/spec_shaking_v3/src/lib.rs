@@ -1,7 +1,7 @@
 #![no_std]
 use soroban_sdk::{
     assert_with_error, contract, contracterror, contractevent, contractimpl, contracttype,
-    panic_with_error, Env, Map, Symbol, Vec,
+    panic_with_error, Env, Event, Map, Symbol, Vec,
 };
 
 #[contract]
@@ -41,7 +41,8 @@ pub enum UsedErrorEnum {
     Invalid = 2,
 }
 
-// Used only via panic_with_error! (never appears in a Result return).
+// Used only via panic_with_error!, by reference (never appears in a Result
+// return).
 #[contracterror]
 #[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum UsedPanicErrorEnum {
@@ -209,6 +210,32 @@ pub struct UsedEventWithRefs<'a> {
     pub payload: &'a UsedRefDataType,
 }
 
+// Used as event published with Events::publish_event, with custom type in data
+#[contracttype]
+#[derive(Clone, Debug, Eq, PartialEq)]
+pub struct UsedPublishEventDataType {
+    pub val: u32,
+}
+
+#[contractevent]
+#[derive(Clone, Debug, Eq, PartialEq)]
+pub struct UsedEventViaPublishEvent {
+    pub payload: UsedPublishEventDataType,
+}
+
+// Used as event published with the Event trait's publish fn, with custom type in data
+#[contracttype]
+#[derive(Clone, Debug, Eq, PartialEq)]
+pub struct UsedTraitPublishDataType {
+    pub val: u32,
+}
+
+#[contractevent]
+#[derive(Clone, Debug, Eq, PartialEq)]
+pub struct UsedEventViaTraitPublish {
+    pub payload: UsedTraitPublishDataType,
+}
+
 // Used as element in tuple fn param
 #[contracttype]
 #[derive(Clone, Debug, Eq, PartialEq)]
@@ -289,6 +316,14 @@ pub struct UsedLeaf {
     pub val: u32,
 }
 
+// --- Self-referencing type: a type holding a container of itself ---
+
+#[contracttype]
+#[derive(Clone, Debug, Eq, PartialEq)]
+pub struct UsedSelfRef {
+    pub children: Vec<UsedSelfRef>,
+}
+
 // --- Lib-imported types (Rust crate dep): rlib statics linked into cdylib ---
 // Only StructC is used in a contract fn; other spec_lib types have spec entries
 // but no markers.
@@ -296,7 +331,9 @@ pub struct UsedLeaf {
 // --- WASM-imported types (contractimport!): only used ones should have markers ---
 
 mod wasm_imported {
-    soroban_sdk::contractimport!(file = "../../target/wasm32v1-none/release/test_spec_import.wasm");
+    soroban_sdk::contractimport!(
+        file = "../../target/wasm32v1-none/release/test_spec_import_v2.wasm"
+    );
 }
 
 // --- Unused types: no markers expected ---
@@ -327,6 +364,58 @@ pub struct UnusedEvent {
     #[topic]
     pub kind: Symbol,
     pub data: u32,
+}
+
+// A type referenced only by an event the contract never publishes. The event
+// is shaken out for want of a marker, and takes the type with it: nothing that
+// survives names it.
+#[contracttype]
+#[derive(Clone, Debug, Eq, PartialEq)]
+pub struct UnusedEventDataType {
+    pub v: u32,
+}
+
+#[contractevent]
+#[derive(Clone, Debug, Eq, PartialEq)]
+pub struct UnusedEventWithDataType {
+    #[topic]
+    pub kind: Symbol,
+    pub payload: UnusedEventDataType,
+}
+
+// A chain of types that only reference each other. No function, event, or
+// other reachable type names the outer one, so the whole chain is shaken out.
+#[contracttype]
+#[derive(Clone, Debug, Eq, PartialEq)]
+pub struct UnusedOuter {
+    pub inner: UnusedInner,
+}
+
+#[contracttype]
+#[derive(Clone, Debug, Eq, PartialEq)]
+pub struct UnusedInner {
+    pub v: u32,
+}
+
+// Types that reference each other in a cycle, and a type that references
+// itself. The references are only within the cycle, so nothing reaches them
+// and they are shaken out.
+#[contracttype]
+#[derive(Clone, Debug, Eq, PartialEq)]
+pub struct UnusedCycleA {
+    pub b: UnusedCycleB,
+}
+
+#[contracttype]
+#[derive(Clone, Debug, Eq, PartialEq)]
+pub struct UnusedCycleB {
+    pub a: Vec<UnusedCycleA>,
+}
+
+#[contracttype]
+#[derive(Clone, Debug, Eq, PartialEq)]
+pub struct UnusedSelfRef {
+    pub children: Vec<UnusedSelfRef>,
 }
 
 // A pub #[contracterror] enum that is never referenced anywhere — neither in a
@@ -380,7 +469,7 @@ impl Contract {
 
     pub fn with_panic_error(env: Env, fail: bool) {
         if fail {
-            panic_with_error!(&env, UsedPanicErrorEnum::Boom);
+            panic_with_error!(&env, &UsedPanicErrorEnum::Boom);
         }
     }
 
@@ -410,6 +499,8 @@ impl Contract {
     }
 
     pub fn with_recursion(_env: Env, _r: UsedRecursiveRoot) {}
+
+    pub fn with_self_recursion(_env: Env, _r: UsedSelfRef) {}
 
     pub fn with_auth_contexts(_env: Env, _c: Vec<soroban_sdk::auth::Context>) {}
 
@@ -487,6 +578,19 @@ impl Contract {
             payload: &payload,
         }
         .publish(&env);
+    }
+
+    pub fn publish_via_publish_event(env: Env) {
+        env.events().publish_event(&UsedEventViaPublishEvent {
+            payload: UsedPublishEventDataType { val: 1 },
+        });
+    }
+
+    pub fn publish_via_trait_publish(env: Env) {
+        let event = UsedEventViaTraitPublish {
+            payload: UsedTraitPublishDataType { val: 1 },
+        };
+        <_ as Event>::publish(&event, &env);
     }
 }
 

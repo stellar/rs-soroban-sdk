@@ -1,0 +1,88 @@
+error: contract struct must not have fields, e.g. `pub struct Contract;`
+ --> tests/compile_fails/contract_non_unit_struct_errors.rs:5:31
+  |
+5 |   pub struct ContractWithFields {
+  |  _______________________________^
+6 | |     a: u32,
+7 | | }
+  | |_^
+
+error: contract struct must not have fields, e.g. `pub struct Contract;`
+  --> tests/compile_fails/contract_non_unit_struct_errors.rs:10:25
+   |
+10 | pub struct ContractTuple(u32);
+   |                         ^^^^^
+
+error: contract struct must not have fields, e.g. `pub struct Contract;`
+  --> tests/compile_fails/contract_non_unit_struct_errors.rs:13:30
+   |
+13 | pub struct ContractEmptyTuple();
+   |                              ^^
+
+error: contract struct must not have generics
+  --> tests/compile_fails/contract_non_unit_struct_errors.rs:16:32
+   |
+16 | pub struct ContractWithGenerics<T> {
+   |                                ^^^
+
+error: contract struct must not have fields, e.g. `pub struct Contract;`
+  --> tests/compile_fails/contract_non_unit_struct_errors.rs:16:36
+   |
+16 |   pub struct ContractWithGenerics<T> {
+   |  ____________________________________^
+17 | |     _t: PhantomData<T>,
+18 | | }
+   | |_^
+
+error: contractimpl does not support generic contract types
+  --> tests/compile_fails/contract_non_unit_struct_errors.rs:21:6
+   |
+21 | impl ContractWithGenerics<u32> {
+   |      ^^^^^^^^^^^^^^^^^^^^^^^^^
+
+error: contractimpl does not support generic contract types
+  --> tests/compile_fails/contract_non_unit_struct_errors.rs:26:9
+   |
+26 | impl<T> ContractWithGenerics<T> {
+   |         ^^^^^^^^^^^^^^^^^^^^^^^
+
+error: contract struct must not have generics
+  --> tests/compile_fails/contract_non_unit_struct_errors.rs:31:32
+   |
+31 | pub struct ContractWithLifetime<'a> {
+   |                                ^^^^
+
+error: contract struct must not have fields, e.g. `pub struct Contract;`
+  --> tests/compile_fails/contract_non_unit_struct_errors.rs:31:37
+   |
+31 |   pub struct ContractWithLifetime<'a> {
+   |  _____________________________________^
+32 | |     _a: PhantomData<&'a ()>,
+33 | | }
+   | |_^
+
+error: contract struct must not have a where clause
+  --> tests/compile_fails/contract_non_unit_struct_errors.rs:37:1
+   |
+37 | / where
+38 | |     (): Sized, {}
+   | |______________^
+
+error: contract struct must not have a where clause
+  --> tests/compile_fails/contract_non_unit_struct_errors.rs:42:1
+   |
+42 | / where
+43 | |     (): Sized;
+   | |_____________^
+
+error: contract must be a struct, e.g. `pub struct Contract;`
+  --> tests/compile_fails/contract_non_unit_struct_errors.rs:46:5
+   |
+46 | pub enum ContractEnum {}
+   |     ^^^^
+
+error: contract must be a struct, e.g. `pub struct Contract;`
+  --> tests/compile_fails/contract_non_unit_struct_errors.rs:49:5
+   |
+49 | pub union ContractUnion {
+   |     ^^^^^

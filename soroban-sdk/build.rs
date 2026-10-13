@@ -1,6 +1,6 @@
 pub fn main() {
     // Inform the compiler that the soroban_sdk_internal_no_rssdkver_meta cfg is valid.
-    // The cfg is used when building the test vectors in this repository, to disable the embedding
+    // The cfg is used when building the test vectors in this repository, to leave the revision out
     // of the rssdkver meta to increase the stability of the build wasms and therefore their wasm
     // hash.
     println!("cargo::rustc-check-cfg=cfg(soroban_sdk_internal_no_rssdkver_meta)");
