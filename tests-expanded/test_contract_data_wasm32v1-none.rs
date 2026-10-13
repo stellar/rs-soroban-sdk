@@ -151,6 +151,13 @@ impl Contract {
     }
 }
 impl<'a> ContractClient<'a> {
+    /// Call `put` function on the contract.
+    ///
+    /// # Panics
+    ///
+    /// Panics if the invoked contract returns an error or panics.
+    ///
+    /// Use [`Self::try_put`] to receive errors instead of panicking.
     pub fn put(&self, key: &Symbol, val: &Symbol) -> () {
         use core::ops::Not;
         use soroban_sdk::{FromVal, IntoVal};
@@ -168,6 +175,11 @@ impl<'a> ContractClient<'a> {
         );
         res
     }
+    /// Call `put` function on the contract.
+    ///
+    /// # Errors
+    ///
+    /// Returns an error if the invoked contract returns an error or panics. A panic in the invoked contract is caught and returned as an error rather than panicking the caller.
     pub fn try_put(
         &self,
         key: &Symbol,
@@ -191,6 +203,13 @@ impl<'a> ContractClient<'a> {
         );
         res
     }
+    /// Call `get` function on the contract.
+    ///
+    /// # Panics
+    ///
+    /// Panics if the invoked contract returns an error or panics.
+    ///
+    /// Use [`Self::try_get`] to receive errors instead of panicking.
     pub fn get(&self, key: &Symbol) -> Option<Symbol> {
         use core::ops::Not;
         use soroban_sdk::{FromVal, IntoVal};
@@ -205,6 +224,11 @@ impl<'a> ContractClient<'a> {
         );
         res
     }
+    /// Call `get` function on the contract.
+    ///
+    /// # Errors
+    ///
+    /// Returns an error if the invoked contract returns an error or panics. A panic in the invoked contract is caught and returned as an error rather than panicking the caller.
     pub fn try_get(
         &self,
         key: &Symbol,
@@ -227,6 +251,13 @@ impl<'a> ContractClient<'a> {
         );
         res
     }
+    /// Call `del` function on the contract.
+    ///
+    /// # Panics
+    ///
+    /// Panics if the invoked contract returns an error or panics.
+    ///
+    /// Use [`Self::try_del`] to receive errors instead of panicking.
     pub fn del(&self, key: &Symbol) -> () {
         use core::ops::Not;
         use soroban_sdk::{FromVal, IntoVal};
@@ -241,6 +272,11 @@ impl<'a> ContractClient<'a> {
         );
         res
     }
+    /// Call `del` function on the contract.
+    ///
+    /// # Errors
+    ///
+    /// Returns an error if the invoked contract returns an error or panics. A panic in the invoked contract is caught and returned as an error rather than panicking the caller.
     pub fn try_del(
         &self,
         key: &Symbol,

@@ -58,6 +58,13 @@ impl Contract {
     }
 }
 impl<'a> ContractClient<'a> {
+    /// Call `empty` function on the contract.
+    ///
+    /// # Panics
+    ///
+    /// Panics if the invoked contract returns an error or panics.
+    ///
+    /// Use [`Self::try_empty`] to receive errors instead of panicking.
     pub fn empty(&self) -> () {
         use core::ops::Not;
         use soroban_sdk::{FromVal, IntoVal};
@@ -72,6 +79,11 @@ impl<'a> ContractClient<'a> {
         );
         res
     }
+    /// Call `empty` function on the contract.
+    ///
+    /// # Errors
+    ///
+    /// Returns an error if the invoked contract returns an error or panics. A panic in the invoked contract is caught and returned as an error rather than panicking the caller.
     pub fn try_empty(
         &self,
     ) -> Result<
