@@ -67,18 +67,30 @@ pub fn base64_from_wasm(wasm: &[u8]) -> Result<String, FromWasmError> {
     Ok(res)
 }
 
-/// Reads the contract spec from the wasm, and appends a function entry for
-/// every function callable in the wasm that the spec does not describe. See
-/// [`exported_fn_entries`].
 pub fn from_wasm(wasm: &[u8]) -> Result<Vec<ScSpecEntry>, FromWasmError> {
     let spec = raw_from_wasm(wasm)?;
-    let mut entries = parse_raw(&spec).map_err(FromWasmError::Parse)?;
+    parse_raw(&spec).map_err(FromWasmError::Parse)
+}
+
+/// Returns a function entry for every function callable in the wasm that the
+/// wasm's spec does not describe. A wasm with no spec is treated as having an
+/// empty spec.
+///
+/// A function is callable if its name is a valid symbol not reserved by the
+/// `__` prefix, and every parameter and its single result are `i64`, the wasm
+/// representation of a `Val`. The real types are unknown, so each input is
+/// named `argN` and every input and the output are typed `Val`.
+pub fn missing_fns_from_wasm(wasm: &[u8]) -> Result<Vec<ScSpecEntry>, FromWasmError> {
+    let spec = match from_wasm(wasm) {
+        Ok(spec) => spec,
+        Err(FromWasmError::NotFound) => vec![],
+        Err(e) => return Err(e),
+    };
     let missing = exported_fn_entries(wasm)?
         .into_iter()
-        .filter(|e| !entries.iter().any(|s| fn_name(s) == fn_name(e)))
-        .collect::<Vec<_>>();
-    entries.extend(missing);
-    Ok(entries)
+        .filter(|e| !spec.iter().any(|s| fn_name(s) == fn_name(e)))
+        .collect();
+    Ok(missing)
 }
 
 fn fn_name(entry: &ScSpecEntry) -> Option<&[u8]> {
@@ -89,13 +101,8 @@ fn fn_name(entry: &ScSpecEntry) -> Option<&[u8]> {
 }
 
 /// Returns a function entry for every function exported by the wasm that is
-/// callable as a contract function.
-///
-/// A function is callable if its name is a valid symbol not reserved by the
-/// `__` prefix, and every parameter and its single result are `i64`, the wasm
-/// representation of a `Val`. The real types are unknown, so each input is
-/// named `argN` and every input and the output are typed `Val`.
-pub fn exported_fn_entries(wasm: &[u8]) -> Result<Vec<ScSpecEntry>, FromWasmError> {
+/// callable as a contract function. See [`missing_fns_from_wasm`].
+fn exported_fn_entries(wasm: &[u8]) -> Result<Vec<ScSpecEntry>, FromWasmError> {
     // Whether each type in the type section is a callable function type, and
     // the number of params it has.
     let mut types: Vec<Option<usize>> = Vec::new();
@@ -275,6 +282,9 @@ mod test {
             ],
             &mut w,
         );
+        if spec.is_empty() {
+            return w;
+        }
         let mut custom = Vec::new();
         bytes(b"contractspecv0", &mut custom);
         for e in spec {
@@ -286,17 +296,17 @@ mod test {
     }
 
     #[test]
-    fn test_from_wasm_adds_missing_fns() {
+    fn test_missing_fns_from_wasm() {
         let add = spec_fn(
             "add",
             &[("a", ScSpecTypeDef::U64), ("b", ScSpecTypeDef::U64)],
             ScSpecTypeDef::U64,
         );
-        let entries = from_wasm(&wasm(&[add.clone()])).unwrap();
+        let wasm = wasm(&[add.clone()]);
+        assert_eq!(from_wasm(&wasm).unwrap(), [add]);
         assert_eq!(
-            entries,
+            missing_fns_from_wasm(&wasm).unwrap(),
             [
-                add,
                 spec_fn(
                     "reexported",
                     &[("arg0", ScSpecTypeDef::Val), ("arg1", ScSpecTypeDef::Val)],
@@ -313,9 +323,14 @@ mod test {
     }
 
     #[test]
-    fn test_from_wasm_raw_unchanged() {
-        let add = spec_fn("add", &[], ScSpecTypeDef::U64);
-        let raw = raw_from_wasm(&wasm(&[add.clone()])).unwrap();
-        assert_eq!(parse_raw(&raw).unwrap(), [add]);
+    fn test_missing_fns_from_wasm_without_spec() {
+        let wasm = wasm(&[]);
+        assert!(matches!(from_wasm(&wasm), Err(FromWasmError::NotFound)));
+        let names = missing_fns_from_wasm(&wasm)
+            .unwrap()
+            .iter()
+            .map(|e| fn_name(e).unwrap().to_vec())
+            .collect::<Vec<_>>();
+        assert_eq!(names, [&b"add"[..], b"reexported", b"missing", b"no_args"]);
     }
 }

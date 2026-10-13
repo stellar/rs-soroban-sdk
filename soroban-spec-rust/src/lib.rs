@@ -11,7 +11,7 @@ use sha2::{Digest, Sha256};
 use stellar_xdr::{ScMetaEntry, ScSpecEntry, ScSpecTypeDef, ScSpecTypeUdt, ScSpecUdtUnionCaseV0};
 use syn::Error;
 
-use soroban_spec::read::{from_wasm, FromWasmError};
+use soroban_spec::read::{from_wasm, missing_fns_from_wasm, FromWasmError};
 
 use types::{
     generate_enum_with_options, generate_error_enum_with_options, generate_event_with_options,
@@ -84,7 +84,10 @@ pub fn generate_from_wasm_with_options(
         }
     }
 
-    let spec = from_wasm(wasm).map_err(GenerateFromFileError::GetSpec)?;
+    let mut spec = from_wasm(wasm).map_err(GenerateFromFileError::GetSpec)?;
+    // Callable functions the spec does not describe are generated with `Val`
+    // typed inputs and output.
+    spec.extend(missing_fns_from_wasm(wasm).map_err(GenerateFromFileError::GetSpec)?);
     let meta = soroban_meta::read::from_wasm(wasm).map_err(GenerateFromFileError::GetMeta)?;
     let sdk_major_version = sdk_major_version_from_meta(&meta);
     let code = generate_with_options(&spec, file, &sha256, sdk_major_version, opts)
