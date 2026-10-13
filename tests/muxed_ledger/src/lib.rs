@@ -1,5 +1,7 @@
 #![no_std]
-use soroban_sdk::{contract, contractimpl, contracttype, Address, Env, MuxedAddress, Vec};
+use soroban_sdk::{
+    contract, contractevent, contractimpl, contracttype, Address, Env, MuxedAddress, Vec,
+};
 
 #[contract]
 pub struct Contract;
@@ -26,6 +28,28 @@ pub struct Record {
     pub amount: i128,
 }
 
+#[contractevent]
+#[derive(Clone, Debug, Eq, PartialEq)]
+pub struct Deposit {
+    #[topic]
+    pub from: Address,
+    #[topic]
+    pub to: Address,
+    pub amount: i128,
+    pub to_muxed_id: Option<u64>,
+}
+
+#[contractevent]
+#[derive(Clone, Debug, Eq, PartialEq)]
+pub struct Withdraw {
+    #[topic]
+    pub from: Address,
+    #[topic]
+    pub to: Address,
+    pub amount: i128,
+    pub to_muxed_id: Option<u64>,
+}
+
 fn key(from: &Address, to: &MuxedAddress) -> Key {
     Key {
         from: from.clone(),
@@ -37,6 +61,13 @@ fn key(from: &Address, to: &MuxedAddress) -> Key {
 impl Contract {
     pub fn record_deposit(env: Env, from: Address, to: MuxedAddress, amount: i128) {
         assert!(amount > 0);
+        Deposit {
+            from: from.clone(),
+            to: to.address(),
+            amount,
+            to_muxed_id: to.id(),
+        }
+        .publish(&env);
         let k = key(&from, &to);
         let storage = env.storage().instance();
         let current = storage.get::<_, Record>(&k).map_or(0, |r| r.amount);
@@ -46,6 +77,13 @@ impl Contract {
 
     pub fn record_withdraw(env: Env, from: Address, to: MuxedAddress, amount: i128) {
         assert!(amount > 0);
+        Withdraw {
+            from: from.clone(),
+            to: to.address(),
+            amount,
+            to_muxed_id: to.id(),
+        }
+        .publish(&env);
         let k = key(&from, &to);
         let storage = env.storage().instance();
         let current = storage.get::<_, Record>(&k).map_or(0, |r| r.amount);
@@ -78,12 +116,14 @@ impl Contract {
 
 #[cfg(test)]
 mod test {
+    extern crate std;
+
     use soroban_sdk::{
-        testutils::{Address as _, MuxedAddress as _},
-        vec, Address, Env, MuxedAddress,
+        testutils::{Address as _, Events, MuxedAddress as _},
+        vec, Address, Env, Event, MuxedAddress,
     };
 
-    use crate::{Action, Contract, ContractClient};
+    use crate::{Action, Contract, ContractClient, Deposit, Withdraw};
 
     #[test]
     fn test_chain_to_zero() {
@@ -101,6 +141,30 @@ mod test {
             Action::Withdraw(from.clone(), to.clone(), 120),
             Action::Withdraw(from.clone(), to.clone(), 30),
         ]);
+
+        let deposit = |amount| {
+            Deposit {
+                from: from.clone(),
+                to: to.address(),
+                amount,
+                to_muxed_id: Some(123),
+            }
+            .to_xdr(&env, &contract_id)
+        };
+        let withdraw = |amount| {
+            Withdraw {
+                from: from.clone(),
+                to: to.address(),
+                amount,
+                to_muxed_id: Some(123),
+            }
+            .to_xdr(&env, &contract_id)
+        };
+        assert_eq!(
+            env.events().all(),
+            std::vec![deposit(100), deposit(50), withdraw(120), withdraw(30)],
+        );
+
         assert_eq!(client.get(&from, &to), None);
     }
 }
