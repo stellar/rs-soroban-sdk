@@ -239,8 +239,8 @@ pub fn derive_client_impl(crate_path: &Path, name: &str, fns: &[syn_ext::Fn]) ->
             };
             if cfg!(not(feature = "testutils")) {
                 quote! {
-                    #(#fn_attrs)*
                     #fn_docs
+                    #(#fn_attrs)*
                     pub fn #fn_ident(&self, #(#fn_input_types),*) -> #fn_output {
                         use core::ops::Not;
                         use #crate_path::{IntoVal,FromVal};
@@ -252,8 +252,8 @@ pub fn derive_client_impl(crate_path: &Path, name: &str, fns: &[syn_ext::Fn]) ->
                         res
                     }
 
-                    #(#fn_attrs)*
                     #fn_try_docs
+                    #(#fn_attrs)*
                     pub fn #fn_try_ident(&self, #(#fn_input_types),*) -> #fn_try_output {
                         use #crate_path::{IntoVal,FromVal};
                         let res = self.env.try_invoke_contract(
@@ -266,8 +266,8 @@ pub fn derive_client_impl(crate_path: &Path, name: &str, fns: &[syn_ext::Fn]) ->
                 }
             } else {
                 quote! {
-                    #(#fn_attrs)*
                     #fn_docs
+                    #(#fn_attrs)*
                     pub fn #fn_ident(&self, #(#fn_input_types),*) -> #fn_output {
                         // Exists only to be dropped at the end of this fn, restoring the auth
                         // manager even if the call panics. Binding it to `_` would drop it early.
@@ -281,8 +281,8 @@ pub fn derive_client_impl(crate_path: &Path, name: &str, fns: &[syn_ext::Fn]) ->
                         res
                     }
 
-                    #(#fn_attrs)*
                     #fn_try_docs
+                    #(#fn_attrs)*
                     pub fn #fn_try_ident(&self, #(#fn_input_types),*) -> #fn_try_output {
                         // Exists only to be dropped at the end of this fn, restoring the auth
                         // manager even if the call panics. Binding it to `_` would drop it early.
