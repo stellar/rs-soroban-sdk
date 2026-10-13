@@ -21,6 +21,8 @@
 //!   or [`Env::panic_with_error`]. Their support was accidental. Only [`contracterror`] types are
 //!   intended to be used with [`panic_with_error!`].
 //!
+//! - [A `MuxedAddress` may now be a contract address with an id (CAP-84)][v30_muxed_contracts].
+//!
 //! The following changes are largely internal details, but are included here for visibility for
 //! tool builders who may be inspecting Wasm and contract spec internal data.
 //!
@@ -31,6 +33,7 @@
 //!
 //! [v30_cli_version]: v30_cli_version
 //! [v30_duplicate_names]: v30_duplicate_names
+//! [v30_muxed_contracts]: v30_muxed_contracts
 //! [v30_sdk_type_names]: v30_sdk_type_names
 //! [v30_spec_markers]: v30_spec_markers
 //! [`panic_with_error!`]: crate::panic_with_error
@@ -489,5 +492,6 @@ pub mod v28_native_contract_code;
 pub mod v28_spec_shaking;
 pub mod v30_cli_version;
 pub mod v30_duplicate_names;
+pub mod v30_muxed_contracts;
 pub mod v30_sdk_type_names;
 pub mod v30_spec_markers;
