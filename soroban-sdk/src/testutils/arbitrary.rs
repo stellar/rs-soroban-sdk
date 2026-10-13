@@ -741,9 +741,13 @@ mod objects {
     /// [`FromVal`]: crate::FromVal
     #[derive(Arbitrary, Debug, Clone, Eq, PartialEq, Ord, PartialOrd)]
     pub enum ArbitraryMuxedAddress {
+        /// A contract address, `C...`.
         Address(ArbitraryAddress),
+        /// A muxed account address, `M...`.
         Muxed { ed25519: [u8; 32], id: u64 },
+        /// An account address, `G...`.
         Account(ArbitraryAddressAccount),
+        /// A muxed contract address, `W...`.
         MuxedContract { contract_id: [u8; 32], id: u64 },
     }
 
