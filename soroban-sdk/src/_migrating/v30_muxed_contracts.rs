@@ -27,6 +27,7 @@
 //! #[contractimpl]
 //! impl Contract {
 //!     pub fn deposit(env: Env, to: MuxedAddress) {
+//!         // ...
 //!         Deposit {
 //!             // The address is `G...` or `C...`, whether or not `to` is muxed.
 //!             to: to.address(),
