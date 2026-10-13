@@ -105,8 +105,11 @@ impl Contract {
         }
     }
 
-    pub fn get(env: Env, from: Address, to: MuxedAddress) -> Option<Record> {
-        env.storage().instance().get(&key(&from, &to))
+    pub fn balance(env: Env, from: Address, to: MuxedAddress) -> i128 {
+        env.storage()
+            .instance()
+            .get::<_, Record>(&key(&from, &to))
+            .map_or(0, |r| r.amount)
     }
 }
 
@@ -170,6 +173,6 @@ mod test {
             ],
         );
 
-        assert_eq!(client.get(&from, &to), None);
+        assert_eq!(client.balance(&from, &to), 0);
     }
 }
