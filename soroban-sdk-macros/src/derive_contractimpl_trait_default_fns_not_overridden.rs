@@ -2,14 +2,15 @@ use crate::{
     default_crate_path,
     derive_args::derive_args_impl,
     derive_client::derive_client_impl,
+    derive_contractimpl_trait_macro::replace_fn_types,
     derive_fn::{derive_contract_function_registration_ctor, derive_pub_fns},
     derive_spec_fn::derive_fns_spec,
-    syn_ext::{self, ident_to_type},
+    syn_ext::{self, ident_to_type, ty_to_safe_ident_str},
 };
 use darling::{ast::NestedMeta, Error, FromMeta};
 use proc_macro2::{Ident, TokenStream as TokenStream2};
-use quote::quote;
-use syn::{ext::IdentExt as _, Attribute, LitStr, Path, Type};
+use quote::{format_ident, quote};
+use syn::{ext::IdentExt as _, parse_quote, Attribute, LitStr, Path, Type};
 
 // See soroban-sdk/docs/contracttrait.md for documentation on how this works.
 
@@ -87,7 +88,48 @@ fn derive(args: &Args) -> Result<TokenStream2, Error> {
         return Ok(quote! {});
     }
 
-    let mut output = quote! {};
+    // The types named in the default fns' signatures are written as the trait
+    // sees them, and may resolve to different types, or not at all, here where
+    // the trait is implemented. Name them instead through the associated types
+    // of the trait's fn types supertrait, which carry the types as the trait
+    // resolves them. The associated types are only reachable through the trait
+    // in a generic context, so they are projected through a local trait
+    // implemented for the impl type.
+    let trait_str = trait_ident
+        .segments
+        .iter()
+        .map(|s| s.ident.unraw().to_string())
+        .collect::<Vec<_>>()
+        .join("_");
+    let types_ident = format_ident!(
+        "__{}__{}__FnTypes",
+        ty_to_safe_ident_str(&impl_ty),
+        trait_str
+    );
+    let mut type_idents = Vec::new();
+    let fns: Vec<_> = fns
+        .into_iter()
+        .map(|mut f| {
+            let types = replace_fn_types(
+                &mut f,
+                |ident| parse_quote!(<#impl_ty as #types_ident>::#ident),
+            );
+            type_idents.extend(types.into_iter().map(|(ident, _)| ident));
+            f
+        })
+        .collect();
+
+    let mut output = quote! {
+        #[doc(hidden)]
+        #[allow(non_camel_case_types)]
+        pub trait #types_ident {
+            #(type #type_idents;)*
+        }
+
+        impl<T: #trait_ident + ?Sized> #types_ident for T {
+            #(type #type_idents = T::#type_idents;)*
+        }
+    };
     output.extend(derive_pub_fns(
         &args.crate_path,
         &impl_ty,

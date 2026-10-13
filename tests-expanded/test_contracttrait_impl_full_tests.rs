@@ -4,11 +4,8 @@
 extern crate core;
 #[prelude_import]
 use core::prelude::rust_2021::*;
-use soroban_sdk::{
-    contract, contractimpl, Address, Bytes, BytesN, Duration, Map, String, Symbol, Timepoint, Vec,
-    I256, U256,
-};
-use test_contracttrait_trait::{AllTypes, MyEnumUnit, MyEnumVariants, MyStruct};
+use soroban_sdk::{contract, contractimpl};
+use test_contracttrait_trait::AllTypes;
 pub struct Contract;
 ///ContractArgs is a type for building arg lists for functions defined in "Contract".
 pub struct ContractArgs;
@@ -122,6 +119,98 @@ impl soroban_sdk::testutils::ContractFunctionSet for Contract {
 impl AllTypes for Contract {}
 impl<'a> ContractClient<'a> {}
 impl ContractArgs {}
+#[doc(hidden)]
+#[allow(non_camel_case_types)]
+pub trait __Contract__AllTypes__FnTypes {
+    type __test_u32__arg_0;
+    type __test_u32__ret;
+    type __test_i32__arg_0;
+    type __test_i32__ret;
+    type __test_u64__arg_0;
+    type __test_u64__ret;
+    type __test_i64__arg_0;
+    type __test_i64__ret;
+    type __test_u128__arg_0;
+    type __test_u128__ret;
+    type __test_i128__arg_0;
+    type __test_i128__ret;
+    type __test_bool__arg_0;
+    type __test_bool__ret;
+    type __test_address__arg_0;
+    type __test_address__ret;
+    type __test_bytes__arg_0;
+    type __test_bytes__ret;
+    type __test_bytes_n__arg_0;
+    type __test_bytes_n__ret;
+    type __test_string__arg_0;
+    type __test_string__ret;
+    type __test_symbol__arg_0;
+    type __test_symbol__ret;
+    type __test_vec__arg_0;
+    type __test_vec__ret;
+    type __test_map__arg_0;
+    type __test_map__ret;
+    type __test_duration__arg_0;
+    type __test_duration__ret;
+    type __test_timepoint__arg_0;
+    type __test_timepoint__ret;
+    type __test_i256__arg_0;
+    type __test_i256__ret;
+    type __test_u256__arg_0;
+    type __test_u256__ret;
+    type __test_env_param__ret;
+    type __test_struct__arg_0;
+    type __test_struct__ret;
+    type __test_enum_unit__arg_0;
+    type __test_enum_unit__ret;
+    type __test_enum_variants__arg_0;
+    type __test_enum_variants__ret;
+}
+impl<T: AllTypes + ?Sized> __Contract__AllTypes__FnTypes for T {
+    type __test_u32__arg_0 = T::__test_u32__arg_0;
+    type __test_u32__ret = T::__test_u32__ret;
+    type __test_i32__arg_0 = T::__test_i32__arg_0;
+    type __test_i32__ret = T::__test_i32__ret;
+    type __test_u64__arg_0 = T::__test_u64__arg_0;
+    type __test_u64__ret = T::__test_u64__ret;
+    type __test_i64__arg_0 = T::__test_i64__arg_0;
+    type __test_i64__ret = T::__test_i64__ret;
+    type __test_u128__arg_0 = T::__test_u128__arg_0;
+    type __test_u128__ret = T::__test_u128__ret;
+    type __test_i128__arg_0 = T::__test_i128__arg_0;
+    type __test_i128__ret = T::__test_i128__ret;
+    type __test_bool__arg_0 = T::__test_bool__arg_0;
+    type __test_bool__ret = T::__test_bool__ret;
+    type __test_address__arg_0 = T::__test_address__arg_0;
+    type __test_address__ret = T::__test_address__ret;
+    type __test_bytes__arg_0 = T::__test_bytes__arg_0;
+    type __test_bytes__ret = T::__test_bytes__ret;
+    type __test_bytes_n__arg_0 = T::__test_bytes_n__arg_0;
+    type __test_bytes_n__ret = T::__test_bytes_n__ret;
+    type __test_string__arg_0 = T::__test_string__arg_0;
+    type __test_string__ret = T::__test_string__ret;
+    type __test_symbol__arg_0 = T::__test_symbol__arg_0;
+    type __test_symbol__ret = T::__test_symbol__ret;
+    type __test_vec__arg_0 = T::__test_vec__arg_0;
+    type __test_vec__ret = T::__test_vec__ret;
+    type __test_map__arg_0 = T::__test_map__arg_0;
+    type __test_map__ret = T::__test_map__ret;
+    type __test_duration__arg_0 = T::__test_duration__arg_0;
+    type __test_duration__ret = T::__test_duration__ret;
+    type __test_timepoint__arg_0 = T::__test_timepoint__arg_0;
+    type __test_timepoint__ret = T::__test_timepoint__ret;
+    type __test_i256__arg_0 = T::__test_i256__arg_0;
+    type __test_i256__ret = T::__test_i256__ret;
+    type __test_u256__arg_0 = T::__test_u256__arg_0;
+    type __test_u256__ret = T::__test_u256__ret;
+    type __test_env_param__ret = T::__test_env_param__ret;
+    type __test_struct__arg_0 = T::__test_struct__arg_0;
+    type __test_struct__ret = T::__test_struct__ret;
+    type __test_enum_unit__arg_0 = T::__test_enum_unit__arg_0;
+    type __test_enum_unit__ret = T::__test_enum_unit__ret;
+    type __test_enum_variants__arg_0 = T::__test_enum_variants__arg_0;
+    type __test_enum_variants__ret = T::__test_enum_variants__ret;
+}
 #[doc(hidden)]
 /// Test u32 values.
 /// Returns the input unchanged.
@@ -1194,27 +1283,32 @@ impl Contract {
     #[allow(non_upper_case_globals)]
     /// Test u32 values.
     /// Returns the input unchanged.
-    const __SPEC_XDR_ENTRY_test_u32: soroban_sdk::xdr::r#const::ScSpecEntry =
-        soroban_sdk::xdr::r#const::ScSpecEntry::FunctionV0(
-            soroban_sdk::xdr::r#const::ScSpecFunctionV0 {
-                doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(
-                    b"Test u32 values.\nReturns the input unchanged.",
-                ),
-                name: soroban_sdk::xdr::r#const::ScSymbol(
-                    soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b"test_u32"),
-                ),
-                inputs: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[
-                    soroban_sdk::xdr::r#const::ScSpecFunctionInputV0 {
-                        doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
-                        name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b"v"),
-                        type_: <u32 as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
-                    },
-                ]),
-                outputs: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[
-                    <u32 as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
-                ]),
-            },
-        );
+    const __SPEC_XDR_ENTRY_test_u32: soroban_sdk::xdr::r#const::ScSpecEntry = soroban_sdk::xdr::r#const::ScSpecEntry::FunctionV0(soroban_sdk::xdr::r#const::ScSpecFunctionV0 {
+        doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(
+            b"Test u32 values.\nReturns the input unchanged.",
+        ),
+        name: soroban_sdk::xdr::r#const::ScSymbol(
+            soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b"test_u32"),
+        ),
+        inputs: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(
+            &[
+                soroban_sdk::xdr::r#const::ScSpecFunctionInputV0 {
+                    doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(
+                        b"",
+                    ),
+                    name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(
+                        b"v",
+                    ),
+                    type_: <<Contract as __Contract__AllTypes__FnTypes>::__test_u32__arg_0 as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
+                },
+            ],
+        ),
+        outputs: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(
+            &[
+                <<Contract as __Contract__AllTypes__FnTypes>::__test_u32__ret as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
+            ],
+        ),
+    });
     #[allow(non_snake_case)]
     /// Test u32 values.
     /// Returns the input unchanged.
@@ -1238,27 +1332,32 @@ mod __Contract__test_i32__spec {
 impl Contract {
     #[allow(non_upper_case_globals)]
     /// Test i32 values.
-    const __SPEC_XDR_ENTRY_test_i32: soroban_sdk::xdr::r#const::ScSpecEntry =
-        soroban_sdk::xdr::r#const::ScSpecEntry::FunctionV0(
-            soroban_sdk::xdr::r#const::ScSpecFunctionV0 {
-                doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(
-                    b"Test i32 values.",
-                ),
-                name: soroban_sdk::xdr::r#const::ScSymbol(
-                    soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b"test_i32"),
-                ),
-                inputs: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[
-                    soroban_sdk::xdr::r#const::ScSpecFunctionInputV0 {
-                        doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
-                        name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b"v"),
-                        type_: <i32 as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
-                    },
-                ]),
-                outputs: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[
-                    <i32 as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
-                ]),
-            },
-        );
+    const __SPEC_XDR_ENTRY_test_i32: soroban_sdk::xdr::r#const::ScSpecEntry = soroban_sdk::xdr::r#const::ScSpecEntry::FunctionV0(soroban_sdk::xdr::r#const::ScSpecFunctionV0 {
+        doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(
+            b"Test i32 values.",
+        ),
+        name: soroban_sdk::xdr::r#const::ScSymbol(
+            soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b"test_i32"),
+        ),
+        inputs: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(
+            &[
+                soroban_sdk::xdr::r#const::ScSpecFunctionInputV0 {
+                    doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(
+                        b"",
+                    ),
+                    name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(
+                        b"v",
+                    ),
+                    type_: <<Contract as __Contract__AllTypes__FnTypes>::__test_i32__arg_0 as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
+                },
+            ],
+        ),
+        outputs: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(
+            &[
+                <<Contract as __Contract__AllTypes__FnTypes>::__test_i32__ret as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
+            ],
+        ),
+    });
     #[allow(non_snake_case)]
     /// Test i32 values.
     pub const fn spec_xdr_test_i32() -> [u8; Contract::__SPEC_XDR_ENTRY_test_i32.const_xdr_len()] {
@@ -1278,25 +1377,30 @@ mod __Contract__test_u64__spec {
 }
 impl Contract {
     #[allow(non_upper_case_globals)]
-    const __SPEC_XDR_ENTRY_test_u64: soroban_sdk::xdr::r#const::ScSpecEntry =
-        soroban_sdk::xdr::r#const::ScSpecEntry::FunctionV0(
-            soroban_sdk::xdr::r#const::ScSpecFunctionV0 {
-                doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
-                name: soroban_sdk::xdr::r#const::ScSymbol(
-                    soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b"test_u64"),
-                ),
-                inputs: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[
-                    soroban_sdk::xdr::r#const::ScSpecFunctionInputV0 {
-                        doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
-                        name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b"v"),
-                        type_: <u64 as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
-                    },
-                ]),
-                outputs: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[
-                    <u64 as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
-                ]),
-            },
-        );
+    const __SPEC_XDR_ENTRY_test_u64: soroban_sdk::xdr::r#const::ScSpecEntry = soroban_sdk::xdr::r#const::ScSpecEntry::FunctionV0(soroban_sdk::xdr::r#const::ScSpecFunctionV0 {
+        doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
+        name: soroban_sdk::xdr::r#const::ScSymbol(
+            soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b"test_u64"),
+        ),
+        inputs: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(
+            &[
+                soroban_sdk::xdr::r#const::ScSpecFunctionInputV0 {
+                    doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(
+                        b"",
+                    ),
+                    name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(
+                        b"v",
+                    ),
+                    type_: <<Contract as __Contract__AllTypes__FnTypes>::__test_u64__arg_0 as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
+                },
+            ],
+        ),
+        outputs: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(
+            &[
+                <<Contract as __Contract__AllTypes__FnTypes>::__test_u64__ret as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
+            ],
+        ),
+    });
     #[allow(non_snake_case)]
     pub const fn spec_xdr_test_u64() -> [u8; Contract::__SPEC_XDR_ENTRY_test_u64.const_xdr_len()] {
         const { Contract::__SPEC_XDR_ENTRY_test_u64.const_to_xdr() }
@@ -1315,25 +1419,30 @@ mod __Contract__test_i64__spec {
 }
 impl Contract {
     #[allow(non_upper_case_globals)]
-    const __SPEC_XDR_ENTRY_test_i64: soroban_sdk::xdr::r#const::ScSpecEntry =
-        soroban_sdk::xdr::r#const::ScSpecEntry::FunctionV0(
-            soroban_sdk::xdr::r#const::ScSpecFunctionV0 {
-                doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
-                name: soroban_sdk::xdr::r#const::ScSymbol(
-                    soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b"test_i64"),
-                ),
-                inputs: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[
-                    soroban_sdk::xdr::r#const::ScSpecFunctionInputV0 {
-                        doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
-                        name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b"v"),
-                        type_: <i64 as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
-                    },
-                ]),
-                outputs: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[
-                    <i64 as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
-                ]),
-            },
-        );
+    const __SPEC_XDR_ENTRY_test_i64: soroban_sdk::xdr::r#const::ScSpecEntry = soroban_sdk::xdr::r#const::ScSpecEntry::FunctionV0(soroban_sdk::xdr::r#const::ScSpecFunctionV0 {
+        doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
+        name: soroban_sdk::xdr::r#const::ScSymbol(
+            soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b"test_i64"),
+        ),
+        inputs: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(
+            &[
+                soroban_sdk::xdr::r#const::ScSpecFunctionInputV0 {
+                    doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(
+                        b"",
+                    ),
+                    name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(
+                        b"v",
+                    ),
+                    type_: <<Contract as __Contract__AllTypes__FnTypes>::__test_i64__arg_0 as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
+                },
+            ],
+        ),
+        outputs: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(
+            &[
+                <<Contract as __Contract__AllTypes__FnTypes>::__test_i64__ret as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
+            ],
+        ),
+    });
     #[allow(non_snake_case)]
     pub const fn spec_xdr_test_i64() -> [u8; Contract::__SPEC_XDR_ENTRY_test_i64.const_xdr_len()] {
         const { Contract::__SPEC_XDR_ENTRY_test_i64.const_to_xdr() }
@@ -1352,25 +1461,30 @@ mod __Contract__test_u128__spec {
 }
 impl Contract {
     #[allow(non_upper_case_globals)]
-    const __SPEC_XDR_ENTRY_test_u128: soroban_sdk::xdr::r#const::ScSpecEntry =
-        soroban_sdk::xdr::r#const::ScSpecEntry::FunctionV0(
-            soroban_sdk::xdr::r#const::ScSpecFunctionV0 {
-                doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
-                name: soroban_sdk::xdr::r#const::ScSymbol(
-                    soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b"test_u128"),
-                ),
-                inputs: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[
-                    soroban_sdk::xdr::r#const::ScSpecFunctionInputV0 {
-                        doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
-                        name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b"v"),
-                        type_: <u128 as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
-                    },
-                ]),
-                outputs: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[
-                    <u128 as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
-                ]),
-            },
-        );
+    const __SPEC_XDR_ENTRY_test_u128: soroban_sdk::xdr::r#const::ScSpecEntry = soroban_sdk::xdr::r#const::ScSpecEntry::FunctionV0(soroban_sdk::xdr::r#const::ScSpecFunctionV0 {
+        doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
+        name: soroban_sdk::xdr::r#const::ScSymbol(
+            soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b"test_u128"),
+        ),
+        inputs: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(
+            &[
+                soroban_sdk::xdr::r#const::ScSpecFunctionInputV0 {
+                    doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(
+                        b"",
+                    ),
+                    name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(
+                        b"v",
+                    ),
+                    type_: <<Contract as __Contract__AllTypes__FnTypes>::__test_u128__arg_0 as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
+                },
+            ],
+        ),
+        outputs: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(
+            &[
+                <<Contract as __Contract__AllTypes__FnTypes>::__test_u128__ret as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
+            ],
+        ),
+    });
     #[allow(non_snake_case)]
     pub const fn spec_xdr_test_u128() -> [u8; Contract::__SPEC_XDR_ENTRY_test_u128.const_xdr_len()]
     {
@@ -1390,25 +1504,30 @@ mod __Contract__test_i128__spec {
 }
 impl Contract {
     #[allow(non_upper_case_globals)]
-    const __SPEC_XDR_ENTRY_test_i128: soroban_sdk::xdr::r#const::ScSpecEntry =
-        soroban_sdk::xdr::r#const::ScSpecEntry::FunctionV0(
-            soroban_sdk::xdr::r#const::ScSpecFunctionV0 {
-                doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
-                name: soroban_sdk::xdr::r#const::ScSymbol(
-                    soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b"test_i128"),
-                ),
-                inputs: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[
-                    soroban_sdk::xdr::r#const::ScSpecFunctionInputV0 {
-                        doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
-                        name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b"v"),
-                        type_: <i128 as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
-                    },
-                ]),
-                outputs: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[
-                    <i128 as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
-                ]),
-            },
-        );
+    const __SPEC_XDR_ENTRY_test_i128: soroban_sdk::xdr::r#const::ScSpecEntry = soroban_sdk::xdr::r#const::ScSpecEntry::FunctionV0(soroban_sdk::xdr::r#const::ScSpecFunctionV0 {
+        doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
+        name: soroban_sdk::xdr::r#const::ScSymbol(
+            soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b"test_i128"),
+        ),
+        inputs: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(
+            &[
+                soroban_sdk::xdr::r#const::ScSpecFunctionInputV0 {
+                    doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(
+                        b"",
+                    ),
+                    name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(
+                        b"v",
+                    ),
+                    type_: <<Contract as __Contract__AllTypes__FnTypes>::__test_i128__arg_0 as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
+                },
+            ],
+        ),
+        outputs: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(
+            &[
+                <<Contract as __Contract__AllTypes__FnTypes>::__test_i128__ret as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
+            ],
+        ),
+    });
     #[allow(non_snake_case)]
     pub const fn spec_xdr_test_i128() -> [u8; Contract::__SPEC_XDR_ENTRY_test_i128.const_xdr_len()]
     {
@@ -1428,25 +1547,30 @@ mod __Contract__test_bool__spec {
 }
 impl Contract {
     #[allow(non_upper_case_globals)]
-    const __SPEC_XDR_ENTRY_test_bool: soroban_sdk::xdr::r#const::ScSpecEntry =
-        soroban_sdk::xdr::r#const::ScSpecEntry::FunctionV0(
-            soroban_sdk::xdr::r#const::ScSpecFunctionV0 {
-                doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
-                name: soroban_sdk::xdr::r#const::ScSymbol(
-                    soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b"test_bool"),
-                ),
-                inputs: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[
-                    soroban_sdk::xdr::r#const::ScSpecFunctionInputV0 {
-                        doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
-                        name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b"v"),
-                        type_: <bool as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
-                    },
-                ]),
-                outputs: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[
-                    <bool as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
-                ]),
-            },
-        );
+    const __SPEC_XDR_ENTRY_test_bool: soroban_sdk::xdr::r#const::ScSpecEntry = soroban_sdk::xdr::r#const::ScSpecEntry::FunctionV0(soroban_sdk::xdr::r#const::ScSpecFunctionV0 {
+        doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
+        name: soroban_sdk::xdr::r#const::ScSymbol(
+            soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b"test_bool"),
+        ),
+        inputs: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(
+            &[
+                soroban_sdk::xdr::r#const::ScSpecFunctionInputV0 {
+                    doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(
+                        b"",
+                    ),
+                    name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(
+                        b"v",
+                    ),
+                    type_: <<Contract as __Contract__AllTypes__FnTypes>::__test_bool__arg_0 as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
+                },
+            ],
+        ),
+        outputs: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(
+            &[
+                <<Contract as __Contract__AllTypes__FnTypes>::__test_bool__ret as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
+            ],
+        ),
+    });
     #[allow(non_snake_case)]
     pub const fn spec_xdr_test_bool() -> [u8; Contract::__SPEC_XDR_ENTRY_test_bool.const_xdr_len()]
     {
@@ -1466,25 +1590,30 @@ mod __Contract__test_address__spec {
 }
 impl Contract {
     #[allow(non_upper_case_globals)]
-    const __SPEC_XDR_ENTRY_test_address: soroban_sdk::xdr::r#const::ScSpecEntry =
-        soroban_sdk::xdr::r#const::ScSpecEntry::FunctionV0(
-            soroban_sdk::xdr::r#const::ScSpecFunctionV0 {
-                doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
-                name: soroban_sdk::xdr::r#const::ScSymbol(
-                    soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b"test_address"),
-                ),
-                inputs: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[
-                    soroban_sdk::xdr::r#const::ScSpecFunctionInputV0 {
-                        doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
-                        name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b"v"),
-                        type_: <Address as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
-                    },
-                ]),
-                outputs: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[
-                    <Address as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
-                ]),
-            },
-        );
+    const __SPEC_XDR_ENTRY_test_address: soroban_sdk::xdr::r#const::ScSpecEntry = soroban_sdk::xdr::r#const::ScSpecEntry::FunctionV0(soroban_sdk::xdr::r#const::ScSpecFunctionV0 {
+        doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
+        name: soroban_sdk::xdr::r#const::ScSymbol(
+            soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b"test_address"),
+        ),
+        inputs: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(
+            &[
+                soroban_sdk::xdr::r#const::ScSpecFunctionInputV0 {
+                    doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(
+                        b"",
+                    ),
+                    name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(
+                        b"v",
+                    ),
+                    type_: <<Contract as __Contract__AllTypes__FnTypes>::__test_address__arg_0 as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
+                },
+            ],
+        ),
+        outputs: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(
+            &[
+                <<Contract as __Contract__AllTypes__FnTypes>::__test_address__ret as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
+            ],
+        ),
+    });
     #[allow(non_snake_case)]
     pub const fn spec_xdr_test_address(
     ) -> [u8; Contract::__SPEC_XDR_ENTRY_test_address.const_xdr_len()] {
@@ -1504,25 +1633,30 @@ mod __Contract__test_bytes__spec {
 }
 impl Contract {
     #[allow(non_upper_case_globals)]
-    const __SPEC_XDR_ENTRY_test_bytes: soroban_sdk::xdr::r#const::ScSpecEntry =
-        soroban_sdk::xdr::r#const::ScSpecEntry::FunctionV0(
-            soroban_sdk::xdr::r#const::ScSpecFunctionV0 {
-                doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
-                name: soroban_sdk::xdr::r#const::ScSymbol(
-                    soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b"test_bytes"),
-                ),
-                inputs: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[
-                    soroban_sdk::xdr::r#const::ScSpecFunctionInputV0 {
-                        doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
-                        name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b"v"),
-                        type_: <Bytes as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
-                    },
-                ]),
-                outputs: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[
-                    <Bytes as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
-                ]),
-            },
-        );
+    const __SPEC_XDR_ENTRY_test_bytes: soroban_sdk::xdr::r#const::ScSpecEntry = soroban_sdk::xdr::r#const::ScSpecEntry::FunctionV0(soroban_sdk::xdr::r#const::ScSpecFunctionV0 {
+        doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
+        name: soroban_sdk::xdr::r#const::ScSymbol(
+            soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b"test_bytes"),
+        ),
+        inputs: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(
+            &[
+                soroban_sdk::xdr::r#const::ScSpecFunctionInputV0 {
+                    doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(
+                        b"",
+                    ),
+                    name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(
+                        b"v",
+                    ),
+                    type_: <<Contract as __Contract__AllTypes__FnTypes>::__test_bytes__arg_0 as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
+                },
+            ],
+        ),
+        outputs: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(
+            &[
+                <<Contract as __Contract__AllTypes__FnTypes>::__test_bytes__ret as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
+            ],
+        ),
+    });
     #[allow(non_snake_case)]
     pub const fn spec_xdr_test_bytes() -> [u8; Contract::__SPEC_XDR_ENTRY_test_bytes.const_xdr_len()]
     {
@@ -1542,25 +1676,30 @@ mod __Contract__test_bytes_n__spec {
 }
 impl Contract {
     #[allow(non_upper_case_globals)]
-    const __SPEC_XDR_ENTRY_test_bytes_n: soroban_sdk::xdr::r#const::ScSpecEntry =
-        soroban_sdk::xdr::r#const::ScSpecEntry::FunctionV0(
-            soroban_sdk::xdr::r#const::ScSpecFunctionV0 {
-                doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
-                name: soroban_sdk::xdr::r#const::ScSymbol(
-                    soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b"test_bytes_n"),
-                ),
-                inputs: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[
-                    soroban_sdk::xdr::r#const::ScSpecFunctionInputV0 {
-                        doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
-                        name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b"v"),
-                        type_: <BytesN<32> as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
-                    },
-                ]),
-                outputs: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[
-                    <BytesN<32> as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
-                ]),
-            },
-        );
+    const __SPEC_XDR_ENTRY_test_bytes_n: soroban_sdk::xdr::r#const::ScSpecEntry = soroban_sdk::xdr::r#const::ScSpecEntry::FunctionV0(soroban_sdk::xdr::r#const::ScSpecFunctionV0 {
+        doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
+        name: soroban_sdk::xdr::r#const::ScSymbol(
+            soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b"test_bytes_n"),
+        ),
+        inputs: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(
+            &[
+                soroban_sdk::xdr::r#const::ScSpecFunctionInputV0 {
+                    doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(
+                        b"",
+                    ),
+                    name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(
+                        b"v",
+                    ),
+                    type_: <<Contract as __Contract__AllTypes__FnTypes>::__test_bytes_n__arg_0 as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
+                },
+            ],
+        ),
+        outputs: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(
+            &[
+                <<Contract as __Contract__AllTypes__FnTypes>::__test_bytes_n__ret as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
+            ],
+        ),
+    });
     #[allow(non_snake_case)]
     pub const fn spec_xdr_test_bytes_n(
     ) -> [u8; Contract::__SPEC_XDR_ENTRY_test_bytes_n.const_xdr_len()] {
@@ -1580,25 +1719,30 @@ mod __Contract__test_string__spec {
 }
 impl Contract {
     #[allow(non_upper_case_globals)]
-    const __SPEC_XDR_ENTRY_test_string: soroban_sdk::xdr::r#const::ScSpecEntry =
-        soroban_sdk::xdr::r#const::ScSpecEntry::FunctionV0(
-            soroban_sdk::xdr::r#const::ScSpecFunctionV0 {
-                doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
-                name: soroban_sdk::xdr::r#const::ScSymbol(
-                    soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b"test_string"),
-                ),
-                inputs: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[
-                    soroban_sdk::xdr::r#const::ScSpecFunctionInputV0 {
-                        doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
-                        name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b"v"),
-                        type_: <String as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
-                    },
-                ]),
-                outputs: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[
-                    <String as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
-                ]),
-            },
-        );
+    const __SPEC_XDR_ENTRY_test_string: soroban_sdk::xdr::r#const::ScSpecEntry = soroban_sdk::xdr::r#const::ScSpecEntry::FunctionV0(soroban_sdk::xdr::r#const::ScSpecFunctionV0 {
+        doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
+        name: soroban_sdk::xdr::r#const::ScSymbol(
+            soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b"test_string"),
+        ),
+        inputs: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(
+            &[
+                soroban_sdk::xdr::r#const::ScSpecFunctionInputV0 {
+                    doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(
+                        b"",
+                    ),
+                    name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(
+                        b"v",
+                    ),
+                    type_: <<Contract as __Contract__AllTypes__FnTypes>::__test_string__arg_0 as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
+                },
+            ],
+        ),
+        outputs: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(
+            &[
+                <<Contract as __Contract__AllTypes__FnTypes>::__test_string__ret as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
+            ],
+        ),
+    });
     #[allow(non_snake_case)]
     pub const fn spec_xdr_test_string(
     ) -> [u8; Contract::__SPEC_XDR_ENTRY_test_string.const_xdr_len()] {
@@ -1618,25 +1762,30 @@ mod __Contract__test_symbol__spec {
 }
 impl Contract {
     #[allow(non_upper_case_globals)]
-    const __SPEC_XDR_ENTRY_test_symbol: soroban_sdk::xdr::r#const::ScSpecEntry =
-        soroban_sdk::xdr::r#const::ScSpecEntry::FunctionV0(
-            soroban_sdk::xdr::r#const::ScSpecFunctionV0 {
-                doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
-                name: soroban_sdk::xdr::r#const::ScSymbol(
-                    soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b"test_symbol"),
-                ),
-                inputs: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[
-                    soroban_sdk::xdr::r#const::ScSpecFunctionInputV0 {
-                        doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
-                        name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b"v"),
-                        type_: <Symbol as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
-                    },
-                ]),
-                outputs: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[
-                    <Symbol as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
-                ]),
-            },
-        );
+    const __SPEC_XDR_ENTRY_test_symbol: soroban_sdk::xdr::r#const::ScSpecEntry = soroban_sdk::xdr::r#const::ScSpecEntry::FunctionV0(soroban_sdk::xdr::r#const::ScSpecFunctionV0 {
+        doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
+        name: soroban_sdk::xdr::r#const::ScSymbol(
+            soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b"test_symbol"),
+        ),
+        inputs: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(
+            &[
+                soroban_sdk::xdr::r#const::ScSpecFunctionInputV0 {
+                    doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(
+                        b"",
+                    ),
+                    name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(
+                        b"v",
+                    ),
+                    type_: <<Contract as __Contract__AllTypes__FnTypes>::__test_symbol__arg_0 as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
+                },
+            ],
+        ),
+        outputs: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(
+            &[
+                <<Contract as __Contract__AllTypes__FnTypes>::__test_symbol__ret as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
+            ],
+        ),
+    });
     #[allow(non_snake_case)]
     pub const fn spec_xdr_test_symbol(
     ) -> [u8; Contract::__SPEC_XDR_ENTRY_test_symbol.const_xdr_len()] {
@@ -1656,25 +1805,30 @@ mod __Contract__test_vec__spec {
 }
 impl Contract {
     #[allow(non_upper_case_globals)]
-    const __SPEC_XDR_ENTRY_test_vec: soroban_sdk::xdr::r#const::ScSpecEntry =
-        soroban_sdk::xdr::r#const::ScSpecEntry::FunctionV0(
-            soroban_sdk::xdr::r#const::ScSpecFunctionV0 {
-                doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
-                name: soroban_sdk::xdr::r#const::ScSymbol(
-                    soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b"test_vec"),
-                ),
-                inputs: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[
-                    soroban_sdk::xdr::r#const::ScSpecFunctionInputV0 {
-                        doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
-                        name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b"v"),
-                        type_: <Vec<u32> as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
-                    },
-                ]),
-                outputs: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[
-                    <Vec<u32> as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
-                ]),
-            },
-        );
+    const __SPEC_XDR_ENTRY_test_vec: soroban_sdk::xdr::r#const::ScSpecEntry = soroban_sdk::xdr::r#const::ScSpecEntry::FunctionV0(soroban_sdk::xdr::r#const::ScSpecFunctionV0 {
+        doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
+        name: soroban_sdk::xdr::r#const::ScSymbol(
+            soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b"test_vec"),
+        ),
+        inputs: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(
+            &[
+                soroban_sdk::xdr::r#const::ScSpecFunctionInputV0 {
+                    doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(
+                        b"",
+                    ),
+                    name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(
+                        b"v",
+                    ),
+                    type_: <<Contract as __Contract__AllTypes__FnTypes>::__test_vec__arg_0 as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
+                },
+            ],
+        ),
+        outputs: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(
+            &[
+                <<Contract as __Contract__AllTypes__FnTypes>::__test_vec__ret as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
+            ],
+        ),
+    });
     #[allow(non_snake_case)]
     pub const fn spec_xdr_test_vec() -> [u8; Contract::__SPEC_XDR_ENTRY_test_vec.const_xdr_len()] {
         const { Contract::__SPEC_XDR_ENTRY_test_vec.const_to_xdr() }
@@ -1693,25 +1847,30 @@ mod __Contract__test_map__spec {
 }
 impl Contract {
     #[allow(non_upper_case_globals)]
-    const __SPEC_XDR_ENTRY_test_map: soroban_sdk::xdr::r#const::ScSpecEntry =
-        soroban_sdk::xdr::r#const::ScSpecEntry::FunctionV0(
-            soroban_sdk::xdr::r#const::ScSpecFunctionV0 {
-                doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
-                name: soroban_sdk::xdr::r#const::ScSymbol(
-                    soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b"test_map"),
-                ),
-                inputs: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[
-                    soroban_sdk::xdr::r#const::ScSpecFunctionInputV0 {
-                        doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
-                        name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b"v"),
-                        type_: <Map<u32, u32> as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
-                    },
-                ]),
-                outputs: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[
-                    <Map<u32, u32> as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
-                ]),
-            },
-        );
+    const __SPEC_XDR_ENTRY_test_map: soroban_sdk::xdr::r#const::ScSpecEntry = soroban_sdk::xdr::r#const::ScSpecEntry::FunctionV0(soroban_sdk::xdr::r#const::ScSpecFunctionV0 {
+        doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
+        name: soroban_sdk::xdr::r#const::ScSymbol(
+            soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b"test_map"),
+        ),
+        inputs: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(
+            &[
+                soroban_sdk::xdr::r#const::ScSpecFunctionInputV0 {
+                    doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(
+                        b"",
+                    ),
+                    name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(
+                        b"v",
+                    ),
+                    type_: <<Contract as __Contract__AllTypes__FnTypes>::__test_map__arg_0 as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
+                },
+            ],
+        ),
+        outputs: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(
+            &[
+                <<Contract as __Contract__AllTypes__FnTypes>::__test_map__ret as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
+            ],
+        ),
+    });
     #[allow(non_snake_case)]
     pub const fn spec_xdr_test_map() -> [u8; Contract::__SPEC_XDR_ENTRY_test_map.const_xdr_len()] {
         const { Contract::__SPEC_XDR_ENTRY_test_map.const_to_xdr() }
@@ -1730,25 +1889,30 @@ mod __Contract__test_duration__spec {
 }
 impl Contract {
     #[allow(non_upper_case_globals)]
-    const __SPEC_XDR_ENTRY_test_duration: soroban_sdk::xdr::r#const::ScSpecEntry =
-        soroban_sdk::xdr::r#const::ScSpecEntry::FunctionV0(
-            soroban_sdk::xdr::r#const::ScSpecFunctionV0 {
-                doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
-                name: soroban_sdk::xdr::r#const::ScSymbol(
-                    soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b"test_duration"),
-                ),
-                inputs: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[
-                    soroban_sdk::xdr::r#const::ScSpecFunctionInputV0 {
-                        doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
-                        name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b"v"),
-                        type_: <Duration as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
-                    },
-                ]),
-                outputs: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[
-                    <Duration as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
-                ]),
-            },
-        );
+    const __SPEC_XDR_ENTRY_test_duration: soroban_sdk::xdr::r#const::ScSpecEntry = soroban_sdk::xdr::r#const::ScSpecEntry::FunctionV0(soroban_sdk::xdr::r#const::ScSpecFunctionV0 {
+        doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
+        name: soroban_sdk::xdr::r#const::ScSymbol(
+            soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b"test_duration"),
+        ),
+        inputs: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(
+            &[
+                soroban_sdk::xdr::r#const::ScSpecFunctionInputV0 {
+                    doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(
+                        b"",
+                    ),
+                    name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(
+                        b"v",
+                    ),
+                    type_: <<Contract as __Contract__AllTypes__FnTypes>::__test_duration__arg_0 as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
+                },
+            ],
+        ),
+        outputs: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(
+            &[
+                <<Contract as __Contract__AllTypes__FnTypes>::__test_duration__ret as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
+            ],
+        ),
+    });
     #[allow(non_snake_case)]
     pub const fn spec_xdr_test_duration(
     ) -> [u8; Contract::__SPEC_XDR_ENTRY_test_duration.const_xdr_len()] {
@@ -1768,25 +1932,32 @@ mod __Contract__test_timepoint__spec {
 }
 impl Contract {
     #[allow(non_upper_case_globals)]
-    const __SPEC_XDR_ENTRY_test_timepoint: soroban_sdk::xdr::r#const::ScSpecEntry =
-        soroban_sdk::xdr::r#const::ScSpecEntry::FunctionV0(
-            soroban_sdk::xdr::r#const::ScSpecFunctionV0 {
-                doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
-                name: soroban_sdk::xdr::r#const::ScSymbol(
-                    soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b"test_timepoint"),
-                ),
-                inputs: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[
-                    soroban_sdk::xdr::r#const::ScSpecFunctionInputV0 {
-                        doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
-                        name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b"v"),
-                        type_: <Timepoint as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
-                    },
-                ]),
-                outputs: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[
-                    <Timepoint as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
-                ]),
-            },
-        );
+    const __SPEC_XDR_ENTRY_test_timepoint: soroban_sdk::xdr::r#const::ScSpecEntry = soroban_sdk::xdr::r#const::ScSpecEntry::FunctionV0(soroban_sdk::xdr::r#const::ScSpecFunctionV0 {
+        doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
+        name: soroban_sdk::xdr::r#const::ScSymbol(
+            soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(
+                b"test_timepoint",
+            ),
+        ),
+        inputs: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(
+            &[
+                soroban_sdk::xdr::r#const::ScSpecFunctionInputV0 {
+                    doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(
+                        b"",
+                    ),
+                    name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(
+                        b"v",
+                    ),
+                    type_: <<Contract as __Contract__AllTypes__FnTypes>::__test_timepoint__arg_0 as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
+                },
+            ],
+        ),
+        outputs: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(
+            &[
+                <<Contract as __Contract__AllTypes__FnTypes>::__test_timepoint__ret as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
+            ],
+        ),
+    });
     #[allow(non_snake_case)]
     pub const fn spec_xdr_test_timepoint(
     ) -> [u8; Contract::__SPEC_XDR_ENTRY_test_timepoint.const_xdr_len()] {
@@ -1806,25 +1977,30 @@ mod __Contract__test_i256__spec {
 }
 impl Contract {
     #[allow(non_upper_case_globals)]
-    const __SPEC_XDR_ENTRY_test_i256: soroban_sdk::xdr::r#const::ScSpecEntry =
-        soroban_sdk::xdr::r#const::ScSpecEntry::FunctionV0(
-            soroban_sdk::xdr::r#const::ScSpecFunctionV0 {
-                doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
-                name: soroban_sdk::xdr::r#const::ScSymbol(
-                    soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b"test_i256"),
-                ),
-                inputs: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[
-                    soroban_sdk::xdr::r#const::ScSpecFunctionInputV0 {
-                        doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
-                        name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b"v"),
-                        type_: <I256 as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
-                    },
-                ]),
-                outputs: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[
-                    <I256 as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
-                ]),
-            },
-        );
+    const __SPEC_XDR_ENTRY_test_i256: soroban_sdk::xdr::r#const::ScSpecEntry = soroban_sdk::xdr::r#const::ScSpecEntry::FunctionV0(soroban_sdk::xdr::r#const::ScSpecFunctionV0 {
+        doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
+        name: soroban_sdk::xdr::r#const::ScSymbol(
+            soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b"test_i256"),
+        ),
+        inputs: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(
+            &[
+                soroban_sdk::xdr::r#const::ScSpecFunctionInputV0 {
+                    doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(
+                        b"",
+                    ),
+                    name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(
+                        b"v",
+                    ),
+                    type_: <<Contract as __Contract__AllTypes__FnTypes>::__test_i256__arg_0 as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
+                },
+            ],
+        ),
+        outputs: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(
+            &[
+                <<Contract as __Contract__AllTypes__FnTypes>::__test_i256__ret as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
+            ],
+        ),
+    });
     #[allow(non_snake_case)]
     pub const fn spec_xdr_test_i256() -> [u8; Contract::__SPEC_XDR_ENTRY_test_i256.const_xdr_len()]
     {
@@ -1844,25 +2020,30 @@ mod __Contract__test_u256__spec {
 }
 impl Contract {
     #[allow(non_upper_case_globals)]
-    const __SPEC_XDR_ENTRY_test_u256: soroban_sdk::xdr::r#const::ScSpecEntry =
-        soroban_sdk::xdr::r#const::ScSpecEntry::FunctionV0(
-            soroban_sdk::xdr::r#const::ScSpecFunctionV0 {
-                doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
-                name: soroban_sdk::xdr::r#const::ScSymbol(
-                    soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b"test_u256"),
-                ),
-                inputs: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[
-                    soroban_sdk::xdr::r#const::ScSpecFunctionInputV0 {
-                        doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
-                        name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b"v"),
-                        type_: <U256 as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
-                    },
-                ]),
-                outputs: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[
-                    <U256 as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
-                ]),
-            },
-        );
+    const __SPEC_XDR_ENTRY_test_u256: soroban_sdk::xdr::r#const::ScSpecEntry = soroban_sdk::xdr::r#const::ScSpecEntry::FunctionV0(soroban_sdk::xdr::r#const::ScSpecFunctionV0 {
+        doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
+        name: soroban_sdk::xdr::r#const::ScSymbol(
+            soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b"test_u256"),
+        ),
+        inputs: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(
+            &[
+                soroban_sdk::xdr::r#const::ScSpecFunctionInputV0 {
+                    doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(
+                        b"",
+                    ),
+                    name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(
+                        b"v",
+                    ),
+                    type_: <<Contract as __Contract__AllTypes__FnTypes>::__test_u256__arg_0 as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
+                },
+            ],
+        ),
+        outputs: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(
+            &[
+                <<Contract as __Contract__AllTypes__FnTypes>::__test_u256__ret as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
+            ],
+        ),
+    });
     #[allow(non_snake_case)]
     pub const fn spec_xdr_test_u256() -> [u8; Contract::__SPEC_XDR_ENTRY_test_u256.const_xdr_len()]
     {
@@ -1882,19 +2063,20 @@ mod __Contract__test_env_param__spec {
 }
 impl Contract {
     #[allow(non_upper_case_globals)]
-    const __SPEC_XDR_ENTRY_test_env_param: soroban_sdk::xdr::r#const::ScSpecEntry =
-        soroban_sdk::xdr::r#const::ScSpecEntry::FunctionV0(
-            soroban_sdk::xdr::r#const::ScSpecFunctionV0 {
-                doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
-                name: soroban_sdk::xdr::r#const::ScSymbol(
-                    soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b"test_env_param"),
-                ),
-                inputs: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[]),
-                outputs: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[
-                    <u32 as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
-                ]),
-            },
-        );
+    const __SPEC_XDR_ENTRY_test_env_param: soroban_sdk::xdr::r#const::ScSpecEntry = soroban_sdk::xdr::r#const::ScSpecEntry::FunctionV0(soroban_sdk::xdr::r#const::ScSpecFunctionV0 {
+        doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
+        name: soroban_sdk::xdr::r#const::ScSymbol(
+            soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(
+                b"test_env_param",
+            ),
+        ),
+        inputs: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[]),
+        outputs: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(
+            &[
+                <<Contract as __Contract__AllTypes__FnTypes>::__test_env_param__ret as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
+            ],
+        ),
+    });
     #[allow(non_snake_case)]
     pub const fn spec_xdr_test_env_param(
     ) -> [u8; Contract::__SPEC_XDR_ENTRY_test_env_param.const_xdr_len()] {
@@ -1914,25 +2096,30 @@ mod __Contract__test_struct__spec {
 }
 impl Contract {
     #[allow(non_upper_case_globals)]
-    const __SPEC_XDR_ENTRY_test_struct: soroban_sdk::xdr::r#const::ScSpecEntry =
-        soroban_sdk::xdr::r#const::ScSpecEntry::FunctionV0(
-            soroban_sdk::xdr::r#const::ScSpecFunctionV0 {
-                doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
-                name: soroban_sdk::xdr::r#const::ScSymbol(
-                    soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b"test_struct"),
-                ),
-                inputs: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[
-                    soroban_sdk::xdr::r#const::ScSpecFunctionInputV0 {
-                        doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
-                        name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b"v"),
-                        type_: <MyStruct as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
-                    },
-                ]),
-                outputs: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[
-                    <MyStruct as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
-                ]),
-            },
-        );
+    const __SPEC_XDR_ENTRY_test_struct: soroban_sdk::xdr::r#const::ScSpecEntry = soroban_sdk::xdr::r#const::ScSpecEntry::FunctionV0(soroban_sdk::xdr::r#const::ScSpecFunctionV0 {
+        doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
+        name: soroban_sdk::xdr::r#const::ScSymbol(
+            soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b"test_struct"),
+        ),
+        inputs: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(
+            &[
+                soroban_sdk::xdr::r#const::ScSpecFunctionInputV0 {
+                    doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(
+                        b"",
+                    ),
+                    name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(
+                        b"v",
+                    ),
+                    type_: <<Contract as __Contract__AllTypes__FnTypes>::__test_struct__arg_0 as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
+                },
+            ],
+        ),
+        outputs: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(
+            &[
+                <<Contract as __Contract__AllTypes__FnTypes>::__test_struct__ret as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
+            ],
+        ),
+    });
     #[allow(non_snake_case)]
     pub const fn spec_xdr_test_struct(
     ) -> [u8; Contract::__SPEC_XDR_ENTRY_test_struct.const_xdr_len()] {
@@ -1952,25 +2139,32 @@ mod __Contract__test_enum_unit__spec {
 }
 impl Contract {
     #[allow(non_upper_case_globals)]
-    const __SPEC_XDR_ENTRY_test_enum_unit: soroban_sdk::xdr::r#const::ScSpecEntry =
-        soroban_sdk::xdr::r#const::ScSpecEntry::FunctionV0(
-            soroban_sdk::xdr::r#const::ScSpecFunctionV0 {
-                doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
-                name: soroban_sdk::xdr::r#const::ScSymbol(
-                    soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b"test_enum_unit"),
-                ),
-                inputs: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[
-                    soroban_sdk::xdr::r#const::ScSpecFunctionInputV0 {
-                        doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
-                        name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b"v"),
-                        type_: <MyEnumUnit as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
-                    },
-                ]),
-                outputs: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[
-                    <MyEnumUnit as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
-                ]),
-            },
-        );
+    const __SPEC_XDR_ENTRY_test_enum_unit: soroban_sdk::xdr::r#const::ScSpecEntry = soroban_sdk::xdr::r#const::ScSpecEntry::FunctionV0(soroban_sdk::xdr::r#const::ScSpecFunctionV0 {
+        doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
+        name: soroban_sdk::xdr::r#const::ScSymbol(
+            soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(
+                b"test_enum_unit",
+            ),
+        ),
+        inputs: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(
+            &[
+                soroban_sdk::xdr::r#const::ScSpecFunctionInputV0 {
+                    doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(
+                        b"",
+                    ),
+                    name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(
+                        b"v",
+                    ),
+                    type_: <<Contract as __Contract__AllTypes__FnTypes>::__test_enum_unit__arg_0 as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
+                },
+            ],
+        ),
+        outputs: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(
+            &[
+                <<Contract as __Contract__AllTypes__FnTypes>::__test_enum_unit__ret as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
+            ],
+        ),
+    });
     #[allow(non_snake_case)]
     pub const fn spec_xdr_test_enum_unit(
     ) -> [u8; Contract::__SPEC_XDR_ENTRY_test_enum_unit.const_xdr_len()] {
@@ -1990,27 +2184,32 @@ mod __Contract__test_enum_variants__spec {
 }
 impl Contract {
     #[allow(non_upper_case_globals)]
-    const __SPEC_XDR_ENTRY_test_enum_variants: soroban_sdk::xdr::r#const::ScSpecEntry =
-        soroban_sdk::xdr::r#const::ScSpecEntry::FunctionV0(
-            soroban_sdk::xdr::r#const::ScSpecFunctionV0 {
-                doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
-                name: soroban_sdk::xdr::r#const::ScSymbol(
-                    soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(
-                        b"test_enum_variants",
+    const __SPEC_XDR_ENTRY_test_enum_variants: soroban_sdk::xdr::r#const::ScSpecEntry = soroban_sdk::xdr::r#const::ScSpecEntry::FunctionV0(soroban_sdk::xdr::r#const::ScSpecFunctionV0 {
+        doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
+        name: soroban_sdk::xdr::r#const::ScSymbol(
+            soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(
+                b"test_enum_variants",
+            ),
+        ),
+        inputs: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(
+            &[
+                soroban_sdk::xdr::r#const::ScSpecFunctionInputV0 {
+                    doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(
+                        b"",
                     ),
-                ),
-                inputs: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[
-                    soroban_sdk::xdr::r#const::ScSpecFunctionInputV0 {
-                        doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
-                        name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b"v"),
-                        type_: <MyEnumVariants as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
-                    },
-                ]),
-                outputs: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[
-                    <MyEnumVariants as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
-                ]),
-            },
-        );
+                    name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(
+                        b"v",
+                    ),
+                    type_: <<Contract as __Contract__AllTypes__FnTypes>::__test_enum_variants__arg_0 as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
+                },
+            ],
+        ),
+        outputs: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(
+            &[
+                <<Contract as __Contract__AllTypes__FnTypes>::__test_enum_variants__ret as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
+            ],
+        ),
+    });
     #[allow(non_snake_case)]
     pub const fn spec_xdr_test_enum_variants(
     ) -> [u8; Contract::__SPEC_XDR_ENTRY_test_enum_variants.const_xdr_len()] {
@@ -2020,7 +2219,10 @@ impl Contract {
 impl<'a> ContractClient<'a> {
     /// Test u32 values.
     /// Returns the input unchanged.
-    pub fn test_u32(&self, v: &u32) -> u32 {
+    pub fn test_u32(
+        &self,
+        v: &<Contract as __Contract__AllTypes__FnTypes>::__test_u32__arg_0,
+    ) -> <Contract as __Contract__AllTypes__FnTypes>::__test_u32__ret {
         let _call_scope = soroban_sdk::testutils::ClientCallScope::enter(&self.env, self.config);
         use soroban_sdk::{FromVal, IntoVal};
         let res = self.env.invoke_contract(
@@ -2038,11 +2240,17 @@ impl<'a> ContractClient<'a> {
     /// Returns the input unchanged.
     pub fn try_test_u32(
         &self,
-        v: &u32,
+        v: &<Contract as __Contract__AllTypes__FnTypes>::__test_u32__arg_0,
     ) -> Result<
-        Result<u32, <u32 as soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val>>::Error>,
+        Result<
+            <Contract as __Contract__AllTypes__FnTypes>::__test_u32__ret,
+            <<Contract as __Contract__AllTypes__FnTypes>::__test_u32__ret as soroban_sdk::TryFromVal<
+                soroban_sdk::Env,
+                soroban_sdk::Val,
+            >>::Error,
+        >,
         Result<soroban_sdk::Error, soroban_sdk::InvokeError>,
-    > {
+    >{
         let _call_scope = soroban_sdk::testutils::ClientCallScope::enter(&self.env, self.config);
         use soroban_sdk::{FromVal, IntoVal};
         let res = self.env.try_invoke_contract(
@@ -2057,7 +2265,10 @@ impl<'a> ContractClient<'a> {
         res
     }
     /// Test i32 values.
-    pub fn test_i32(&self, v: &i32) -> i32 {
+    pub fn test_i32(
+        &self,
+        v: &<Contract as __Contract__AllTypes__FnTypes>::__test_i32__arg_0,
+    ) -> <Contract as __Contract__AllTypes__FnTypes>::__test_i32__ret {
         let _call_scope = soroban_sdk::testutils::ClientCallScope::enter(&self.env, self.config);
         use soroban_sdk::{FromVal, IntoVal};
         let res = self.env.invoke_contract(
@@ -2074,11 +2285,17 @@ impl<'a> ContractClient<'a> {
     /// Test i32 values.
     pub fn try_test_i32(
         &self,
-        v: &i32,
+        v: &<Contract as __Contract__AllTypes__FnTypes>::__test_i32__arg_0,
     ) -> Result<
-        Result<i32, <i32 as soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val>>::Error>,
+        Result<
+            <Contract as __Contract__AllTypes__FnTypes>::__test_i32__ret,
+            <<Contract as __Contract__AllTypes__FnTypes>::__test_i32__ret as soroban_sdk::TryFromVal<
+                soroban_sdk::Env,
+                soroban_sdk::Val,
+            >>::Error,
+        >,
         Result<soroban_sdk::Error, soroban_sdk::InvokeError>,
-    > {
+    >{
         let _call_scope = soroban_sdk::testutils::ClientCallScope::enter(&self.env, self.config);
         use soroban_sdk::{FromVal, IntoVal};
         let res = self.env.try_invoke_contract(
@@ -2092,7 +2309,10 @@ impl<'a> ContractClient<'a> {
         );
         res
     }
-    pub fn test_u64(&self, v: &u64) -> u64 {
+    pub fn test_u64(
+        &self,
+        v: &<Contract as __Contract__AllTypes__FnTypes>::__test_u64__arg_0,
+    ) -> <Contract as __Contract__AllTypes__FnTypes>::__test_u64__ret {
         let _call_scope = soroban_sdk::testutils::ClientCallScope::enter(&self.env, self.config);
         use soroban_sdk::{FromVal, IntoVal};
         let res = self.env.invoke_contract(
@@ -2108,11 +2328,17 @@ impl<'a> ContractClient<'a> {
     }
     pub fn try_test_u64(
         &self,
-        v: &u64,
+        v: &<Contract as __Contract__AllTypes__FnTypes>::__test_u64__arg_0,
     ) -> Result<
-        Result<u64, <u64 as soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val>>::Error>,
+        Result<
+            <Contract as __Contract__AllTypes__FnTypes>::__test_u64__ret,
+            <<Contract as __Contract__AllTypes__FnTypes>::__test_u64__ret as soroban_sdk::TryFromVal<
+                soroban_sdk::Env,
+                soroban_sdk::Val,
+            >>::Error,
+        >,
         Result<soroban_sdk::Error, soroban_sdk::InvokeError>,
-    > {
+    >{
         let _call_scope = soroban_sdk::testutils::ClientCallScope::enter(&self.env, self.config);
         use soroban_sdk::{FromVal, IntoVal};
         let res = self.env.try_invoke_contract(
@@ -2126,7 +2352,10 @@ impl<'a> ContractClient<'a> {
         );
         res
     }
-    pub fn test_i64(&self, v: &i64) -> i64 {
+    pub fn test_i64(
+        &self,
+        v: &<Contract as __Contract__AllTypes__FnTypes>::__test_i64__arg_0,
+    ) -> <Contract as __Contract__AllTypes__FnTypes>::__test_i64__ret {
         let _call_scope = soroban_sdk::testutils::ClientCallScope::enter(&self.env, self.config);
         use soroban_sdk::{FromVal, IntoVal};
         let res = self.env.invoke_contract(
@@ -2142,11 +2371,17 @@ impl<'a> ContractClient<'a> {
     }
     pub fn try_test_i64(
         &self,
-        v: &i64,
+        v: &<Contract as __Contract__AllTypes__FnTypes>::__test_i64__arg_0,
     ) -> Result<
-        Result<i64, <i64 as soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val>>::Error>,
+        Result<
+            <Contract as __Contract__AllTypes__FnTypes>::__test_i64__ret,
+            <<Contract as __Contract__AllTypes__FnTypes>::__test_i64__ret as soroban_sdk::TryFromVal<
+                soroban_sdk::Env,
+                soroban_sdk::Val,
+            >>::Error,
+        >,
         Result<soroban_sdk::Error, soroban_sdk::InvokeError>,
-    > {
+    >{
         let _call_scope = soroban_sdk::testutils::ClientCallScope::enter(&self.env, self.config);
         use soroban_sdk::{FromVal, IntoVal};
         let res = self.env.try_invoke_contract(
@@ -2160,7 +2395,10 @@ impl<'a> ContractClient<'a> {
         );
         res
     }
-    pub fn test_u128(&self, v: &u128) -> u128 {
+    pub fn test_u128(
+        &self,
+        v: &<Contract as __Contract__AllTypes__FnTypes>::__test_u128__arg_0,
+    ) -> <Contract as __Contract__AllTypes__FnTypes>::__test_u128__ret {
         let _call_scope = soroban_sdk::testutils::ClientCallScope::enter(&self.env, self.config);
         use soroban_sdk::{FromVal, IntoVal};
         let res = self.env.invoke_contract(
@@ -2176,11 +2414,17 @@ impl<'a> ContractClient<'a> {
     }
     pub fn try_test_u128(
         &self,
-        v: &u128,
+        v: &<Contract as __Contract__AllTypes__FnTypes>::__test_u128__arg_0,
     ) -> Result<
-        Result<u128, <u128 as soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val>>::Error>,
+        Result<
+            <Contract as __Contract__AllTypes__FnTypes>::__test_u128__ret,
+            <<Contract as __Contract__AllTypes__FnTypes>::__test_u128__ret as soroban_sdk::TryFromVal<
+                soroban_sdk::Env,
+                soroban_sdk::Val,
+            >>::Error,
+        >,
         Result<soroban_sdk::Error, soroban_sdk::InvokeError>,
-    > {
+    >{
         let _call_scope = soroban_sdk::testutils::ClientCallScope::enter(&self.env, self.config);
         use soroban_sdk::{FromVal, IntoVal};
         let res = self.env.try_invoke_contract(
@@ -2194,7 +2438,10 @@ impl<'a> ContractClient<'a> {
         );
         res
     }
-    pub fn test_i128(&self, v: &i128) -> i128 {
+    pub fn test_i128(
+        &self,
+        v: &<Contract as __Contract__AllTypes__FnTypes>::__test_i128__arg_0,
+    ) -> <Contract as __Contract__AllTypes__FnTypes>::__test_i128__ret {
         let _call_scope = soroban_sdk::testutils::ClientCallScope::enter(&self.env, self.config);
         use soroban_sdk::{FromVal, IntoVal};
         let res = self.env.invoke_contract(
@@ -2210,11 +2457,17 @@ impl<'a> ContractClient<'a> {
     }
     pub fn try_test_i128(
         &self,
-        v: &i128,
+        v: &<Contract as __Contract__AllTypes__FnTypes>::__test_i128__arg_0,
     ) -> Result<
-        Result<i128, <i128 as soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val>>::Error>,
+        Result<
+            <Contract as __Contract__AllTypes__FnTypes>::__test_i128__ret,
+            <<Contract as __Contract__AllTypes__FnTypes>::__test_i128__ret as soroban_sdk::TryFromVal<
+                soroban_sdk::Env,
+                soroban_sdk::Val,
+            >>::Error,
+        >,
         Result<soroban_sdk::Error, soroban_sdk::InvokeError>,
-    > {
+    >{
         let _call_scope = soroban_sdk::testutils::ClientCallScope::enter(&self.env, self.config);
         use soroban_sdk::{FromVal, IntoVal};
         let res = self.env.try_invoke_contract(
@@ -2228,7 +2481,10 @@ impl<'a> ContractClient<'a> {
         );
         res
     }
-    pub fn test_bool(&self, v: &bool) -> bool {
+    pub fn test_bool(
+        &self,
+        v: &<Contract as __Contract__AllTypes__FnTypes>::__test_bool__arg_0,
+    ) -> <Contract as __Contract__AllTypes__FnTypes>::__test_bool__ret {
         let _call_scope = soroban_sdk::testutils::ClientCallScope::enter(&self.env, self.config);
         use soroban_sdk::{FromVal, IntoVal};
         let res = self.env.invoke_contract(
@@ -2244,11 +2500,17 @@ impl<'a> ContractClient<'a> {
     }
     pub fn try_test_bool(
         &self,
-        v: &bool,
+        v: &<Contract as __Contract__AllTypes__FnTypes>::__test_bool__arg_0,
     ) -> Result<
-        Result<bool, <bool as soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val>>::Error>,
+        Result<
+            <Contract as __Contract__AllTypes__FnTypes>::__test_bool__ret,
+            <<Contract as __Contract__AllTypes__FnTypes>::__test_bool__ret as soroban_sdk::TryFromVal<
+                soroban_sdk::Env,
+                soroban_sdk::Val,
+            >>::Error,
+        >,
         Result<soroban_sdk::Error, soroban_sdk::InvokeError>,
-    > {
+    >{
         let _call_scope = soroban_sdk::testutils::ClientCallScope::enter(&self.env, self.config);
         use soroban_sdk::{FromVal, IntoVal};
         let res = self.env.try_invoke_contract(
@@ -2262,7 +2524,10 @@ impl<'a> ContractClient<'a> {
         );
         res
     }
-    pub fn test_address(&self, v: &Address) -> Address {
+    pub fn test_address(
+        &self,
+        v: &<Contract as __Contract__AllTypes__FnTypes>::__test_address__arg_0,
+    ) -> <Contract as __Contract__AllTypes__FnTypes>::__test_address__ret {
         let _call_scope = soroban_sdk::testutils::ClientCallScope::enter(&self.env, self.config);
         use soroban_sdk::{FromVal, IntoVal};
         let res = self.env.invoke_contract(
@@ -2274,14 +2539,17 @@ impl<'a> ContractClient<'a> {
     }
     pub fn try_test_address(
         &self,
-        v: &Address,
+        v: &<Contract as __Contract__AllTypes__FnTypes>::__test_address__arg_0,
     ) -> Result<
         Result<
-            Address,
-            <Address as soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val>>::Error,
+            <Contract as __Contract__AllTypes__FnTypes>::__test_address__ret,
+            <<Contract as __Contract__AllTypes__FnTypes>::__test_address__ret as soroban_sdk::TryFromVal<
+                soroban_sdk::Env,
+                soroban_sdk::Val,
+            >>::Error,
         >,
         Result<soroban_sdk::Error, soroban_sdk::InvokeError>,
-    > {
+    >{
         let _call_scope = soroban_sdk::testutils::ClientCallScope::enter(&self.env, self.config);
         use soroban_sdk::{FromVal, IntoVal};
         let res = self.env.try_invoke_contract(
@@ -2291,7 +2559,10 @@ impl<'a> ContractClient<'a> {
         );
         res
     }
-    pub fn test_bytes(&self, v: &Bytes) -> Bytes {
+    pub fn test_bytes(
+        &self,
+        v: &<Contract as __Contract__AllTypes__FnTypes>::__test_bytes__arg_0,
+    ) -> <Contract as __Contract__AllTypes__FnTypes>::__test_bytes__ret {
         let _call_scope = soroban_sdk::testutils::ClientCallScope::enter(&self.env, self.config);
         use soroban_sdk::{FromVal, IntoVal};
         let res = self.env.invoke_contract(
@@ -2303,14 +2574,17 @@ impl<'a> ContractClient<'a> {
     }
     pub fn try_test_bytes(
         &self,
-        v: &Bytes,
+        v: &<Contract as __Contract__AllTypes__FnTypes>::__test_bytes__arg_0,
     ) -> Result<
         Result<
-            Bytes,
-            <Bytes as soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val>>::Error,
+            <Contract as __Contract__AllTypes__FnTypes>::__test_bytes__ret,
+            <<Contract as __Contract__AllTypes__FnTypes>::__test_bytes__ret as soroban_sdk::TryFromVal<
+                soroban_sdk::Env,
+                soroban_sdk::Val,
+            >>::Error,
         >,
         Result<soroban_sdk::Error, soroban_sdk::InvokeError>,
-    > {
+    >{
         let _call_scope = soroban_sdk::testutils::ClientCallScope::enter(&self.env, self.config);
         use soroban_sdk::{FromVal, IntoVal};
         let res = self.env.try_invoke_contract(
@@ -2320,7 +2594,10 @@ impl<'a> ContractClient<'a> {
         );
         res
     }
-    pub fn test_bytes_n(&self, v: &BytesN<32>) -> BytesN<32> {
+    pub fn test_bytes_n(
+        &self,
+        v: &<Contract as __Contract__AllTypes__FnTypes>::__test_bytes_n__arg_0,
+    ) -> <Contract as __Contract__AllTypes__FnTypes>::__test_bytes_n__ret {
         let _call_scope = soroban_sdk::testutils::ClientCallScope::enter(&self.env, self.config);
         use soroban_sdk::{FromVal, IntoVal};
         let res = self.env.invoke_contract(
@@ -2332,14 +2609,17 @@ impl<'a> ContractClient<'a> {
     }
     pub fn try_test_bytes_n(
         &self,
-        v: &BytesN<32>,
+        v: &<Contract as __Contract__AllTypes__FnTypes>::__test_bytes_n__arg_0,
     ) -> Result<
         Result<
-            BytesN<32>,
-            <BytesN<32> as soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val>>::Error,
+            <Contract as __Contract__AllTypes__FnTypes>::__test_bytes_n__ret,
+            <<Contract as __Contract__AllTypes__FnTypes>::__test_bytes_n__ret as soroban_sdk::TryFromVal<
+                soroban_sdk::Env,
+                soroban_sdk::Val,
+            >>::Error,
         >,
         Result<soroban_sdk::Error, soroban_sdk::InvokeError>,
-    > {
+    >{
         let _call_scope = soroban_sdk::testutils::ClientCallScope::enter(&self.env, self.config);
         use soroban_sdk::{FromVal, IntoVal};
         let res = self.env.try_invoke_contract(
@@ -2349,7 +2629,10 @@ impl<'a> ContractClient<'a> {
         );
         res
     }
-    pub fn test_string(&self, v: &String) -> String {
+    pub fn test_string(
+        &self,
+        v: &<Contract as __Contract__AllTypes__FnTypes>::__test_string__arg_0,
+    ) -> <Contract as __Contract__AllTypes__FnTypes>::__test_string__ret {
         let _call_scope = soroban_sdk::testutils::ClientCallScope::enter(&self.env, self.config);
         use soroban_sdk::{FromVal, IntoVal};
         let res = self.env.invoke_contract(
@@ -2361,14 +2644,17 @@ impl<'a> ContractClient<'a> {
     }
     pub fn try_test_string(
         &self,
-        v: &String,
+        v: &<Contract as __Contract__AllTypes__FnTypes>::__test_string__arg_0,
     ) -> Result<
         Result<
-            String,
-            <String as soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val>>::Error,
+            <Contract as __Contract__AllTypes__FnTypes>::__test_string__ret,
+            <<Contract as __Contract__AllTypes__FnTypes>::__test_string__ret as soroban_sdk::TryFromVal<
+                soroban_sdk::Env,
+                soroban_sdk::Val,
+            >>::Error,
         >,
         Result<soroban_sdk::Error, soroban_sdk::InvokeError>,
-    > {
+    >{
         let _call_scope = soroban_sdk::testutils::ClientCallScope::enter(&self.env, self.config);
         use soroban_sdk::{FromVal, IntoVal};
         let res = self.env.try_invoke_contract(
@@ -2378,7 +2664,10 @@ impl<'a> ContractClient<'a> {
         );
         res
     }
-    pub fn test_symbol(&self, v: &Symbol) -> Symbol {
+    pub fn test_symbol(
+        &self,
+        v: &<Contract as __Contract__AllTypes__FnTypes>::__test_symbol__arg_0,
+    ) -> <Contract as __Contract__AllTypes__FnTypes>::__test_symbol__ret {
         let _call_scope = soroban_sdk::testutils::ClientCallScope::enter(&self.env, self.config);
         use soroban_sdk::{FromVal, IntoVal};
         let res = self.env.invoke_contract(
@@ -2390,14 +2679,17 @@ impl<'a> ContractClient<'a> {
     }
     pub fn try_test_symbol(
         &self,
-        v: &Symbol,
+        v: &<Contract as __Contract__AllTypes__FnTypes>::__test_symbol__arg_0,
     ) -> Result<
         Result<
-            Symbol,
-            <Symbol as soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val>>::Error,
+            <Contract as __Contract__AllTypes__FnTypes>::__test_symbol__ret,
+            <<Contract as __Contract__AllTypes__FnTypes>::__test_symbol__ret as soroban_sdk::TryFromVal<
+                soroban_sdk::Env,
+                soroban_sdk::Val,
+            >>::Error,
         >,
         Result<soroban_sdk::Error, soroban_sdk::InvokeError>,
-    > {
+    >{
         let _call_scope = soroban_sdk::testutils::ClientCallScope::enter(&self.env, self.config);
         use soroban_sdk::{FromVal, IntoVal};
         let res = self.env.try_invoke_contract(
@@ -2407,7 +2699,10 @@ impl<'a> ContractClient<'a> {
         );
         res
     }
-    pub fn test_vec(&self, v: &Vec<u32>) -> Vec<u32> {
+    pub fn test_vec(
+        &self,
+        v: &<Contract as __Contract__AllTypes__FnTypes>::__test_vec__arg_0,
+    ) -> <Contract as __Contract__AllTypes__FnTypes>::__test_vec__ret {
         let _call_scope = soroban_sdk::testutils::ClientCallScope::enter(&self.env, self.config);
         use soroban_sdk::{FromVal, IntoVal};
         let res = self.env.invoke_contract(
@@ -2423,14 +2718,17 @@ impl<'a> ContractClient<'a> {
     }
     pub fn try_test_vec(
         &self,
-        v: &Vec<u32>,
+        v: &<Contract as __Contract__AllTypes__FnTypes>::__test_vec__arg_0,
     ) -> Result<
         Result<
-            Vec<u32>,
-            <Vec<u32> as soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val>>::Error,
+            <Contract as __Contract__AllTypes__FnTypes>::__test_vec__ret,
+            <<Contract as __Contract__AllTypes__FnTypes>::__test_vec__ret as soroban_sdk::TryFromVal<
+                soroban_sdk::Env,
+                soroban_sdk::Val,
+            >>::Error,
         >,
         Result<soroban_sdk::Error, soroban_sdk::InvokeError>,
-    > {
+    >{
         let _call_scope = soroban_sdk::testutils::ClientCallScope::enter(&self.env, self.config);
         use soroban_sdk::{FromVal, IntoVal};
         let res = self.env.try_invoke_contract(
@@ -2444,7 +2742,10 @@ impl<'a> ContractClient<'a> {
         );
         res
     }
-    pub fn test_map(&self, v: &Map<u32, u32>) -> Map<u32, u32> {
+    pub fn test_map(
+        &self,
+        v: &<Contract as __Contract__AllTypes__FnTypes>::__test_map__arg_0,
+    ) -> <Contract as __Contract__AllTypes__FnTypes>::__test_map__ret {
         let _call_scope = soroban_sdk::testutils::ClientCallScope::enter(&self.env, self.config);
         use soroban_sdk::{FromVal, IntoVal};
         let res = self.env.invoke_contract(
@@ -2460,14 +2761,17 @@ impl<'a> ContractClient<'a> {
     }
     pub fn try_test_map(
         &self,
-        v: &Map<u32, u32>,
+        v: &<Contract as __Contract__AllTypes__FnTypes>::__test_map__arg_0,
     ) -> Result<
         Result<
-            Map<u32, u32>,
-            <Map<u32, u32> as soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val>>::Error,
+            <Contract as __Contract__AllTypes__FnTypes>::__test_map__ret,
+            <<Contract as __Contract__AllTypes__FnTypes>::__test_map__ret as soroban_sdk::TryFromVal<
+                soroban_sdk::Env,
+                soroban_sdk::Val,
+            >>::Error,
         >,
         Result<soroban_sdk::Error, soroban_sdk::InvokeError>,
-    > {
+    >{
         let _call_scope = soroban_sdk::testutils::ClientCallScope::enter(&self.env, self.config);
         use soroban_sdk::{FromVal, IntoVal};
         let res = self.env.try_invoke_contract(
@@ -2481,7 +2785,10 @@ impl<'a> ContractClient<'a> {
         );
         res
     }
-    pub fn test_duration(&self, v: &Duration) -> Duration {
+    pub fn test_duration(
+        &self,
+        v: &<Contract as __Contract__AllTypes__FnTypes>::__test_duration__arg_0,
+    ) -> <Contract as __Contract__AllTypes__FnTypes>::__test_duration__ret {
         let _call_scope = soroban_sdk::testutils::ClientCallScope::enter(&self.env, self.config);
         use soroban_sdk::{FromVal, IntoVal};
         let res = self.env.invoke_contract(
@@ -2493,14 +2800,17 @@ impl<'a> ContractClient<'a> {
     }
     pub fn try_test_duration(
         &self,
-        v: &Duration,
+        v: &<Contract as __Contract__AllTypes__FnTypes>::__test_duration__arg_0,
     ) -> Result<
         Result<
-            Duration,
-            <Duration as soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val>>::Error,
+            <Contract as __Contract__AllTypes__FnTypes>::__test_duration__ret,
+            <<Contract as __Contract__AllTypes__FnTypes>::__test_duration__ret as soroban_sdk::TryFromVal<
+                soroban_sdk::Env,
+                soroban_sdk::Val,
+            >>::Error,
         >,
         Result<soroban_sdk::Error, soroban_sdk::InvokeError>,
-    > {
+    >{
         let _call_scope = soroban_sdk::testutils::ClientCallScope::enter(&self.env, self.config);
         use soroban_sdk::{FromVal, IntoVal};
         let res = self.env.try_invoke_contract(
@@ -2510,7 +2820,10 @@ impl<'a> ContractClient<'a> {
         );
         res
     }
-    pub fn test_timepoint(&self, v: &Timepoint) -> Timepoint {
+    pub fn test_timepoint(
+        &self,
+        v: &<Contract as __Contract__AllTypes__FnTypes>::__test_timepoint__arg_0,
+    ) -> <Contract as __Contract__AllTypes__FnTypes>::__test_timepoint__ret {
         let _call_scope = soroban_sdk::testutils::ClientCallScope::enter(&self.env, self.config);
         use soroban_sdk::{FromVal, IntoVal};
         let res = self.env.invoke_contract(
@@ -2522,14 +2835,17 @@ impl<'a> ContractClient<'a> {
     }
     pub fn try_test_timepoint(
         &self,
-        v: &Timepoint,
+        v: &<Contract as __Contract__AllTypes__FnTypes>::__test_timepoint__arg_0,
     ) -> Result<
         Result<
-            Timepoint,
-            <Timepoint as soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val>>::Error,
+            <Contract as __Contract__AllTypes__FnTypes>::__test_timepoint__ret,
+            <<Contract as __Contract__AllTypes__FnTypes>::__test_timepoint__ret as soroban_sdk::TryFromVal<
+                soroban_sdk::Env,
+                soroban_sdk::Val,
+            >>::Error,
         >,
         Result<soroban_sdk::Error, soroban_sdk::InvokeError>,
-    > {
+    >{
         let _call_scope = soroban_sdk::testutils::ClientCallScope::enter(&self.env, self.config);
         use soroban_sdk::{FromVal, IntoVal};
         let res = self.env.try_invoke_contract(
@@ -2539,7 +2855,10 @@ impl<'a> ContractClient<'a> {
         );
         res
     }
-    pub fn test_i256(&self, v: &I256) -> I256 {
+    pub fn test_i256(
+        &self,
+        v: &<Contract as __Contract__AllTypes__FnTypes>::__test_i256__arg_0,
+    ) -> <Contract as __Contract__AllTypes__FnTypes>::__test_i256__ret {
         let _call_scope = soroban_sdk::testutils::ClientCallScope::enter(&self.env, self.config);
         use soroban_sdk::{FromVal, IntoVal};
         let res = self.env.invoke_contract(
@@ -2555,11 +2874,17 @@ impl<'a> ContractClient<'a> {
     }
     pub fn try_test_i256(
         &self,
-        v: &I256,
+        v: &<Contract as __Contract__AllTypes__FnTypes>::__test_i256__arg_0,
     ) -> Result<
-        Result<I256, <I256 as soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val>>::Error>,
+        Result<
+            <Contract as __Contract__AllTypes__FnTypes>::__test_i256__ret,
+            <<Contract as __Contract__AllTypes__FnTypes>::__test_i256__ret as soroban_sdk::TryFromVal<
+                soroban_sdk::Env,
+                soroban_sdk::Val,
+            >>::Error,
+        >,
         Result<soroban_sdk::Error, soroban_sdk::InvokeError>,
-    > {
+    >{
         let _call_scope = soroban_sdk::testutils::ClientCallScope::enter(&self.env, self.config);
         use soroban_sdk::{FromVal, IntoVal};
         let res = self.env.try_invoke_contract(
@@ -2573,7 +2898,10 @@ impl<'a> ContractClient<'a> {
         );
         res
     }
-    pub fn test_u256(&self, v: &U256) -> U256 {
+    pub fn test_u256(
+        &self,
+        v: &<Contract as __Contract__AllTypes__FnTypes>::__test_u256__arg_0,
+    ) -> <Contract as __Contract__AllTypes__FnTypes>::__test_u256__ret {
         let _call_scope = soroban_sdk::testutils::ClientCallScope::enter(&self.env, self.config);
         use soroban_sdk::{FromVal, IntoVal};
         let res = self.env.invoke_contract(
@@ -2589,11 +2917,17 @@ impl<'a> ContractClient<'a> {
     }
     pub fn try_test_u256(
         &self,
-        v: &U256,
+        v: &<Contract as __Contract__AllTypes__FnTypes>::__test_u256__arg_0,
     ) -> Result<
-        Result<U256, <U256 as soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val>>::Error>,
+        Result<
+            <Contract as __Contract__AllTypes__FnTypes>::__test_u256__ret,
+            <<Contract as __Contract__AllTypes__FnTypes>::__test_u256__ret as soroban_sdk::TryFromVal<
+                soroban_sdk::Env,
+                soroban_sdk::Val,
+            >>::Error,
+        >,
         Result<soroban_sdk::Error, soroban_sdk::InvokeError>,
-    > {
+    >{
         let _call_scope = soroban_sdk::testutils::ClientCallScope::enter(&self.env, self.config);
         use soroban_sdk::{FromVal, IntoVal};
         let res = self.env.try_invoke_contract(
@@ -2607,7 +2941,9 @@ impl<'a> ContractClient<'a> {
         );
         res
     }
-    pub fn test_env_param(&self) -> u32 {
+    pub fn test_env_param(
+        &self,
+    ) -> <Contract as __Contract__AllTypes__FnTypes>::__test_env_param__ret {
         let _call_scope = soroban_sdk::testutils::ClientCallScope::enter(&self.env, self.config);
         use soroban_sdk::{FromVal, IntoVal};
         let res = self.env.invoke_contract(
@@ -2620,9 +2956,15 @@ impl<'a> ContractClient<'a> {
     pub fn try_test_env_param(
         &self,
     ) -> Result<
-        Result<u32, <u32 as soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val>>::Error>,
+        Result<
+            <Contract as __Contract__AllTypes__FnTypes>::__test_env_param__ret,
+            <<Contract as __Contract__AllTypes__FnTypes>::__test_env_param__ret as soroban_sdk::TryFromVal<
+                soroban_sdk::Env,
+                soroban_sdk::Val,
+            >>::Error,
+        >,
         Result<soroban_sdk::Error, soroban_sdk::InvokeError>,
-    > {
+    >{
         let _call_scope = soroban_sdk::testutils::ClientCallScope::enter(&self.env, self.config);
         use soroban_sdk::{FromVal, IntoVal};
         let res = self.env.try_invoke_contract(
@@ -2632,7 +2974,10 @@ impl<'a> ContractClient<'a> {
         );
         res
     }
-    pub fn test_struct(&self, v: &MyStruct) -> MyStruct {
+    pub fn test_struct(
+        &self,
+        v: &<Contract as __Contract__AllTypes__FnTypes>::__test_struct__arg_0,
+    ) -> <Contract as __Contract__AllTypes__FnTypes>::__test_struct__ret {
         let _call_scope = soroban_sdk::testutils::ClientCallScope::enter(&self.env, self.config);
         use soroban_sdk::{FromVal, IntoVal};
         let res = self.env.invoke_contract(
@@ -2644,14 +2989,17 @@ impl<'a> ContractClient<'a> {
     }
     pub fn try_test_struct(
         &self,
-        v: &MyStruct,
+        v: &<Contract as __Contract__AllTypes__FnTypes>::__test_struct__arg_0,
     ) -> Result<
         Result<
-            MyStruct,
-            <MyStruct as soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val>>::Error,
+            <Contract as __Contract__AllTypes__FnTypes>::__test_struct__ret,
+            <<Contract as __Contract__AllTypes__FnTypes>::__test_struct__ret as soroban_sdk::TryFromVal<
+                soroban_sdk::Env,
+                soroban_sdk::Val,
+            >>::Error,
         >,
         Result<soroban_sdk::Error, soroban_sdk::InvokeError>,
-    > {
+    >{
         let _call_scope = soroban_sdk::testutils::ClientCallScope::enter(&self.env, self.config);
         use soroban_sdk::{FromVal, IntoVal};
         let res = self.env.try_invoke_contract(
@@ -2661,7 +3009,10 @@ impl<'a> ContractClient<'a> {
         );
         res
     }
-    pub fn test_enum_unit(&self, v: &MyEnumUnit) -> MyEnumUnit {
+    pub fn test_enum_unit(
+        &self,
+        v: &<Contract as __Contract__AllTypes__FnTypes>::__test_enum_unit__arg_0,
+    ) -> <Contract as __Contract__AllTypes__FnTypes>::__test_enum_unit__ret {
         let _call_scope = soroban_sdk::testutils::ClientCallScope::enter(&self.env, self.config);
         use soroban_sdk::{FromVal, IntoVal};
         let res = self.env.invoke_contract(
@@ -2673,14 +3024,17 @@ impl<'a> ContractClient<'a> {
     }
     pub fn try_test_enum_unit(
         &self,
-        v: &MyEnumUnit,
+        v: &<Contract as __Contract__AllTypes__FnTypes>::__test_enum_unit__arg_0,
     ) -> Result<
         Result<
-            MyEnumUnit,
-            <MyEnumUnit as soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val>>::Error,
+            <Contract as __Contract__AllTypes__FnTypes>::__test_enum_unit__ret,
+            <<Contract as __Contract__AllTypes__FnTypes>::__test_enum_unit__ret as soroban_sdk::TryFromVal<
+                soroban_sdk::Env,
+                soroban_sdk::Val,
+            >>::Error,
         >,
         Result<soroban_sdk::Error, soroban_sdk::InvokeError>,
-    > {
+    >{
         let _call_scope = soroban_sdk::testutils::ClientCallScope::enter(&self.env, self.config);
         use soroban_sdk::{FromVal, IntoVal};
         let res = self.env.try_invoke_contract(
@@ -2690,7 +3044,10 @@ impl<'a> ContractClient<'a> {
         );
         res
     }
-    pub fn test_enum_variants(&self, v: &MyEnumVariants) -> MyEnumVariants {
+    pub fn test_enum_variants(
+        &self,
+        v: &<Contract as __Contract__AllTypes__FnTypes>::__test_enum_variants__arg_0,
+    ) -> <Contract as __Contract__AllTypes__FnTypes>::__test_enum_variants__ret {
         let _call_scope = soroban_sdk::testutils::ClientCallScope::enter(&self.env, self.config);
         use soroban_sdk::{FromVal, IntoVal};
         let res = self.env.invoke_contract(
@@ -2702,14 +3059,17 @@ impl<'a> ContractClient<'a> {
     }
     pub fn try_test_enum_variants(
         &self,
-        v: &MyEnumVariants,
+        v: &<Contract as __Contract__AllTypes__FnTypes>::__test_enum_variants__arg_0,
     ) -> Result<
         Result<
-            MyEnumVariants,
-            <MyEnumVariants as soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val>>::Error,
+            <Contract as __Contract__AllTypes__FnTypes>::__test_enum_variants__ret,
+            <<Contract as __Contract__AllTypes__FnTypes>::__test_enum_variants__ret as soroban_sdk::TryFromVal<
+                soroban_sdk::Env,
+                soroban_sdk::Val,
+            >>::Error,
         >,
         Result<soroban_sdk::Error, soroban_sdk::InvokeError>,
-    > {
+    >{
         let _call_scope = soroban_sdk::testutils::ClientCallScope::enter(&self.env, self.config);
         use soroban_sdk::{FromVal, IntoVal};
         let res = self.env.try_invoke_contract(
@@ -2725,93 +3085,129 @@ impl ContractArgs {
     /// Returns the input unchanged.
     #[inline(always)]
     #[allow(clippy::unused_unit)]
-    pub fn test_u32<'i>(v: &'i u32) -> (&'i u32,) {
+    pub fn test_u32<'i>(
+        v: &'i <Contract as __Contract__AllTypes__FnTypes>::__test_u32__arg_0,
+    ) -> (&'i <Contract as __Contract__AllTypes__FnTypes>::__test_u32__arg_0,) {
         (v,)
     }
     /// Test i32 values.
     #[inline(always)]
     #[allow(clippy::unused_unit)]
-    pub fn test_i32<'i>(v: &'i i32) -> (&'i i32,) {
+    pub fn test_i32<'i>(
+        v: &'i <Contract as __Contract__AllTypes__FnTypes>::__test_i32__arg_0,
+    ) -> (&'i <Contract as __Contract__AllTypes__FnTypes>::__test_i32__arg_0,) {
         (v,)
     }
     #[inline(always)]
     #[allow(clippy::unused_unit)]
-    pub fn test_u64<'i>(v: &'i u64) -> (&'i u64,) {
+    pub fn test_u64<'i>(
+        v: &'i <Contract as __Contract__AllTypes__FnTypes>::__test_u64__arg_0,
+    ) -> (&'i <Contract as __Contract__AllTypes__FnTypes>::__test_u64__arg_0,) {
         (v,)
     }
     #[inline(always)]
     #[allow(clippy::unused_unit)]
-    pub fn test_i64<'i>(v: &'i i64) -> (&'i i64,) {
+    pub fn test_i64<'i>(
+        v: &'i <Contract as __Contract__AllTypes__FnTypes>::__test_i64__arg_0,
+    ) -> (&'i <Contract as __Contract__AllTypes__FnTypes>::__test_i64__arg_0,) {
         (v,)
     }
     #[inline(always)]
     #[allow(clippy::unused_unit)]
-    pub fn test_u128<'i>(v: &'i u128) -> (&'i u128,) {
+    pub fn test_u128<'i>(
+        v: &'i <Contract as __Contract__AllTypes__FnTypes>::__test_u128__arg_0,
+    ) -> (&'i <Contract as __Contract__AllTypes__FnTypes>::__test_u128__arg_0,) {
         (v,)
     }
     #[inline(always)]
     #[allow(clippy::unused_unit)]
-    pub fn test_i128<'i>(v: &'i i128) -> (&'i i128,) {
+    pub fn test_i128<'i>(
+        v: &'i <Contract as __Contract__AllTypes__FnTypes>::__test_i128__arg_0,
+    ) -> (&'i <Contract as __Contract__AllTypes__FnTypes>::__test_i128__arg_0,) {
         (v,)
     }
     #[inline(always)]
     #[allow(clippy::unused_unit)]
-    pub fn test_bool<'i>(v: &'i bool) -> (&'i bool,) {
+    pub fn test_bool<'i>(
+        v: &'i <Contract as __Contract__AllTypes__FnTypes>::__test_bool__arg_0,
+    ) -> (&'i <Contract as __Contract__AllTypes__FnTypes>::__test_bool__arg_0,) {
         (v,)
     }
     #[inline(always)]
     #[allow(clippy::unused_unit)]
-    pub fn test_address<'i>(v: &'i Address) -> (&'i Address,) {
+    pub fn test_address<'i>(
+        v: &'i <Contract as __Contract__AllTypes__FnTypes>::__test_address__arg_0,
+    ) -> (&'i <Contract as __Contract__AllTypes__FnTypes>::__test_address__arg_0,) {
         (v,)
     }
     #[inline(always)]
     #[allow(clippy::unused_unit)]
-    pub fn test_bytes<'i>(v: &'i Bytes) -> (&'i Bytes,) {
+    pub fn test_bytes<'i>(
+        v: &'i <Contract as __Contract__AllTypes__FnTypes>::__test_bytes__arg_0,
+    ) -> (&'i <Contract as __Contract__AllTypes__FnTypes>::__test_bytes__arg_0,) {
         (v,)
     }
     #[inline(always)]
     #[allow(clippy::unused_unit)]
-    pub fn test_bytes_n<'i>(v: &'i BytesN<32>) -> (&'i BytesN<32>,) {
+    pub fn test_bytes_n<'i>(
+        v: &'i <Contract as __Contract__AllTypes__FnTypes>::__test_bytes_n__arg_0,
+    ) -> (&'i <Contract as __Contract__AllTypes__FnTypes>::__test_bytes_n__arg_0,) {
         (v,)
     }
     #[inline(always)]
     #[allow(clippy::unused_unit)]
-    pub fn test_string<'i>(v: &'i String) -> (&'i String,) {
+    pub fn test_string<'i>(
+        v: &'i <Contract as __Contract__AllTypes__FnTypes>::__test_string__arg_0,
+    ) -> (&'i <Contract as __Contract__AllTypes__FnTypes>::__test_string__arg_0,) {
         (v,)
     }
     #[inline(always)]
     #[allow(clippy::unused_unit)]
-    pub fn test_symbol<'i>(v: &'i Symbol) -> (&'i Symbol,) {
+    pub fn test_symbol<'i>(
+        v: &'i <Contract as __Contract__AllTypes__FnTypes>::__test_symbol__arg_0,
+    ) -> (&'i <Contract as __Contract__AllTypes__FnTypes>::__test_symbol__arg_0,) {
         (v,)
     }
     #[inline(always)]
     #[allow(clippy::unused_unit)]
-    pub fn test_vec<'i>(v: &'i Vec<u32>) -> (&'i Vec<u32>,) {
+    pub fn test_vec<'i>(
+        v: &'i <Contract as __Contract__AllTypes__FnTypes>::__test_vec__arg_0,
+    ) -> (&'i <Contract as __Contract__AllTypes__FnTypes>::__test_vec__arg_0,) {
         (v,)
     }
     #[inline(always)]
     #[allow(clippy::unused_unit)]
-    pub fn test_map<'i>(v: &'i Map<u32, u32>) -> (&'i Map<u32, u32>,) {
+    pub fn test_map<'i>(
+        v: &'i <Contract as __Contract__AllTypes__FnTypes>::__test_map__arg_0,
+    ) -> (&'i <Contract as __Contract__AllTypes__FnTypes>::__test_map__arg_0,) {
         (v,)
     }
     #[inline(always)]
     #[allow(clippy::unused_unit)]
-    pub fn test_duration<'i>(v: &'i Duration) -> (&'i Duration,) {
+    pub fn test_duration<'i>(
+        v: &'i <Contract as __Contract__AllTypes__FnTypes>::__test_duration__arg_0,
+    ) -> (&'i <Contract as __Contract__AllTypes__FnTypes>::__test_duration__arg_0,) {
         (v,)
     }
     #[inline(always)]
     #[allow(clippy::unused_unit)]
-    pub fn test_timepoint<'i>(v: &'i Timepoint) -> (&'i Timepoint,) {
+    pub fn test_timepoint<'i>(
+        v: &'i <Contract as __Contract__AllTypes__FnTypes>::__test_timepoint__arg_0,
+    ) -> (&'i <Contract as __Contract__AllTypes__FnTypes>::__test_timepoint__arg_0,) {
         (v,)
     }
     #[inline(always)]
     #[allow(clippy::unused_unit)]
-    pub fn test_i256<'i>(v: &'i I256) -> (&'i I256,) {
+    pub fn test_i256<'i>(
+        v: &'i <Contract as __Contract__AllTypes__FnTypes>::__test_i256__arg_0,
+    ) -> (&'i <Contract as __Contract__AllTypes__FnTypes>::__test_i256__arg_0,) {
         (v,)
     }
     #[inline(always)]
     #[allow(clippy::unused_unit)]
-    pub fn test_u256<'i>(v: &'i U256) -> (&'i U256,) {
+    pub fn test_u256<'i>(
+        v: &'i <Contract as __Contract__AllTypes__FnTypes>::__test_u256__arg_0,
+    ) -> (&'i <Contract as __Contract__AllTypes__FnTypes>::__test_u256__arg_0,) {
         (v,)
     }
     #[inline(always)]
@@ -2821,17 +3217,23 @@ impl ContractArgs {
     }
     #[inline(always)]
     #[allow(clippy::unused_unit)]
-    pub fn test_struct<'i>(v: &'i MyStruct) -> (&'i MyStruct,) {
+    pub fn test_struct<'i>(
+        v: &'i <Contract as __Contract__AllTypes__FnTypes>::__test_struct__arg_0,
+    ) -> (&'i <Contract as __Contract__AllTypes__FnTypes>::__test_struct__arg_0,) {
         (v,)
     }
     #[inline(always)]
     #[allow(clippy::unused_unit)]
-    pub fn test_enum_unit<'i>(v: &'i MyEnumUnit) -> (&'i MyEnumUnit,) {
+    pub fn test_enum_unit<'i>(
+        v: &'i <Contract as __Contract__AllTypes__FnTypes>::__test_enum_unit__arg_0,
+    ) -> (&'i <Contract as __Contract__AllTypes__FnTypes>::__test_enum_unit__arg_0,) {
         (v,)
     }
     #[inline(always)]
     #[allow(clippy::unused_unit)]
-    pub fn test_enum_variants<'i>(v: &'i MyEnumVariants) -> (&'i MyEnumVariants,) {
+    pub fn test_enum_variants<'i>(
+        v: &'i <Contract as __Contract__AllTypes__FnTypes>::__test_enum_variants__arg_0,
+    ) -> (&'i <Contract as __Contract__AllTypes__FnTypes>::__test_enum_variants__arg_0,) {
         (v,)
     }
 }
@@ -2997,6 +3399,8 @@ fn __Contract__AllTypes__e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991
 mod test {
     use super::*;
     use soroban_sdk::{map, symbol_short, testutils::Address as _, vec, Env};
+    use soroban_sdk::{Address, Bytes, BytesN, Duration, String, Timepoint, I256, U256};
+    use test_contracttrait_trait::{MyEnumUnit, MyEnumVariants, MyStruct};
     extern crate test;
     #[rustc_test_marker = "test::test_cross_crate_default_fns"]
     #[doc(hidden)]
@@ -3006,9 +3410,9 @@ mod test {
             ignore: false,
             ignore_message: ::core::option::Option::None,
             source_file: "tests/contracttrait_impl_full/src/lib.rs",
-            start_line: 20usize,
+            start_line: 19usize,
             start_col: 8usize,
-            end_line: 20usize,
+            end_line: 19usize,
             end_col: 36usize,
             compile_fail: false,
             no_run: false,

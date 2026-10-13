@@ -10,7 +10,15 @@ pub mod traits {
     pub struct CratePathTraitSpec;
     /// Macro for `contractimpl`ing the default functions of the trait that are not overridden.
     pub use __contractimpl_for_crate_path_trait as CratePathTrait;
-    pub trait CratePathTrait {
+    #[doc(hidden)]
+    #[allow(non_camel_case_types)]
+    pub trait __CratePathTraitFnTypes {
+        type __crate_path_method__ret;
+    }
+    impl<T: CratePathTrait + ?Sized> __CratePathTraitFnTypes for T {
+        type __crate_path_method__ret = u32;
+    }
+    pub trait CratePathTrait: __CratePathTraitFnTypes {
         fn crate_path_method(env: &Env) -> u32 {
             let _ = env;
             100
@@ -117,6 +125,16 @@ impl crate::traits::CratePathTrait for ContractCratePath {}
 impl<'a> ContractCratePathClient<'a> {}
 impl ContractCratePathArgs {}
 #[doc(hidden)]
+#[allow(non_camel_case_types)]
+pub trait __ContractCratePath__crate_traits_CratePathTrait__FnTypes {
+    type __crate_path_method__ret;
+}
+impl<T: crate::traits::CratePathTrait + ?Sized>
+    __ContractCratePath__crate_traits_CratePathTrait__FnTypes for T
+{
+    type __crate_path_method__ret = T::__crate_path_method__ret;
+}
+#[doc(hidden)]
 #[allow(non_snake_case)]
 #[deprecated(
     note = "use `ContractCratePathClient::new(&env, &contract_id).crate_path_method` instead"
@@ -155,21 +173,20 @@ mod __ContractCratePath__crate_path_method__spec {
 }
 impl ContractCratePath {
     #[allow(non_upper_case_globals)]
-    const __SPEC_XDR_ENTRY_crate_path_method: soroban_sdk::xdr::r#const::ScSpecEntry =
-        soroban_sdk::xdr::r#const::ScSpecEntry::FunctionV0(
-            soroban_sdk::xdr::r#const::ScSpecFunctionV0 {
-                doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
-                name: soroban_sdk::xdr::r#const::ScSymbol(
-                    soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(
-                        b"crate_path_method",
-                    ),
-                ),
-                inputs: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[]),
-                outputs: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[
-                    <u32 as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
-                ]),
-            },
-        );
+    const __SPEC_XDR_ENTRY_crate_path_method: soroban_sdk::xdr::r#const::ScSpecEntry = soroban_sdk::xdr::r#const::ScSpecEntry::FunctionV0(soroban_sdk::xdr::r#const::ScSpecFunctionV0 {
+        doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
+        name: soroban_sdk::xdr::r#const::ScSymbol(
+            soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(
+                b"crate_path_method",
+            ),
+        ),
+        inputs: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[]),
+        outputs: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(
+            &[
+                <<ContractCratePath as __ContractCratePath__crate_traits_CratePathTrait__FnTypes>::__crate_path_method__ret as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
+            ],
+        ),
+    });
     #[allow(non_snake_case)]
     pub const fn spec_xdr_crate_path_method(
     ) -> [u8; ContractCratePath::__SPEC_XDR_ENTRY_crate_path_method.const_xdr_len()] {
@@ -177,7 +194,9 @@ impl ContractCratePath {
     }
 }
 impl<'a> ContractCratePathClient<'a> {
-    pub fn crate_path_method(&self) -> u32 {
+    pub fn crate_path_method(
+        &self,
+    ) -> <ContractCratePath as __ContractCratePath__crate_traits_CratePathTrait__FnTypes>::__crate_path_method__ret{
         use core::ops::Not;
         use soroban_sdk::{FromVal, IntoVal};
         let res = self.env.invoke_contract(
@@ -190,9 +209,15 @@ impl<'a> ContractCratePathClient<'a> {
     pub fn try_crate_path_method(
         &self,
     ) -> Result<
-        Result<u32, <u32 as soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val>>::Error>,
+        Result<
+            <ContractCratePath as __ContractCratePath__crate_traits_CratePathTrait__FnTypes>::__crate_path_method__ret,
+            <<ContractCratePath as __ContractCratePath__crate_traits_CratePathTrait__FnTypes>::__crate_path_method__ret as soroban_sdk::TryFromVal<
+                soroban_sdk::Env,
+                soroban_sdk::Val,
+            >>::Error,
+        >,
         Result<soroban_sdk::Error, soroban_sdk::InvokeError>,
-    > {
+    >{
         use soroban_sdk::{FromVal, IntoVal};
         let res = self.env.try_invoke_contract(
             &self.address,

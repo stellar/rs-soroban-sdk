@@ -551,7 +551,99 @@ impl soroban_sdk::TryFromVal<soroban_sdk::Env, &MyEnumVariants> for soroban_sdk:
 pub struct AllTypesSpec;
 /// Macro for `contractimpl`ing the default functions of the trait that are not overridden.
 pub use __contractimpl_for_all_types as AllTypes;
-pub trait AllTypes {
+#[doc(hidden)]
+#[allow(non_camel_case_types)]
+pub trait __AllTypesFnTypes {
+    type __test_u32__arg_0;
+    type __test_u32__ret;
+    type __test_i32__arg_0;
+    type __test_i32__ret;
+    type __test_u64__arg_0;
+    type __test_u64__ret;
+    type __test_i64__arg_0;
+    type __test_i64__ret;
+    type __test_u128__arg_0;
+    type __test_u128__ret;
+    type __test_i128__arg_0;
+    type __test_i128__ret;
+    type __test_bool__arg_0;
+    type __test_bool__ret;
+    type __test_address__arg_0;
+    type __test_address__ret;
+    type __test_bytes__arg_0;
+    type __test_bytes__ret;
+    type __test_bytes_n__arg_0;
+    type __test_bytes_n__ret;
+    type __test_string__arg_0;
+    type __test_string__ret;
+    type __test_symbol__arg_0;
+    type __test_symbol__ret;
+    type __test_vec__arg_0;
+    type __test_vec__ret;
+    type __test_map__arg_0;
+    type __test_map__ret;
+    type __test_duration__arg_0;
+    type __test_duration__ret;
+    type __test_timepoint__arg_0;
+    type __test_timepoint__ret;
+    type __test_i256__arg_0;
+    type __test_i256__ret;
+    type __test_u256__arg_0;
+    type __test_u256__ret;
+    type __test_env_param__ret;
+    type __test_struct__arg_0;
+    type __test_struct__ret;
+    type __test_enum_unit__arg_0;
+    type __test_enum_unit__ret;
+    type __test_enum_variants__arg_0;
+    type __test_enum_variants__ret;
+}
+impl<T: AllTypes + ?Sized> __AllTypesFnTypes for T {
+    type __test_u32__arg_0 = u32;
+    type __test_u32__ret = u32;
+    type __test_i32__arg_0 = i32;
+    type __test_i32__ret = i32;
+    type __test_u64__arg_0 = u64;
+    type __test_u64__ret = u64;
+    type __test_i64__arg_0 = i64;
+    type __test_i64__ret = i64;
+    type __test_u128__arg_0 = u128;
+    type __test_u128__ret = u128;
+    type __test_i128__arg_0 = i128;
+    type __test_i128__ret = i128;
+    type __test_bool__arg_0 = bool;
+    type __test_bool__ret = bool;
+    type __test_address__arg_0 = Address;
+    type __test_address__ret = Address;
+    type __test_bytes__arg_0 = Bytes;
+    type __test_bytes__ret = Bytes;
+    type __test_bytes_n__arg_0 = BytesN<32>;
+    type __test_bytes_n__ret = BytesN<32>;
+    type __test_string__arg_0 = String;
+    type __test_string__ret = String;
+    type __test_symbol__arg_0 = Symbol;
+    type __test_symbol__ret = Symbol;
+    type __test_vec__arg_0 = Vec<u32>;
+    type __test_vec__ret = Vec<u32>;
+    type __test_map__arg_0 = Map<u32, u32>;
+    type __test_map__ret = Map<u32, u32>;
+    type __test_duration__arg_0 = Duration;
+    type __test_duration__ret = Duration;
+    type __test_timepoint__arg_0 = Timepoint;
+    type __test_timepoint__ret = Timepoint;
+    type __test_i256__arg_0 = I256;
+    type __test_i256__ret = I256;
+    type __test_u256__arg_0 = U256;
+    type __test_u256__ret = U256;
+    type __test_env_param__ret = u32;
+    type __test_struct__arg_0 = MyStruct;
+    type __test_struct__ret = MyStruct;
+    type __test_enum_unit__arg_0 = MyEnumUnit;
+    type __test_enum_unit__ret = MyEnumUnit;
+    type __test_enum_variants__arg_0 = MyEnumVariants;
+    type __test_enum_variants__ret = MyEnumVariants;
+}
+pub trait AllTypes: __AllTypesFnTypes {
     /// Test u32 values.
     /// Returns the input unchanged.
     fn test_u32(v: u32) -> u32 {
