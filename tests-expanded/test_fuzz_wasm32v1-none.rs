@@ -76,11 +76,11 @@ impl Contract {
 }
 impl<'a> ContractClient<'a> {
     ///
-    ///# Panics
+    /// # Panics
     ///
-    ///Panics if the invoked contract returns an error or panics.
+    /// Panics if the invoked contract returns an error or panics.
     ///
-    ///Use [`Self::try_run`] to receive errors instead of panicking.
+    /// Use [`Self::try_run`] to receive errors instead of panicking.
     pub fn run(&self, a: &U256, b: &U256) -> () {
         use core::ops::Not;
         use soroban_sdk::{FromVal, IntoVal};
@@ -99,9 +99,9 @@ impl<'a> ContractClient<'a> {
         res
     }
     ///
-    ///# Errors
+    /// # Errors
     ///
-    ///Returns an error if the invoked contract returns an error or panics. A panic in the invoked contract is caught and returned as an error rather than panicking the caller.
+    /// Returns an error if the invoked contract returns an error or panics. A panic in the invoked contract is caught and returned as an error rather than panicking the caller.
     pub fn try_run(
         &self,
         a: &U256,

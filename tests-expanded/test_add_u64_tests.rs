@@ -631,11 +631,11 @@ impl Contract {
 }
 impl<'a> ContractClient<'a> {
     ///
-    ///# Panics
+    /// # Panics
     ///
-    ///Panics if the invoked contract returns an error or panics.
+    /// Panics if the invoked contract returns an error or panics.
     ///
-    ///Use [`Self::try_add`] to receive errors instead of panicking.
+    /// Use [`Self::try_add`] to receive errors instead of panicking.
     pub fn add(&self, a: &u64, b: &u64) -> u64 {
         let _call_scope = soroban_sdk::testutils::ClientCallScope::enter(&self.env, self.config);
         use soroban_sdk::{FromVal, IntoVal};
@@ -654,9 +654,9 @@ impl<'a> ContractClient<'a> {
         res
     }
     ///
-    ///# Errors
+    /// # Errors
     ///
-    ///Returns an error if the invoked contract returns an error or panics. A panic in the invoked contract is caught and returned as an error rather than panicking the caller.
+    /// Returns an error if the invoked contract returns an error or panics. A panic in the invoked contract is caught and returned as an error rather than panicking the caller.
     pub fn try_add(
         &self,
         a: &u64,
@@ -682,11 +682,11 @@ impl<'a> ContractClient<'a> {
         res
     }
     ///
-    ///# Panics
+    /// # Panics
     ///
-    ///Panics if the invoked contract returns an error or panics.
+    /// Panics if the invoked contract returns an error or panics.
     ///
-    ///Use [`Self::try_safe_add`] to receive errors instead of panicking.
+    /// Use [`Self::try_safe_add`] to receive errors instead of panicking.
     pub fn safe_add(&self, a: &u64, b: &u64) -> u64 {
         let _call_scope = soroban_sdk::testutils::ClientCallScope::enter(&self.env, self.config);
         use soroban_sdk::{FromVal, IntoVal};
@@ -705,9 +705,9 @@ impl<'a> ContractClient<'a> {
         res
     }
     ///
-    ///# Errors
+    /// # Errors
     ///
-    ///Returns an error if the invoked contract returns an error or panics. A panic in the invoked contract is caught and returned as an error rather than panicking the caller.
+    /// Returns an error if the invoked contract returns an error or panics. A panic in the invoked contract is caught and returned as an error rather than panicking the caller.
     pub fn try_safe_add(
         &self,
         a: &u64,
@@ -733,11 +733,11 @@ impl<'a> ContractClient<'a> {
         res
     }
     ///
-    ///# Panics
+    /// # Panics
     ///
-    ///Panics if the invoked contract returns an error or panics.
+    /// Panics if the invoked contract returns an error or panics.
     ///
-    ///Use [`Self::try_safe_add_two`] to receive errors instead of panicking.
+    /// Use [`Self::try_safe_add_two`] to receive errors instead of panicking.
     pub fn safe_add_two(&self, a: &u64, b: &u64) -> u64 {
         let _call_scope = soroban_sdk::testutils::ClientCallScope::enter(&self.env, self.config);
         use soroban_sdk::{FromVal, IntoVal};
@@ -752,9 +752,9 @@ impl<'a> ContractClient<'a> {
         res
     }
     ///
-    ///# Errors
+    /// # Errors
     ///
-    ///Returns an error if the invoked contract returns an error or panics. A panic in the invoked contract is caught and returned as an error rather than panicking the caller.
+    /// Returns an error if the invoked contract returns an error or panics. A panic in the invoked contract is caught and returned as an error rather than panicking the caller.
     pub fn try_safe_add_two(
         &self,
         a: &u64,

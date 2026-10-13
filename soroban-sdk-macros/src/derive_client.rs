@@ -208,20 +208,20 @@ pub fn derive_client_impl(crate_path: &Path, name: &str, fns: &[syn_ext::Fn]) ->
                 .filter(|attr| pass_through_attr_to_gen_code(attr))
                 .collect::<Vec<_>>();
             let fn_try_doc =
-                format!("Use [`Self::{fn_try_ident}`] to receive errors instead of panicking.");
+                format!(" Use [`Self::{fn_try_ident}`] to receive errors instead of panicking.");
             let fn_docs = quote! {
                 #[doc = ""]
-                #[doc = "# Panics"]
+                #[doc = " # Panics"]
                 #[doc = ""]
-                #[doc = "Panics if the invoked contract returns an error or panics."]
+                #[doc = " Panics if the invoked contract returns an error or panics."]
                 #[doc = ""]
                 #[doc = #fn_try_doc]
             };
             let fn_try_docs = quote! {
                 #[doc = ""]
-                #[doc = "# Errors"]
+                #[doc = " # Errors"]
                 #[doc = ""]
-                #[doc = "Returns an error if the invoked contract returns an error or panics. A panic in the invoked contract is caught and returned as an error rather than panicking the caller."]
+                #[doc = " Returns an error if the invoked contract returns an error or panics. A panic in the invoked contract is caught and returned as an error rather than panicking the caller."]
             };
             if cfg!(not(feature = "testutils")) {
                 quote! {

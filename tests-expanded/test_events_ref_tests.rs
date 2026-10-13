@@ -363,11 +363,11 @@ impl Contract {
 }
 impl<'a> ContractClient<'a> {
     ///
-    ///# Panics
+    /// # Panics
     ///
-    ///Panics if the invoked contract returns an error or panics.
+    /// Panics if the invoked contract returns an error or panics.
     ///
-    ///Use [`Self::try_transfer`] to receive errors instead of panicking.
+    /// Use [`Self::try_transfer`] to receive errors instead of panicking.
     pub fn transfer(&self, from: &Address, to: impl Into<MuxedAddress>, amount: &i128) -> () {
         let _call_scope = soroban_sdk::testutils::ClientCallScope::enter(&self.env, self.config);
         use soroban_sdk::{FromVal, IntoVal};
@@ -390,9 +390,9 @@ impl<'a> ContractClient<'a> {
         res
     }
     ///
-    ///# Errors
+    /// # Errors
     ///
-    ///Returns an error if the invoked contract returns an error or panics. A panic in the invoked contract is caught and returned as an error rather than panicking the caller.
+    /// Returns an error if the invoked contract returns an error or panics. A panic in the invoked contract is caught and returned as an error rather than panicking the caller.
     pub fn try_transfer(
         &self,
         from: &Address,
@@ -423,11 +423,11 @@ impl<'a> ContractClient<'a> {
         res
     }
     ///
-    ///# Panics
+    /// # Panics
     ///
-    ///Panics if the invoked contract returns an error or panics.
+    /// Panics if the invoked contract returns an error or panics.
     ///
-    ///Use [`Self::try_failed_transfer`] to receive errors instead of panicking.
+    /// Use [`Self::try_failed_transfer`] to receive errors instead of panicking.
     pub fn failed_transfer(&self, from: &Address, to: &Address, amount: &i128) -> () {
         let _call_scope = soroban_sdk::testutils::ClientCallScope::enter(&self.env, self.config);
         use soroban_sdk::{FromVal, IntoVal};
@@ -446,9 +446,9 @@ impl<'a> ContractClient<'a> {
         res
     }
     ///
-    ///# Errors
+    /// # Errors
     ///
-    ///Returns an error if the invoked contract returns an error or panics. A panic in the invoked contract is caught and returned as an error rather than panicking the caller.
+    /// Returns an error if the invoked contract returns an error or panics. A panic in the invoked contract is caught and returned as an error rather than panicking the caller.
     pub fn try_failed_transfer(
         &self,
         from: &Address,

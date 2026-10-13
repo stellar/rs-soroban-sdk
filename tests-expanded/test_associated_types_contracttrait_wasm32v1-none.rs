@@ -52,11 +52,11 @@ impl<'a> TraitClient<'a> {
 }
 impl<'a> TraitClient<'a> {
     ///
-    ///# Panics
+    /// # Panics
     ///
-    ///Panics if the invoked contract returns an error or panics.
+    /// Panics if the invoked contract returns an error or panics.
     ///
-    ///Use [`Self::try_exec`] to receive errors instead of panicking.
+    /// Use [`Self::try_exec`] to receive errors instead of panicking.
     pub fn exec(&self) -> String {
         use core::ops::Not;
         use soroban_sdk::{FromVal, IntoVal};
@@ -72,9 +72,9 @@ impl<'a> TraitClient<'a> {
         res
     }
     ///
-    ///# Errors
+    /// # Errors
     ///
-    ///Returns an error if the invoked contract returns an error or panics. A panic in the invoked contract is caught and returned as an error rather than panicking the caller.
+    /// Returns an error if the invoked contract returns an error or panics. A panic in the invoked contract is caught and returned as an error rather than panicking the caller.
     pub fn try_exec(
         &self,
     ) -> Result<
@@ -189,11 +189,11 @@ impl Contract {
 }
 impl<'a> ContractClient<'a> {
     ///
-    ///# Panics
+    /// # Panics
     ///
-    ///Panics if the invoked contract returns an error or panics.
+    /// Panics if the invoked contract returns an error or panics.
     ///
-    ///Use [`Self::try_exec`] to receive errors instead of panicking.
+    /// Use [`Self::try_exec`] to receive errors instead of panicking.
     pub fn exec(&self) -> String {
         use core::ops::Not;
         use soroban_sdk::{FromVal, IntoVal};
@@ -209,9 +209,9 @@ impl<'a> ContractClient<'a> {
         res
     }
     ///
-    ///# Errors
+    /// # Errors
     ///
-    ///Returns an error if the invoked contract returns an error or panics. A panic in the invoked contract is caught and returned as an error rather than panicking the caller.
+    /// Returns an error if the invoked contract returns an error or panics. A panic in the invoked contract is caught and returned as an error rather than panicking the caller.
     pub fn try_exec(
         &self,
     ) -> Result<
@@ -293,11 +293,11 @@ impl Contract {
 }
 impl<'a> ContractClient<'a> {
     ///
-    ///# Panics
+    /// # Panics
     ///
-    ///Panics if the invoked contract returns an error or panics.
+    /// Panics if the invoked contract returns an error or panics.
     ///
-    ///Use [`Self::try_exec2`] to receive errors instead of panicking.
+    /// Use [`Self::try_exec2`] to receive errors instead of panicking.
     pub fn exec2(&self) -> String {
         use core::ops::Not;
         use soroban_sdk::{FromVal, IntoVal};
@@ -313,9 +313,9 @@ impl<'a> ContractClient<'a> {
         res
     }
     ///
-    ///# Errors
+    /// # Errors
     ///
-    ///Returns an error if the invoked contract returns an error or panics. A panic in the invoked contract is caught and returned as an error rather than panicking the caller.
+    /// Returns an error if the invoked contract returns an error or panics. A panic in the invoked contract is caught and returned as an error rather than panicking the caller.
     pub fn try_exec2(
         &self,
     ) -> Result<

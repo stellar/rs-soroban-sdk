@@ -643,11 +643,11 @@ impl<'a> AllTypesClient<'a> {
     /// Test u32 values.
     /// Returns the input unchanged.
     ///
-    ///# Panics
+    /// # Panics
     ///
-    ///Panics if the invoked contract returns an error or panics.
+    /// Panics if the invoked contract returns an error or panics.
     ///
-    ///Use [`Self::try_test_u32`] to receive errors instead of panicking.
+    /// Use [`Self::try_test_u32`] to receive errors instead of panicking.
     pub fn test_u32(&self, v: &u32) -> u32 {
         use core::ops::Not;
         use soroban_sdk::{FromVal, IntoVal};
@@ -665,9 +665,9 @@ impl<'a> AllTypesClient<'a> {
     /// Test u32 values.
     /// Returns the input unchanged.
     ///
-    ///# Errors
+    /// # Errors
     ///
-    ///Returns an error if the invoked contract returns an error or panics. A panic in the invoked contract is caught and returned as an error rather than panicking the caller.
+    /// Returns an error if the invoked contract returns an error or panics. A panic in the invoked contract is caught and returned as an error rather than panicking the caller.
     pub fn try_test_u32(
         &self,
         v: &u32,
@@ -689,11 +689,11 @@ impl<'a> AllTypesClient<'a> {
     }
     /// Test i32 values.
     ///
-    ///# Panics
+    /// # Panics
     ///
-    ///Panics if the invoked contract returns an error or panics.
+    /// Panics if the invoked contract returns an error or panics.
     ///
-    ///Use [`Self::try_test_i32`] to receive errors instead of panicking.
+    /// Use [`Self::try_test_i32`] to receive errors instead of panicking.
     pub fn test_i32(&self, v: &i32) -> i32 {
         use core::ops::Not;
         use soroban_sdk::{FromVal, IntoVal};
@@ -710,9 +710,9 @@ impl<'a> AllTypesClient<'a> {
     }
     /// Test i32 values.
     ///
-    ///# Errors
+    /// # Errors
     ///
-    ///Returns an error if the invoked contract returns an error or panics. A panic in the invoked contract is caught and returned as an error rather than panicking the caller.
+    /// Returns an error if the invoked contract returns an error or panics. A panic in the invoked contract is caught and returned as an error rather than panicking the caller.
     pub fn try_test_i32(
         &self,
         v: &i32,
@@ -733,11 +733,11 @@ impl<'a> AllTypesClient<'a> {
         res
     }
     ///
-    ///# Panics
+    /// # Panics
     ///
-    ///Panics if the invoked contract returns an error or panics.
+    /// Panics if the invoked contract returns an error or panics.
     ///
-    ///Use [`Self::try_test_u64`] to receive errors instead of panicking.
+    /// Use [`Self::try_test_u64`] to receive errors instead of panicking.
     pub fn test_u64(&self, v: &u64) -> u64 {
         use core::ops::Not;
         use soroban_sdk::{FromVal, IntoVal};
@@ -753,9 +753,9 @@ impl<'a> AllTypesClient<'a> {
         res
     }
     ///
-    ///# Errors
+    /// # Errors
     ///
-    ///Returns an error if the invoked contract returns an error or panics. A panic in the invoked contract is caught and returned as an error rather than panicking the caller.
+    /// Returns an error if the invoked contract returns an error or panics. A panic in the invoked contract is caught and returned as an error rather than panicking the caller.
     pub fn try_test_u64(
         &self,
         v: &u64,
@@ -776,11 +776,11 @@ impl<'a> AllTypesClient<'a> {
         res
     }
     ///
-    ///# Panics
+    /// # Panics
     ///
-    ///Panics if the invoked contract returns an error or panics.
+    /// Panics if the invoked contract returns an error or panics.
     ///
-    ///Use [`Self::try_test_i64`] to receive errors instead of panicking.
+    /// Use [`Self::try_test_i64`] to receive errors instead of panicking.
     pub fn test_i64(&self, v: &i64) -> i64 {
         use core::ops::Not;
         use soroban_sdk::{FromVal, IntoVal};
@@ -796,9 +796,9 @@ impl<'a> AllTypesClient<'a> {
         res
     }
     ///
-    ///# Errors
+    /// # Errors
     ///
-    ///Returns an error if the invoked contract returns an error or panics. A panic in the invoked contract is caught and returned as an error rather than panicking the caller.
+    /// Returns an error if the invoked contract returns an error or panics. A panic in the invoked contract is caught and returned as an error rather than panicking the caller.
     pub fn try_test_i64(
         &self,
         v: &i64,
@@ -819,11 +819,11 @@ impl<'a> AllTypesClient<'a> {
         res
     }
     ///
-    ///# Panics
+    /// # Panics
     ///
-    ///Panics if the invoked contract returns an error or panics.
+    /// Panics if the invoked contract returns an error or panics.
     ///
-    ///Use [`Self::try_test_u128`] to receive errors instead of panicking.
+    /// Use [`Self::try_test_u128`] to receive errors instead of panicking.
     pub fn test_u128(&self, v: &u128) -> u128 {
         use core::ops::Not;
         use soroban_sdk::{FromVal, IntoVal};
@@ -839,9 +839,9 @@ impl<'a> AllTypesClient<'a> {
         res
     }
     ///
-    ///# Errors
+    /// # Errors
     ///
-    ///Returns an error if the invoked contract returns an error or panics. A panic in the invoked contract is caught and returned as an error rather than panicking the caller.
+    /// Returns an error if the invoked contract returns an error or panics. A panic in the invoked contract is caught and returned as an error rather than panicking the caller.
     pub fn try_test_u128(
         &self,
         v: &u128,
@@ -862,11 +862,11 @@ impl<'a> AllTypesClient<'a> {
         res
     }
     ///
-    ///# Panics
+    /// # Panics
     ///
-    ///Panics if the invoked contract returns an error or panics.
+    /// Panics if the invoked contract returns an error or panics.
     ///
-    ///Use [`Self::try_test_i128`] to receive errors instead of panicking.
+    /// Use [`Self::try_test_i128`] to receive errors instead of panicking.
     pub fn test_i128(&self, v: &i128) -> i128 {
         use core::ops::Not;
         use soroban_sdk::{FromVal, IntoVal};
@@ -882,9 +882,9 @@ impl<'a> AllTypesClient<'a> {
         res
     }
     ///
-    ///# Errors
+    /// # Errors
     ///
-    ///Returns an error if the invoked contract returns an error or panics. A panic in the invoked contract is caught and returned as an error rather than panicking the caller.
+    /// Returns an error if the invoked contract returns an error or panics. A panic in the invoked contract is caught and returned as an error rather than panicking the caller.
     pub fn try_test_i128(
         &self,
         v: &i128,
@@ -905,11 +905,11 @@ impl<'a> AllTypesClient<'a> {
         res
     }
     ///
-    ///# Panics
+    /// # Panics
     ///
-    ///Panics if the invoked contract returns an error or panics.
+    /// Panics if the invoked contract returns an error or panics.
     ///
-    ///Use [`Self::try_test_bool`] to receive errors instead of panicking.
+    /// Use [`Self::try_test_bool`] to receive errors instead of panicking.
     pub fn test_bool(&self, v: &bool) -> bool {
         use core::ops::Not;
         use soroban_sdk::{FromVal, IntoVal};
@@ -925,9 +925,9 @@ impl<'a> AllTypesClient<'a> {
         res
     }
     ///
-    ///# Errors
+    /// # Errors
     ///
-    ///Returns an error if the invoked contract returns an error or panics. A panic in the invoked contract is caught and returned as an error rather than panicking the caller.
+    /// Returns an error if the invoked contract returns an error or panics. A panic in the invoked contract is caught and returned as an error rather than panicking the caller.
     pub fn try_test_bool(
         &self,
         v: &bool,
@@ -948,11 +948,11 @@ impl<'a> AllTypesClient<'a> {
         res
     }
     ///
-    ///# Panics
+    /// # Panics
     ///
-    ///Panics if the invoked contract returns an error or panics.
+    /// Panics if the invoked contract returns an error or panics.
     ///
-    ///Use [`Self::try_test_address`] to receive errors instead of panicking.
+    /// Use [`Self::try_test_address`] to receive errors instead of panicking.
     pub fn test_address(&self, v: &Address) -> Address {
         use core::ops::Not;
         use soroban_sdk::{FromVal, IntoVal};
@@ -964,9 +964,9 @@ impl<'a> AllTypesClient<'a> {
         res
     }
     ///
-    ///# Errors
+    /// # Errors
     ///
-    ///Returns an error if the invoked contract returns an error or panics. A panic in the invoked contract is caught and returned as an error rather than panicking the caller.
+    /// Returns an error if the invoked contract returns an error or panics. A panic in the invoked contract is caught and returned as an error rather than panicking the caller.
     pub fn try_test_address(
         &self,
         v: &Address,
@@ -986,11 +986,11 @@ impl<'a> AllTypesClient<'a> {
         res
     }
     ///
-    ///# Panics
+    /// # Panics
     ///
-    ///Panics if the invoked contract returns an error or panics.
+    /// Panics if the invoked contract returns an error or panics.
     ///
-    ///Use [`Self::try_test_bytes`] to receive errors instead of panicking.
+    /// Use [`Self::try_test_bytes`] to receive errors instead of panicking.
     pub fn test_bytes(&self, v: &Bytes) -> Bytes {
         use core::ops::Not;
         use soroban_sdk::{FromVal, IntoVal};
@@ -1002,9 +1002,9 @@ impl<'a> AllTypesClient<'a> {
         res
     }
     ///
-    ///# Errors
+    /// # Errors
     ///
-    ///Returns an error if the invoked contract returns an error or panics. A panic in the invoked contract is caught and returned as an error rather than panicking the caller.
+    /// Returns an error if the invoked contract returns an error or panics. A panic in the invoked contract is caught and returned as an error rather than panicking the caller.
     pub fn try_test_bytes(
         &self,
         v: &Bytes,
@@ -1024,11 +1024,11 @@ impl<'a> AllTypesClient<'a> {
         res
     }
     ///
-    ///# Panics
+    /// # Panics
     ///
-    ///Panics if the invoked contract returns an error or panics.
+    /// Panics if the invoked contract returns an error or panics.
     ///
-    ///Use [`Self::try_test_bytes_n`] to receive errors instead of panicking.
+    /// Use [`Self::try_test_bytes_n`] to receive errors instead of panicking.
     pub fn test_bytes_n(&self, v: &BytesN<32>) -> BytesN<32> {
         use core::ops::Not;
         use soroban_sdk::{FromVal, IntoVal};
@@ -1040,9 +1040,9 @@ impl<'a> AllTypesClient<'a> {
         res
     }
     ///
-    ///# Errors
+    /// # Errors
     ///
-    ///Returns an error if the invoked contract returns an error or panics. A panic in the invoked contract is caught and returned as an error rather than panicking the caller.
+    /// Returns an error if the invoked contract returns an error or panics. A panic in the invoked contract is caught and returned as an error rather than panicking the caller.
     pub fn try_test_bytes_n(
         &self,
         v: &BytesN<32>,
@@ -1062,11 +1062,11 @@ impl<'a> AllTypesClient<'a> {
         res
     }
     ///
-    ///# Panics
+    /// # Panics
     ///
-    ///Panics if the invoked contract returns an error or panics.
+    /// Panics if the invoked contract returns an error or panics.
     ///
-    ///Use [`Self::try_test_string`] to receive errors instead of panicking.
+    /// Use [`Self::try_test_string`] to receive errors instead of panicking.
     pub fn test_string(&self, v: &String) -> String {
         use core::ops::Not;
         use soroban_sdk::{FromVal, IntoVal};
@@ -1078,9 +1078,9 @@ impl<'a> AllTypesClient<'a> {
         res
     }
     ///
-    ///# Errors
+    /// # Errors
     ///
-    ///Returns an error if the invoked contract returns an error or panics. A panic in the invoked contract is caught and returned as an error rather than panicking the caller.
+    /// Returns an error if the invoked contract returns an error or panics. A panic in the invoked contract is caught and returned as an error rather than panicking the caller.
     pub fn try_test_string(
         &self,
         v: &String,
@@ -1100,11 +1100,11 @@ impl<'a> AllTypesClient<'a> {
         res
     }
     ///
-    ///# Panics
+    /// # Panics
     ///
-    ///Panics if the invoked contract returns an error or panics.
+    /// Panics if the invoked contract returns an error or panics.
     ///
-    ///Use [`Self::try_test_symbol`] to receive errors instead of panicking.
+    /// Use [`Self::try_test_symbol`] to receive errors instead of panicking.
     pub fn test_symbol(&self, v: &Symbol) -> Symbol {
         use core::ops::Not;
         use soroban_sdk::{FromVal, IntoVal};
@@ -1116,9 +1116,9 @@ impl<'a> AllTypesClient<'a> {
         res
     }
     ///
-    ///# Errors
+    /// # Errors
     ///
-    ///Returns an error if the invoked contract returns an error or panics. A panic in the invoked contract is caught and returned as an error rather than panicking the caller.
+    /// Returns an error if the invoked contract returns an error or panics. A panic in the invoked contract is caught and returned as an error rather than panicking the caller.
     pub fn try_test_symbol(
         &self,
         v: &Symbol,
@@ -1138,11 +1138,11 @@ impl<'a> AllTypesClient<'a> {
         res
     }
     ///
-    ///# Panics
+    /// # Panics
     ///
-    ///Panics if the invoked contract returns an error or panics.
+    /// Panics if the invoked contract returns an error or panics.
     ///
-    ///Use [`Self::try_test_vec`] to receive errors instead of panicking.
+    /// Use [`Self::try_test_vec`] to receive errors instead of panicking.
     pub fn test_vec(&self, v: &Vec<u32>) -> Vec<u32> {
         use core::ops::Not;
         use soroban_sdk::{FromVal, IntoVal};
@@ -1158,9 +1158,9 @@ impl<'a> AllTypesClient<'a> {
         res
     }
     ///
-    ///# Errors
+    /// # Errors
     ///
-    ///Returns an error if the invoked contract returns an error or panics. A panic in the invoked contract is caught and returned as an error rather than panicking the caller.
+    /// Returns an error if the invoked contract returns an error or panics. A panic in the invoked contract is caught and returned as an error rather than panicking the caller.
     pub fn try_test_vec(
         &self,
         v: &Vec<u32>,
@@ -1184,11 +1184,11 @@ impl<'a> AllTypesClient<'a> {
         res
     }
     ///
-    ///# Panics
+    /// # Panics
     ///
-    ///Panics if the invoked contract returns an error or panics.
+    /// Panics if the invoked contract returns an error or panics.
     ///
-    ///Use [`Self::try_test_map`] to receive errors instead of panicking.
+    /// Use [`Self::try_test_map`] to receive errors instead of panicking.
     pub fn test_map(&self, v: &Map<u32, u32>) -> Map<u32, u32> {
         use core::ops::Not;
         use soroban_sdk::{FromVal, IntoVal};
@@ -1204,9 +1204,9 @@ impl<'a> AllTypesClient<'a> {
         res
     }
     ///
-    ///# Errors
+    /// # Errors
     ///
-    ///Returns an error if the invoked contract returns an error or panics. A panic in the invoked contract is caught and returned as an error rather than panicking the caller.
+    /// Returns an error if the invoked contract returns an error or panics. A panic in the invoked contract is caught and returned as an error rather than panicking the caller.
     pub fn try_test_map(
         &self,
         v: &Map<u32, u32>,
@@ -1230,11 +1230,11 @@ impl<'a> AllTypesClient<'a> {
         res
     }
     ///
-    ///# Panics
+    /// # Panics
     ///
-    ///Panics if the invoked contract returns an error or panics.
+    /// Panics if the invoked contract returns an error or panics.
     ///
-    ///Use [`Self::try_test_duration`] to receive errors instead of panicking.
+    /// Use [`Self::try_test_duration`] to receive errors instead of panicking.
     pub fn test_duration(&self, v: &Duration) -> Duration {
         use core::ops::Not;
         use soroban_sdk::{FromVal, IntoVal};
@@ -1246,9 +1246,9 @@ impl<'a> AllTypesClient<'a> {
         res
     }
     ///
-    ///# Errors
+    /// # Errors
     ///
-    ///Returns an error if the invoked contract returns an error or panics. A panic in the invoked contract is caught and returned as an error rather than panicking the caller.
+    /// Returns an error if the invoked contract returns an error or panics. A panic in the invoked contract is caught and returned as an error rather than panicking the caller.
     pub fn try_test_duration(
         &self,
         v: &Duration,
@@ -1268,11 +1268,11 @@ impl<'a> AllTypesClient<'a> {
         res
     }
     ///
-    ///# Panics
+    /// # Panics
     ///
-    ///Panics if the invoked contract returns an error or panics.
+    /// Panics if the invoked contract returns an error or panics.
     ///
-    ///Use [`Self::try_test_timepoint`] to receive errors instead of panicking.
+    /// Use [`Self::try_test_timepoint`] to receive errors instead of panicking.
     pub fn test_timepoint(&self, v: &Timepoint) -> Timepoint {
         use core::ops::Not;
         use soroban_sdk::{FromVal, IntoVal};
@@ -1284,9 +1284,9 @@ impl<'a> AllTypesClient<'a> {
         res
     }
     ///
-    ///# Errors
+    /// # Errors
     ///
-    ///Returns an error if the invoked contract returns an error or panics. A panic in the invoked contract is caught and returned as an error rather than panicking the caller.
+    /// Returns an error if the invoked contract returns an error or panics. A panic in the invoked contract is caught and returned as an error rather than panicking the caller.
     pub fn try_test_timepoint(
         &self,
         v: &Timepoint,
@@ -1306,11 +1306,11 @@ impl<'a> AllTypesClient<'a> {
         res
     }
     ///
-    ///# Panics
+    /// # Panics
     ///
-    ///Panics if the invoked contract returns an error or panics.
+    /// Panics if the invoked contract returns an error or panics.
     ///
-    ///Use [`Self::try_test_i256`] to receive errors instead of panicking.
+    /// Use [`Self::try_test_i256`] to receive errors instead of panicking.
     pub fn test_i256(&self, v: &I256) -> I256 {
         use core::ops::Not;
         use soroban_sdk::{FromVal, IntoVal};
@@ -1326,9 +1326,9 @@ impl<'a> AllTypesClient<'a> {
         res
     }
     ///
-    ///# Errors
+    /// # Errors
     ///
-    ///Returns an error if the invoked contract returns an error or panics. A panic in the invoked contract is caught and returned as an error rather than panicking the caller.
+    /// Returns an error if the invoked contract returns an error or panics. A panic in the invoked contract is caught and returned as an error rather than panicking the caller.
     pub fn try_test_i256(
         &self,
         v: &I256,
@@ -1349,11 +1349,11 @@ impl<'a> AllTypesClient<'a> {
         res
     }
     ///
-    ///# Panics
+    /// # Panics
     ///
-    ///Panics if the invoked contract returns an error or panics.
+    /// Panics if the invoked contract returns an error or panics.
     ///
-    ///Use [`Self::try_test_u256`] to receive errors instead of panicking.
+    /// Use [`Self::try_test_u256`] to receive errors instead of panicking.
     pub fn test_u256(&self, v: &U256) -> U256 {
         use core::ops::Not;
         use soroban_sdk::{FromVal, IntoVal};
@@ -1369,9 +1369,9 @@ impl<'a> AllTypesClient<'a> {
         res
     }
     ///
-    ///# Errors
+    /// # Errors
     ///
-    ///Returns an error if the invoked contract returns an error or panics. A panic in the invoked contract is caught and returned as an error rather than panicking the caller.
+    /// Returns an error if the invoked contract returns an error or panics. A panic in the invoked contract is caught and returned as an error rather than panicking the caller.
     pub fn try_test_u256(
         &self,
         v: &U256,
@@ -1392,11 +1392,11 @@ impl<'a> AllTypesClient<'a> {
         res
     }
     ///
-    ///# Panics
+    /// # Panics
     ///
-    ///Panics if the invoked contract returns an error or panics.
+    /// Panics if the invoked contract returns an error or panics.
     ///
-    ///Use [`Self::try_test_env_param`] to receive errors instead of panicking.
+    /// Use [`Self::try_test_env_param`] to receive errors instead of panicking.
     pub fn test_env_param(&self) -> u32 {
         use core::ops::Not;
         use soroban_sdk::{FromVal, IntoVal};
@@ -1408,9 +1408,9 @@ impl<'a> AllTypesClient<'a> {
         res
     }
     ///
-    ///# Errors
+    /// # Errors
     ///
-    ///Returns an error if the invoked contract returns an error or panics. A panic in the invoked contract is caught and returned as an error rather than panicking the caller.
+    /// Returns an error if the invoked contract returns an error or panics. A panic in the invoked contract is caught and returned as an error rather than panicking the caller.
     pub fn try_test_env_param(
         &self,
     ) -> Result<
@@ -1426,11 +1426,11 @@ impl<'a> AllTypesClient<'a> {
         res
     }
     ///
-    ///# Panics
+    /// # Panics
     ///
-    ///Panics if the invoked contract returns an error or panics.
+    /// Panics if the invoked contract returns an error or panics.
     ///
-    ///Use [`Self::try_test_struct`] to receive errors instead of panicking.
+    /// Use [`Self::try_test_struct`] to receive errors instead of panicking.
     pub fn test_struct(&self, v: &MyStruct) -> MyStruct {
         use core::ops::Not;
         use soroban_sdk::{FromVal, IntoVal};
@@ -1442,9 +1442,9 @@ impl<'a> AllTypesClient<'a> {
         res
     }
     ///
-    ///# Errors
+    /// # Errors
     ///
-    ///Returns an error if the invoked contract returns an error or panics. A panic in the invoked contract is caught and returned as an error rather than panicking the caller.
+    /// Returns an error if the invoked contract returns an error or panics. A panic in the invoked contract is caught and returned as an error rather than panicking the caller.
     pub fn try_test_struct(
         &self,
         v: &MyStruct,
@@ -1464,11 +1464,11 @@ impl<'a> AllTypesClient<'a> {
         res
     }
     ///
-    ///# Panics
+    /// # Panics
     ///
-    ///Panics if the invoked contract returns an error or panics.
+    /// Panics if the invoked contract returns an error or panics.
     ///
-    ///Use [`Self::try_test_enum_unit`] to receive errors instead of panicking.
+    /// Use [`Self::try_test_enum_unit`] to receive errors instead of panicking.
     pub fn test_enum_unit(&self, v: &MyEnumUnit) -> MyEnumUnit {
         use core::ops::Not;
         use soroban_sdk::{FromVal, IntoVal};
@@ -1480,9 +1480,9 @@ impl<'a> AllTypesClient<'a> {
         res
     }
     ///
-    ///# Errors
+    /// # Errors
     ///
-    ///Returns an error if the invoked contract returns an error or panics. A panic in the invoked contract is caught and returned as an error rather than panicking the caller.
+    /// Returns an error if the invoked contract returns an error or panics. A panic in the invoked contract is caught and returned as an error rather than panicking the caller.
     pub fn try_test_enum_unit(
         &self,
         v: &MyEnumUnit,
@@ -1502,11 +1502,11 @@ impl<'a> AllTypesClient<'a> {
         res
     }
     ///
-    ///# Panics
+    /// # Panics
     ///
-    ///Panics if the invoked contract returns an error or panics.
+    /// Panics if the invoked contract returns an error or panics.
     ///
-    ///Use [`Self::try_test_enum_variants`] to receive errors instead of panicking.
+    /// Use [`Self::try_test_enum_variants`] to receive errors instead of panicking.
     pub fn test_enum_variants(&self, v: &MyEnumVariants) -> MyEnumVariants {
         use core::ops::Not;
         use soroban_sdk::{FromVal, IntoVal};
@@ -1518,9 +1518,9 @@ impl<'a> AllTypesClient<'a> {
         res
     }
     ///
-    ///# Errors
+    /// # Errors
     ///
-    ///Returns an error if the invoked contract returns an error or panics. A panic in the invoked contract is caught and returned as an error rather than panicking the caller.
+    /// Returns an error if the invoked contract returns an error or panics. A panic in the invoked contract is caught and returned as an error rather than panicking the caller.
     pub fn try_test_enum_variants(
         &self,
         v: &MyEnumVariants,

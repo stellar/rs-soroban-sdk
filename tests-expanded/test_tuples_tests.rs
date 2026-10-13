@@ -239,11 +239,11 @@ impl Contract {
 }
 impl<'a> ContractClient<'a> {
     ///
-    ///# Panics
+    /// # Panics
     ///
-    ///Panics if the invoked contract returns an error or panics.
+    /// Panics if the invoked contract returns an error or panics.
     ///
-    ///Use [`Self::try_void_fn`] to receive errors instead of panicking.
+    /// Use [`Self::try_void_fn`] to receive errors instead of panicking.
     pub fn void_fn(&self, _void_arg: &()) -> () {
         let _call_scope = soroban_sdk::testutils::ClientCallScope::enter(&self.env, self.config);
         use soroban_sdk::{FromVal, IntoVal};
@@ -259,9 +259,9 @@ impl<'a> ContractClient<'a> {
         res
     }
     ///
-    ///# Errors
+    /// # Errors
     ///
-    ///Returns an error if the invoked contract returns an error or panics. A panic in the invoked contract is caught and returned as an error rather than panicking the caller.
+    /// Returns an error if the invoked contract returns an error or panics. A panic in the invoked contract is caught and returned as an error rather than panicking the caller.
     pub fn try_void_fn(
         &self,
         _void_arg: &(),
@@ -283,11 +283,11 @@ impl<'a> ContractClient<'a> {
         res
     }
     ///
-    ///# Panics
+    /// # Panics
     ///
-    ///Panics if the invoked contract returns an error or panics.
+    /// Panics if the invoked contract returns an error or panics.
     ///
-    ///Use [`Self::try_tuple1`] to receive errors instead of panicking.
+    /// Use [`Self::try_tuple1`] to receive errors instead of panicking.
     pub fn tuple1(&self, arg: &(u32,)) -> (u32,) {
         let _call_scope = soroban_sdk::testutils::ClientCallScope::enter(&self.env, self.config);
         use soroban_sdk::{FromVal, IntoVal};
@@ -303,9 +303,9 @@ impl<'a> ContractClient<'a> {
         res
     }
     ///
-    ///# Errors
+    /// # Errors
     ///
-    ///Returns an error if the invoked contract returns an error or panics. A panic in the invoked contract is caught and returned as an error rather than panicking the caller.
+    /// Returns an error if the invoked contract returns an error or panics. A panic in the invoked contract is caught and returned as an error rather than panicking the caller.
     pub fn try_tuple1(
         &self,
         arg: &(u32,),
@@ -330,11 +330,11 @@ impl<'a> ContractClient<'a> {
         res
     }
     ///
-    ///# Panics
+    /// # Panics
     ///
-    ///Panics if the invoked contract returns an error or panics.
+    /// Panics if the invoked contract returns an error or panics.
     ///
-    ///Use [`Self::try_tuple2`] to receive errors instead of panicking.
+    /// Use [`Self::try_tuple2`] to receive errors instead of panicking.
     pub fn tuple2(&self, arg: &(u32, i64)) -> (u32, i64) {
         let _call_scope = soroban_sdk::testutils::ClientCallScope::enter(&self.env, self.config);
         use soroban_sdk::{FromVal, IntoVal};
@@ -350,9 +350,9 @@ impl<'a> ContractClient<'a> {
         res
     }
     ///
-    ///# Errors
+    /// # Errors
     ///
-    ///Returns an error if the invoked contract returns an error or panics. A panic in the invoked contract is caught and returned as an error rather than panicking the caller.
+    /// Returns an error if the invoked contract returns an error or panics. A panic in the invoked contract is caught and returned as an error rather than panicking the caller.
     pub fn try_tuple2(
         &self,
         arg: &(u32, i64),
@@ -668,11 +668,11 @@ mod test {
         }
         impl<'a> Client<'a> {
             ///
-            ///# Panics
+            /// # Panics
             ///
-            ///Panics if the invoked contract returns an error or panics.
+            /// Panics if the invoked contract returns an error or panics.
             ///
-            ///Use [`Self::try_tuple1`] to receive errors instead of panicking.
+            /// Use [`Self::try_tuple1`] to receive errors instead of panicking.
             pub fn tuple1(&self, arg: &(u32,)) -> (u32,) {
                 let _call_scope =
                     soroban_sdk::testutils::ClientCallScope::enter(&self.env, self.config);
@@ -689,9 +689,9 @@ mod test {
                 res
             }
             ///
-            ///# Errors
+            /// # Errors
             ///
-            ///Returns an error if the invoked contract returns an error or panics. A panic in the invoked contract is caught and returned as an error rather than panicking the caller.
+            /// Returns an error if the invoked contract returns an error or panics. A panic in the invoked contract is caught and returned as an error rather than panicking the caller.
             pub fn try_tuple1(
                 &self,
                 arg: &(u32,),
@@ -717,11 +717,11 @@ mod test {
                 res
             }
             ///
-            ///# Panics
+            /// # Panics
             ///
-            ///Panics if the invoked contract returns an error or panics.
+            /// Panics if the invoked contract returns an error or panics.
             ///
-            ///Use [`Self::try_tuple2`] to receive errors instead of panicking.
+            /// Use [`Self::try_tuple2`] to receive errors instead of panicking.
             pub fn tuple2(&self, arg: &(u32, i64)) -> (u32, i64) {
                 let _call_scope =
                     soroban_sdk::testutils::ClientCallScope::enter(&self.env, self.config);
@@ -738,9 +738,9 @@ mod test {
                 res
             }
             ///
-            ///# Errors
+            /// # Errors
             ///
-            ///Returns an error if the invoked contract returns an error or panics. A panic in the invoked contract is caught and returned as an error rather than panicking the caller.
+            /// Returns an error if the invoked contract returns an error or panics. A panic in the invoked contract is caught and returned as an error rather than panicking the caller.
             pub fn try_tuple2(
                 &self,
                 arg: &(u32, i64),
@@ -772,11 +772,11 @@ mod test {
                 res
             }
             ///
-            ///# Panics
+            /// # Panics
             ///
-            ///Panics if the invoked contract returns an error or panics.
+            /// Panics if the invoked contract returns an error or panics.
             ///
-            ///Use [`Self::try_void_fn`] to receive errors instead of panicking.
+            /// Use [`Self::try_void_fn`] to receive errors instead of panicking.
             pub fn void_fn(&self, void_arg: &()) -> () {
                 let _call_scope =
                     soroban_sdk::testutils::ClientCallScope::enter(&self.env, self.config);
@@ -793,9 +793,9 @@ mod test {
                 res
             }
             ///
-            ///# Errors
+            /// # Errors
             ///
-            ///Returns an error if the invoked contract returns an error or panics. A panic in the invoked contract is caught and returned as an error rather than panicking the caller.
+            /// Returns an error if the invoked contract returns an error or panics. A panic in the invoked contract is caught and returned as an error rather than panicking the caller.
             pub fn try_void_fn(
                 &self,
                 void_arg: &(),

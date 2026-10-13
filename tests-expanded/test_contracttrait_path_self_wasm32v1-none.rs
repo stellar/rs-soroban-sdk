@@ -32,11 +32,11 @@ impl<'a> SelfPathTraitClient<'a> {
 }
 impl<'a> SelfPathTraitClient<'a> {
     ///
-    ///# Panics
+    /// # Panics
     ///
-    ///Panics if the invoked contract returns an error or panics.
+    /// Panics if the invoked contract returns an error or panics.
     ///
-    ///Use [`Self::try_self_path_method`] to receive errors instead of panicking.
+    /// Use [`Self::try_self_path_method`] to receive errors instead of panicking.
     pub fn self_path_method(&self) -> u32 {
         use core::ops::Not;
         use soroban_sdk::{FromVal, IntoVal};
@@ -48,9 +48,9 @@ impl<'a> SelfPathTraitClient<'a> {
         res
     }
     ///
-    ///# Errors
+    /// # Errors
     ///
-    ///Returns an error if the invoked contract returns an error or panics. A panic in the invoked contract is caught and returned as an error rather than panicking the caller.
+    /// Returns an error if the invoked contract returns an error or panics. A panic in the invoked contract is caught and returned as an error rather than panicking the caller.
     pub fn try_self_path_method(
         &self,
     ) -> Result<
@@ -180,11 +180,11 @@ impl ContractSelfPath {
 }
 impl<'a> ContractSelfPathClient<'a> {
     ///
-    ///# Panics
+    /// # Panics
     ///
-    ///Panics if the invoked contract returns an error or panics.
+    /// Panics if the invoked contract returns an error or panics.
     ///
-    ///Use [`Self::try_self_path_method`] to receive errors instead of panicking.
+    /// Use [`Self::try_self_path_method`] to receive errors instead of panicking.
     pub fn self_path_method(&self) -> u32 {
         use core::ops::Not;
         use soroban_sdk::{FromVal, IntoVal};
@@ -196,9 +196,9 @@ impl<'a> ContractSelfPathClient<'a> {
         res
     }
     ///
-    ///# Errors
+    /// # Errors
     ///
-    ///Returns an error if the invoked contract returns an error or panics. A panic in the invoked contract is caught and returned as an error rather than panicking the caller.
+    /// Returns an error if the invoked contract returns an error or panics. A panic in the invoked contract is caught and returned as an error rather than panicking the caller.
     pub fn try_self_path_method(
         &self,
     ) -> Result<

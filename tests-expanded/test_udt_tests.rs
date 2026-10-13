@@ -3864,11 +3864,11 @@ impl Contract {
 }
 impl<'a> ContractClient<'a> {
     ///
-    ///# Panics
+    /// # Panics
     ///
-    ///Panics if the invoked contract returns an error or panics.
+    /// Panics if the invoked contract returns an error or panics.
     ///
-    ///Use [`Self::try_add`] to receive errors instead of panicking.
+    /// Use [`Self::try_add`] to receive errors instead of panicking.
     pub fn add(&self, a: &UdtEnum, b: &UdtEnum) -> i64 {
         let _call_scope = soroban_sdk::testutils::ClientCallScope::enter(&self.env, self.config);
         use soroban_sdk::{FromVal, IntoVal};
@@ -3887,9 +3887,9 @@ impl<'a> ContractClient<'a> {
         res
     }
     ///
-    ///# Errors
+    /// # Errors
     ///
-    ///Returns an error if the invoked contract returns an error or panics. A panic in the invoked contract is caught and returned as an error rather than panicking the caller.
+    /// Returns an error if the invoked contract returns an error or panics. A panic in the invoked contract is caught and returned as an error rather than panicking the caller.
     pub fn try_add(
         &self,
         a: &UdtEnum,
@@ -3915,11 +3915,11 @@ impl<'a> ContractClient<'a> {
         res
     }
     ///
-    ///# Panics
+    /// # Panics
     ///
-    ///Panics if the invoked contract returns an error or panics.
+    /// Panics if the invoked contract returns an error or panics.
     ///
-    ///Use [`Self::try_recursive`] to receive errors instead of panicking.
+    /// Use [`Self::try_recursive`] to receive errors instead of panicking.
     pub fn recursive(&self, a: &UdtRecursive) -> Option<UdtRecursive> {
         let _call_scope = soroban_sdk::testutils::ClientCallScope::enter(&self.env, self.config);
         use soroban_sdk::{FromVal, IntoVal};
@@ -3935,9 +3935,9 @@ impl<'a> ContractClient<'a> {
         res
     }
     ///
-    ///# Errors
+    /// # Errors
     ///
-    ///Returns an error if the invoked contract returns an error or panics. A panic in the invoked contract is caught and returned as an error rather than panicking the caller.
+    /// Returns an error if the invoked contract returns an error or panics. A panic in the invoked contract is caught and returned as an error rather than panicking the caller.
     pub fn try_recursive(
         &self,
         a: &UdtRecursive,
@@ -3964,11 +3964,11 @@ impl<'a> ContractClient<'a> {
         res
     }
     ///
-    ///# Panics
+    /// # Panics
     ///
-    ///Panics if the invoked contract returns an error or panics.
+    /// Panics if the invoked contract returns an error or panics.
     ///
-    ///Use [`Self::try_recursive_enum`] to receive errors instead of panicking.
+    /// Use [`Self::try_recursive_enum`] to receive errors instead of panicking.
     pub fn recursive_enum(&self, a: &RecursiveEnum, key: &u32) -> Option<RecursiveEnum> {
         let _call_scope = soroban_sdk::testutils::ClientCallScope::enter(&self.env, self.config);
         use soroban_sdk::{FromVal, IntoVal};
@@ -3983,9 +3983,9 @@ impl<'a> ContractClient<'a> {
         res
     }
     ///
-    ///# Errors
+    /// # Errors
     ///
-    ///Returns an error if the invoked contract returns an error or panics. A panic in the invoked contract is caught and returned as an error rather than panicking the caller.
+    /// Returns an error if the invoked contract returns an error or panics. A panic in the invoked contract is caught and returned as an error rather than panicking the caller.
     pub fn try_recursive_enum(
         &self,
         a: &RecursiveEnum,
@@ -4647,11 +4647,11 @@ mod test_with_wasm {
         }
         impl<'a> Client<'a> {
             ///
-            ///# Panics
+            /// # Panics
             ///
-            ///Panics if the invoked contract returns an error or panics.
+            /// Panics if the invoked contract returns an error or panics.
             ///
-            ///Use [`Self::try_add`] to receive errors instead of panicking.
+            /// Use [`Self::try_add`] to receive errors instead of panicking.
             pub fn add(&self, a: &UdtEnum, b: &UdtEnum) -> i64 {
                 let _call_scope =
                     soroban_sdk::testutils::ClientCallScope::enter(&self.env, self.config);
@@ -4671,9 +4671,9 @@ mod test_with_wasm {
                 res
             }
             ///
-            ///# Errors
+            /// # Errors
             ///
-            ///Returns an error if the invoked contract returns an error or panics. A panic in the invoked contract is caught and returned as an error rather than panicking the caller.
+            /// Returns an error if the invoked contract returns an error or panics. A panic in the invoked contract is caught and returned as an error rather than panicking the caller.
             pub fn try_add(
                 &self,
                 a: &UdtEnum,
@@ -4703,11 +4703,11 @@ mod test_with_wasm {
                 res
             }
             ///
-            ///# Panics
+            /// # Panics
             ///
-            ///Panics if the invoked contract returns an error or panics.
+            /// Panics if the invoked contract returns an error or panics.
             ///
-            ///Use [`Self::try_recursive`] to receive errors instead of panicking.
+            /// Use [`Self::try_recursive`] to receive errors instead of panicking.
             pub fn recursive(&self, a: &UdtRecursive) -> Option<UdtRecursive> {
                 let _call_scope =
                     soroban_sdk::testutils::ClientCallScope::enter(&self.env, self.config);
@@ -4724,9 +4724,9 @@ mod test_with_wasm {
                 res
             }
             ///
-            ///# Errors
+            /// # Errors
             ///
-            ///Returns an error if the invoked contract returns an error or panics. A panic in the invoked contract is caught and returned as an error rather than panicking the caller.
+            /// Returns an error if the invoked contract returns an error or panics. A panic in the invoked contract is caught and returned as an error rather than panicking the caller.
             pub fn try_recursive(
                 &self,
                 a: &UdtRecursive,
@@ -4755,11 +4755,11 @@ mod test_with_wasm {
                 res
             }
             ///
-            ///# Panics
+            /// # Panics
             ///
-            ///Panics if the invoked contract returns an error or panics.
+            /// Panics if the invoked contract returns an error or panics.
             ///
-            ///Use [`Self::try_recursive_enum`] to receive errors instead of panicking.
+            /// Use [`Self::try_recursive_enum`] to receive errors instead of panicking.
             pub fn recursive_enum(&self, a: &RecursiveEnum, key: &u32) -> Option<RecursiveEnum> {
                 let _call_scope =
                     soroban_sdk::testutils::ClientCallScope::enter(&self.env, self.config);
@@ -4775,9 +4775,9 @@ mod test_with_wasm {
                 res
             }
             ///
-            ///# Errors
+            /// # Errors
             ///
-            ///Returns an error if the invoked contract returns an error or panics. A panic in the invoked contract is caught and returned as an error rather than panicking the caller.
+            /// Returns an error if the invoked contract returns an error or panics. A panic in the invoked contract is caught and returned as an error rather than panicking the caller.
             pub fn try_recursive_enum(
                 &self,
                 a: &RecursiveEnum,

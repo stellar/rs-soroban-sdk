@@ -325,11 +325,11 @@ impl<'a> AttributeTraitClient<'a> {
 }
 impl<'a> AttributeTraitClient<'a> {
     ///
-    ///# Panics
+    /// # Panics
     ///
-    ///Panics if the invoked contract returns an error or panics.
+    /// Panics if the invoked contract returns an error or panics.
     ///
-    ///Use [`Self::try_trait_override`] to receive errors instead of panicking.
+    /// Use [`Self::try_trait_override`] to receive errors instead of panicking.
     pub fn trait_override(&self) -> u32 {
         use core::ops::Not;
         use soroban_sdk::{FromVal, IntoVal};
@@ -341,9 +341,9 @@ impl<'a> AttributeTraitClient<'a> {
         res
     }
     ///
-    ///# Errors
+    /// # Errors
     ///
-    ///Returns an error if the invoked contract returns an error or panics. A panic in the invoked contract is caught and returned as an error rather than panicking the caller.
+    /// Returns an error if the invoked contract returns an error or panics. A panic in the invoked contract is caught and returned as an error rather than panicking the caller.
     pub fn try_trait_override(
         &self,
     ) -> Result<
@@ -359,11 +359,11 @@ impl<'a> AttributeTraitClient<'a> {
         res
     }
     ///
-    ///# Panics
+    /// # Panics
     ///
-    ///Panics if the invoked contract returns an error or panics.
+    /// Panics if the invoked contract returns an error or panics.
     ///
-    ///Use [`Self::try_trait_default`] to receive errors instead of panicking.
+    /// Use [`Self::try_trait_default`] to receive errors instead of panicking.
     pub fn trait_default(&self) -> u32 {
         use core::ops::Not;
         use soroban_sdk::{FromVal, IntoVal};
@@ -375,9 +375,9 @@ impl<'a> AttributeTraitClient<'a> {
         res
     }
     ///
-    ///# Errors
+    /// # Errors
     ///
-    ///Returns an error if the invoked contract returns an error or panics. A panic in the invoked contract is caught and returned as an error rather than panicking the caller.
+    /// Returns an error if the invoked contract returns an error or panics. A panic in the invoked contract is caught and returned as an error rather than panicking the caller.
     pub fn try_trait_default(
         &self,
     ) -> Result<
@@ -393,11 +393,11 @@ impl<'a> AttributeTraitClient<'a> {
         res
     }
     ///
-    ///# Panics
+    /// # Panics
     ///
-    ///Panics if the invoked contract returns an error or panics.
+    /// Panics if the invoked contract returns an error or panics.
     ///
-    ///Use [`Self::try_trait_default_stacked_cfg`] to receive errors instead of panicking.
+    /// Use [`Self::try_trait_default_stacked_cfg`] to receive errors instead of panicking.
     pub fn trait_default_stacked_cfg(&self) -> u32 {
         use core::ops::Not;
         use soroban_sdk::{FromVal, IntoVal};
@@ -409,9 +409,9 @@ impl<'a> AttributeTraitClient<'a> {
         res
     }
     ///
-    ///# Errors
+    /// # Errors
     ///
-    ///Returns an error if the invoked contract returns an error or panics. A panic in the invoked contract is caught and returned as an error rather than panicking the caller.
+    /// Returns an error if the invoked contract returns an error or panics. A panic in the invoked contract is caught and returned as an error rather than panicking the caller.
     pub fn try_trait_default_stacked_cfg(
         &self,
     ) -> Result<
@@ -427,11 +427,11 @@ impl<'a> AttributeTraitClient<'a> {
         res
     }
     ///
-    ///# Panics
+    /// # Panics
     ///
-    ///Panics if the invoked contract returns an error or panics.
+    /// Panics if the invoked contract returns an error or panics.
     ///
-    ///Use [`Self::try_trait_override_stacked_cfg`] to receive errors instead of panicking.
+    /// Use [`Self::try_trait_override_stacked_cfg`] to receive errors instead of panicking.
     pub fn trait_override_stacked_cfg(&self) -> u32 {
         use core::ops::Not;
         use soroban_sdk::{FromVal, IntoVal};
@@ -443,9 +443,9 @@ impl<'a> AttributeTraitClient<'a> {
         res
     }
     ///
-    ///# Errors
+    /// # Errors
     ///
-    ///Returns an error if the invoked contract returns an error or panics. A panic in the invoked contract is caught and returned as an error rather than panicking the caller.
+    /// Returns an error if the invoked contract returns an error or panics. A panic in the invoked contract is caught and returned as an error rather than panicking the caller.
     pub fn try_trait_override_stacked_cfg(
         &self,
     ) -> Result<
@@ -461,11 +461,11 @@ impl<'a> AttributeTraitClient<'a> {
         res
     }
     ///
-    ///# Panics
+    /// # Panics
     ///
-    ///Panics if the invoked contract returns an error or panics.
+    /// Panics if the invoked contract returns an error or panics.
     ///
-    ///Use [`Self::try_trait_override_negated_cfg`] to receive errors instead of panicking.
+    /// Use [`Self::try_trait_override_negated_cfg`] to receive errors instead of panicking.
     pub fn trait_override_negated_cfg(&self) -> u32 {
         use core::ops::Not;
         use soroban_sdk::{FromVal, IntoVal};
@@ -477,9 +477,9 @@ impl<'a> AttributeTraitClient<'a> {
         res
     }
     ///
-    ///# Errors
+    /// # Errors
     ///
-    ///Returns an error if the invoked contract returns an error or panics. A panic in the invoked contract is caught and returned as an error rather than panicking the caller.
+    /// Returns an error if the invoked contract returns an error or panics. A panic in the invoked contract is caught and returned as an error rather than panicking the caller.
     pub fn try_trait_override_negated_cfg(
         &self,
     ) -> Result<
@@ -495,11 +495,11 @@ impl<'a> AttributeTraitClient<'a> {
         res
     }
     ///
-    ///# Panics
+    /// # Panics
     ///
-    ///Panics if the invoked contract returns an error or panics.
+    /// Panics if the invoked contract returns an error or panics.
     ///
-    ///Use [`Self::try_trait_override_dual_cfg`] to receive errors instead of panicking.
+    /// Use [`Self::try_trait_override_dual_cfg`] to receive errors instead of panicking.
     pub fn trait_override_dual_cfg(&self) -> u32 {
         use core::ops::Not;
         use soroban_sdk::{FromVal, IntoVal};
@@ -511,9 +511,9 @@ impl<'a> AttributeTraitClient<'a> {
         res
     }
     ///
-    ///# Errors
+    /// # Errors
     ///
-    ///Returns an error if the invoked contract returns an error or panics. A panic in the invoked contract is caught and returned as an error rather than panicking the caller.
+    /// Returns an error if the invoked contract returns an error or panics. A panic in the invoked contract is caught and returned as an error rather than panicking the caller.
     pub fn try_trait_override_dual_cfg(
         &self,
     ) -> Result<
@@ -529,11 +529,11 @@ impl<'a> AttributeTraitClient<'a> {
         res
     }
     ///
-    ///# Panics
+    /// # Panics
     ///
-    ///Panics if the invoked contract returns an error or panics.
+    /// Panics if the invoked contract returns an error or panics.
     ///
-    ///Use [`Self::try_trait_default_dual_cfg`] to receive errors instead of panicking.
+    /// Use [`Self::try_trait_default_dual_cfg`] to receive errors instead of panicking.
     pub fn trait_default_dual_cfg(&self) -> u32 {
         use core::ops::Not;
         use soroban_sdk::{FromVal, IntoVal};
@@ -545,9 +545,9 @@ impl<'a> AttributeTraitClient<'a> {
         res
     }
     ///
-    ///# Errors
+    /// # Errors
     ///
-    ///Returns an error if the invoked contract returns an error or panics. A panic in the invoked contract is caught and returned as an error rather than panicking the caller.
+    /// Returns an error if the invoked contract returns an error or panics. A panic in the invoked contract is caught and returned as an error rather than panicking the caller.
     pub fn try_trait_default_dual_cfg(
         &self,
     ) -> Result<
@@ -891,11 +891,11 @@ impl Contract {
 }
 impl<'a> ContractClient<'a> {
     ///
-    ///# Panics
+    /// # Panics
     ///
-    ///Panics if the invoked contract returns an error or panics.
+    /// Panics if the invoked contract returns an error or panics.
     ///
-    ///Use [`Self::try_always`] to receive errors instead of panicking.
+    /// Use [`Self::try_always`] to receive errors instead of panicking.
     pub fn always(&self, value: &AttributeType) -> u32 {
         use core::ops::Not;
         use soroban_sdk::{FromVal, IntoVal};
@@ -911,9 +911,9 @@ impl<'a> ContractClient<'a> {
         res
     }
     ///
-    ///# Errors
+    /// # Errors
     ///
-    ///Returns an error if the invoked contract returns an error or panics. A panic in the invoked contract is caught and returned as an error rather than panicking the caller.
+    /// Returns an error if the invoked contract returns an error or panics. A panic in the invoked contract is caught and returned as an error rather than panicking the caller.
     pub fn try_always(
         &self,
         value: &AttributeType,
@@ -934,11 +934,11 @@ impl<'a> ContractClient<'a> {
         res
     }
     ///
-    ///# Panics
+    /// # Panics
     ///
-    ///Panics if the invoked contract returns an error or panics.
+    /// Panics if the invoked contract returns an error or panics.
     ///
-    ///Use [`Self::try_cfg_included`] to receive errors instead of panicking.
+    /// Use [`Self::try_cfg_included`] to receive errors instead of panicking.
     pub fn cfg_included(&self, value: &u32) -> u32 {
         use core::ops::Not;
         use soroban_sdk::{FromVal, IntoVal};
@@ -950,9 +950,9 @@ impl<'a> ContractClient<'a> {
         res
     }
     ///
-    ///# Errors
+    /// # Errors
     ///
-    ///Returns an error if the invoked contract returns an error or panics. A panic in the invoked contract is caught and returned as an error rather than panicking the caller.
+    /// Returns an error if the invoked contract returns an error or panics. A panic in the invoked contract is caught and returned as an error rather than panicking the caller.
     pub fn try_cfg_included(
         &self,
         value: &u32,
@@ -969,11 +969,11 @@ impl<'a> ContractClient<'a> {
         res
     }
     ///
-    ///# Panics
+    /// # Panics
     ///
-    ///Panics if the invoked contract returns an error or panics.
+    /// Panics if the invoked contract returns an error or panics.
     ///
-    ///Use [`Self::try_publish`] to receive errors instead of panicking.
+    /// Use [`Self::try_publish`] to receive errors instead of panicking.
     pub fn publish(&self, topic: &u32, value: &u32) -> () {
         use core::ops::Not;
         use soroban_sdk::{FromVal, IntoVal};
@@ -992,9 +992,9 @@ impl<'a> ContractClient<'a> {
         res
     }
     ///
-    ///# Errors
+    /// # Errors
     ///
-    ///Returns an error if the invoked contract returns an error or panics. A panic in the invoked contract is caught and returned as an error rather than panicking the caller.
+    /// Returns an error if the invoked contract returns an error or panics. A panic in the invoked contract is caught and returned as an error rather than panicking the caller.
     pub fn try_publish(
         &self,
         topic: &u32,
@@ -1297,11 +1297,11 @@ impl Contract {}
 impl Contract {}
 impl<'a> ContractClient<'a> {
     ///
-    ///# Panics
+    /// # Panics
     ///
-    ///Panics if the invoked contract returns an error or panics.
+    /// Panics if the invoked contract returns an error or panics.
     ///
-    ///Use [`Self::try_trait_override`] to receive errors instead of panicking.
+    /// Use [`Self::try_trait_override`] to receive errors instead of panicking.
     pub fn trait_override(&self) -> u32 {
         use core::ops::Not;
         use soroban_sdk::{FromVal, IntoVal};
@@ -1313,9 +1313,9 @@ impl<'a> ContractClient<'a> {
         res
     }
     ///
-    ///# Errors
+    /// # Errors
     ///
-    ///Returns an error if the invoked contract returns an error or panics. A panic in the invoked contract is caught and returned as an error rather than panicking the caller.
+    /// Returns an error if the invoked contract returns an error or panics. A panic in the invoked contract is caught and returned as an error rather than panicking the caller.
     pub fn try_trait_override(
         &self,
     ) -> Result<
@@ -1331,11 +1331,11 @@ impl<'a> ContractClient<'a> {
         res
     }
     ///
-    ///# Panics
+    /// # Panics
     ///
-    ///Panics if the invoked contract returns an error or panics.
+    /// Panics if the invoked contract returns an error or panics.
     ///
-    ///Use [`Self::try_trait_override_stacked_cfg`] to receive errors instead of panicking.
+    /// Use [`Self::try_trait_override_stacked_cfg`] to receive errors instead of panicking.
     pub fn trait_override_stacked_cfg(&self) -> u32 {
         use core::ops::Not;
         use soroban_sdk::{FromVal, IntoVal};
@@ -1347,9 +1347,9 @@ impl<'a> ContractClient<'a> {
         res
     }
     ///
-    ///# Errors
+    /// # Errors
     ///
-    ///Returns an error if the invoked contract returns an error or panics. A panic in the invoked contract is caught and returned as an error rather than panicking the caller.
+    /// Returns an error if the invoked contract returns an error or panics. A panic in the invoked contract is caught and returned as an error rather than panicking the caller.
     pub fn try_trait_override_stacked_cfg(
         &self,
     ) -> Result<
@@ -1365,11 +1365,11 @@ impl<'a> ContractClient<'a> {
         res
     }
     ///
-    ///# Panics
+    /// # Panics
     ///
-    ///Panics if the invoked contract returns an error or panics.
+    /// Panics if the invoked contract returns an error or panics.
     ///
-    ///Use [`Self::try_trait_override_negated_cfg`] to receive errors instead of panicking.
+    /// Use [`Self::try_trait_override_negated_cfg`] to receive errors instead of panicking.
     pub fn trait_override_negated_cfg(&self) -> u32 {
         use core::ops::Not;
         use soroban_sdk::{FromVal, IntoVal};
@@ -1381,9 +1381,9 @@ impl<'a> ContractClient<'a> {
         res
     }
     ///
-    ///# Errors
+    /// # Errors
     ///
-    ///Returns an error if the invoked contract returns an error or panics. A panic in the invoked contract is caught and returned as an error rather than panicking the caller.
+    /// Returns an error if the invoked contract returns an error or panics. A panic in the invoked contract is caught and returned as an error rather than panicking the caller.
     pub fn try_trait_override_negated_cfg(
         &self,
     ) -> Result<
@@ -1399,11 +1399,11 @@ impl<'a> ContractClient<'a> {
         res
     }
     ///
-    ///# Panics
+    /// # Panics
     ///
-    ///Panics if the invoked contract returns an error or panics.
+    /// Panics if the invoked contract returns an error or panics.
     ///
-    ///Use [`Self::try_trait_override_dual_cfg`] to receive errors instead of panicking.
+    /// Use [`Self::try_trait_override_dual_cfg`] to receive errors instead of panicking.
     pub fn trait_override_dual_cfg(&self) -> u32 {
         use core::ops::Not;
         use soroban_sdk::{FromVal, IntoVal};
@@ -1415,9 +1415,9 @@ impl<'a> ContractClient<'a> {
         res
     }
     ///
-    ///# Errors
+    /// # Errors
     ///
-    ///Returns an error if the invoked contract returns an error or panics. A panic in the invoked contract is caught and returned as an error rather than panicking the caller.
+    /// Returns an error if the invoked contract returns an error or panics. A panic in the invoked contract is caught and returned as an error rather than panicking the caller.
     pub fn try_trait_override_dual_cfg(
         &self,
     ) -> Result<
@@ -1714,11 +1714,11 @@ impl Contract {
 }
 impl<'a> ContractClient<'a> {
     ///
-    ///# Panics
+    /// # Panics
     ///
-    ///Panics if the invoked contract returns an error or panics.
+    /// Panics if the invoked contract returns an error or panics.
     ///
-    ///Use [`Self::try_trait_default`] to receive errors instead of panicking.
+    /// Use [`Self::try_trait_default`] to receive errors instead of panicking.
     pub fn trait_default(&self) -> u32 {
         use core::ops::Not;
         use soroban_sdk::{FromVal, IntoVal};
@@ -1730,9 +1730,9 @@ impl<'a> ContractClient<'a> {
         res
     }
     ///
-    ///# Errors
+    /// # Errors
     ///
-    ///Returns an error if the invoked contract returns an error or panics. A panic in the invoked contract is caught and returned as an error rather than panicking the caller.
+    /// Returns an error if the invoked contract returns an error or panics. A panic in the invoked contract is caught and returned as an error rather than panicking the caller.
     pub fn try_trait_default(
         &self,
     ) -> Result<
@@ -1748,11 +1748,11 @@ impl<'a> ContractClient<'a> {
         res
     }
     ///
-    ///# Panics
+    /// # Panics
     ///
-    ///Panics if the invoked contract returns an error or panics.
+    /// Panics if the invoked contract returns an error or panics.
     ///
-    ///Use [`Self::try_trait_default_stacked_cfg`] to receive errors instead of panicking.
+    /// Use [`Self::try_trait_default_stacked_cfg`] to receive errors instead of panicking.
     pub fn trait_default_stacked_cfg(&self) -> u32 {
         use core::ops::Not;
         use soroban_sdk::{FromVal, IntoVal};
@@ -1764,9 +1764,9 @@ impl<'a> ContractClient<'a> {
         res
     }
     ///
-    ///# Errors
+    /// # Errors
     ///
-    ///Returns an error if the invoked contract returns an error or panics. A panic in the invoked contract is caught and returned as an error rather than panicking the caller.
+    /// Returns an error if the invoked contract returns an error or panics. A panic in the invoked contract is caught and returned as an error rather than panicking the caller.
     pub fn try_trait_default_stacked_cfg(
         &self,
     ) -> Result<
@@ -1782,11 +1782,11 @@ impl<'a> ContractClient<'a> {
         res
     }
     ///
-    ///# Panics
+    /// # Panics
     ///
-    ///Panics if the invoked contract returns an error or panics.
+    /// Panics if the invoked contract returns an error or panics.
     ///
-    ///Use [`Self::try_trait_default_dual_cfg`] to receive errors instead of panicking.
+    /// Use [`Self::try_trait_default_dual_cfg`] to receive errors instead of panicking.
     pub fn trait_default_dual_cfg(&self) -> u32 {
         use core::ops::Not;
         use soroban_sdk::{FromVal, IntoVal};
@@ -1798,9 +1798,9 @@ impl<'a> ContractClient<'a> {
         res
     }
     ///
-    ///# Errors
+    /// # Errors
     ///
-    ///Returns an error if the invoked contract returns an error or panics. A panic in the invoked contract is caught and returned as an error rather than panicking the caller.
+    /// Returns an error if the invoked contract returns an error or panics. A panic in the invoked contract is caught and returned as an error rather than panicking the caller.
     pub fn try_trait_default_dual_cfg(
         &self,
     ) -> Result<

@@ -199,11 +199,11 @@ impl<'a> TraitClient<'a> {
 }
 impl<'a> TraitClient<'a> {
     ///
-    ///# Panics
+    /// # Panics
     ///
-    ///Panics if the invoked contract returns an error or panics.
+    /// Panics if the invoked contract returns an error or panics.
     ///
-    ///Use [`Self::try_exec`] to receive errors instead of panicking.
+    /// Use [`Self::try_exec`] to receive errors instead of panicking.
     pub fn exec(&self) -> String {
         let _call_scope = soroban_sdk::testutils::ClientCallScope::enter(&self.env, self.config);
         use soroban_sdk::{FromVal, IntoVal};
@@ -219,9 +219,9 @@ impl<'a> TraitClient<'a> {
         res
     }
     ///
-    ///# Errors
+    /// # Errors
     ///
-    ///Returns an error if the invoked contract returns an error or panics. A panic in the invoked contract is caught and returned as an error rather than panicking the caller.
+    /// Returns an error if the invoked contract returns an error or panics. A panic in the invoked contract is caught and returned as an error rather than panicking the caller.
     pub fn try_exec(
         &self,
     ) -> Result<
@@ -354,11 +354,11 @@ impl Contract {
 }
 impl<'a> ContractClient<'a> {
     ///
-    ///# Panics
+    /// # Panics
     ///
-    ///Panics if the invoked contract returns an error or panics.
+    /// Panics if the invoked contract returns an error or panics.
     ///
-    ///Use [`Self::try_exec`] to receive errors instead of panicking.
+    /// Use [`Self::try_exec`] to receive errors instead of panicking.
     pub fn exec(&self) -> String {
         let _call_scope = soroban_sdk::testutils::ClientCallScope::enter(&self.env, self.config);
         use soroban_sdk::{FromVal, IntoVal};
@@ -374,9 +374,9 @@ impl<'a> ContractClient<'a> {
         res
     }
     ///
-    ///# Errors
+    /// # Errors
     ///
-    ///Returns an error if the invoked contract returns an error or panics. A panic in the invoked contract is caught and returned as an error rather than panicking the caller.
+    /// Returns an error if the invoked contract returns an error or panics. A panic in the invoked contract is caught and returned as an error rather than panicking the caller.
     pub fn try_exec(
         &self,
     ) -> Result<
@@ -512,11 +512,11 @@ impl Contract {
 }
 impl<'a> ContractClient<'a> {
     ///
-    ///# Panics
+    /// # Panics
     ///
-    ///Panics if the invoked contract returns an error or panics.
+    /// Panics if the invoked contract returns an error or panics.
     ///
-    ///Use [`Self::try_exec2`] to receive errors instead of panicking.
+    /// Use [`Self::try_exec2`] to receive errors instead of panicking.
     pub fn exec2(&self) -> String {
         let _call_scope = soroban_sdk::testutils::ClientCallScope::enter(&self.env, self.config);
         use soroban_sdk::{FromVal, IntoVal};
@@ -532,9 +532,9 @@ impl<'a> ContractClient<'a> {
         res
     }
     ///
-    ///# Errors
+    /// # Errors
     ///
-    ///Returns an error if the invoked contract returns an error or panics. A panic in the invoked contract is caught and returned as an error rather than panicking the caller.
+    /// Returns an error if the invoked contract returns an error or panics. A panic in the invoked contract is caught and returned as an error rather than panicking the caller.
     pub fn try_exec2(
         &self,
     ) -> Result<
@@ -778,11 +778,11 @@ mod test_with_wasm {
         }
         impl<'a> Client<'a> {
             ///
-            ///# Panics
+            /// # Panics
             ///
-            ///Panics if the invoked contract returns an error or panics.
+            /// Panics if the invoked contract returns an error or panics.
             ///
-            ///Use [`Self::try_exec`] to receive errors instead of panicking.
+            /// Use [`Self::try_exec`] to receive errors instead of panicking.
             pub fn exec(&self) -> soroban_sdk::String {
                 let _call_scope =
                     soroban_sdk::testutils::ClientCallScope::enter(&self.env, self.config);
@@ -799,9 +799,9 @@ mod test_with_wasm {
                 res
             }
             ///
-            ///# Errors
+            /// # Errors
             ///
-            ///Returns an error if the invoked contract returns an error or panics. A panic in the invoked contract is caught and returned as an error rather than panicking the caller.
+            /// Returns an error if the invoked contract returns an error or panics. A panic in the invoked contract is caught and returned as an error rather than panicking the caller.
             pub fn try_exec(
                 &self,
             ) -> Result<
@@ -829,11 +829,11 @@ mod test_with_wasm {
                 res
             }
             ///
-            ///# Panics
+            /// # Panics
             ///
-            ///Panics if the invoked contract returns an error or panics.
+            /// Panics if the invoked contract returns an error or panics.
             ///
-            ///Use [`Self::try_exec2`] to receive errors instead of panicking.
+            /// Use [`Self::try_exec2`] to receive errors instead of panicking.
             pub fn exec2(&self) -> soroban_sdk::String {
                 let _call_scope =
                     soroban_sdk::testutils::ClientCallScope::enter(&self.env, self.config);
@@ -850,9 +850,9 @@ mod test_with_wasm {
                 res
             }
             ///
-            ///# Errors
+            /// # Errors
             ///
-            ///Returns an error if the invoked contract returns an error or panics. A panic in the invoked contract is caught and returned as an error rather than panicking the caller.
+            /// Returns an error if the invoked contract returns an error or panics. A panic in the invoked contract is caught and returned as an error rather than panicking the caller.
             pub fn try_exec2(
                 &self,
             ) -> Result<

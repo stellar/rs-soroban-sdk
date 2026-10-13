@@ -49,11 +49,11 @@ mod feat1 {
     }
     impl<'a> ContractClient<'a> {
         ///
-        ///# Panics
+        /// # Panics
         ///
-        ///Panics if the invoked contract returns an error or panics.
+        /// Panics if the invoked contract returns an error or panics.
         ///
-        ///Use [`Self::try_one`] to receive errors instead of panicking.
+        /// Use [`Self::try_one`] to receive errors instead of panicking.
         pub fn one(&self) -> u32 {
             use core::ops::Not;
             use soroban_sdk::{FromVal, IntoVal};
@@ -69,9 +69,9 @@ mod feat1 {
             res
         }
         ///
-        ///# Errors
+        /// # Errors
         ///
-        ///Returns an error if the invoked contract returns an error or panics. A panic in the invoked contract is caught and returned as an error rather than panicking the caller.
+        /// Returns an error if the invoked contract returns an error or panics. A panic in the invoked contract is caught and returned as an error rather than panicking the caller.
         pub fn try_one(
             &self,
         ) -> Result<
@@ -160,11 +160,11 @@ mod feat2 {
     }
     impl<'a> ContractClient<'a> {
         ///
-        ///# Panics
+        /// # Panics
         ///
-        ///Panics if the invoked contract returns an error or panics.
+        /// Panics if the invoked contract returns an error or panics.
         ///
-        ///Use [`Self::try_two`] to receive errors instead of panicking.
+        /// Use [`Self::try_two`] to receive errors instead of panicking.
         pub fn two(&self) -> u32 {
             use core::ops::Not;
             use soroban_sdk::{FromVal, IntoVal};
@@ -180,9 +180,9 @@ mod feat2 {
             res
         }
         ///
-        ///# Errors
+        /// # Errors
         ///
-        ///Returns an error if the invoked contract returns an error or panics. A panic in the invoked contract is caught and returned as an error rather than panicking the caller.
+        /// Returns an error if the invoked contract returns an error or panics. A panic in the invoked contract is caught and returned as an error rather than panicking the caller.
         pub fn try_two(
             &self,
         ) -> Result<
@@ -286,11 +286,11 @@ impl Contract {
 }
 impl<'a> ContractClient<'a> {
     ///
-    ///# Panics
+    /// # Panics
     ///
-    ///Panics if the invoked contract returns an error or panics.
+    /// Panics if the invoked contract returns an error or panics.
     ///
-    ///Use [`Self::try_zero`] to receive errors instead of panicking.
+    /// Use [`Self::try_zero`] to receive errors instead of panicking.
     pub fn zero(&self) -> u32 {
         use core::ops::Not;
         use soroban_sdk::{FromVal, IntoVal};
@@ -306,9 +306,9 @@ impl<'a> ContractClient<'a> {
         res
     }
     ///
-    ///# Errors
+    /// # Errors
     ///
-    ///Returns an error if the invoked contract returns an error or panics. A panic in the invoked contract is caught and returned as an error rather than panicking the caller.
+    /// Returns an error if the invoked contract returns an error or panics. A panic in the invoked contract is caught and returned as an error rather than panicking the caller.
     pub fn try_zero(
         &self,
     ) -> Result<

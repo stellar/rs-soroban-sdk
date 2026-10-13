@@ -935,11 +935,11 @@ impl Contract {
 }
 impl<'a> ContractClient<'a> {
     ///
-    ///# Panics
+    /// # Panics
     ///
-    ///Panics if the invoked contract returns an error or panics.
+    /// Panics if the invoked contract returns an error or panics.
     ///
-    ///Use [`Self::try_single_value`] to receive errors instead of panicking.
+    /// Use [`Self::try_single_value`] to receive errors instead of panicking.
     pub fn single_value(&self, from: &Address, amount: &i128) -> () {
         use core::ops::Not;
         use soroban_sdk::{FromVal, IntoVal};
@@ -954,9 +954,9 @@ impl<'a> ContractClient<'a> {
         res
     }
     ///
-    ///# Errors
+    /// # Errors
     ///
-    ///Returns an error if the invoked contract returns an error or panics. A panic in the invoked contract is caught and returned as an error rather than panicking the caller.
+    /// Returns an error if the invoked contract returns an error or panics. A panic in the invoked contract is caught and returned as an error rather than panicking the caller.
     pub fn try_single_value(
         &self,
         from: &Address,
@@ -977,11 +977,11 @@ impl<'a> ContractClient<'a> {
         res
     }
     ///
-    ///# Panics
+    /// # Panics
     ///
-    ///Panics if the invoked contract returns an error or panics.
+    /// Panics if the invoked contract returns an error or panics.
     ///
-    ///Use [`Self::try_single_value_void`] to receive errors instead of panicking.
+    /// Use [`Self::try_single_value_void`] to receive errors instead of panicking.
     pub fn single_value_void(&self, from: &Address) -> () {
         use core::ops::Not;
         use soroban_sdk::{FromVal, IntoVal};
@@ -993,9 +993,9 @@ impl<'a> ContractClient<'a> {
         res
     }
     ///
-    ///# Errors
+    /// # Errors
     ///
-    ///Returns an error if the invoked contract returns an error or panics. A panic in the invoked contract is caught and returned as an error rather than panicking the caller.
+    /// Returns an error if the invoked contract returns an error or panics. A panic in the invoked contract is caught and returned as an error rather than panicking the caller.
     pub fn try_single_value_void(
         &self,
         from: &Address,
@@ -1012,11 +1012,11 @@ impl<'a> ContractClient<'a> {
         res
     }
     ///
-    ///# Panics
+    /// # Panics
     ///
-    ///Panics if the invoked contract returns an error or panics.
+    /// Panics if the invoked contract returns an error or panics.
     ///
-    ///Use [`Self::try_vec_values`] to receive errors instead of panicking.
+    /// Use [`Self::try_vec_values`] to receive errors instead of panicking.
     pub fn vec_values(&self, from: &Address, a: &u32, b: &u32) -> () {
         use core::ops::Not;
         use soroban_sdk::{FromVal, IntoVal};
@@ -1035,9 +1035,9 @@ impl<'a> ContractClient<'a> {
         res
     }
     ///
-    ///# Errors
+    /// # Errors
     ///
-    ///Returns an error if the invoked contract returns an error or panics. A panic in the invoked contract is caught and returned as an error rather than panicking the caller.
+    /// Returns an error if the invoked contract returns an error or panics. A panic in the invoked contract is caught and returned as an error rather than panicking the caller.
     pub fn try_vec_values(
         &self,
         from: &Address,
@@ -1063,11 +1063,11 @@ impl<'a> ContractClient<'a> {
         res
     }
     ///
-    ///# Panics
+    /// # Panics
     ///
-    ///Panics if the invoked contract returns an error or panics.
+    /// Panics if the invoked contract returns an error or panics.
     ///
-    ///Use [`Self::try_map_values`] to receive errors instead of panicking.
+    /// Use [`Self::try_map_values`] to receive errors instead of panicking.
     pub fn map_values(&self, from: &Address, a: &u32, b: &u32) -> () {
         use core::ops::Not;
         use soroban_sdk::{FromVal, IntoVal};
@@ -1086,9 +1086,9 @@ impl<'a> ContractClient<'a> {
         res
     }
     ///
-    ///# Errors
+    /// # Errors
     ///
-    ///Returns an error if the invoked contract returns an error or panics. A panic in the invoked contract is caught and returned as an error rather than panicking the caller.
+    /// Returns an error if the invoked contract returns an error or panics. A panic in the invoked contract is caught and returned as an error rather than panicking the caller.
     pub fn try_map_values(
         &self,
         from: &Address,
@@ -1114,11 +1114,11 @@ impl<'a> ContractClient<'a> {
         res
     }
     ///
-    ///# Panics
+    /// # Panics
     ///
-    ///Panics if the invoked contract returns an error or panics.
+    /// Panics if the invoked contract returns an error or panics.
     ///
-    ///Use [`Self::try_transfer`] to receive errors instead of panicking.
+    /// Use [`Self::try_transfer`] to receive errors instead of panicking.
     pub fn transfer(&self, from: &Address, to: impl Into<MuxedAddress>, amount: &i128) -> () {
         use core::ops::Not;
         use soroban_sdk::{FromVal, IntoVal};
@@ -1141,9 +1141,9 @@ impl<'a> ContractClient<'a> {
         res
     }
     ///
-    ///# Errors
+    /// # Errors
     ///
-    ///Returns an error if the invoked contract returns an error or panics. A panic in the invoked contract is caught and returned as an error rather than panicking the caller.
+    /// Returns an error if the invoked contract returns an error or panics. A panic in the invoked contract is caught and returned as an error rather than panicking the caller.
     pub fn try_transfer(
         &self,
         from: &Address,
@@ -1173,11 +1173,11 @@ impl<'a> ContractClient<'a> {
         res
     }
     ///
-    ///# Panics
+    /// # Panics
     ///
-    ///Panics if the invoked contract returns an error or panics.
+    /// Panics if the invoked contract returns an error or panics.
     ///
-    ///Use [`Self::try_failed_transfer`] to receive errors instead of panicking.
+    /// Use [`Self::try_failed_transfer`] to receive errors instead of panicking.
     pub fn failed_transfer(&self, from: &Address, to: &Address, amount: &i128) -> () {
         use core::ops::Not;
         use soroban_sdk::{FromVal, IntoVal};
@@ -1196,9 +1196,9 @@ impl<'a> ContractClient<'a> {
         res
     }
     ///
-    ///# Errors
+    /// # Errors
     ///
-    ///Returns an error if the invoked contract returns an error or panics. A panic in the invoked contract is caught and returned as an error rather than panicking the caller.
+    /// Returns an error if the invoked contract returns an error or panics. A panic in the invoked contract is caught and returned as an error rather than panicking the caller.
     pub fn try_failed_transfer(
         &self,
         from: &Address,

@@ -89,11 +89,11 @@ impl Contract {
 }
 impl<'a> ContractClient<'a> {
     ///
-    ///# Panics
+    /// # Panics
     ///
-    ///Panics if the invoked contract returns an error or panics.
+    /// Panics if the invoked contract returns an error or panics.
     ///
-    ///Use [`Self::try_add_with`] to receive errors instead of panicking.
+    /// Use [`Self::try_add_with`] to receive errors instead of panicking.
     pub fn add_with(&self, x: &i32, y: &i32, contract_id: &Address) -> i32 {
         use core::ops::Not;
         use soroban_sdk::{FromVal, IntoVal};
@@ -116,9 +116,9 @@ impl<'a> ContractClient<'a> {
         res
     }
     ///
-    ///# Errors
+    /// # Errors
     ///
-    ///Returns an error if the invoked contract returns an error or panics. A panic in the invoked contract is caught and returned as an error rather than panicking the caller.
+    /// Returns an error if the invoked contract returns an error or panics. A panic in the invoked contract is caught and returned as an error rather than panicking the caller.
     pub fn try_add_with(
         &self,
         x: &i32,
@@ -275,11 +275,11 @@ impl AddContract {
 }
 impl<'a> AddContractClient<'a> {
     ///
-    ///# Panics
+    /// # Panics
     ///
-    ///Panics if the invoked contract returns an error or panics.
+    /// Panics if the invoked contract returns an error or panics.
     ///
-    ///Use [`Self::try_add`] to receive errors instead of panicking.
+    /// Use [`Self::try_add`] to receive errors instead of panicking.
     pub fn add(&self, a: &i32, b: &i32) -> i32 {
         use core::ops::Not;
         use soroban_sdk::{FromVal, IntoVal};
@@ -298,9 +298,9 @@ impl<'a> AddContractClient<'a> {
         res
     }
     ///
-    ///# Errors
+    /// # Errors
     ///
-    ///Returns an error if the invoked contract returns an error or panics. A panic in the invoked contract is caught and returned as an error rather than panicking the caller.
+    /// Returns an error if the invoked contract returns an error or panics. A panic in the invoked contract is caught and returned as an error rather than panicking the caller.
     pub fn try_add(
         &self,
         a: &i32,
