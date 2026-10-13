@@ -1,0 +1,110 @@
+#![no_std]
+use soroban_sdk::{contract, contractimpl, contracttype, Address, Env, MuxedAddress, Vec};
+
+#[contract]
+pub struct Contract;
+
+#[contracttype]
+#[derive(Clone, Debug, Eq, PartialEq)]
+pub enum Action {
+    Deposit(Address, MuxedAddress, i128),
+    Withdraw(Address, MuxedAddress, i128),
+}
+
+// Muxed addresses can't be used in storage keys, so the key is built from the
+// muxed address's underlying address and id.
+#[contracttype]
+#[derive(Clone, Debug, Eq, PartialEq)]
+pub struct Key {
+    pub from: Address,
+    pub to: Address,
+    pub to_id: Option<u64>,
+}
+
+#[contracttype]
+#[derive(Clone, Debug, Eq, PartialEq)]
+pub struct Record {
+    pub from: Address,
+    pub to: MuxedAddress,
+    pub amount: i128,
+}
+
+fn key(from: &Address, to: &MuxedAddress) -> Key {
+    Key {
+        from: from.clone(),
+        to: to.address(),
+        to_id: to.id(),
+    }
+}
+
+#[contractimpl]
+impl Contract {
+    pub fn record_deposit(env: Env, from: Address, to: MuxedAddress, amount: i128) {
+        assert!(amount > 0);
+        let k = key(&from, &to);
+        let storage = env.storage().persistent();
+        let current = storage.get::<_, Record>(&k).map_or(0, |r| r.amount);
+        let amount = current.checked_add(amount).unwrap();
+        storage.set(&k, &Record { from, to, amount });
+    }
+
+    pub fn record_withdraw(env: Env, from: Address, to: MuxedAddress, amount: i128) {
+        assert!(amount > 0);
+        let k = key(&from, &to);
+        let storage = env.storage().persistent();
+        let current = storage.get::<_, Record>(&k).map_or(0, |r| r.amount);
+        let amount = current.checked_sub(amount).unwrap();
+        assert!(amount >= 0);
+        if amount == 0 {
+            storage.remove(&k);
+        } else {
+            storage.set(&k, &Record { from, to, amount });
+        }
+    }
+
+    pub fn chain(env: Env, actions: Vec<Action>) {
+        for action in actions.iter() {
+            match action {
+                Action::Deposit(from, to, amount) => {
+                    Self::record_deposit(env.clone(), from, to, amount)
+                }
+                Action::Withdraw(from, to, amount) => {
+                    Self::record_withdraw(env.clone(), from, to, amount)
+                }
+            }
+        }
+    }
+
+    pub fn get(env: Env, from: Address, to: MuxedAddress) -> Option<Record> {
+        env.storage().persistent().get(&key(&from, &to))
+    }
+}
+
+#[cfg(test)]
+mod test {
+    use soroban_sdk::{
+        testutils::{Address as _, MuxedAddress as _},
+        vec, Address, Env, MuxedAddress,
+    };
+
+    use crate::{Action, Contract, ContractClient};
+
+    #[test]
+    fn test_chain_to_zero() {
+        let env = Env::default();
+        let contract_id = env.register(Contract, ());
+        let client = ContractClient::new(&env, &contract_id);
+
+        let from = Address::generate(&env);
+        let to = MuxedAddress::new(Address::generate(&env), 123);
+
+        client.chain(&vec![
+            &env,
+            Action::Deposit(from.clone(), to.clone(), 100),
+            Action::Deposit(from.clone(), to.clone(), 50),
+            Action::Withdraw(from.clone(), to.clone(), 120),
+            Action::Withdraw(from.clone(), to.clone(), 30),
+        ]);
+        assert_eq!(client.get(&from, &to), None);
+    }
+}

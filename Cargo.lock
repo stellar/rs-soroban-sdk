@@ -2483,6 +2483,13 @@ dependencies = [
 ]
 
 [[package]]
+name = "test_muxed_ledger"
+version = "30.0.0"
+dependencies = [
+ "soroban-sdk 30.0.0",
+]
+
+[[package]]
 name = "test_spec_import_v2"
 version = "30.0.0"
 dependencies = [
