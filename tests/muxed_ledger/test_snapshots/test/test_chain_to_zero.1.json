@@ -33,7 +33,7 @@
                   "executable": {
                     "wasm": "a41146d7d116b29faf18d228425fa97194e16df1d4f3e5d4f51c58ca557fcc6d"
                   },
-                  "storage": null
+                  "storage": []
                 }
               }
             }

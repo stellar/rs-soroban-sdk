@@ -11,14 +11,11 @@ pub enum Action {
     Withdraw(Address, MuxedAddress, i128),
 }
 
-// Muxed addresses can't be used in storage keys, so the key is built from the
-// muxed address's underlying address and id.
 #[contracttype]
 #[derive(Clone, Debug, Eq, PartialEq)]
 pub struct Key {
     pub from: Address,
-    pub to: Address,
-    pub to_id: Option<u64>,
+    pub to: MuxedAddress,
 }
 
 #[contracttype]
@@ -32,8 +29,7 @@ pub struct Record {
 fn key(from: &Address, to: &MuxedAddress) -> Key {
     Key {
         from: from.clone(),
-        to: to.address(),
-        to_id: to.id(),
+        to: to.clone(),
     }
 }
 
@@ -42,7 +38,7 @@ impl Contract {
     pub fn record_deposit(env: Env, from: Address, to: MuxedAddress, amount: i128) {
         assert!(amount > 0);
         let k = key(&from, &to);
-        let storage = env.storage().persistent();
+        let storage = env.storage().instance();
         let current = storage.get::<_, Record>(&k).map_or(0, |r| r.amount);
         let amount = current.checked_add(amount).unwrap();
         storage.set(&k, &Record { from, to, amount });
@@ -51,7 +47,7 @@ impl Contract {
     pub fn record_withdraw(env: Env, from: Address, to: MuxedAddress, amount: i128) {
         assert!(amount > 0);
         let k = key(&from, &to);
-        let storage = env.storage().persistent();
+        let storage = env.storage().instance();
         let current = storage.get::<_, Record>(&k).map_or(0, |r| r.amount);
         let amount = current.checked_sub(amount).unwrap();
         assert!(amount >= 0);
@@ -76,7 +72,7 @@ impl Contract {
     }
 
     pub fn get(env: Env, from: Address, to: MuxedAddress) -> Option<Record> {
-        env.storage().persistent().get(&key(&from, &to))
+        env.storage().instance().get(&key(&from, &to))
     }
 }
 
