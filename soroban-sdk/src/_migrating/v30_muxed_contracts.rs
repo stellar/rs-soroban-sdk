@@ -11,6 +11,7 @@
 //! ## Example
 //!
 //! ```
+//! # #![cfg(feature = "testutils")]
 //! #![no_std]
 //! use soroban_sdk::{contract, contractevent, contractimpl, Address, Env, MuxedAddress};
 //!

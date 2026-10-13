@@ -603,8 +603,8 @@ pub trait Address {
 pub trait MuxedAddress {
     /// Create a new MuxedAddress with arbitrary `Address` and id parts.
     ///
-    /// Note, that since currently only accounts can be multiplexed, the
-    /// underlying `Address` will be an account (not contract) address.
+    /// Note, the underlying `Address` will be an account (not contract)
+    /// address. Use [`MuxedAddress::new`] to multiplex a contract address.
     fn generate(env: &Env) -> crate::MuxedAddress;
 
     /// Returns a new `MuxedAddress` that has the same `Address` part as the
