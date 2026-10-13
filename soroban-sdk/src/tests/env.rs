@@ -301,6 +301,19 @@ fn test_try_as_contract_contract_error() {
 }
 
 #[test]
+fn test_try_as_contract_contract_error_by_reference() {
+    let env = Env::default();
+
+    let addr = Address::generate(&env);
+    env.register_at(&addr, Contract, ());
+
+    let result = env.try_as_contract::<_, ContractError>(&addr, || {
+        panic_with_error!(&env, &ContractError::AnError);
+    });
+    assert_eq!(result, Err(Ok(ContractError::AnError)));
+}
+
+#[test]
 fn test_try_as_contract_contract_error_unexpected_error() {
     let env = Env::default();
 

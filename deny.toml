@@ -72,9 +72,6 @@ yanked = "warn"
 # A list of advisory IDs to ignore. Note that ignored advisories will still
 # output a note when they are encountered.
 ignore = [
-    # derivative is unmaintained; it's a transitive dep via ark-ec/ark-ff -> soroban-env-host.
-    # No safe upgrade is available upstream.
-    "RUSTSEC-2024-0388",
     # paste is unmaintained; it's a transitive dep via ark-ff/wasmi_core -> soroban-env-host.
     # No safe upgrade is available upstream.
     "RUSTSEC-2024-0436",
@@ -224,6 +221,25 @@ skip = [
     { name = "syn", version = "=3.0.4" },
     { name = "stellar-strkey", version = "=0.0.13" },
     { name = "crate-git-revision", version = "=0.0.6" },
+    # Dragged in by soroban-sdk 29.0.1 from crates.io, which the spec shaking v2
+    # test vectors are built with, to test that the current soroban-spec still
+    # shakes a spec shaking v2 contract as it did.
+    { name = "soroban-sdk", version = "=29.0.1" },
+    { name = "soroban-sdk-macros", version = "=29.0.1" },
+    { name = "soroban-spec", version = "=29.0.1" },
+    { name = "soroban-spec-rust", version = "=29.0.1" },
+    { name = "soroban-env-common", version = "=29.0.1" },
+    { name = "soroban-env-guest", version = "=29.0.1" },
+    { name = "soroban-env-host", version = "=29.0.1" },
+    { name = "soroban-env-macros", version = "=29.0.1" },
+    { name = "soroban-builtin-sdk-macros", version = "=29.0.1" },
+    { name = "stellar-xdr", version = "=28.0.0" },
+    { name = "stellar-strkey", version = "=0.0.16" },
+    { name = "heapless", version = "=0.8.0" },
+    { name = "crypto-common", version = "=0.1.6" },
+    { name = "digest", version = "=0.10.7" },
+    { name = "keccak", version = "=0.1.6" },
+    { name = "signature", version = "=2.2.0" },
 ]
 # Similarly to `skip` allows you to skip certain crates during duplicate
 # detection. Unlike skip, it also includes the entire tree of transitive

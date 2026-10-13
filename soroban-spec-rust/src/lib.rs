@@ -1,5 +1,5 @@
 mod syn_ext;
-pub mod r#trait;
+mod r#trait;
 pub mod types;
 
 use std::borrow::Cow;
@@ -8,7 +8,7 @@ use std::{fs, io};
 use proc_macro2::TokenStream;
 use quote::quote;
 use sha2::{Digest, Sha256};
-use stellar_xdr::{ScSpecEntry, ScSpecTypeDef, ScSpecTypeUdt, ScSpecUdtUnionCaseV0};
+use stellar_xdr::{ScMetaEntry, ScSpecEntry, ScSpecTypeDef, ScSpecTypeUdt, ScSpecUdtUnionCaseV0};
 use syn::Error;
 
 use soroban_spec::read::{from_wasm, FromWasmError};
@@ -24,6 +24,11 @@ pub use types::{GenerateError, GenerateOptions};
 // will be executed. Generated code may be generated from untrusted Wasm
 // containing untrusted spec docs.
 
+/// The first major version of the soroban-sdk whose specs the error override
+/// does not apply to, as those SDKs name a contract's own error enum distinctly
+/// from `soroban_sdk::Error`.
+const ERROR_UDT_OVERRIDE_BEFORE_SDK_MAJOR: u32 = 30;
+
 #[derive(thiserror::Error, Debug)]
 pub enum GenerateFromFileError {
     #[error("reading file: {0}")]
@@ -34,6 +39,8 @@ pub enum GenerateFromFileError {
     Parse(stellar_xdr::Error),
     #[error("getting contract spec: {0}")]
     GetSpec(FromWasmError),
+    #[error("getting contract meta: {0}")]
+    GetMeta(soroban_meta::read::FromWasmError),
     #[error("generating code: {0}")]
     Generate(GenerateError),
 }
@@ -50,6 +57,8 @@ pub fn generate_from_file(
     Ok(code)
 }
 
+/// Generates the code for a contract from its wasm, recognising the version
+/// of the soroban-sdk that built it from its `rssdkver` meta.
 pub fn generate_from_wasm(
     wasm: &[u8],
     file: &str,
@@ -58,6 +67,9 @@ pub fn generate_from_wasm(
     generate_from_wasm_with_options(wasm, file, verify_sha256, &GenerateOptions::default())
 }
 
+/// Generates the code for a contract from its wasm, with configurable options,
+/// recognising the version of the soroban-sdk that built it from its
+/// `rssdkver` meta.
 pub fn generate_from_wasm_with_options(
     wasm: &[u8],
     file: &str,
@@ -73,41 +85,115 @@ pub fn generate_from_wasm_with_options(
     }
 
     let spec = from_wasm(wasm).map_err(GenerateFromFileError::GetSpec)?;
-    let code = generate_with_options(&spec, file, &sha256, opts)
+    let meta = soroban_meta::read::from_wasm(wasm).map_err(GenerateFromFileError::GetMeta)?;
+    let sdk_major_version = sdk_major_version_from_meta(&meta);
+    let code = generate_with_options(&spec, file, &sha256, sdk_major_version, opts)
         .map_err(GenerateFromFileError::Generate)?;
     Ok(code)
 }
 
+/// Returns the major version of the soroban-sdk recorded in the contract's
+/// `rssdkver` meta, such as `30` for `30.0.0#abc123`, or `None` if the meta has
+/// no `rssdkver` entry or its version can't be read.
+pub fn sdk_major_version_from_meta(meta: &[ScMetaEntry]) -> Option<u32> {
+    meta.iter().find_map(|entry| match entry {
+        ScMetaEntry::ScMetaV0(v0) if v0.key.as_slice() == b"rssdkver" => v0
+            .val
+            .to_utf8_string_lossy()
+            .split('.')
+            .next()
+            .and_then(|major| major.parse().ok()),
+        _ => None,
+    })
+}
+
+/// Generates the code for a contract from its spec.
+///
+/// `sdk_major_version` is the major version of the soroban-sdk that built the
+/// contract, as recorded in its `rssdkver` meta, or `None` if not known, which
+/// is treated as version 30 or later.
 pub fn generate(
     specs: &[ScSpecEntry],
     file: &str,
     sha256: &str,
+    sdk_major_version: Option<u32>,
 ) -> Result<TokenStream, GenerateError> {
-    generate_with_options(specs, file, sha256, &GenerateOptions::default())
+    generate_with_options(
+        specs,
+        file,
+        sha256,
+        sdk_major_version,
+        &GenerateOptions::default(),
+    )
 }
 
+/// Generates the code for a contract from its spec, with configurable options.
+///
+/// `sdk_major_version` is the major version of the soroban-sdk that built the
+/// contract, as recorded in its `rssdkver` meta, or `None` if not known, which
+/// is treated as version 30 or later.
 pub fn generate_with_options(
     specs: &[ScSpecEntry],
     file: &str,
     sha256: &str,
+    sdk_major_version: Option<u32>,
     opts: &GenerateOptions,
 ) -> Result<TokenStream, GenerateError> {
-    let generated = generate_without_file_with_options(specs, opts)?;
+    let generated = generate_without_file_with_options(specs, sdk_major_version, opts)?;
     Ok(quote! {
         pub const WASM: &[u8] = soroban_sdk::contractfile!(file = #file, sha256 = #sha256);
         #generated
     })
 }
 
-pub fn generate_without_file(specs: &[ScSpecEntry]) -> Result<TokenStream, GenerateError> {
-    generate_without_file_with_options(specs, &GenerateOptions::default())
+/// Generates the code for a contract from its spec, without the constant that
+/// embeds its wasm.
+///
+/// `sdk_major_version` is the major version of the soroban-sdk that built the
+/// contract, as recorded in its `rssdkver` meta, or `None` if not known, which
+/// is treated as version 30 or later.
+pub fn generate_without_file(
+    specs: &[ScSpecEntry],
+    sdk_major_version: Option<u32>,
+) -> Result<TokenStream, GenerateError> {
+    generate_without_file_with_options(specs, sdk_major_version, &GenerateOptions::default())
 }
 
+/// Generates the code for a contract from its spec, without the constant that
+/// embeds its wasm, with configurable options.
+///
+/// `sdk_major_version` is the major version of the soroban-sdk that built the
+/// contract, as recorded in its `rssdkver` meta, or `None` if not known, which
+/// is treated as version 30 or later.
 pub fn generate_without_file_with_options(
     specs: &[ScSpecEntry],
+    sdk_major_version: Option<u32>,
     opts: &GenerateOptions,
 ) -> Result<TokenStream, GenerateError> {
-    let specs = apply_error_udt_override(specs);
+    // The error override applies only to specs from SDKs prior to 30, which
+    // name their error enum `Error` unqualified, so it runs before the names
+    // are reduced.
+    let specs = if sdk_major_version.is_some_and(|v| v < ERROR_UDT_OVERRIDE_BEFORE_SDK_MAJOR) {
+        apply_error_udt_override(specs)
+    } else {
+        Cow::Borrowed(specs)
+    };
+    // The spec names each user-defined type by its fully qualified name
+    // (`mycrate::mymod::MyType`), while the generated code names it by a bare
+    // identifier, so the names are reduced to simple names before generation,
+    // rewriting references to keep them matched up with the types they refer
+    // to. Reducing an already-simple spec changes nothing, so a caller that
+    // reduced first (to report on the renames) generates the same code.
+    //
+    // A reduced name can be up to the spec's full name limit, but a generated
+    // type's own spec name is its name qualified by the module the code is
+    // generated into, which is checked against the same limit. A type whose
+    // simple name is within a module path's length of the limit therefore
+    // generates code that fails to compile. This is a known limitation, as
+    // type names that long are not expected.
+    let specs: Vec<ScSpecEntry> = soroban_spec::reduce::reduce(&specs)?
+        .into_entries()
+        .collect();
     let specs: &[ScSpecEntry] = &specs;
 
     let mut spec_fns = Vec::new();
@@ -164,14 +250,23 @@ pub fn generate_without_file_with_options(
     })
 }
 
-/// The `#[contractimpl]` macro emits any type named `Error` in a contract's
+/// Contracts built with earlier SDKs emit any type named `Error` in their
 /// function signatures as the built-in `ScSpecTypeDef::Error` in the spec,
 /// regardless of whether the contract defined its own error enum named `Error`
-/// or used `soroban_sdk::Error` directly. To let clients of contracts that
+/// or used `soroban_sdk::Error` directly. Current SDKs emit a contract's own
+/// error enum as a reference to its fully qualified name, which this pass
+/// leaves alone. To let clients of contracts that
 /// define their own `Error` enum see the user-defined type instead of
 /// `soroban_sdk::Error`, this pass rewrites every `ScSpecTypeDef::Error`
 /// reference in the spec to `Udt { name: "Error" }` whenever the spec also
 /// contains a `UdtErrorEnumV0` named `Error`.
+///
+/// A spec that refers to a type by the name `Error` is not from an earlier
+/// SDK, as earlier SDKs never wrote the name as a reference, so its
+/// `ScSpecTypeDef::Error` references are `soroban_sdk::Error` and are left
+/// alone. Such specs come from tools that reduce the names of a current spec,
+/// such as the stellar-cli, which leave a contract's own error enum named
+/// `Error` and referred to by that name.
 ///
 /// This keeps the on-the-wire spec format unchanged (so already-deployed
 /// contracts benefit without redeployment) and shifts the resolution to the
@@ -186,13 +281,40 @@ fn apply_error_udt_override(specs: &[ScSpecEntry]) -> Cow<'_, [ScSpecEntry]> {
             ScSpecEntry::UdtErrorEnumV0(err) if err.name.to_utf8_string_lossy() == "Error"
         )
     });
-    if has_error_udt {
+    if has_error_udt && !refers_to_error_udt(specs) {
         let mut v = specs.to_vec();
         rewrite_error_to_udt(&mut v);
         Cow::Owned(v)
     } else {
         Cow::Borrowed(specs)
     }
+}
+
+/// Whether any entry refers to a user-defined type by the name `Error`.
+fn refers_to_error_udt(entries: &[ScSpecEntry]) -> bool {
+    fn refers(t: &ScSpecTypeDef) -> bool {
+        match t {
+            ScSpecTypeDef::Udt(u) => matches!(u.name.as_slice(), b"Error" | b"::Error"),
+            ScSpecTypeDef::Option(o) => refers(&o.value_type),
+            ScSpecTypeDef::Result(r) => refers(&r.ok_type) || refers(&r.error_type),
+            ScSpecTypeDef::Vec(v) => refers(&v.element_type),
+            ScSpecTypeDef::Map(m) => refers(&m.key_type) || refers(&m.value_type),
+            ScSpecTypeDef::Tuple(tu) => tu.value_types.iter().any(refers),
+            _ => false,
+        }
+    }
+    entries.iter().any(|entry| match entry {
+        ScSpecEntry::FunctionV0(f) => {
+            f.inputs.iter().any(|i| refers(&i.type_)) || f.outputs.iter().any(refers)
+        }
+        ScSpecEntry::UdtStructV0(s) => s.fields.iter().any(|f| refers(&f.type_)),
+        ScSpecEntry::UdtUnionV0(u) => u.cases.iter().any(|c| match c {
+            ScSpecUdtUnionCaseV0::TupleV0(t) => t.type_.iter().any(refers),
+            ScSpecUdtUnionCaseV0::VoidV0(_) => false,
+        }),
+        ScSpecEntry::UdtEnumV0(_) | ScSpecEntry::UdtErrorEnumV0(_) => false,
+        ScSpecEntry::EventV0(e) => e.params.iter().any(|p| refers(&p.type_)),
+    })
 }
 
 /// Rewrites every `ScSpecTypeDef::Error` reference in the given entries to
@@ -287,7 +409,7 @@ mod test {
     #[test]
     fn example() {
         let entries = from_wasm(EXAMPLE_WASM).unwrap();
-        let rust = generate(&entries, "<file>", "<sha256>")
+        let rust = generate(&entries, "<file>", "<sha256>", None)
             .unwrap()
             .to_formatted_string()
             .unwrap();
@@ -420,7 +542,7 @@ pub enum UdtEnum2 {
     #[test]
     fn test_add_u64_result_types() {
         let entries = from_wasm(ADD_U64_WASM).unwrap();
-        let rust = generate(&entries, "<file>", "<sha256>")
+        let rust = generate(&entries, "<file>", "<sha256>", None)
             .unwrap()
             .to_formatted_string()
             .unwrap();
@@ -508,11 +630,9 @@ pub enum MyError {
     }
 
     /// Test that shows the raw spec entries from the wasm.
-    /// Verifies that the on-the-wire spec format is unchanged: a contract
-    /// error enum named `Error` is still emitted as the built-in
-    /// `ScSpecTypeDef::Error` in function signatures (the user-defined-vs-SDK
-    /// disambiguation happens at client generation time, not here). A
-    /// differently-named error enum (`MyError`) is emitted as a UDT reference.
+    /// Verifies that a contract error enum is emitted as a UDT reference to
+    /// its qualified name in function signatures, whether it is named `Error`
+    /// or something else (`MyError`).
     #[test]
     fn test_add_u64_spec_entries() {
         use super::ScSpecEntry;
@@ -539,10 +659,16 @@ pub enum MyError {
             matches!(r.ok_type.as_ref(), ScSpecTypeDef::U64),
             "ok_type should be U64"
         );
-        assert!(
-            matches!(r.error_type.as_ref(), ScSpecTypeDef::Error),
-            "error_type should be the built-in Error in the wasm spec, got {:?}",
-            r.error_type
+        let ScSpecTypeDef::Udt(u) = r.error_type.as_ref() else {
+            panic!(
+                "error_type should be a UDT for Error, got {:?}",
+                r.error_type
+            );
+        };
+        assert_eq!(
+            u.name.to_utf8_string().unwrap(),
+            "::test_add_u64::Error",
+            "error_type should be Error UDT"
         );
 
         // Find the safe_add_two function spec
@@ -577,7 +703,7 @@ pub enum MyError {
         };
         assert_eq!(
             u.name.to_utf8_string().unwrap(),
-            "MyError",
+            "::test_add_u64::MyError",
             "error_type should be MyError UDT"
         );
     }
@@ -604,7 +730,7 @@ pub enum MyError {
             .unwrap(),
         };
         let entries = [ScSpecEntry::FunctionV0(func)];
-        let rust = generate(&entries, "<file>", "<sha256>")
+        let rust = generate(&entries, "<file>", "<sha256>", Some(22))
             .unwrap()
             .to_formatted_string()
             .unwrap();
@@ -658,7 +784,7 @@ pub trait Contract {
             ScSpecEntry::FunctionV0(func),
             ScSpecEntry::UdtErrorEnumV0(error_enum),
         ];
-        let rust = generate(&entries, "<file>", "<sha256>")
+        let rust = generate(&entries, "<file>", "<sha256>", Some(22))
             .unwrap()
             .to_formatted_string()
             .unwrap();
@@ -669,6 +795,80 @@ pub trait Contract {
 #[soroban_sdk::contractclient(name = "Client")]
 pub trait Contract {
     fn safe_add(env: soroban_sdk::Env) -> Result<u64, Error>;
+}
+#[soroban_sdk::contracterror]
+#[derive(Debug, Copy, Clone, Eq, PartialEq, Ord, PartialOrd)]
+pub enum Error {
+    Overflow = 1,
+}
+"#,
+        );
+    }
+
+    /// When the spec refers to its `Error` error enum by name, as a reduced
+    /// spec from a current SDK does, its `ScSpecTypeDef::Error` references are
+    /// `soroban_sdk::Error` and must not be rewritten.
+    #[test]
+    fn test_error_udt_referred_to_by_name_leaves_sdk_error() {
+        use super::ScSpecEntry;
+        use stellar_xdr::{
+            ScSpecFunctionV0, ScSpecTypeDef, ScSpecTypeResult, ScSpecTypeUdt,
+            ScSpecUdtErrorEnumCaseV0, ScSpecUdtErrorEnumV0,
+        };
+
+        let sdk_error_fn = ScSpecFunctionV0 {
+            doc: "".try_into().unwrap(),
+            name: "sdk_error".try_into().unwrap(),
+            inputs: [].try_into().unwrap(),
+            outputs: [ScSpecTypeDef::Result(Box::new(ScSpecTypeResult {
+                ok_type: Box::new(ScSpecTypeDef::U64),
+                error_type: Box::new(ScSpecTypeDef::Error),
+            }))]
+            .try_into()
+            .unwrap(),
+        };
+        let own_error_fn = ScSpecFunctionV0 {
+            doc: "".try_into().unwrap(),
+            name: "own_error".try_into().unwrap(),
+            inputs: [].try_into().unwrap(),
+            outputs: [ScSpecTypeDef::Result(Box::new(ScSpecTypeResult {
+                ok_type: Box::new(ScSpecTypeDef::U64),
+                error_type: Box::new(ScSpecTypeDef::Udt(ScSpecTypeUdt {
+                    name: "Error".try_into().unwrap(),
+                })),
+            }))]
+            .try_into()
+            .unwrap(),
+        };
+        let error_enum = ScSpecUdtErrorEnumV0 {
+            doc: "".try_into().unwrap(),
+            lib: "".try_into().unwrap(),
+            name: "Error".try_into().unwrap(),
+            cases: [ScSpecUdtErrorEnumCaseV0 {
+                doc: "".try_into().unwrap(),
+                name: "Overflow".try_into().unwrap(),
+                value: 1,
+            }]
+            .try_into()
+            .unwrap(),
+        };
+        let entries = [
+            ScSpecEntry::FunctionV0(sdk_error_fn),
+            ScSpecEntry::FunctionV0(own_error_fn),
+            ScSpecEntry::UdtErrorEnumV0(error_enum),
+        ];
+        let rust = generate(&entries, "<file>", "<sha256>", Some(22))
+            .unwrap()
+            .to_formatted_string()
+            .unwrap();
+        assert_eq!(
+            rust,
+            r#"pub const WASM: &[u8] = soroban_sdk::contractfile!(file = "<file>", sha256 = "<sha256>");
+#[soroban_sdk::contractargs(name = "Args")]
+#[soroban_sdk::contractclient(name = "Client")]
+pub trait Contract {
+    fn sdk_error(env: soroban_sdk::Env) -> Result<u64, soroban_sdk::Error>;
+    fn own_error(env: soroban_sdk::Env) -> Result<u64, Error>;
 }
 #[soroban_sdk::contracterror]
 #[derive(Debug, Copy, Clone, Eq, PartialEq, Ord, PartialOrd)]
@@ -715,7 +915,7 @@ pub enum Error {
             ScSpecEntry::FunctionV0(func),
             ScSpecEntry::UdtErrorEnumV0(error_enum),
         ];
-        let rust = generate(&entries, "<file>", "<sha256>")
+        let rust = generate(&entries, "<file>", "<sha256>", Some(22))
             .unwrap()
             .to_formatted_string()
             .unwrap();
@@ -726,6 +926,650 @@ pub enum Error {
 #[soroban_sdk::contractclient(name = "Client")]
 pub trait Contract {
     fn errors(env: soroban_sdk::Env) -> soroban_sdk::Vec<Error>;
+}
+#[soroban_sdk::contracterror]
+#[derive(Debug, Copy, Clone, Eq, PartialEq, Ord, PartialOrd)]
+pub enum Error {
+    Overflow = 1,
+}
+"#,
+        );
+    }
+
+    /// Two user-defined error enums sharing the simple name `Error`
+    /// (`a::Error`, `b::Error`), taken end-to-end through name
+    /// reduction and code generation.
+    /// A type named like an item generated alongside the types, such as the
+    /// `Client`, is renamed so that it does not collide with the item.
+    #[test]
+    fn test_type_named_like_a_generated_item_is_renamed() {
+        use stellar_xdr::{
+            ScSpecEntry, ScSpecFunctionInputV0, ScSpecFunctionV0, ScSpecTypeDef, ScSpecTypeUdt,
+            ScSpecUdtStructFieldV0, ScSpecUdtStructV0,
+        };
+
+        let entries = [
+            ScSpecEntry::UdtStructV0(ScSpecUdtStructV0 {
+                doc: "".try_into().unwrap(),
+                lib: "".try_into().unwrap(),
+                name: "mycrate::Client".try_into().unwrap(),
+                fields: [ScSpecUdtStructFieldV0 {
+                    doc: "".try_into().unwrap(),
+                    name: "id".try_into().unwrap(),
+                    type_: ScSpecTypeDef::U32,
+                }]
+                .try_into()
+                .unwrap(),
+            }),
+            ScSpecEntry::FunctionV0(ScSpecFunctionV0 {
+                doc: "".try_into().unwrap(),
+                name: "register".try_into().unwrap(),
+                inputs: [ScSpecFunctionInputV0 {
+                    doc: "".try_into().unwrap(),
+                    name: "client".try_into().unwrap(),
+                    type_: ScSpecTypeDef::Udt(ScSpecTypeUdt {
+                        name: "mycrate::Client".try_into().unwrap(),
+                    }),
+                }]
+                .try_into()
+                .unwrap(),
+                outputs: [].try_into().unwrap(),
+            }),
+        ];
+        let rust = generate(&entries, "<file>", "<sha256>", None)
+            .unwrap()
+            .to_formatted_string()
+            .unwrap();
+        assert_eq!(
+            rust,
+            r#"pub const WASM: &[u8] = soroban_sdk::contractfile!(file = "<file>", sha256 = "<sha256>");
+#[soroban_sdk::contractargs(name = "Args")]
+#[soroban_sdk::contractclient(name = "Client")]
+pub trait Contract {
+    fn register(env: soroban_sdk::Env, client: Client2);
+}
+#[soroban_sdk::contracttype]
+#[derive(Debug, Clone, Eq, PartialEq, Ord, PartialOrd)]
+pub struct Client2 {
+    pub id: u32,
+}
+"#,
+        );
+    }
+
+    #[test]
+    fn test_two_error_enums_sharing_a_simple_name() {
+        use stellar_xdr::{
+            ScSpecEntry, ScSpecFunctionV0, ScSpecTypeDef, ScSpecTypeResult, ScSpecTypeUdt,
+            ScSpecUdtErrorEnumCaseV0, ScSpecUdtErrorEnumV0,
+        };
+
+        let error_enum = |name: &str| {
+            ScSpecEntry::UdtErrorEnumV0(ScSpecUdtErrorEnumV0 {
+                doc: "".try_into().unwrap(),
+                lib: "".try_into().unwrap(),
+                name: name.try_into().unwrap(),
+                cases: [ScSpecUdtErrorEnumCaseV0 {
+                    doc: "".try_into().unwrap(),
+                    name: "Failed".try_into().unwrap(),
+                    value: 1,
+                }]
+                .try_into()
+                .unwrap(),
+            })
+        };
+        let func = |name: &str, error: ScSpecTypeDef| {
+            ScSpecEntry::FunctionV0(ScSpecFunctionV0 {
+                doc: "".try_into().unwrap(),
+                name: name.try_into().unwrap(),
+                inputs: [].try_into().unwrap(),
+                outputs: [ScSpecTypeDef::Result(Box::new(ScSpecTypeResult {
+                    ok_type: Box::new(ScSpecTypeDef::U32),
+                    error_type: Box::new(error),
+                }))]
+                .try_into()
+                .unwrap(),
+            })
+        };
+        let entries = [
+            error_enum("mycrate::a::Error"),
+            error_enum("mycrate::b::Error"),
+            func(
+                "use_a",
+                ScSpecTypeDef::Udt(ScSpecTypeUdt {
+                    name: "mycrate::a::Error".try_into().unwrap(),
+                }),
+            ),
+            func(
+                "use_b",
+                ScSpecTypeDef::Udt(ScSpecTypeUdt {
+                    name: "mycrate::b::Error".try_into().unwrap(),
+                }),
+            ),
+            func("use_builtin", ScSpecTypeDef::Error),
+        ];
+
+        let code = super::generate_without_file(&entries, None)
+            .unwrap()
+            .to_formatted_string()
+            .unwrap();
+
+        // Each enum is generated in full, so it is clear which one kept the
+        // simple name (the first, `a::Error`) and which was numbered (the
+        // second, `b::Error` -> `Error2`); both carry the same `Failed` case.
+        assert!(
+            code.contains("pub enum Error {\n    Failed = 1,\n}"),
+            "{code}"
+        );
+        assert!(
+            code.contains("pub enum Error2 {\n    Failed = 1,\n}"),
+            "{code}"
+        );
+        // Each function is asserted by name so the reference is clearly tied to
+        // its own type: `use_a` follows `a::Error` to `Error`, `use_b` follows
+        // `b::Error` to `Error2`, and `use_builtin`'s built-in error stays
+        // `soroban_sdk::Error`, as the enums have qualified names.
+        assert!(
+            code.contains("fn use_a(env: soroban_sdk::Env) -> Result<u32, Error>;"),
+            "{code}"
+        );
+        assert!(
+            code.contains("fn use_b(env: soroban_sdk::Env) -> Result<u32, Error2>;"),
+            "{code}"
+        );
+        assert!(
+            code.contains(
+                "fn use_builtin(env: soroban_sdk::Env) -> Result<u32, soroban_sdk::Error>;"
+            ),
+            "{code}"
+        );
+    }
+
+    // How the generated code refers to error types, for each kind of spec:
+    // from an old SDK (prior to 30, before fully qualified names), from a new
+    // SDK (30 or later) with its names unreduced, and from a new SDK with its
+    // names reduced. Each spec has the contract's own error enum,
+    // `soroban_sdk::Error`, or both.
+
+    /// Old SDK, with the contract's own error enum named `Error`. Old SDKs wrote
+    /// any type named `Error` as the built-in `ScSpecTypeDef::Error`, so the
+    /// contract's own `Error` and `soroban_sdk::Error` look the same in the
+    /// spec. Both are generated as the contract's own `Error`.
+    #[test]
+    fn test_error_old_sdk_own_error_named_error() {
+        use stellar_xdr::{
+            ScSpecEntry, ScSpecFunctionV0, ScSpecTypeDef, ScSpecTypeResult,
+            ScSpecUdtErrorEnumCaseV0, ScSpecUdtErrorEnumV0,
+        };
+
+        let entries = [
+            ScSpecEntry::UdtErrorEnumV0(ScSpecUdtErrorEnumV0 {
+                doc: "".try_into().unwrap(),
+                lib: "".try_into().unwrap(),
+                name: "Error".try_into().unwrap(),
+                cases: [ScSpecUdtErrorEnumCaseV0 {
+                    doc: "".try_into().unwrap(),
+                    name: "Overflow".try_into().unwrap(),
+                    value: 1,
+                }]
+                .try_into()
+                .unwrap(),
+            }),
+            ScSpecEntry::FunctionV0(ScSpecFunctionV0 {
+                doc: "".try_into().unwrap(),
+                name: "own_error".try_into().unwrap(),
+                inputs: [].try_into().unwrap(),
+                outputs: [ScSpecTypeDef::Result(Box::new(ScSpecTypeResult {
+                    ok_type: Box::new(ScSpecTypeDef::U64),
+                    error_type: Box::new(ScSpecTypeDef::Error),
+                }))]
+                .try_into()
+                .unwrap(),
+            }),
+            ScSpecEntry::FunctionV0(ScSpecFunctionV0 {
+                doc: "".try_into().unwrap(),
+                name: "sdk_error".try_into().unwrap(),
+                inputs: [].try_into().unwrap(),
+                outputs: [ScSpecTypeDef::Result(Box::new(ScSpecTypeResult {
+                    ok_type: Box::new(ScSpecTypeDef::U64),
+                    error_type: Box::new(ScSpecTypeDef::Error),
+                }))]
+                .try_into()
+                .unwrap(),
+            }),
+        ];
+        let rust = super::generate_without_file(&entries, Some(22))
+            .unwrap()
+            .to_formatted_string()
+            .unwrap();
+        assert_eq!(
+            rust,
+            r#"#[soroban_sdk::contractargs(name = "Args")]
+#[soroban_sdk::contractclient(name = "Client")]
+pub trait Contract {
+    fn own_error(env: soroban_sdk::Env) -> Result<u64, Error>;
+    fn sdk_error(env: soroban_sdk::Env) -> Result<u64, Error>;
+}
+#[soroban_sdk::contracterror]
+#[derive(Debug, Copy, Clone, Eq, PartialEq, Ord, PartialOrd)]
+pub enum Error {
+    Overflow = 1,
+}
+"#,
+        );
+    }
+
+    /// Unknown SDK version, with the same spec as the old SDK case above. An
+    /// unknown version is treated as a new SDK (30 or later), so the error
+    /// override is not applied and the built-in `ScSpecTypeDef::Error` is
+    /// generated as `soroban_sdk::Error`.
+    #[test]
+    fn test_error_unknown_sdk_own_error_named_error() {
+        use stellar_xdr::{
+            ScSpecEntry, ScSpecFunctionV0, ScSpecTypeDef, ScSpecTypeResult,
+            ScSpecUdtErrorEnumCaseV0, ScSpecUdtErrorEnumV0,
+        };
+
+        let entries = [
+            ScSpecEntry::UdtErrorEnumV0(ScSpecUdtErrorEnumV0 {
+                doc: "".try_into().unwrap(),
+                lib: "".try_into().unwrap(),
+                name: "Error".try_into().unwrap(),
+                cases: [ScSpecUdtErrorEnumCaseV0 {
+                    doc: "".try_into().unwrap(),
+                    name: "Overflow".try_into().unwrap(),
+                    value: 1,
+                }]
+                .try_into()
+                .unwrap(),
+            }),
+            ScSpecEntry::FunctionV0(ScSpecFunctionV0 {
+                doc: "".try_into().unwrap(),
+                name: "own_error".try_into().unwrap(),
+                inputs: [].try_into().unwrap(),
+                outputs: [ScSpecTypeDef::Result(Box::new(ScSpecTypeResult {
+                    ok_type: Box::new(ScSpecTypeDef::U64),
+                    error_type: Box::new(ScSpecTypeDef::Error),
+                }))]
+                .try_into()
+                .unwrap(),
+            }),
+            ScSpecEntry::FunctionV0(ScSpecFunctionV0 {
+                doc: "".try_into().unwrap(),
+                name: "sdk_error".try_into().unwrap(),
+                inputs: [].try_into().unwrap(),
+                outputs: [ScSpecTypeDef::Result(Box::new(ScSpecTypeResult {
+                    ok_type: Box::new(ScSpecTypeDef::U64),
+                    error_type: Box::new(ScSpecTypeDef::Error),
+                }))]
+                .try_into()
+                .unwrap(),
+            }),
+        ];
+        let rust = super::generate_without_file(&entries, None)
+            .unwrap()
+            .to_formatted_string()
+            .unwrap();
+        assert_eq!(
+            rust,
+            r#"#[soroban_sdk::contractargs(name = "Args")]
+#[soroban_sdk::contractclient(name = "Client")]
+pub trait Contract {
+    fn own_error(env: soroban_sdk::Env) -> Result<u64, soroban_sdk::Error>;
+    fn sdk_error(env: soroban_sdk::Env) -> Result<u64, soroban_sdk::Error>;
+}
+#[soroban_sdk::contracterror]
+#[derive(Debug, Copy, Clone, Eq, PartialEq, Ord, PartialOrd)]
+pub enum Error {
+    Overflow = 1,
+}
+"#,
+        );
+    }
+
+    /// Old SDK, with the contract's own error enum named something other than
+    /// `Error`. The own error enum is referred to by name, and
+    /// `soroban_sdk::Error` stays `soroban_sdk::Error`.
+    #[test]
+    fn test_error_old_sdk_own_error_named_other() {
+        use stellar_xdr::{
+            ScSpecEntry, ScSpecFunctionV0, ScSpecTypeDef, ScSpecTypeResult, ScSpecTypeUdt,
+            ScSpecUdtErrorEnumCaseV0, ScSpecUdtErrorEnumV0,
+        };
+
+        let entries = [
+            ScSpecEntry::UdtErrorEnumV0(ScSpecUdtErrorEnumV0 {
+                doc: "".try_into().unwrap(),
+                lib: "".try_into().unwrap(),
+                name: "MyError".try_into().unwrap(),
+                cases: [ScSpecUdtErrorEnumCaseV0 {
+                    doc: "".try_into().unwrap(),
+                    name: "Overflow".try_into().unwrap(),
+                    value: 1,
+                }]
+                .try_into()
+                .unwrap(),
+            }),
+            ScSpecEntry::FunctionV0(ScSpecFunctionV0 {
+                doc: "".try_into().unwrap(),
+                name: "own_error".try_into().unwrap(),
+                inputs: [].try_into().unwrap(),
+                outputs: [ScSpecTypeDef::Result(Box::new(ScSpecTypeResult {
+                    ok_type: Box::new(ScSpecTypeDef::U64),
+                    error_type: Box::new(ScSpecTypeDef::Udt(ScSpecTypeUdt {
+                        name: "MyError".try_into().unwrap(),
+                    })),
+                }))]
+                .try_into()
+                .unwrap(),
+            }),
+            ScSpecEntry::FunctionV0(ScSpecFunctionV0 {
+                doc: "".try_into().unwrap(),
+                name: "sdk_error".try_into().unwrap(),
+                inputs: [].try_into().unwrap(),
+                outputs: [ScSpecTypeDef::Result(Box::new(ScSpecTypeResult {
+                    ok_type: Box::new(ScSpecTypeDef::U64),
+                    error_type: Box::new(ScSpecTypeDef::Error),
+                }))]
+                .try_into()
+                .unwrap(),
+            }),
+        ];
+        let rust = super::generate_without_file(&entries, Some(22))
+            .unwrap()
+            .to_formatted_string()
+            .unwrap();
+        assert_eq!(
+            rust,
+            r#"#[soroban_sdk::contractargs(name = "Args")]
+#[soroban_sdk::contractclient(name = "Client")]
+pub trait Contract {
+    fn own_error(env: soroban_sdk::Env) -> Result<u64, MyError>;
+    fn sdk_error(env: soroban_sdk::Env) -> Result<u64, soroban_sdk::Error>;
+}
+#[soroban_sdk::contracterror]
+#[derive(Debug, Copy, Clone, Eq, PartialEq, Ord, PartialOrd)]
+pub enum MyError {
+    Overflow = 1,
+}
+"#,
+        );
+    }
+
+    /// Old SDK, with no error enum of the contract's own. `soroban_sdk::Error`
+    /// stays `soroban_sdk::Error`.
+    #[test]
+    fn test_error_old_sdk_no_own_error() {
+        use stellar_xdr::{ScSpecEntry, ScSpecFunctionV0, ScSpecTypeDef, ScSpecTypeResult};
+
+        let entries = [ScSpecEntry::FunctionV0(ScSpecFunctionV0 {
+            doc: "".try_into().unwrap(),
+            name: "sdk_error".try_into().unwrap(),
+            inputs: [].try_into().unwrap(),
+            outputs: [ScSpecTypeDef::Result(Box::new(ScSpecTypeResult {
+                ok_type: Box::new(ScSpecTypeDef::U64),
+                error_type: Box::new(ScSpecTypeDef::Error),
+            }))]
+            .try_into()
+            .unwrap(),
+        })];
+        let rust = super::generate_without_file(&entries, Some(22))
+            .unwrap()
+            .to_formatted_string()
+            .unwrap();
+        assert_eq!(
+            rust,
+            r#"#[soroban_sdk::contractargs(name = "Args")]
+#[soroban_sdk::contractclient(name = "Client")]
+pub trait Contract {
+    fn sdk_error(env: soroban_sdk::Env) -> Result<u64, soroban_sdk::Error>;
+}
+"#,
+        );
+    }
+
+    /// New SDK, spec not reduced, with the contract's own error enum named
+    /// `Error` and used. The own error enum is referred to by its fully
+    /// qualified name, which is reduced to `Error` during generation, and
+    /// `soroban_sdk::Error` stays `soroban_sdk::Error`.
+    #[test]
+    fn test_error_new_sdk_unreduced_own_error_used() {
+        use stellar_xdr::{
+            ScSpecEntry, ScSpecFunctionV0, ScSpecTypeDef, ScSpecTypeResult, ScSpecTypeUdt,
+            ScSpecUdtErrorEnumCaseV0, ScSpecUdtErrorEnumV0,
+        };
+
+        let entries = [
+            ScSpecEntry::UdtErrorEnumV0(ScSpecUdtErrorEnumV0 {
+                doc: "".try_into().unwrap(),
+                lib: "".try_into().unwrap(),
+                name: "::mycontract::Error".try_into().unwrap(),
+                cases: [ScSpecUdtErrorEnumCaseV0 {
+                    doc: "".try_into().unwrap(),
+                    name: "Overflow".try_into().unwrap(),
+                    value: 1,
+                }]
+                .try_into()
+                .unwrap(),
+            }),
+            ScSpecEntry::FunctionV0(ScSpecFunctionV0 {
+                doc: "".try_into().unwrap(),
+                name: "own_error".try_into().unwrap(),
+                inputs: [].try_into().unwrap(),
+                outputs: [ScSpecTypeDef::Result(Box::new(ScSpecTypeResult {
+                    ok_type: Box::new(ScSpecTypeDef::U64),
+                    error_type: Box::new(ScSpecTypeDef::Udt(ScSpecTypeUdt {
+                        name: "::mycontract::Error".try_into().unwrap(),
+                    })),
+                }))]
+                .try_into()
+                .unwrap(),
+            }),
+            ScSpecEntry::FunctionV0(ScSpecFunctionV0 {
+                doc: "".try_into().unwrap(),
+                name: "sdk_error".try_into().unwrap(),
+                inputs: [].try_into().unwrap(),
+                outputs: [ScSpecTypeDef::Result(Box::new(ScSpecTypeResult {
+                    ok_type: Box::new(ScSpecTypeDef::U64),
+                    error_type: Box::new(ScSpecTypeDef::Error),
+                }))]
+                .try_into()
+                .unwrap(),
+            }),
+        ];
+        let rust = super::generate_without_file(&entries, Some(30))
+            .unwrap()
+            .to_formatted_string()
+            .unwrap();
+        assert_eq!(
+            rust,
+            r#"#[soroban_sdk::contractargs(name = "Args")]
+#[soroban_sdk::contractclient(name = "Client")]
+pub trait Contract {
+    fn own_error(env: soroban_sdk::Env) -> Result<u64, Error>;
+    fn sdk_error(env: soroban_sdk::Env) -> Result<u64, soroban_sdk::Error>;
+}
+#[soroban_sdk::contracterror]
+#[derive(Debug, Copy, Clone, Eq, PartialEq, Ord, PartialOrd)]
+pub enum Error {
+    Overflow = 1,
+}
+"#,
+        );
+    }
+
+    /// New SDK, spec not reduced, with the contract's own error enum named
+    /// `Error` but not used by any function. `soroban_sdk::Error` stays
+    /// `soroban_sdk::Error`.
+    #[test]
+    fn test_error_new_sdk_unreduced_own_error_unused() {
+        use stellar_xdr::{
+            ScSpecEntry, ScSpecFunctionV0, ScSpecTypeDef, ScSpecTypeResult,
+            ScSpecUdtErrorEnumCaseV0, ScSpecUdtErrorEnumV0,
+        };
+
+        let entries = [
+            ScSpecEntry::UdtErrorEnumV0(ScSpecUdtErrorEnumV0 {
+                doc: "".try_into().unwrap(),
+                lib: "".try_into().unwrap(),
+                name: "::mycontract::Error".try_into().unwrap(),
+                cases: [ScSpecUdtErrorEnumCaseV0 {
+                    doc: "".try_into().unwrap(),
+                    name: "Overflow".try_into().unwrap(),
+                    value: 1,
+                }]
+                .try_into()
+                .unwrap(),
+            }),
+            ScSpecEntry::FunctionV0(ScSpecFunctionV0 {
+                doc: "".try_into().unwrap(),
+                name: "sdk_error".try_into().unwrap(),
+                inputs: [].try_into().unwrap(),
+                outputs: [ScSpecTypeDef::Result(Box::new(ScSpecTypeResult {
+                    ok_type: Box::new(ScSpecTypeDef::U64),
+                    error_type: Box::new(ScSpecTypeDef::Error),
+                }))]
+                .try_into()
+                .unwrap(),
+            }),
+        ];
+        let rust = super::generate_without_file(&entries, Some(30))
+            .unwrap()
+            .to_formatted_string()
+            .unwrap();
+        assert_eq!(
+            rust,
+            r#"#[soroban_sdk::contractargs(name = "Args")]
+#[soroban_sdk::contractclient(name = "Client")]
+pub trait Contract {
+    fn sdk_error(env: soroban_sdk::Env) -> Result<u64, soroban_sdk::Error>;
+}
+#[soroban_sdk::contracterror]
+#[derive(Debug, Copy, Clone, Eq, PartialEq, Ord, PartialOrd)]
+pub enum Error {
+    Overflow = 1,
+}
+"#,
+        );
+    }
+
+    /// New SDK, spec reduced (as the stellar-cli does when building), with the
+    /// contract's own error enum named `Error` and used. The own error enum is
+    /// referred to by its reduced name `Error`, and `soroban_sdk::Error` stays
+    /// `soroban_sdk::Error`. Same as the unreduced spec.
+    #[test]
+    fn test_error_new_sdk_reduced_own_error_used() {
+        use stellar_xdr::{
+            ScSpecEntry, ScSpecFunctionV0, ScSpecTypeDef, ScSpecTypeResult, ScSpecTypeUdt,
+            ScSpecUdtErrorEnumCaseV0, ScSpecUdtErrorEnumV0,
+        };
+
+        let entries = [
+            ScSpecEntry::UdtErrorEnumV0(ScSpecUdtErrorEnumV0 {
+                doc: "".try_into().unwrap(),
+                lib: "".try_into().unwrap(),
+                name: "Error".try_into().unwrap(),
+                cases: [ScSpecUdtErrorEnumCaseV0 {
+                    doc: "".try_into().unwrap(),
+                    name: "Overflow".try_into().unwrap(),
+                    value: 1,
+                }]
+                .try_into()
+                .unwrap(),
+            }),
+            ScSpecEntry::FunctionV0(ScSpecFunctionV0 {
+                doc: "".try_into().unwrap(),
+                name: "own_error".try_into().unwrap(),
+                inputs: [].try_into().unwrap(),
+                outputs: [ScSpecTypeDef::Result(Box::new(ScSpecTypeResult {
+                    ok_type: Box::new(ScSpecTypeDef::U64),
+                    error_type: Box::new(ScSpecTypeDef::Udt(ScSpecTypeUdt {
+                        name: "Error".try_into().unwrap(),
+                    })),
+                }))]
+                .try_into()
+                .unwrap(),
+            }),
+            ScSpecEntry::FunctionV0(ScSpecFunctionV0 {
+                doc: "".try_into().unwrap(),
+                name: "sdk_error".try_into().unwrap(),
+                inputs: [].try_into().unwrap(),
+                outputs: [ScSpecTypeDef::Result(Box::new(ScSpecTypeResult {
+                    ok_type: Box::new(ScSpecTypeDef::U64),
+                    error_type: Box::new(ScSpecTypeDef::Error),
+                }))]
+                .try_into()
+                .unwrap(),
+            }),
+        ];
+        let rust = super::generate_without_file(&entries, Some(30))
+            .unwrap()
+            .to_formatted_string()
+            .unwrap();
+        assert_eq!(
+            rust,
+            r#"#[soroban_sdk::contractargs(name = "Args")]
+#[soroban_sdk::contractclient(name = "Client")]
+pub trait Contract {
+    fn own_error(env: soroban_sdk::Env) -> Result<u64, Error>;
+    fn sdk_error(env: soroban_sdk::Env) -> Result<u64, soroban_sdk::Error>;
+}
+#[soroban_sdk::contracterror]
+#[derive(Debug, Copy, Clone, Eq, PartialEq, Ord, PartialOrd)]
+pub enum Error {
+    Overflow = 1,
+}
+"#,
+        );
+    }
+
+    /// New SDK, spec reduced (as the stellar-cli does when building), with the
+    /// contract's own error enum named `Error` but not used by any function.
+    /// The spec looks like an old SDK's, but the old SDK override applies only
+    /// to specs from SDKs prior to 30, so `soroban_sdk::Error` stays
+    /// `soroban_sdk::Error`. Same as the unreduced spec.
+    #[test]
+    fn test_error_new_sdk_reduced_own_error_unused() {
+        use stellar_xdr::{
+            ScSpecEntry, ScSpecFunctionV0, ScSpecTypeDef, ScSpecTypeResult,
+            ScSpecUdtErrorEnumCaseV0, ScSpecUdtErrorEnumV0,
+        };
+
+        let entries = [
+            ScSpecEntry::UdtErrorEnumV0(ScSpecUdtErrorEnumV0 {
+                doc: "".try_into().unwrap(),
+                lib: "".try_into().unwrap(),
+                name: "Error".try_into().unwrap(),
+                cases: [ScSpecUdtErrorEnumCaseV0 {
+                    doc: "".try_into().unwrap(),
+                    name: "Overflow".try_into().unwrap(),
+                    value: 1,
+                }]
+                .try_into()
+                .unwrap(),
+            }),
+            ScSpecEntry::FunctionV0(ScSpecFunctionV0 {
+                doc: "".try_into().unwrap(),
+                name: "sdk_error".try_into().unwrap(),
+                inputs: [].try_into().unwrap(),
+                outputs: [ScSpecTypeDef::Result(Box::new(ScSpecTypeResult {
+                    ok_type: Box::new(ScSpecTypeDef::U64),
+                    error_type: Box::new(ScSpecTypeDef::Error),
+                }))]
+                .try_into()
+                .unwrap(),
+            }),
+        ];
+        let rust = super::generate_without_file(&entries, Some(30))
+            .unwrap()
+            .to_formatted_string()
+            .unwrap();
+        assert_eq!(
+            rust,
+            r#"#[soroban_sdk::contractargs(name = "Args")]
+#[soroban_sdk::contractclient(name = "Client")]
+pub trait Contract {
+    fn sdk_error(env: soroban_sdk::Env) -> Result<u64, soroban_sdk::Error>;
 }
 #[soroban_sdk::contracterror]
 #[derive(Debug, Copy, Clone, Eq, PartialEq, Ord, PartialOrd)]

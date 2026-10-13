@@ -1,0 +1,17 @@
+error: type `Address` conflicts with a soroban_sdk type and cannot be used as a user-defined type
+ --> tests/compile_fails/contractevent_contracterror_name_errors.rs:7:12
+  |
+7 | pub struct Address {
+  |            ^^^^^^^
+
+error: type `Symbol` conflicts with a soroban_sdk type and cannot be used as a user-defined type
+  --> tests/compile_fails/contractevent_contracterror_name_errors.rs:13:10
+   |
+13 | pub enum Symbol {
+   |          ^^^^^^
+
+error: event `Generic` contains generic `T`, which is not supported for contract events, only lifetimes are
+  --> tests/compile_fails/contractevent_contracterror_name_errors.rs:21:20
+   |
+21 | pub struct Generic<T> {
+   |                    ^

@@ -1,11 +1,10 @@
 use crate::{
     attribute::{is_attr_cfg, pass_through_attr_to_gen_code},
-    map_type::map_type,
     syn_ext::{self, fn_arg_type_validate_no_mut, ty_to_safe_ident_str},
 };
 use itertools::MultiUnzip;
 use proc_macro2::TokenStream as TokenStream2;
-use quote::{format_ident, quote};
+use quote::{format_ident, quote, quote_spanned};
 use sha2::{Digest, Sha256};
 use syn::{
     ext::IdentExt as _,
@@ -89,20 +88,16 @@ pub fn derive_pub_fn(
         .enumerate()
         .map(|(i, a)| match a {
             FnArg::Typed(pat_ty) => {
-                // If fn is a __check_auth implementation, allow the first argument,
-                // signature_payload of type Bytes (32 size), to be a Hash. Compare on
-                // the Soroban-facing name so a raw-identifier spelling like
+                // If fn is a __check_auth implementation, its first argument, the
+                // signature payload, converts through the trait that also accepts a
+                // Hash, as the host guarantees the payload is a hash. Compare on the
+                // Soroban-facing name so a raw-identifier spelling like
                 // `r#__check_auth` can't bypass this special-case and then still export
                 // as `__check_auth`.
-                let allow_hash = ident.unraw().to_string() == "__check_auth" && i == 0;
+                let is_check_auth_payload = ident.unraw() == "__check_auth" && i == 0;
 
                 // Error if the type of the fn arg is mutable.
                 if let Err(e) = fn_arg_type_validate_no_mut(&pat_ty.ty) {
-                    errors.push(e);
-                }
-
-                // Error if the type of the fn is not mappable.
-                if let Err(e) = map_type(&pat_ty.ty, true, allow_hash) {
                     errors.push(e);
                 }
 
@@ -125,14 +120,30 @@ pub fn derive_pub_fn(
                     Type::Reference(TypeReference { .. }) => quote!(&),
                     _ => quote!(),
                 };
-                let call = quote! {
-                    #call_prefix
-                    <_ as #crate_path::unwrap::UnwrapOptimized>::unwrap_optimized(
-                        <_ as #crate_path::TryFromValForContractFn<#crate_path::Env, #crate_path::Val>>::try_from_val_for_contract_fn(
-                            &env,
+                // Spanned to the argument's type so that an error for a type that
+                // can't be converted points at the type. The `env` is quoted
+                // outside the span, so that it keeps the hygiene of the `env`
+                // the generated function declares, rather than taking the
+                // hygiene of the type, which may come from a user's macro.
+                let env = quote!(env);
+                let convert = if is_check_auth_payload {
+                    quote_spanned! {pat_ty.ty.span()=>
+                        <_ as #crate_path::TryFromValForCheckAuthPayload<#crate_path::Env, #crate_path::Val>>::try_from_val_for_check_auth_payload(
+                            &#env,
                             &#ident
                         )
-                    )
+                    }
+                } else {
+                    quote_spanned! {pat_ty.ty.span()=>
+                        <_ as #crate_path::TryFromValForContractFn<#crate_path::Env, #crate_path::Val>>::try_from_val_for_contract_fn(
+                            &#env,
+                            &#ident
+                        )
+                    }
+                };
+                let call = quote! {
+                    #call_prefix
+                    <_ as #crate_path::unwrap::UnwrapOptimized>::unwrap_optimized(#convert)
                 };
                 (arg, passthrough_call, call)
             }

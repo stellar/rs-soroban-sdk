@@ -13,23 +13,14 @@ pub struct ContractClient<'a> {
     pub env: soroban_sdk::Env,
     pub address: soroban_sdk::Address,
     #[doc(hidden)]
-    set_auths: Option<&'a [soroban_sdk::xdr::SorobanAuthorizationEntry]>,
-    #[doc(hidden)]
-    mock_auths: Option<&'a [soroban_sdk::testutils::MockAuth<'a>]>,
-    #[doc(hidden)]
-    mock_all_auths: bool,
-    #[doc(hidden)]
-    allow_non_root_auth: bool,
+    config: soroban_sdk::testutils::ClientInternalConfig<'a>,
 }
 impl<'a> ContractClient<'a> {
     pub fn new(env: &soroban_sdk::Env, address: &soroban_sdk::Address) -> Self {
         Self {
             env: env.clone(),
             address: address.clone(),
-            set_auths: None,
-            mock_auths: None,
-            mock_all_auths: false,
-            allow_non_root_auth: false,
+            config: soroban_sdk::testutils::ClientInternalConfig::default(),
         }
     }
     /// Set authorizations in the environment which will be consumed by
@@ -44,10 +35,7 @@ impl<'a> ContractClient<'a> {
         Self {
             env: self.env.clone(),
             address: self.address.clone(),
-            set_auths: Some(auths),
-            mock_auths: self.mock_auths.clone(),
-            mock_all_auths: false,
-            allow_non_root_auth: false,
+            config: self.config.set_auths(auths),
         }
     }
     /// Mock authorizations in the environment which will cause matching invokes
@@ -59,10 +47,7 @@ impl<'a> ContractClient<'a> {
         Self {
             env: self.env.clone(),
             address: self.address.clone(),
-            set_auths: self.set_auths.clone(),
-            mock_auths: Some(mock_auths),
-            mock_all_auths: false,
-            allow_non_root_auth: false,
+            config: self.config.mock_auths(mock_auths),
         }
     }
     /// Mock all calls to the `Address::require_auth` and
@@ -75,10 +60,7 @@ impl<'a> ContractClient<'a> {
         Self {
             env: self.env.clone(),
             address: self.address.clone(),
-            set_auths: None,
-            mock_auths: None,
-            mock_all_auths: true,
-            allow_non_root_auth: false,
+            config: self.config.mock_all_auths(),
         }
     }
     /// A version of `mock_all_auths` that allows authorizations that
@@ -94,10 +76,7 @@ impl<'a> ContractClient<'a> {
         Self {
             env: self.env.clone(),
             address: self.address.clone(),
-            set_auths: None,
-            mock_auths: None,
-            mock_all_auths: true,
-            allow_non_root_auth: true,
+            config: self.config.mock_all_auths_allowing_non_root_auth(),
         }
     }
 }
@@ -142,26 +121,94 @@ pub struct Transfer {
     amount: i128,
     to_muxed_id: Option<u64>,
 }
+impl soroban_sdk::SpecName for Transfer {
+    const SPEC_NAME: &'static str = {
+        const NAME: &str = "::test_events::Transfer";
+        const CHECKED_NAME: &str = {
+            if !(NAME.len() <= soroban_sdk::xdr::SC_SPEC_TYPE_NAME_LIMIT as usize) {
+                {
+                    ::core::panicking::panic_fmt(
+                        format_args!(
+                            "type `Transfer` full name including its module path is longer than the contract spec\'s type name limit, shorten its module path or name: `::test_events::Transfer`",
+                        ),
+                    );
+                }
+            }
+            NAME
+        };
+        CHECKED_NAME
+    };
+}
+impl soroban_sdk::SpecTypeDef for Transfer {
+    const SPEC_TYPE_DEF: soroban_sdk::xdr::r#const::ScSpecTypeDef =
+        soroban_sdk::xdr::r#const::ScSpecTypeDef::Udt(soroban_sdk::xdr::r#const::ScSpecTypeUdt {
+            name: soroban_sdk::xdr::r#const::StringM::try_from_str_or_panic(
+                <Self as soroban_sdk::SpecName>::SPEC_NAME,
+            ),
+        });
+}
 #[doc(hidden)]
 #[allow(dead_code)]
-static __SPEC_XDR_EVENT_TRANSFER: [u8; 144usize] = Transfer::spec_xdr();
+static __SPEC_XDR_EVENT_TRANSFER: [u8; Transfer::spec_xdr().len()] = Transfer::spec_xdr();
 impl Transfer {
-    pub const fn spec_xdr() -> [u8; 144usize] {
-        *b"\0\0\0\x05\0\0\0\0\0\0\0\0\0\0\0\x08Transfer\0\0\0\x01\0\0\0\x08transfer\0\0\0\x04\0\0\0\0\0\0\0\x04from\0\0\0\x13\0\0\0\x01\0\0\0\0\0\0\0\x02to\0\0\0\0\0\x13\0\0\0\x01\0\0\0\0\0\0\0\x06amount\0\0\0\0\0\x0b\0\0\0\0\0\0\0\0\0\0\0\x0bto_muxed_id\0\0\0\x03\xe8\0\0\0\x06\0\0\0\0\0\0\0\x02"
+    const __SPEC_XDR_ENTRY: soroban_sdk::xdr::r#const::ScSpecEntry =
+        soroban_sdk::xdr::r#const::ScSpecEntry::EventV0(soroban_sdk::xdr::r#const::ScSpecEventV0 {
+            doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
+            lib: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
+            name: soroban_sdk::xdr::r#const::StringM::try_from_str_or_panic(
+                <Transfer as soroban_sdk::SpecName>::SPEC_NAME,
+            ),
+            prefix_topics: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[
+                soroban_sdk::xdr::r#const::ScSymbol(
+                    soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b"transfer"),
+                ),
+            ]),
+            params: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[
+                soroban_sdk::xdr::r#const::ScSpecEventParamV0 {
+                    doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
+                    name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b"from"),
+                    type_: <Address as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
+                    location: soroban_sdk::xdr::ScSpecEventParamLocationV0::TopicList,
+                },
+                soroban_sdk::xdr::r#const::ScSpecEventParamV0 {
+                    doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
+                    name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b"to"),
+                    type_: <Address as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
+                    location: soroban_sdk::xdr::ScSpecEventParamLocationV0::TopicList,
+                },
+                soroban_sdk::xdr::r#const::ScSpecEventParamV0 {
+                    doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
+                    name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b"amount"),
+                    type_: <i128 as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
+                    location: soroban_sdk::xdr::ScSpecEventParamLocationV0::Data,
+                },
+                soroban_sdk::xdr::r#const::ScSpecEventParamV0 {
+                    doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
+                    name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(
+                        b"to_muxed_id",
+                    ),
+                    type_: <Option<u64> as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
+                    location: soroban_sdk::xdr::ScSpecEventParamLocationV0::Data,
+                },
+            ]),
+            data_format: soroban_sdk::xdr::ScSpecEventDataFormat::Map,
+        });
+    pub const fn spec_xdr() -> [u8; Transfer::__SPEC_XDR_ENTRY.const_xdr_len()] {
+        const { Transfer::__SPEC_XDR_ENTRY.const_to_xdr() }
     }
 }
 impl soroban_sdk::SpecShakingMarker for Transfer {
     #[doc(hidden)]
     #[inline(always)]
-    fn spec_shaking_marker() {
-        <Address as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
-        <Address as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
-        <i128 as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
-        <Option<u64> as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
-    }
+    fn spec_shaking_marker() {}
+}
+impl soroban_sdk::SpecAnchor for Transfer {
+    #[inline(never)]
+    fn spec_anchor() {}
 }
 impl soroban_sdk::Event for Transfer {
     fn topics(&self, env: &soroban_sdk::Env) -> soroban_sdk::Vec<soroban_sdk::Val> {
+        <Self as soroban_sdk::SpecAnchor>::spec_anchor();
         use soroban_sdk::IntoVal;
         (
             &{
@@ -181,6 +228,7 @@ impl soroban_sdk::Event for Transfer {
             .into_val(env)
     }
     fn data(&self, env: &soroban_sdk::Env) -> soroban_sdk::Val {
+        <Self as soroban_sdk::SpecAnchor>::spec_anchor();
         use soroban_sdk::{unwrap::UnwrapInfallible, EnvBase, IntoVal};
         const KEYS: [&'static str; 2usize] = ["amount", "to_muxed_id"];
         let vals: [soroban_sdk::Val; 2usize] =
@@ -192,7 +240,6 @@ impl soroban_sdk::Event for Transfer {
 }
 impl Transfer {
     pub fn publish(&self, env: &soroban_sdk::Env) {
-        <Self as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
         <_ as soroban_sdk::Event>::publish(self, env);
     }
 }
@@ -201,24 +248,82 @@ pub struct SingleValue {
     from: Address,
     amount: i128,
 }
+impl soroban_sdk::SpecName for SingleValue {
+    const SPEC_NAME: &'static str = {
+        const NAME: &str = "::test_events::SingleValue";
+        const CHECKED_NAME: &str = {
+            if !(NAME.len() <= soroban_sdk::xdr::SC_SPEC_TYPE_NAME_LIMIT as usize) {
+                {
+                    ::core::panicking::panic_fmt(
+                        format_args!(
+                            "type `SingleValue` full name including its module path is longer than the contract spec\'s type name limit, shorten its module path or name: `::test_events::SingleValue`",
+                        ),
+                    );
+                }
+            }
+            NAME
+        };
+        CHECKED_NAME
+    };
+}
+impl soroban_sdk::SpecTypeDef for SingleValue {
+    const SPEC_TYPE_DEF: soroban_sdk::xdr::r#const::ScSpecTypeDef =
+        soroban_sdk::xdr::r#const::ScSpecTypeDef::Udt(soroban_sdk::xdr::r#const::ScSpecTypeUdt {
+            name: soroban_sdk::xdr::r#const::StringM::try_from_str_or_panic(
+                <Self as soroban_sdk::SpecName>::SPEC_NAME,
+            ),
+        });
+}
 #[doc(hidden)]
 #[allow(dead_code)]
-static __SPEC_XDR_EVENT_SINGLEVALUE: [u8; 160usize] = SingleValue::spec_xdr();
+static __SPEC_XDR_EVENT_SINGLEVALUE: [u8; SingleValue::spec_xdr().len()] = SingleValue::spec_xdr();
 impl SingleValue {
-    pub const fn spec_xdr() -> [u8; 160usize] {
-        *b"\0\0\0\x05\0\0\09An event whose data is a single value, rather than a map.\0\0\0\0\0\0\0\0\0\0\x0bSingleValue\0\0\0\0\x01\0\0\0\x0csingle_value\0\0\0\x02\0\0\0\0\0\0\0\x04from\0\0\0\x13\0\0\0\x01\0\0\0\0\0\0\0\x06amount\0\0\0\0\0\x0b\0\0\0\0\0\0\0\0"
+    const __SPEC_XDR_ENTRY: soroban_sdk::xdr::r#const::ScSpecEntry =
+        soroban_sdk::xdr::r#const::ScSpecEntry::EventV0(soroban_sdk::xdr::r#const::ScSpecEventV0 {
+            doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(
+                b"An event whose data is a single value, rather than a map.",
+            ),
+            lib: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
+            name: soroban_sdk::xdr::r#const::StringM::try_from_str_or_panic(
+                <SingleValue as soroban_sdk::SpecName>::SPEC_NAME,
+            ),
+            prefix_topics: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[
+                soroban_sdk::xdr::r#const::ScSymbol(
+                    soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b"single_value"),
+                ),
+            ]),
+            params: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[
+                soroban_sdk::xdr::r#const::ScSpecEventParamV0 {
+                    doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
+                    name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b"from"),
+                    type_: <Address as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
+                    location: soroban_sdk::xdr::ScSpecEventParamLocationV0::TopicList,
+                },
+                soroban_sdk::xdr::r#const::ScSpecEventParamV0 {
+                    doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
+                    name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b"amount"),
+                    type_: <i128 as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
+                    location: soroban_sdk::xdr::ScSpecEventParamLocationV0::Data,
+                },
+            ]),
+            data_format: soroban_sdk::xdr::ScSpecEventDataFormat::SingleValue,
+        });
+    pub const fn spec_xdr() -> [u8; SingleValue::__SPEC_XDR_ENTRY.const_xdr_len()] {
+        const { SingleValue::__SPEC_XDR_ENTRY.const_to_xdr() }
     }
 }
 impl soroban_sdk::SpecShakingMarker for SingleValue {
     #[doc(hidden)]
     #[inline(always)]
-    fn spec_shaking_marker() {
-        <Address as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
-        <i128 as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
-    }
+    fn spec_shaking_marker() {}
+}
+impl soroban_sdk::SpecAnchor for SingleValue {
+    #[inline(never)]
+    fn spec_anchor() {}
 }
 impl soroban_sdk::Event for SingleValue {
     fn topics(&self, env: &soroban_sdk::Env) -> soroban_sdk::Vec<soroban_sdk::Val> {
+        <Self as soroban_sdk::SpecAnchor>::spec_anchor();
         use soroban_sdk::IntoVal;
         (&{ soroban_sdk::Symbol::new(env, "single_value") }, {
             let v: soroban_sdk::Val = self.from.into_val(env);
@@ -227,13 +332,13 @@ impl soroban_sdk::Event for SingleValue {
             .into_val(env)
     }
     fn data(&self, env: &soroban_sdk::Env) -> soroban_sdk::Val {
+        <Self as soroban_sdk::SpecAnchor>::spec_anchor();
         use soroban_sdk::IntoVal;
         self.amount.into_val(env)
     }
 }
 impl SingleValue {
     pub fn publish(&self, env: &soroban_sdk::Env) {
-        <Self as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
         <_ as soroban_sdk::Event>::publish(self, env);
     }
 }
@@ -242,23 +347,86 @@ impl SingleValue {
 pub struct SingleValueVoid {
     from: Address,
 }
+impl soroban_sdk::SpecName for SingleValueVoid {
+    const SPEC_NAME: &'static str = {
+        const NAME: &str = "::test_events::SingleValueVoid";
+        const CHECKED_NAME: &str = {
+            if !(NAME.len() <= soroban_sdk::xdr::SC_SPEC_TYPE_NAME_LIMIT as usize) {
+                {
+                    ::core::panicking::panic_fmt(
+                        format_args!(
+                            "type `SingleValueVoid` full name including its module path is longer than the contract spec\'s type name limit, shorten its module path or name: `::test_events::SingleValueVoid`",
+                        ),
+                    );
+                }
+            }
+            NAME
+        };
+        CHECKED_NAME
+    };
+}
+impl soroban_sdk::SpecTypeDef for SingleValueVoid {
+    const SPEC_TYPE_DEF: soroban_sdk::xdr::r#const::ScSpecTypeDef =
+        soroban_sdk::xdr::r#const::ScSpecTypeDef::Udt(soroban_sdk::xdr::r#const::ScSpecTypeUdt {
+            name: soroban_sdk::xdr::r#const::StringM::try_from_str_or_panic(
+                <Self as soroban_sdk::SpecName>::SPEC_NAME,
+            ),
+        });
+}
 #[doc(hidden)]
 #[allow(dead_code)]
-static __SPEC_XDR_EVENT_SINGLEVALUEVOID: [u8; 184usize] = SingleValueVoid::spec_xdr();
+static __SPEC_XDR_EVENT_SINGLEVALUEVOID: [u8; SingleValueVoid::spec_xdr().len()] =
+    SingleValueVoid::spec_xdr();
 impl SingleValueVoid {
-    pub const fn spec_xdr() -> [u8; 184usize] {
-        *b"\0\0\0\x05\0\0\0^An event whose data is a single value, and that has no data fields, and so\nwhose data is void.\0\0\0\0\0\0\0\0\0\x0fSingleValueVoid\0\0\0\0\x01\0\0\0\x11single_value_void\0\0\0\0\0\0\x01\0\0\0\0\0\0\0\x04from\0\0\0\x13\0\0\0\x01\0\0\0\0"
+    const __SPEC_XDR_ENTRY: soroban_sdk::xdr::r#const::ScSpecEntry = soroban_sdk::xdr::r#const::ScSpecEntry::EventV0(soroban_sdk::xdr::r#const::ScSpecEventV0 {
+        doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(
+            b"An event whose data is a single value, and that has no data fields, and so\nwhose data is void.",
+        ),
+        lib: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
+        name: soroban_sdk::xdr::r#const::StringM::try_from_str_or_panic(
+            <SingleValueVoid as soroban_sdk::SpecName>::SPEC_NAME,
+        ),
+        prefix_topics: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(
+            &[
+                soroban_sdk::xdr::r#const::ScSymbol(
+                    soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(
+                        b"single_value_void",
+                    ),
+                ),
+            ],
+        ),
+        params: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(
+            &[
+                soroban_sdk::xdr::r#const::ScSpecEventParamV0 {
+                    doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(
+                        b"",
+                    ),
+                    name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(
+                        b"from",
+                    ),
+                    type_: <Address as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
+                    location: soroban_sdk::xdr::ScSpecEventParamLocationV0::TopicList,
+                },
+            ],
+        ),
+        data_format: soroban_sdk::xdr::ScSpecEventDataFormat::SingleValue,
+    });
+    pub const fn spec_xdr() -> [u8; SingleValueVoid::__SPEC_XDR_ENTRY.const_xdr_len()] {
+        const { SingleValueVoid::__SPEC_XDR_ENTRY.const_to_xdr() }
     }
 }
 impl soroban_sdk::SpecShakingMarker for SingleValueVoid {
     #[doc(hidden)]
     #[inline(always)]
-    fn spec_shaking_marker() {
-        <Address as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
-    }
+    fn spec_shaking_marker() {}
+}
+impl soroban_sdk::SpecAnchor for SingleValueVoid {
+    #[inline(never)]
+    fn spec_anchor() {}
 }
 impl soroban_sdk::Event for SingleValueVoid {
     fn topics(&self, env: &soroban_sdk::Env) -> soroban_sdk::Vec<soroban_sdk::Val> {
+        <Self as soroban_sdk::SpecAnchor>::spec_anchor();
         use soroban_sdk::IntoVal;
         (&{ soroban_sdk::Symbol::new(env, "single_value_void") }, {
             let v: soroban_sdk::Val = self.from.into_val(env);
@@ -267,12 +435,12 @@ impl soroban_sdk::Event for SingleValueVoid {
             .into_val(env)
     }
     fn data(&self, env: &soroban_sdk::Env) -> soroban_sdk::Val {
+        <Self as soroban_sdk::SpecAnchor>::spec_anchor();
         soroban_sdk::Val::VOID.to_val()
     }
 }
 impl SingleValueVoid {
     pub fn publish(&self, env: &soroban_sdk::Env) {
-        <Self as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
         <_ as soroban_sdk::Event>::publish(self, env);
     }
 }
@@ -282,25 +450,88 @@ pub struct VecValues {
     a: u32,
     b: u32,
 }
+impl soroban_sdk::SpecName for VecValues {
+    const SPEC_NAME: &'static str = {
+        const NAME: &str = "::test_events::VecValues";
+        const CHECKED_NAME: &str = {
+            if !(NAME.len() <= soroban_sdk::xdr::SC_SPEC_TYPE_NAME_LIMIT as usize) {
+                {
+                    ::core::panicking::panic_fmt(
+                        format_args!(
+                            "type `VecValues` full name including its module path is longer than the contract spec\'s type name limit, shorten its module path or name: `::test_events::VecValues`",
+                        ),
+                    );
+                }
+            }
+            NAME
+        };
+        CHECKED_NAME
+    };
+}
+impl soroban_sdk::SpecTypeDef for VecValues {
+    const SPEC_TYPE_DEF: soroban_sdk::xdr::r#const::ScSpecTypeDef =
+        soroban_sdk::xdr::r#const::ScSpecTypeDef::Udt(soroban_sdk::xdr::r#const::ScSpecTypeUdt {
+            name: soroban_sdk::xdr::r#const::StringM::try_from_str_or_panic(
+                <Self as soroban_sdk::SpecName>::SPEC_NAME,
+            ),
+        });
+}
 #[doc(hidden)]
 #[allow(dead_code)]
-static __SPEC_XDR_EVENT_VECVALUES: [u8; 164usize] = VecValues::spec_xdr();
+static __SPEC_XDR_EVENT_VECVALUES: [u8; VecValues::spec_xdr().len()] = VecValues::spec_xdr();
 impl VecValues {
-    pub const fn spec_xdr() -> [u8; 164usize] {
-        *b"\0\0\0\x05\0\0\00An event whose data is a vec, rather than a map.\0\0\0\0\0\0\0\tVecValues\0\0\0\0\0\0\x01\0\0\0\nvec_values\0\0\0\0\0\x03\0\0\0\0\0\0\0\x04from\0\0\0\x13\0\0\0\x01\0\0\0\0\0\0\0\x01a\0\0\0\0\0\0\x04\0\0\0\0\0\0\0\0\0\0\0\x01b\0\0\0\0\0\0\x04\0\0\0\0\0\0\0\x01"
+    const __SPEC_XDR_ENTRY: soroban_sdk::xdr::r#const::ScSpecEntry =
+        soroban_sdk::xdr::r#const::ScSpecEntry::EventV0(soroban_sdk::xdr::r#const::ScSpecEventV0 {
+            doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(
+                b"An event whose data is a vec, rather than a map.",
+            ),
+            lib: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
+            name: soroban_sdk::xdr::r#const::StringM::try_from_str_or_panic(
+                <VecValues as soroban_sdk::SpecName>::SPEC_NAME,
+            ),
+            prefix_topics: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[
+                soroban_sdk::xdr::r#const::ScSymbol(
+                    soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b"vec_values"),
+                ),
+            ]),
+            params: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[
+                soroban_sdk::xdr::r#const::ScSpecEventParamV0 {
+                    doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
+                    name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b"from"),
+                    type_: <Address as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
+                    location: soroban_sdk::xdr::ScSpecEventParamLocationV0::TopicList,
+                },
+                soroban_sdk::xdr::r#const::ScSpecEventParamV0 {
+                    doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
+                    name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b"a"),
+                    type_: <u32 as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
+                    location: soroban_sdk::xdr::ScSpecEventParamLocationV0::Data,
+                },
+                soroban_sdk::xdr::r#const::ScSpecEventParamV0 {
+                    doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
+                    name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b"b"),
+                    type_: <u32 as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
+                    location: soroban_sdk::xdr::ScSpecEventParamLocationV0::Data,
+                },
+            ]),
+            data_format: soroban_sdk::xdr::ScSpecEventDataFormat::Vec,
+        });
+    pub const fn spec_xdr() -> [u8; VecValues::__SPEC_XDR_ENTRY.const_xdr_len()] {
+        const { VecValues::__SPEC_XDR_ENTRY.const_to_xdr() }
     }
 }
 impl soroban_sdk::SpecShakingMarker for VecValues {
     #[doc(hidden)]
     #[inline(always)]
-    fn spec_shaking_marker() {
-        <Address as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
-        <u32 as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
-        <u32 as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
-    }
+    fn spec_shaking_marker() {}
+}
+impl soroban_sdk::SpecAnchor for VecValues {
+    #[inline(never)]
+    fn spec_anchor() {}
 }
 impl soroban_sdk::Event for VecValues {
     fn topics(&self, env: &soroban_sdk::Env) -> soroban_sdk::Vec<soroban_sdk::Val> {
+        <Self as soroban_sdk::SpecAnchor>::spec_anchor();
         use soroban_sdk::IntoVal;
         (&{ soroban_sdk::Symbol::new(env, "vec_values") }, {
             let v: soroban_sdk::Val = self.from.into_val(env);
@@ -309,6 +540,7 @@ impl soroban_sdk::Event for VecValues {
             .into_val(env)
     }
     fn data(&self, env: &soroban_sdk::Env) -> soroban_sdk::Val {
+        <Self as soroban_sdk::SpecAnchor>::spec_anchor();
         use soroban_sdk::IntoVal;
         (
             {
@@ -325,7 +557,6 @@ impl soroban_sdk::Event for VecValues {
 }
 impl VecValues {
     pub fn publish(&self, env: &soroban_sdk::Env) {
-        <Self as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
         <_ as soroban_sdk::Event>::publish(self, env);
     }
 }
@@ -335,25 +566,88 @@ pub struct MapValues {
     a: u32,
     b: u32,
 }
+impl soroban_sdk::SpecName for MapValues {
+    const SPEC_NAME: &'static str = {
+        const NAME: &str = "::test_events::MapValues";
+        const CHECKED_NAME: &str = {
+            if !(NAME.len() <= soroban_sdk::xdr::SC_SPEC_TYPE_NAME_LIMIT as usize) {
+                {
+                    ::core::panicking::panic_fmt(
+                        format_args!(
+                            "type `MapValues` full name including its module path is longer than the contract spec\'s type name limit, shorten its module path or name: `::test_events::MapValues`",
+                        ),
+                    );
+                }
+            }
+            NAME
+        };
+        CHECKED_NAME
+    };
+}
+impl soroban_sdk::SpecTypeDef for MapValues {
+    const SPEC_TYPE_DEF: soroban_sdk::xdr::r#const::ScSpecTypeDef =
+        soroban_sdk::xdr::r#const::ScSpecTypeDef::Udt(soroban_sdk::xdr::r#const::ScSpecTypeUdt {
+            name: soroban_sdk::xdr::r#const::StringM::try_from_str_or_panic(
+                <Self as soroban_sdk::SpecName>::SPEC_NAME,
+            ),
+        });
+}
 #[doc(hidden)]
 #[allow(dead_code)]
-static __SPEC_XDR_EVENT_MAPVALUES: [u8; 168usize] = MapValues::spec_xdr();
+static __SPEC_XDR_EVENT_MAPVALUES: [u8; MapValues::spec_xdr().len()] = MapValues::spec_xdr();
 impl MapValues {
-    pub const fn spec_xdr() -> [u8; 168usize] {
-        *b"\0\0\0\x05\0\0\03An event whose data is a map, which is the default.\0\0\0\0\0\0\0\0\tMapValues\0\0\0\0\0\0\x01\0\0\0\nmap_values\0\0\0\0\0\x03\0\0\0\0\0\0\0\x04from\0\0\0\x13\0\0\0\x01\0\0\0\0\0\0\0\x01a\0\0\0\0\0\0\x04\0\0\0\0\0\0\0\0\0\0\0\x01b\0\0\0\0\0\0\x04\0\0\0\0\0\0\0\x02"
+    const __SPEC_XDR_ENTRY: soroban_sdk::xdr::r#const::ScSpecEntry =
+        soroban_sdk::xdr::r#const::ScSpecEntry::EventV0(soroban_sdk::xdr::r#const::ScSpecEventV0 {
+            doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(
+                b"An event whose data is a map, which is the default.",
+            ),
+            lib: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
+            name: soroban_sdk::xdr::r#const::StringM::try_from_str_or_panic(
+                <MapValues as soroban_sdk::SpecName>::SPEC_NAME,
+            ),
+            prefix_topics: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[
+                soroban_sdk::xdr::r#const::ScSymbol(
+                    soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b"map_values"),
+                ),
+            ]),
+            params: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[
+                soroban_sdk::xdr::r#const::ScSpecEventParamV0 {
+                    doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
+                    name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b"from"),
+                    type_: <Address as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
+                    location: soroban_sdk::xdr::ScSpecEventParamLocationV0::TopicList,
+                },
+                soroban_sdk::xdr::r#const::ScSpecEventParamV0 {
+                    doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
+                    name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b"a"),
+                    type_: <u32 as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
+                    location: soroban_sdk::xdr::ScSpecEventParamLocationV0::Data,
+                },
+                soroban_sdk::xdr::r#const::ScSpecEventParamV0 {
+                    doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
+                    name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b"b"),
+                    type_: <u32 as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
+                    location: soroban_sdk::xdr::ScSpecEventParamLocationV0::Data,
+                },
+            ]),
+            data_format: soroban_sdk::xdr::ScSpecEventDataFormat::Map,
+        });
+    pub const fn spec_xdr() -> [u8; MapValues::__SPEC_XDR_ENTRY.const_xdr_len()] {
+        const { MapValues::__SPEC_XDR_ENTRY.const_to_xdr() }
     }
 }
 impl soroban_sdk::SpecShakingMarker for MapValues {
     #[doc(hidden)]
     #[inline(always)]
-    fn spec_shaking_marker() {
-        <Address as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
-        <u32 as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
-        <u32 as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
-    }
+    fn spec_shaking_marker() {}
+}
+impl soroban_sdk::SpecAnchor for MapValues {
+    #[inline(never)]
+    fn spec_anchor() {}
 }
 impl soroban_sdk::Event for MapValues {
     fn topics(&self, env: &soroban_sdk::Env) -> soroban_sdk::Vec<soroban_sdk::Val> {
+        <Self as soroban_sdk::SpecAnchor>::spec_anchor();
         use soroban_sdk::IntoVal;
         (&{ soroban_sdk::Symbol::new(env, "map_values") }, {
             let v: soroban_sdk::Val = self.from.into_val(env);
@@ -362,6 +656,7 @@ impl soroban_sdk::Event for MapValues {
             .into_val(env)
     }
     fn data(&self, env: &soroban_sdk::Env) -> soroban_sdk::Val {
+        <Self as soroban_sdk::SpecAnchor>::spec_anchor();
         use soroban_sdk::{unwrap::UnwrapInfallible, EnvBase, IntoVal};
         const KEYS: [&'static str; 2usize] = ["a", "b"];
         let vals: [soroban_sdk::Val; 2usize] = [self.a.into_val(env), self.b.into_val(env)];
@@ -372,7 +667,6 @@ impl soroban_sdk::Event for MapValues {
 }
 impl MapValues {
     pub fn publish(&self, env: &soroban_sdk::Env) {
-        <Self as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
         <_ as soroban_sdk::Event>::publish(self, env);
     }
 }
@@ -419,12 +713,39 @@ mod __Contract__single_value__spec {
     #[allow(non_snake_case)]
     #[allow(non_upper_case_globals)]
     #[allow(dead_code)]
-    static __SPEC_XDR_FN_SINGLE_VALUE: [u8; 68usize] = super::Contract::spec_xdr_single_value();
+    static __SPEC_XDR_FN_SINGLE_VALUE: [u8; super::Contract::spec_xdr_single_value().len()] =
+        super::Contract::spec_xdr_single_value();
 }
 impl Contract {
+    #[allow(non_upper_case_globals)]
+    const __SPEC_XDR_ENTRY_single_value: soroban_sdk::xdr::r#const::ScSpecEntry =
+        soroban_sdk::xdr::r#const::ScSpecEntry::FunctionV0(
+            soroban_sdk::xdr::r#const::ScSpecFunctionV0 {
+                doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
+                name: soroban_sdk::xdr::r#const::ScSymbol(
+                    soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b"single_value"),
+                ),
+                inputs: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[
+                    soroban_sdk::xdr::r#const::ScSpecFunctionInputV0 {
+                        doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
+                        name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b"from"),
+                        type_: <Address as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
+                    },
+                    soroban_sdk::xdr::r#const::ScSpecFunctionInputV0 {
+                        doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
+                        name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(
+                            b"amount",
+                        ),
+                        type_: <i128 as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
+                    },
+                ]),
+                outputs: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[]),
+            },
+        );
     #[allow(non_snake_case)]
-    pub const fn spec_xdr_single_value() -> [u8; 68usize] {
-        *b"\0\0\0\0\0\0\0\0\0\0\0\x0csingle_value\0\0\0\x02\0\0\0\0\0\0\0\x04from\0\0\0\x13\0\0\0\0\0\0\0\x06amount\0\0\0\0\0\x0b\0\0\0\0"
+    pub const fn spec_xdr_single_value(
+    ) -> [u8; Contract::__SPEC_XDR_ENTRY_single_value.const_xdr_len()] {
+        const { Contract::__SPEC_XDR_ENTRY_single_value.const_to_xdr() }
     }
 }
 #[doc(hidden)]
@@ -435,13 +756,34 @@ mod __Contract__single_value_void__spec {
     #[allow(non_snake_case)]
     #[allow(non_upper_case_globals)]
     #[allow(dead_code)]
-    static __SPEC_XDR_FN_SINGLE_VALUE_VOID: [u8; 56usize] =
-        super::Contract::spec_xdr_single_value_void();
+    static __SPEC_XDR_FN_SINGLE_VALUE_VOID: [u8; super::Contract::spec_xdr_single_value_void()
+        .len()] = super::Contract::spec_xdr_single_value_void();
 }
 impl Contract {
+    #[allow(non_upper_case_globals)]
+    const __SPEC_XDR_ENTRY_single_value_void: soroban_sdk::xdr::r#const::ScSpecEntry =
+        soroban_sdk::xdr::r#const::ScSpecEntry::FunctionV0(
+            soroban_sdk::xdr::r#const::ScSpecFunctionV0 {
+                doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
+                name: soroban_sdk::xdr::r#const::ScSymbol(
+                    soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(
+                        b"single_value_void",
+                    ),
+                ),
+                inputs: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[
+                    soroban_sdk::xdr::r#const::ScSpecFunctionInputV0 {
+                        doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
+                        name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b"from"),
+                        type_: <Address as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
+                    },
+                ]),
+                outputs: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[]),
+            },
+        );
     #[allow(non_snake_case)]
-    pub const fn spec_xdr_single_value_void() -> [u8; 56usize] {
-        *b"\0\0\0\0\0\0\0\0\0\0\0\x11single_value_void\0\0\0\0\0\0\x01\0\0\0\0\0\0\0\x04from\0\0\0\x13\0\0\0\0"
+    pub const fn spec_xdr_single_value_void(
+    ) -> [u8; Contract::__SPEC_XDR_ENTRY_single_value_void.const_xdr_len()] {
+        const { Contract::__SPEC_XDR_ENTRY_single_value_void.const_to_xdr() }
     }
 }
 #[doc(hidden)]
@@ -452,12 +794,42 @@ mod __Contract__vec_values__spec {
     #[allow(non_snake_case)]
     #[allow(non_upper_case_globals)]
     #[allow(dead_code)]
-    static __SPEC_XDR_FN_VEC_VALUES: [u8; 80usize] = super::Contract::spec_xdr_vec_values();
+    static __SPEC_XDR_FN_VEC_VALUES: [u8; super::Contract::spec_xdr_vec_values().len()] =
+        super::Contract::spec_xdr_vec_values();
 }
 impl Contract {
+    #[allow(non_upper_case_globals)]
+    const __SPEC_XDR_ENTRY_vec_values: soroban_sdk::xdr::r#const::ScSpecEntry =
+        soroban_sdk::xdr::r#const::ScSpecEntry::FunctionV0(
+            soroban_sdk::xdr::r#const::ScSpecFunctionV0 {
+                doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
+                name: soroban_sdk::xdr::r#const::ScSymbol(
+                    soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b"vec_values"),
+                ),
+                inputs: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[
+                    soroban_sdk::xdr::r#const::ScSpecFunctionInputV0 {
+                        doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
+                        name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b"from"),
+                        type_: <Address as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
+                    },
+                    soroban_sdk::xdr::r#const::ScSpecFunctionInputV0 {
+                        doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
+                        name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b"a"),
+                        type_: <u32 as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
+                    },
+                    soroban_sdk::xdr::r#const::ScSpecFunctionInputV0 {
+                        doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
+                        name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b"b"),
+                        type_: <u32 as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
+                    },
+                ]),
+                outputs: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[]),
+            },
+        );
     #[allow(non_snake_case)]
-    pub const fn spec_xdr_vec_values() -> [u8; 80usize] {
-        *b"\0\0\0\0\0\0\0\0\0\0\0\nvec_values\0\0\0\0\0\x03\0\0\0\0\0\0\0\x04from\0\0\0\x13\0\0\0\0\0\0\0\x01a\0\0\0\0\0\0\x04\0\0\0\0\0\0\0\x01b\0\0\0\0\0\0\x04\0\0\0\0"
+    pub const fn spec_xdr_vec_values() -> [u8; Contract::__SPEC_XDR_ENTRY_vec_values.const_xdr_len()]
+    {
+        const { Contract::__SPEC_XDR_ENTRY_vec_values.const_to_xdr() }
     }
 }
 #[doc(hidden)]
@@ -468,12 +840,42 @@ mod __Contract__map_values__spec {
     #[allow(non_snake_case)]
     #[allow(non_upper_case_globals)]
     #[allow(dead_code)]
-    static __SPEC_XDR_FN_MAP_VALUES: [u8; 80usize] = super::Contract::spec_xdr_map_values();
+    static __SPEC_XDR_FN_MAP_VALUES: [u8; super::Contract::spec_xdr_map_values().len()] =
+        super::Contract::spec_xdr_map_values();
 }
 impl Contract {
+    #[allow(non_upper_case_globals)]
+    const __SPEC_XDR_ENTRY_map_values: soroban_sdk::xdr::r#const::ScSpecEntry =
+        soroban_sdk::xdr::r#const::ScSpecEntry::FunctionV0(
+            soroban_sdk::xdr::r#const::ScSpecFunctionV0 {
+                doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
+                name: soroban_sdk::xdr::r#const::ScSymbol(
+                    soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b"map_values"),
+                ),
+                inputs: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[
+                    soroban_sdk::xdr::r#const::ScSpecFunctionInputV0 {
+                        doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
+                        name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b"from"),
+                        type_: <Address as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
+                    },
+                    soroban_sdk::xdr::r#const::ScSpecFunctionInputV0 {
+                        doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
+                        name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b"a"),
+                        type_: <u32 as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
+                    },
+                    soroban_sdk::xdr::r#const::ScSpecFunctionInputV0 {
+                        doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
+                        name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b"b"),
+                        type_: <u32 as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
+                    },
+                ]),
+                outputs: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[]),
+            },
+        );
     #[allow(non_snake_case)]
-    pub const fn spec_xdr_map_values() -> [u8; 80usize] {
-        *b"\0\0\0\0\0\0\0\0\0\0\0\nmap_values\0\0\0\0\0\x03\0\0\0\0\0\0\0\x04from\0\0\0\x13\0\0\0\0\0\0\0\x01a\0\0\0\0\0\0\x04\0\0\0\0\0\0\0\x01b\0\0\0\0\0\0\x04\0\0\0\0"
+    pub const fn spec_xdr_map_values() -> [u8; Contract::__SPEC_XDR_ENTRY_map_values.const_xdr_len()]
+    {
+        const { Contract::__SPEC_XDR_ENTRY_map_values.const_to_xdr() }
     }
 }
 #[doc(hidden)]
@@ -484,12 +886,43 @@ mod __Contract__transfer__spec {
     #[allow(non_snake_case)]
     #[allow(non_upper_case_globals)]
     #[allow(dead_code)]
-    static __SPEC_XDR_FN_TRANSFER: [u8; 80usize] = super::Contract::spec_xdr_transfer();
+    static __SPEC_XDR_FN_TRANSFER: [u8; super::Contract::spec_xdr_transfer().len()] =
+        super::Contract::spec_xdr_transfer();
 }
 impl Contract {
+    #[allow(non_upper_case_globals)]
+    const __SPEC_XDR_ENTRY_transfer: soroban_sdk::xdr::r#const::ScSpecEntry =
+        soroban_sdk::xdr::r#const::ScSpecEntry::FunctionV0(
+            soroban_sdk::xdr::r#const::ScSpecFunctionV0 {
+                doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
+                name: soroban_sdk::xdr::r#const::ScSymbol(
+                    soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b"transfer"),
+                ),
+                inputs: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[
+                    soroban_sdk::xdr::r#const::ScSpecFunctionInputV0 {
+                        doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
+                        name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b"from"),
+                        type_: <Address as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
+                    },
+                    soroban_sdk::xdr::r#const::ScSpecFunctionInputV0 {
+                        doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
+                        name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b"to"),
+                        type_: <MuxedAddress as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
+                    },
+                    soroban_sdk::xdr::r#const::ScSpecFunctionInputV0 {
+                        doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
+                        name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(
+                            b"amount",
+                        ),
+                        type_: <i128 as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
+                    },
+                ]),
+                outputs: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[]),
+            },
+        );
     #[allow(non_snake_case)]
-    pub const fn spec_xdr_transfer() -> [u8; 80usize] {
-        *b"\0\0\0\0\0\0\0\0\0\0\0\x08transfer\0\0\0\x03\0\0\0\0\0\0\0\x04from\0\0\0\x13\0\0\0\0\0\0\0\x02to\0\0\0\0\0\x14\0\0\0\0\0\0\0\x06amount\0\0\0\0\0\x0b\0\0\0\0"
+    pub const fn spec_xdr_transfer() -> [u8; Contract::__SPEC_XDR_ENTRY_transfer.const_xdr_len()] {
+        const { Contract::__SPEC_XDR_ENTRY_transfer.const_to_xdr() }
     }
 }
 #[doc(hidden)]
@@ -500,38 +933,49 @@ mod __Contract__failed_transfer__spec {
     #[allow(non_snake_case)]
     #[allow(non_upper_case_globals)]
     #[allow(dead_code)]
-    static __SPEC_XDR_FN_FAILED_TRANSFER: [u8; 88usize] =
+    static __SPEC_XDR_FN_FAILED_TRANSFER: [u8; super::Contract::spec_xdr_failed_transfer().len()] =
         super::Contract::spec_xdr_failed_transfer();
 }
 impl Contract {
+    #[allow(non_upper_case_globals)]
+    const __SPEC_XDR_ENTRY_failed_transfer: soroban_sdk::xdr::r#const::ScSpecEntry =
+        soroban_sdk::xdr::r#const::ScSpecEntry::FunctionV0(
+            soroban_sdk::xdr::r#const::ScSpecFunctionV0 {
+                doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
+                name: soroban_sdk::xdr::r#const::ScSymbol(
+                    soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b"failed_transfer"),
+                ),
+                inputs: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[
+                    soroban_sdk::xdr::r#const::ScSpecFunctionInputV0 {
+                        doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
+                        name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b"from"),
+                        type_: <Address as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
+                    },
+                    soroban_sdk::xdr::r#const::ScSpecFunctionInputV0 {
+                        doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
+                        name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b"to"),
+                        type_: <Address as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
+                    },
+                    soroban_sdk::xdr::r#const::ScSpecFunctionInputV0 {
+                        doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
+                        name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(
+                            b"amount",
+                        ),
+                        type_: <i128 as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
+                    },
+                ]),
+                outputs: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[]),
+            },
+        );
     #[allow(non_snake_case)]
-    pub const fn spec_xdr_failed_transfer() -> [u8; 88usize] {
-        *b"\0\0\0\0\0\0\0\0\0\0\0\x0ffailed_transfer\0\0\0\0\x03\0\0\0\0\0\0\0\x04from\0\0\0\x13\0\0\0\0\0\0\0\x02to\0\0\0\0\0\x13\0\0\0\0\0\0\0\x06amount\0\0\0\0\0\x0b\0\0\0\0"
+    pub const fn spec_xdr_failed_transfer(
+    ) -> [u8; Contract::__SPEC_XDR_ENTRY_failed_transfer.const_xdr_len()] {
+        const { Contract::__SPEC_XDR_ENTRY_failed_transfer.const_to_xdr() }
     }
 }
 impl<'a> ContractClient<'a> {
     pub fn single_value(&self, from: &Address, amount: &i128) -> () {
-        use core::ops::Not;
-        let old_auth_manager = self
-            .env
-            .in_contract()
-            .not()
-            .then(|| self.env.host().snapshot_auth_manager().unwrap());
-        {
-            if let Some(set_auths) = self.set_auths {
-                self.env.set_auths(set_auths);
-            }
-            if let Some(mock_auths) = self.mock_auths {
-                self.env.mock_auths(mock_auths);
-            }
-            if self.mock_all_auths {
-                if self.allow_non_root_auth {
-                    self.env.mock_all_auths_allowing_non_root_auth();
-                } else {
-                    self.env.mock_all_auths();
-                }
-            }
-        }
+        let _call_scope = soroban_sdk::testutils::ClientCallScope::enter(&self.env, self.config);
         use soroban_sdk::{FromVal, IntoVal};
         let res = self.env.invoke_contract(
             &self.address,
@@ -541,9 +985,6 @@ impl<'a> ContractClient<'a> {
                 [from.into_val(&self.env), amount.into_val(&self.env)],
             ),
         );
-        if let Some(old_auth_manager) = old_auth_manager {
-            self.env.host().set_auth_manager(old_auth_manager).unwrap();
-        }
         res
     }
     pub fn try_single_value(
@@ -554,27 +995,7 @@ impl<'a> ContractClient<'a> {
         Result<(), <() as soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val>>::Error>,
         Result<soroban_sdk::Error, soroban_sdk::InvokeError>,
     > {
-        use core::ops::Not;
-        let old_auth_manager = self
-            .env
-            .in_contract()
-            .not()
-            .then(|| self.env.host().snapshot_auth_manager().unwrap());
-        {
-            if let Some(set_auths) = self.set_auths {
-                self.env.set_auths(set_auths);
-            }
-            if let Some(mock_auths) = self.mock_auths {
-                self.env.mock_auths(mock_auths);
-            }
-            if self.mock_all_auths {
-                if self.allow_non_root_auth {
-                    self.env.mock_all_auths_allowing_non_root_auth();
-                } else {
-                    self.env.mock_all_auths();
-                }
-            }
-        }
+        let _call_scope = soroban_sdk::testutils::ClientCallScope::enter(&self.env, self.config);
         use soroban_sdk::{FromVal, IntoVal};
         let res = self.env.try_invoke_contract(
             &self.address,
@@ -584,42 +1005,16 @@ impl<'a> ContractClient<'a> {
                 [from.into_val(&self.env), amount.into_val(&self.env)],
             ),
         );
-        if let Some(old_auth_manager) = old_auth_manager {
-            self.env.host().set_auth_manager(old_auth_manager).unwrap();
-        }
         res
     }
     pub fn single_value_void(&self, from: &Address) -> () {
-        use core::ops::Not;
-        let old_auth_manager = self
-            .env
-            .in_contract()
-            .not()
-            .then(|| self.env.host().snapshot_auth_manager().unwrap());
-        {
-            if let Some(set_auths) = self.set_auths {
-                self.env.set_auths(set_auths);
-            }
-            if let Some(mock_auths) = self.mock_auths {
-                self.env.mock_auths(mock_auths);
-            }
-            if self.mock_all_auths {
-                if self.allow_non_root_auth {
-                    self.env.mock_all_auths_allowing_non_root_auth();
-                } else {
-                    self.env.mock_all_auths();
-                }
-            }
-        }
+        let _call_scope = soroban_sdk::testutils::ClientCallScope::enter(&self.env, self.config);
         use soroban_sdk::{FromVal, IntoVal};
         let res = self.env.invoke_contract(
             &self.address,
             &{ soroban_sdk::Symbol::new(&self.env, "single_value_void") },
             ::soroban_sdk::Vec::from_array(&self.env, [from.into_val(&self.env)]),
         );
-        if let Some(old_auth_manager) = old_auth_manager {
-            self.env.host().set_auth_manager(old_auth_manager).unwrap();
-        }
         res
     }
     pub fn try_single_value_void(
@@ -629,60 +1024,17 @@ impl<'a> ContractClient<'a> {
         Result<(), <() as soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val>>::Error>,
         Result<soroban_sdk::Error, soroban_sdk::InvokeError>,
     > {
-        use core::ops::Not;
-        let old_auth_manager = self
-            .env
-            .in_contract()
-            .not()
-            .then(|| self.env.host().snapshot_auth_manager().unwrap());
-        {
-            if let Some(set_auths) = self.set_auths {
-                self.env.set_auths(set_auths);
-            }
-            if let Some(mock_auths) = self.mock_auths {
-                self.env.mock_auths(mock_auths);
-            }
-            if self.mock_all_auths {
-                if self.allow_non_root_auth {
-                    self.env.mock_all_auths_allowing_non_root_auth();
-                } else {
-                    self.env.mock_all_auths();
-                }
-            }
-        }
+        let _call_scope = soroban_sdk::testutils::ClientCallScope::enter(&self.env, self.config);
         use soroban_sdk::{FromVal, IntoVal};
         let res = self.env.try_invoke_contract(
             &self.address,
             &{ soroban_sdk::Symbol::new(&self.env, "single_value_void") },
             ::soroban_sdk::Vec::from_array(&self.env, [from.into_val(&self.env)]),
         );
-        if let Some(old_auth_manager) = old_auth_manager {
-            self.env.host().set_auth_manager(old_auth_manager).unwrap();
-        }
         res
     }
     pub fn vec_values(&self, from: &Address, a: &u32, b: &u32) -> () {
-        use core::ops::Not;
-        let old_auth_manager = self
-            .env
-            .in_contract()
-            .not()
-            .then(|| self.env.host().snapshot_auth_manager().unwrap());
-        {
-            if let Some(set_auths) = self.set_auths {
-                self.env.set_auths(set_auths);
-            }
-            if let Some(mock_auths) = self.mock_auths {
-                self.env.mock_auths(mock_auths);
-            }
-            if self.mock_all_auths {
-                if self.allow_non_root_auth {
-                    self.env.mock_all_auths_allowing_non_root_auth();
-                } else {
-                    self.env.mock_all_auths();
-                }
-            }
-        }
+        let _call_scope = soroban_sdk::testutils::ClientCallScope::enter(&self.env, self.config);
         use soroban_sdk::{FromVal, IntoVal};
         let res = self.env.invoke_contract(
             &self.address,
@@ -696,9 +1048,6 @@ impl<'a> ContractClient<'a> {
                 ],
             ),
         );
-        if let Some(old_auth_manager) = old_auth_manager {
-            self.env.host().set_auth_manager(old_auth_manager).unwrap();
-        }
         res
     }
     pub fn try_vec_values(
@@ -710,27 +1059,7 @@ impl<'a> ContractClient<'a> {
         Result<(), <() as soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val>>::Error>,
         Result<soroban_sdk::Error, soroban_sdk::InvokeError>,
     > {
-        use core::ops::Not;
-        let old_auth_manager = self
-            .env
-            .in_contract()
-            .not()
-            .then(|| self.env.host().snapshot_auth_manager().unwrap());
-        {
-            if let Some(set_auths) = self.set_auths {
-                self.env.set_auths(set_auths);
-            }
-            if let Some(mock_auths) = self.mock_auths {
-                self.env.mock_auths(mock_auths);
-            }
-            if self.mock_all_auths {
-                if self.allow_non_root_auth {
-                    self.env.mock_all_auths_allowing_non_root_auth();
-                } else {
-                    self.env.mock_all_auths();
-                }
-            }
-        }
+        let _call_scope = soroban_sdk::testutils::ClientCallScope::enter(&self.env, self.config);
         use soroban_sdk::{FromVal, IntoVal};
         let res = self.env.try_invoke_contract(
             &self.address,
@@ -744,33 +1073,10 @@ impl<'a> ContractClient<'a> {
                 ],
             ),
         );
-        if let Some(old_auth_manager) = old_auth_manager {
-            self.env.host().set_auth_manager(old_auth_manager).unwrap();
-        }
         res
     }
     pub fn map_values(&self, from: &Address, a: &u32, b: &u32) -> () {
-        use core::ops::Not;
-        let old_auth_manager = self
-            .env
-            .in_contract()
-            .not()
-            .then(|| self.env.host().snapshot_auth_manager().unwrap());
-        {
-            if let Some(set_auths) = self.set_auths {
-                self.env.set_auths(set_auths);
-            }
-            if let Some(mock_auths) = self.mock_auths {
-                self.env.mock_auths(mock_auths);
-            }
-            if self.mock_all_auths {
-                if self.allow_non_root_auth {
-                    self.env.mock_all_auths_allowing_non_root_auth();
-                } else {
-                    self.env.mock_all_auths();
-                }
-            }
-        }
+        let _call_scope = soroban_sdk::testutils::ClientCallScope::enter(&self.env, self.config);
         use soroban_sdk::{FromVal, IntoVal};
         let res = self.env.invoke_contract(
             &self.address,
@@ -784,9 +1090,6 @@ impl<'a> ContractClient<'a> {
                 ],
             ),
         );
-        if let Some(old_auth_manager) = old_auth_manager {
-            self.env.host().set_auth_manager(old_auth_manager).unwrap();
-        }
         res
     }
     pub fn try_map_values(
@@ -798,27 +1101,7 @@ impl<'a> ContractClient<'a> {
         Result<(), <() as soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val>>::Error>,
         Result<soroban_sdk::Error, soroban_sdk::InvokeError>,
     > {
-        use core::ops::Not;
-        let old_auth_manager = self
-            .env
-            .in_contract()
-            .not()
-            .then(|| self.env.host().snapshot_auth_manager().unwrap());
-        {
-            if let Some(set_auths) = self.set_auths {
-                self.env.set_auths(set_auths);
-            }
-            if let Some(mock_auths) = self.mock_auths {
-                self.env.mock_auths(mock_auths);
-            }
-            if self.mock_all_auths {
-                if self.allow_non_root_auth {
-                    self.env.mock_all_auths_allowing_non_root_auth();
-                } else {
-                    self.env.mock_all_auths();
-                }
-            }
-        }
+        let _call_scope = soroban_sdk::testutils::ClientCallScope::enter(&self.env, self.config);
         use soroban_sdk::{FromVal, IntoVal};
         let res = self.env.try_invoke_contract(
             &self.address,
@@ -832,33 +1115,10 @@ impl<'a> ContractClient<'a> {
                 ],
             ),
         );
-        if let Some(old_auth_manager) = old_auth_manager {
-            self.env.host().set_auth_manager(old_auth_manager).unwrap();
-        }
         res
     }
     pub fn transfer(&self, from: &Address, to: impl Into<MuxedAddress>, amount: &i128) -> () {
-        use core::ops::Not;
-        let old_auth_manager = self
-            .env
-            .in_contract()
-            .not()
-            .then(|| self.env.host().snapshot_auth_manager().unwrap());
-        {
-            if let Some(set_auths) = self.set_auths {
-                self.env.set_auths(set_auths);
-            }
-            if let Some(mock_auths) = self.mock_auths {
-                self.env.mock_auths(mock_auths);
-            }
-            if self.mock_all_auths {
-                if self.allow_non_root_auth {
-                    self.env.mock_all_auths_allowing_non_root_auth();
-                } else {
-                    self.env.mock_all_auths();
-                }
-            }
-        }
+        let _call_scope = soroban_sdk::testutils::ClientCallScope::enter(&self.env, self.config);
         use soroban_sdk::{FromVal, IntoVal};
         let res = self.env.invoke_contract(
             &self.address,
@@ -876,9 +1136,6 @@ impl<'a> ContractClient<'a> {
                 ],
             ),
         );
-        if let Some(old_auth_manager) = old_auth_manager {
-            self.env.host().set_auth_manager(old_auth_manager).unwrap();
-        }
         res
     }
     pub fn try_transfer(
@@ -890,27 +1147,7 @@ impl<'a> ContractClient<'a> {
         Result<(), <() as soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val>>::Error>,
         Result<soroban_sdk::Error, soroban_sdk::InvokeError>,
     > {
-        use core::ops::Not;
-        let old_auth_manager = self
-            .env
-            .in_contract()
-            .not()
-            .then(|| self.env.host().snapshot_auth_manager().unwrap());
-        {
-            if let Some(set_auths) = self.set_auths {
-                self.env.set_auths(set_auths);
-            }
-            if let Some(mock_auths) = self.mock_auths {
-                self.env.mock_auths(mock_auths);
-            }
-            if self.mock_all_auths {
-                if self.allow_non_root_auth {
-                    self.env.mock_all_auths_allowing_non_root_auth();
-                } else {
-                    self.env.mock_all_auths();
-                }
-            }
-        }
+        let _call_scope = soroban_sdk::testutils::ClientCallScope::enter(&self.env, self.config);
         use soroban_sdk::{FromVal, IntoVal};
         let res = self.env.try_invoke_contract(
             &self.address,
@@ -928,33 +1165,10 @@ impl<'a> ContractClient<'a> {
                 ],
             ),
         );
-        if let Some(old_auth_manager) = old_auth_manager {
-            self.env.host().set_auth_manager(old_auth_manager).unwrap();
-        }
         res
     }
     pub fn failed_transfer(&self, from: &Address, to: &Address, amount: &i128) -> () {
-        use core::ops::Not;
-        let old_auth_manager = self
-            .env
-            .in_contract()
-            .not()
-            .then(|| self.env.host().snapshot_auth_manager().unwrap());
-        {
-            if let Some(set_auths) = self.set_auths {
-                self.env.set_auths(set_auths);
-            }
-            if let Some(mock_auths) = self.mock_auths {
-                self.env.mock_auths(mock_auths);
-            }
-            if self.mock_all_auths {
-                if self.allow_non_root_auth {
-                    self.env.mock_all_auths_allowing_non_root_auth();
-                } else {
-                    self.env.mock_all_auths();
-                }
-            }
-        }
+        let _call_scope = soroban_sdk::testutils::ClientCallScope::enter(&self.env, self.config);
         use soroban_sdk::{FromVal, IntoVal};
         let res = self.env.invoke_contract(
             &self.address,
@@ -968,9 +1182,6 @@ impl<'a> ContractClient<'a> {
                 ],
             ),
         );
-        if let Some(old_auth_manager) = old_auth_manager {
-            self.env.host().set_auth_manager(old_auth_manager).unwrap();
-        }
         res
     }
     pub fn try_failed_transfer(
@@ -982,27 +1193,7 @@ impl<'a> ContractClient<'a> {
         Result<(), <() as soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val>>::Error>,
         Result<soroban_sdk::Error, soroban_sdk::InvokeError>,
     > {
-        use core::ops::Not;
-        let old_auth_manager = self
-            .env
-            .in_contract()
-            .not()
-            .then(|| self.env.host().snapshot_auth_manager().unwrap());
-        {
-            if let Some(set_auths) = self.set_auths {
-                self.env.set_auths(set_auths);
-            }
-            if let Some(mock_auths) = self.mock_auths {
-                self.env.mock_auths(mock_auths);
-            }
-            if self.mock_all_auths {
-                if self.allow_non_root_auth {
-                    self.env.mock_all_auths_allowing_non_root_auth();
-                } else {
-                    self.env.mock_all_auths();
-                }
-            }
-        }
+        let _call_scope = soroban_sdk::testutils::ClientCallScope::enter(&self.env, self.config);
         use soroban_sdk::{FromVal, IntoVal};
         let res = self.env.try_invoke_contract(
             &self.address,
@@ -1016,9 +1207,6 @@ impl<'a> ContractClient<'a> {
                 ],
             ),
         );
-        if let Some(old_auth_manager) = old_auth_manager {
-            self.env.host().set_auth_manager(old_auth_manager).unwrap();
-        }
         res
     }
 }

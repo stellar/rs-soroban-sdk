@@ -13,23 +13,14 @@ pub struct ContractClient<'a> {
     pub env: soroban_sdk::Env,
     pub address: soroban_sdk::Address,
     #[doc(hidden)]
-    set_auths: Option<&'a [soroban_sdk::xdr::SorobanAuthorizationEntry]>,
-    #[doc(hidden)]
-    mock_auths: Option<&'a [soroban_sdk::testutils::MockAuth<'a>]>,
-    #[doc(hidden)]
-    mock_all_auths: bool,
-    #[doc(hidden)]
-    allow_non_root_auth: bool,
+    config: soroban_sdk::testutils::ClientInternalConfig<'a>,
 }
 impl<'a> ContractClient<'a> {
     pub fn new(env: &soroban_sdk::Env, address: &soroban_sdk::Address) -> Self {
         Self {
             env: env.clone(),
             address: address.clone(),
-            set_auths: None,
-            mock_auths: None,
-            mock_all_auths: false,
-            allow_non_root_auth: false,
+            config: soroban_sdk::testutils::ClientInternalConfig::default(),
         }
     }
     /// Set authorizations in the environment which will be consumed by
@@ -44,10 +35,7 @@ impl<'a> ContractClient<'a> {
         Self {
             env: self.env.clone(),
             address: self.address.clone(),
-            set_auths: Some(auths),
-            mock_auths: self.mock_auths.clone(),
-            mock_all_auths: false,
-            allow_non_root_auth: false,
+            config: self.config.set_auths(auths),
         }
     }
     /// Mock authorizations in the environment which will cause matching invokes
@@ -59,10 +47,7 @@ impl<'a> ContractClient<'a> {
         Self {
             env: self.env.clone(),
             address: self.address.clone(),
-            set_auths: self.set_auths.clone(),
-            mock_auths: Some(mock_auths),
-            mock_all_auths: false,
-            allow_non_root_auth: false,
+            config: self.config.mock_auths(mock_auths),
         }
     }
     /// Mock all calls to the `Address::require_auth` and
@@ -75,10 +60,7 @@ impl<'a> ContractClient<'a> {
         Self {
             env: self.env.clone(),
             address: self.address.clone(),
-            set_auths: None,
-            mock_auths: None,
-            mock_all_auths: true,
-            allow_non_root_auth: false,
+            config: self.config.mock_all_auths(),
         }
     }
     /// A version of `mock_all_auths` that allows authorizations that
@@ -94,10 +76,7 @@ impl<'a> ContractClient<'a> {
         Self {
             env: self.env.clone(),
             address: self.address.clone(),
-            set_auths: None,
-            mock_auths: None,
-            mock_all_auths: true,
-            allow_non_root_auth: true,
+            config: self.config.mock_all_auths_allowing_non_root_auth(),
         }
     }
 }
@@ -141,20 +120,88 @@ pub enum DataKey {
     Temp(u32),
     Instance(u32),
 }
+impl soroban_sdk::SpecName for DataKey {
+    const SPEC_NAME: &'static str = {
+        const NAME: &str = "::test_constructor::DataKey";
+        const CHECKED_NAME: &str = {
+            if !(NAME.len() <= soroban_sdk::xdr::SC_SPEC_TYPE_NAME_LIMIT as usize) {
+                {
+                    ::core::panicking::panic_fmt(
+                        format_args!(
+                            "type `DataKey` full name including its module path is longer than the contract spec\'s type name limit, shorten its module path or name: `::test_constructor::DataKey`",
+                        ),
+                    );
+                }
+            }
+            NAME
+        };
+        CHECKED_NAME
+    };
+}
+impl soroban_sdk::SpecTypeDef for DataKey {
+    const SPEC_TYPE_DEF: soroban_sdk::xdr::r#const::ScSpecTypeDef =
+        soroban_sdk::xdr::r#const::ScSpecTypeDef::Udt(soroban_sdk::xdr::r#const::ScSpecTypeUdt {
+            name: soroban_sdk::xdr::r#const::StringM::try_from_str_or_panic(
+                <Self as soroban_sdk::SpecName>::SPEC_NAME,
+            ),
+        });
+}
 #[doc(hidden)]
 #[allow(dead_code)]
-static __SPEC_XDR_TYPE_DATAKEY: [u8; 112usize] = DataKey::spec_xdr();
+static __SPEC_XDR_TYPE_DATAKEY: [u8; DataKey::spec_xdr().len()] = DataKey::spec_xdr();
 impl DataKey {
-    pub const fn spec_xdr() -> [u8; 112usize] {
-        *b"\0\0\0\x02\0\0\0\0\0\0\0\0\0\0\0\x07DataKey\0\0\0\0\x03\0\0\0\x01\0\0\0\0\0\0\0\nPersistent\0\0\0\0\0\x01\0\0\0\x04\0\0\0\x01\0\0\0\0\0\0\0\x04Temp\0\0\0\x01\0\0\0\x04\0\0\0\x01\0\0\0\0\0\0\0\x08Instance\0\0\0\x01\0\0\0\x04"
+    const __SPEC_XDR_ENTRY: soroban_sdk::xdr::r#const::ScSpecEntry =
+        soroban_sdk::xdr::r#const::ScSpecEntry::UdtUnionV0(
+            soroban_sdk::xdr::r#const::ScSpecUdtUnionV0 {
+                doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
+                lib: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
+                name: soroban_sdk::xdr::r#const::StringM::try_from_str_or_panic(
+                    <DataKey as soroban_sdk::SpecName>::SPEC_NAME,
+                ),
+                cases: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[
+                    soroban_sdk::xdr::r#const::ScSpecUdtUnionCaseV0::TupleV0(
+                        soroban_sdk::xdr::r#const::ScSpecUdtUnionCaseTupleV0 {
+                            doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
+                            name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(
+                                b"Persistent",
+                            ),
+                            type_: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[
+                                <u32 as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
+                            ]),
+                        },
+                    ),
+                    soroban_sdk::xdr::r#const::ScSpecUdtUnionCaseV0::TupleV0(
+                        soroban_sdk::xdr::r#const::ScSpecUdtUnionCaseTupleV0 {
+                            doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
+                            name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(
+                                b"Temp",
+                            ),
+                            type_: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[
+                                <u32 as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
+                            ]),
+                        },
+                    ),
+                    soroban_sdk::xdr::r#const::ScSpecUdtUnionCaseV0::TupleV0(
+                        soroban_sdk::xdr::r#const::ScSpecUdtUnionCaseTupleV0 {
+                            doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
+                            name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(
+                                b"Instance",
+                            ),
+                            type_: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[
+                                <u32 as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
+                            ]),
+                        },
+                    ),
+                ]),
+            },
+        );
+    pub const fn spec_xdr() -> [u8; DataKey::__SPEC_XDR_ENTRY.const_xdr_len()] {
+        const { DataKey::__SPEC_XDR_ENTRY.const_to_xdr() }
     }
 }
-impl soroban_sdk::SpecShakingMarker for DataKey {
-    #[doc(hidden)]
-    #[inline(always)]
-    fn spec_shaking_marker() {
-        <u32 as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
-    }
+impl soroban_sdk::SpecAnchor for DataKey {
+    #[inline(never)]
+    fn spec_anchor() {}
 }
 impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for DataKey {
     type Error = soroban_sdk::ConversionError;
@@ -163,6 +210,7 @@ impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for DataKey {
         env: &soroban_sdk::Env,
         val: &soroban_sdk::Val,
     ) -> Result<Self, soroban_sdk::ConversionError> {
+        <DataKey as soroban_sdk::SpecAnchor>::spec_anchor();
         use soroban_sdk::{EnvBase, TryFromVal, TryIntoVal};
         const CASES: &'static [&'static str] = &["Persistent", "Temp", "Instance"];
         let vec: soroban_sdk::Vec<soroban_sdk::Val> = val.try_into_val(env)?;
@@ -217,6 +265,7 @@ impl soroban_sdk::TryFromVal<soroban_sdk::Env, DataKey> for soroban_sdk::Val {
         env: &soroban_sdk::Env,
         val: &DataKey,
     ) -> Result<Self, soroban_sdk::ConversionError> {
+        <DataKey as soroban_sdk::SpecAnchor>::spec_anchor();
         use soroban_sdk::{TryFromVal, TryIntoVal};
         match val {
             DataKey::Persistent(ref value0) => {
@@ -719,12 +768,41 @@ mod __Contract____constructor__spec {
     #[allow(non_snake_case)]
     #[allow(non_upper_case_globals)]
     #[allow(dead_code)]
-    static __SPEC_XDR_FN___CONSTRUCTOR: [u8; 80usize] = super::Contract::spec_xdr___constructor();
+    static __SPEC_XDR_FN___CONSTRUCTOR: [u8; super::Contract::spec_xdr___constructor().len()] =
+        super::Contract::spec_xdr___constructor();
 }
 impl Contract {
+    #[allow(non_upper_case_globals)]
+    const __SPEC_XDR_ENTRY___constructor: soroban_sdk::xdr::r#const::ScSpecEntry =
+        soroban_sdk::xdr::r#const::ScSpecEntry::FunctionV0(
+            soroban_sdk::xdr::r#const::ScSpecFunctionV0 {
+                doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
+                name: soroban_sdk::xdr::r#const::ScSymbol(
+                    soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b"__constructor"),
+                ),
+                inputs: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[
+                    soroban_sdk::xdr::r#const::ScSpecFunctionInputV0 {
+                        doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
+                        name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(
+                            b"init_key",
+                        ),
+                        type_: <u32 as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
+                    },
+                    soroban_sdk::xdr::r#const::ScSpecFunctionInputV0 {
+                        doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
+                        name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(
+                            b"init_value",
+                        ),
+                        type_: <i64 as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
+                    },
+                ]),
+                outputs: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[]),
+            },
+        );
     #[allow(non_snake_case)]
-    pub const fn spec_xdr___constructor() -> [u8; 80usize] {
-        *b"\0\0\0\0\0\0\0\0\0\0\0\r__constructor\0\0\0\0\0\0\x02\0\0\0\0\0\0\0\x08init_key\0\0\0\x04\0\0\0\0\0\0\0\ninit_value\0\0\0\0\0\x07\0\0\0\0"
+    pub const fn spec_xdr___constructor(
+    ) -> [u8; Contract::__SPEC_XDR_ENTRY___constructor.const_xdr_len()] {
+        const { Contract::__SPEC_XDR_ENTRY___constructor.const_to_xdr() }
     }
 }
 #[doc(hidden)]
@@ -735,37 +813,38 @@ mod __Contract__get_data__spec {
     #[allow(non_snake_case)]
     #[allow(non_upper_case_globals)]
     #[allow(dead_code)]
-    static __SPEC_XDR_FN_GET_DATA: [u8; 64usize] = super::Contract::spec_xdr_get_data();
+    static __SPEC_XDR_FN_GET_DATA: [u8; super::Contract::spec_xdr_get_data().len()] =
+        super::Contract::spec_xdr_get_data();
 }
 impl Contract {
+    #[allow(non_upper_case_globals)]
+    const __SPEC_XDR_ENTRY_get_data: soroban_sdk::xdr::r#const::ScSpecEntry =
+        soroban_sdk::xdr::r#const::ScSpecEntry::FunctionV0(
+            soroban_sdk::xdr::r#const::ScSpecFunctionV0 {
+                doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
+                name: soroban_sdk::xdr::r#const::ScSymbol(
+                    soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b"get_data"),
+                ),
+                inputs: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[
+                    soroban_sdk::xdr::r#const::ScSpecFunctionInputV0 {
+                        doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
+                        name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b"key"),
+                        type_: <DataKey as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
+                    },
+                ]),
+                outputs: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[
+                    <Option<i64> as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
+                ]),
+            },
+        );
     #[allow(non_snake_case)]
-    pub const fn spec_xdr_get_data() -> [u8; 64usize] {
-        *b"\0\0\0\0\0\0\0\0\0\0\0\x08get_data\0\0\0\x01\0\0\0\0\0\0\0\x03key\0\0\0\x07\xd0\0\0\0\x07DataKey\0\0\0\0\x01\0\0\x03\xe8\0\0\0\x07"
+    pub const fn spec_xdr_get_data() -> [u8; Contract::__SPEC_XDR_ENTRY_get_data.const_xdr_len()] {
+        const { Contract::__SPEC_XDR_ENTRY_get_data.const_to_xdr() }
     }
 }
 impl<'a> ContractClient<'a> {
     pub fn get_data(&self, key: &DataKey) -> Option<i64> {
-        use core::ops::Not;
-        let old_auth_manager = self
-            .env
-            .in_contract()
-            .not()
-            .then(|| self.env.host().snapshot_auth_manager().unwrap());
-        {
-            if let Some(set_auths) = self.set_auths {
-                self.env.set_auths(set_auths);
-            }
-            if let Some(mock_auths) = self.mock_auths {
-                self.env.mock_auths(mock_auths);
-            }
-            if self.mock_all_auths {
-                if self.allow_non_root_auth {
-                    self.env.mock_all_auths_allowing_non_root_auth();
-                } else {
-                    self.env.mock_all_auths();
-                }
-            }
-        }
+        let _call_scope = soroban_sdk::testutils::ClientCallScope::enter(&self.env, self.config);
         use soroban_sdk::{FromVal, IntoVal};
         let res = self.env.invoke_contract(
             &self.address,
@@ -776,9 +855,6 @@ impl<'a> ContractClient<'a> {
             },
             ::soroban_sdk::Vec::from_array(&self.env, [key.into_val(&self.env)]),
         );
-        if let Some(old_auth_manager) = old_auth_manager {
-            self.env.host().set_auth_manager(old_auth_manager).unwrap();
-        }
         res
     }
     pub fn try_get_data(
@@ -791,27 +867,7 @@ impl<'a> ContractClient<'a> {
         >,
         Result<soroban_sdk::Error, soroban_sdk::InvokeError>,
     > {
-        use core::ops::Not;
-        let old_auth_manager = self
-            .env
-            .in_contract()
-            .not()
-            .then(|| self.env.host().snapshot_auth_manager().unwrap());
-        {
-            if let Some(set_auths) = self.set_auths {
-                self.env.set_auths(set_auths);
-            }
-            if let Some(mock_auths) = self.mock_auths {
-                self.env.mock_auths(mock_auths);
-            }
-            if self.mock_all_auths {
-                if self.allow_non_root_auth {
-                    self.env.mock_all_auths_allowing_non_root_auth();
-                } else {
-                    self.env.mock_all_auths();
-                }
-            }
-        }
+        let _call_scope = soroban_sdk::testutils::ClientCallScope::enter(&self.env, self.config);
         use soroban_sdk::{FromVal, IntoVal};
         let res = self.env.try_invoke_contract(
             &self.address,
@@ -822,9 +878,6 @@ impl<'a> ContractClient<'a> {
             },
             ::soroban_sdk::Vec::from_array(&self.env, [key.into_val(&self.env)]),
         );
-        if let Some(old_auth_manager) = old_auth_manager {
-            self.env.host().set_auth_manager(old_auth_manager).unwrap();
-        }
         res
     }
 }

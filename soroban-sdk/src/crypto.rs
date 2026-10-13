@@ -107,10 +107,10 @@ impl<const N: usize> Into<[u8; N]> for Hash<N> {
 }
 
 #[allow(deprecated)]
-impl<const N: usize> crate::TryFromValForContractFn<Env, Val> for Hash<N> {
+impl<const N: usize> crate::TryFromValForCheckAuthPayload<Env, Val> for Hash<N> {
     type Error = ConversionError;
 
-    fn try_from_val_for_contract_fn(env: &Env, v: &Val) -> Result<Self, Self::Error> {
+    fn try_from_val_for_check_auth_payload(env: &Env, v: &Val) -> Result<Self, Self::Error> {
         Ok(Hash(BytesN::<N>::try_from_val(env, v)?))
     }
 }

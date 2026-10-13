@@ -8,24 +8,28 @@
 //! When the type is used, the function is called and the marker is included.
 //! When the type is unused, the function is DCE'd along with its marker.
 //!
+//! Only the entries that nothing in a spec references by name carry a marker:
+//! events, and error enums, which a contract may use solely by handing them to
+//! `panic_with_error!`. Every other user-defined type is named by whatever
+//! references it, so post-processing tools settle those by walking references
+//! from the contract's functions, and the type needs no marker of its own.
+//!
 //! Post-processing tools (e.g. stellar-cli) can:
 //! 1. Scan the WASM data section for "SpEcV1" patterns
 //! 2. Extract the hash from each marker
 //! 3. Match against specs in contractspecv0 section (by hashing each spec)
-//! 4. Strip unused specs from contractspecv0
+//! 4. Strip unreachable and unmarked specs from contractspecv0
 
 use proc_macro2::TokenStream as TokenStream2;
 use quote::quote;
-use syn::{Path, Type};
+use syn::Path;
 
-/// Generates the `SpecShakingMarker` impl for a type.
+/// Generates a `SpecShakingMarker` impl for a type that emits a marker.
 ///
 /// # Arguments
 ///
 /// * `path` - The crate path (e.g., `soroban_sdk`)
-/// * `ident` - The type identifier
-/// * `spec_xdr` - The XDR bytes of the spec entry
-/// * `field_types` - Optional iterator of field types to include markers for nested types
+/// * `ident` - The type identifier, whose `spec_xdr()` provides the spec entry XDR
 /// * `gen_impl` - Optional generics impl tokens (e.g., `<T>`)
 /// * `gen_types` - Optional generics type tokens (e.g., `<T>`)
 /// * `gen_where` - Optional generics where clause
@@ -33,23 +37,13 @@ use syn::{Path, Type};
 /// # Returns
 ///
 /// A `TokenStream2` containing the `impl SpecShakingMarker for Type { ... }` block.
-pub fn generate_marker_impl<'a, I>(
+pub fn generate_marker_impl(
     path: &Path,
     ident: TokenStream2,
-    spec_xdr: &[u8],
-    field_types: I,
     gen_impl: Option<TokenStream2>,
     gen_types: Option<TokenStream2>,
     gen_where: Option<TokenStream2>,
-) -> TokenStream2
-where
-    I: Iterator<Item = &'a Type>,
-{
-    let marker = soroban_spec::shaking::generate_marker_for_xdr(spec_xdr);
-    let marker_lit = proc_macro2::Literal::byte_string(&marker);
-    let marker_len = marker.len();
-
-    let field_type_markers: Vec<_> = field_types.collect();
+) -> TokenStream2 {
     let gen_impl = gen_impl.unwrap_or_default();
     let gen_types = gen_types.unwrap_or_default();
     let gen_where = gen_where.unwrap_or_default();
@@ -59,18 +53,19 @@ where
             #[doc(hidden)]
             #[inline(always)]
             fn spec_shaking_marker() {
-                #(<#field_type_markers as #path::SpecShakingMarker>::spec_shaking_marker();)*
                 #[cfg(target_family = "wasm")]
                 {
                     // Marker in data section. Post-build tools can scan for "SpEcV1"
-                    // patterns and match against specs in contractspecv0.
-                    static MARKER: [u8; #marker_len] = *#marker_lit;
+                    // patterns and match against specs in contractspecv0. Built from
+                    // the same const-encoded XDR that is embedded in that section, so
+                    // the two cannot drift apart.
+                    static MARKER: #path::reexports_for_macros::soroban_spec::shaking::Marker =
+                        #path::reexports_for_macros::soroban_spec::shaking::generate_marker_for_xdr(&#ident::spec_xdr());
                     // Volatile read prevents DCE of this function and keeps MARKER
                     // in the data section. We only read a single `u8` from the start
                     // of the array because merely taking a volatile reference to the
-                    // symbol is sufficient; reading all bytes via
-                    // `read_volatile::<[u8; #marker_len]>()` would be redundant and
-                    // could increase code size without any functional benefit.
+                    // symbol is sufficient; reading every byte would be redundant
+                    // and could increase code size without any functional benefit.
                     let _ = unsafe { ::core::ptr::read_volatile(MARKER.as_ptr()) };
                 }
             }

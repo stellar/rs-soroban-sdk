@@ -49,18 +49,65 @@ impl ::core::cmp::PartialEq for UdtEnum2 {
         __self_discr == __arg1_discr
     }
 }
+impl soroban_sdk::SpecName for UdtEnum2 {
+    const SPEC_NAME: &'static str = {
+        const NAME: &str = "::test_udt::UdtEnum2";
+        const CHECKED_NAME: &str = {
+            if !(NAME.len() <= soroban_sdk::xdr::SC_SPEC_TYPE_NAME_LIMIT as usize) {
+                {
+                    ::core::panicking::panic_fmt(
+                        format_args!(
+                            "type `UdtEnum2` full name including its module path is longer than the contract spec\'s type name limit, shorten its module path or name: `::test_udt::UdtEnum2`",
+                        ),
+                    );
+                }
+            }
+            NAME
+        };
+        CHECKED_NAME
+    };
+}
+impl soroban_sdk::SpecTypeDef for UdtEnum2 {
+    const SPEC_TYPE_DEF: soroban_sdk::xdr::r#const::ScSpecTypeDef =
+        soroban_sdk::xdr::r#const::ScSpecTypeDef::Udt(soroban_sdk::xdr::r#const::ScSpecTypeUdt {
+            name: soroban_sdk::xdr::r#const::StringM::try_from_str_or_panic(
+                <Self as soroban_sdk::SpecName>::SPEC_NAME,
+            ),
+        });
+}
 #[doc(hidden)]
 #[allow(dead_code)]
-static __SPEC_XDR_TYPE_UDTENUM2: [u8; 60usize] = UdtEnum2::spec_xdr();
+static __SPEC_XDR_TYPE_UDTENUM2: [u8; UdtEnum2::spec_xdr().len()] = UdtEnum2::spec_xdr();
 impl UdtEnum2 {
-    pub const fn spec_xdr() -> [u8; 60usize] {
-        *b"\0\0\0\x03\0\0\0\0\0\0\0\0\0\0\0\x08UdtEnum2\0\0\0\x02\0\0\0\0\0\0\0\x01A\0\0\0\0\0\0\n\0\0\0\0\0\0\0\x01B\0\0\0\0\0\0\x0f"
+    const __SPEC_XDR_ENTRY: soroban_sdk::xdr::r#const::ScSpecEntry =
+        soroban_sdk::xdr::r#const::ScSpecEntry::UdtEnumV0(
+            soroban_sdk::xdr::r#const::ScSpecUdtEnumV0 {
+                doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
+                lib: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
+                name: soroban_sdk::xdr::r#const::StringM::try_from_str_or_panic(
+                    <UdtEnum2 as soroban_sdk::SpecName>::SPEC_NAME,
+                ),
+                cases: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[
+                    soroban_sdk::xdr::r#const::ScSpecUdtEnumCaseV0 {
+                        doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
+                        name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b"A"),
+                        value: 10u32,
+                    },
+                    soroban_sdk::xdr::r#const::ScSpecUdtEnumCaseV0 {
+                        doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
+                        name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b"B"),
+                        value: 15u32,
+                    },
+                ]),
+            },
+        );
+    pub const fn spec_xdr() -> [u8; UdtEnum2::__SPEC_XDR_ENTRY.const_xdr_len()] {
+        const { UdtEnum2::__SPEC_XDR_ENTRY.const_to_xdr() }
     }
 }
-impl soroban_sdk::SpecShakingMarker for UdtEnum2 {
-    #[doc(hidden)]
-    #[inline(always)]
-    fn spec_shaking_marker() {}
+impl soroban_sdk::SpecAnchor for UdtEnum2 {
+    #[inline(never)]
+    fn spec_anchor() {}
 }
 impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for UdtEnum2 {
     type Error = soroban_sdk::ConversionError;
@@ -69,6 +116,7 @@ impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for UdtEnum2 {
         env: &soroban_sdk::Env,
         val: &soroban_sdk::Val,
     ) -> Result<Self, soroban_sdk::ConversionError> {
+        <UdtEnum2 as soroban_sdk::SpecAnchor>::spec_anchor();
         use soroban_sdk::TryIntoVal;
         let discriminant: u32 = val.try_into_val(env)?;
         Ok(match discriminant {
@@ -85,6 +133,7 @@ impl soroban_sdk::TryFromVal<soroban_sdk::Env, UdtEnum2> for soroban_sdk::Val {
         env: &soroban_sdk::Env,
         val: &UdtEnum2,
     ) -> Result<Self, soroban_sdk::ConversionError> {
+        <UdtEnum2 as soroban_sdk::SpecAnchor>::spec_anchor();
         Ok(match val {
             UdtEnum2::A => 10u32.into(),
             UdtEnum2::B => 15u32.into(),
@@ -400,22 +449,96 @@ impl ::core::cmp::PartialEq for UdtEnum {
             }
     }
 }
+impl soroban_sdk::SpecName for UdtEnum {
+    const SPEC_NAME: &'static str = {
+        const NAME: &str = "::test_udt::UdtEnum";
+        const CHECKED_NAME: &str = {
+            if !(NAME.len() <= soroban_sdk::xdr::SC_SPEC_TYPE_NAME_LIMIT as usize) {
+                {
+                    ::core::panicking::panic_fmt(
+                        format_args!(
+                            "type `UdtEnum` full name including its module path is longer than the contract spec\'s type name limit, shorten its module path or name: `::test_udt::UdtEnum`",
+                        ),
+                    );
+                }
+            }
+            NAME
+        };
+        CHECKED_NAME
+    };
+}
+impl soroban_sdk::SpecTypeDef for UdtEnum {
+    const SPEC_TYPE_DEF: soroban_sdk::xdr::r#const::ScSpecTypeDef =
+        soroban_sdk::xdr::r#const::ScSpecTypeDef::Udt(soroban_sdk::xdr::r#const::ScSpecTypeUdt {
+            name: soroban_sdk::xdr::r#const::StringM::try_from_str_or_panic(
+                <Self as soroban_sdk::SpecName>::SPEC_NAME,
+            ),
+        });
+}
 #[doc(hidden)]
 #[allow(dead_code)]
-static __SPEC_XDR_TYPE_UDTENUM: [u8; 156usize] = UdtEnum::spec_xdr();
+static __SPEC_XDR_TYPE_UDTENUM: [u8; UdtEnum::spec_xdr().len()] = UdtEnum::spec_xdr();
 impl UdtEnum {
-    pub const fn spec_xdr() -> [u8; 156usize] {
-        *b"\0\0\0\x02\0\0\0\0\0\0\0\0\0\0\0\x07UdtEnum\0\0\0\0\x04\0\0\0\0\0\0\0\0\0\0\0\x04UdtA\0\0\0\x01\0\0\0\0\0\0\0\x04UdtB\0\0\0\x01\0\0\x07\xd0\0\0\0\tUdtStruct\0\0\0\0\0\0\x01\0\0\0\0\0\0\0\x04UdtC\0\0\0\x01\0\0\x07\xd0\0\0\0\x08UdtEnum2\0\0\0\x01\0\0\0\0\0\0\0\x04UdtD\0\0\0\x01\0\0\x07\xd0\0\0\0\x08UdtTuple"
+    const __SPEC_XDR_ENTRY: soroban_sdk::xdr::r#const::ScSpecEntry =
+        soroban_sdk::xdr::r#const::ScSpecEntry::UdtUnionV0(
+            soroban_sdk::xdr::r#const::ScSpecUdtUnionV0 {
+                doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
+                lib: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
+                name: soroban_sdk::xdr::r#const::StringM::try_from_str_or_panic(
+                    <UdtEnum as soroban_sdk::SpecName>::SPEC_NAME,
+                ),
+                cases: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[
+                    soroban_sdk::xdr::r#const::ScSpecUdtUnionCaseV0::VoidV0(
+                        soroban_sdk::xdr::r#const::ScSpecUdtUnionCaseVoidV0 {
+                            doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
+                            name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(
+                                b"UdtA",
+                            ),
+                        },
+                    ),
+                    soroban_sdk::xdr::r#const::ScSpecUdtUnionCaseV0::TupleV0(
+                        soroban_sdk::xdr::r#const::ScSpecUdtUnionCaseTupleV0 {
+                            doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
+                            name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(
+                                b"UdtB",
+                            ),
+                            type_: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[
+                                <UdtStruct as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
+                            ]),
+                        },
+                    ),
+                    soroban_sdk::xdr::r#const::ScSpecUdtUnionCaseV0::TupleV0(
+                        soroban_sdk::xdr::r#const::ScSpecUdtUnionCaseTupleV0 {
+                            doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
+                            name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(
+                                b"UdtC",
+                            ),
+                            type_: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[
+                                <UdtEnum2 as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
+                            ]),
+                        },
+                    ),
+                    soroban_sdk::xdr::r#const::ScSpecUdtUnionCaseV0::TupleV0(
+                        soroban_sdk::xdr::r#const::ScSpecUdtUnionCaseTupleV0 {
+                            doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
+                            name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(
+                                b"UdtD",
+                            ),
+                            type_: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[
+                                <UdtTuple as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
+                            ]),
+                        },
+                    ),
+                ]),
+            },
+        );
+    pub const fn spec_xdr() -> [u8; UdtEnum::__SPEC_XDR_ENTRY.const_xdr_len()] {
+        const { UdtEnum::__SPEC_XDR_ENTRY.const_to_xdr() }
     }
 }
-impl soroban_sdk::SpecShakingMarker for UdtEnum {
-    #[doc(hidden)]
-    #[inline(always)]
-    fn spec_shaking_marker() {
-        <UdtStruct as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
-        <UdtEnum2 as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
-        <UdtTuple as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
-    }
+impl soroban_sdk::SpecAnchor for UdtEnum {
+    #[inline(never)]
+    fn spec_anchor() {}
 }
 impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for UdtEnum {
     type Error = soroban_sdk::ConversionError;
@@ -424,6 +547,7 @@ impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for UdtEnum {
         env: &soroban_sdk::Env,
         val: &soroban_sdk::Val,
     ) -> Result<Self, soroban_sdk::ConversionError> {
+        <UdtEnum as soroban_sdk::SpecAnchor>::spec_anchor();
         use soroban_sdk::{EnvBase, TryFromVal, TryIntoVal};
         const CASES: &'static [&'static str] = &["UdtA", "UdtB", "UdtC", "UdtD"];
         let vec: soroban_sdk::Vec<soroban_sdk::Val> = val.try_into_val(env)?;
@@ -484,6 +608,7 @@ impl soroban_sdk::TryFromVal<soroban_sdk::Env, UdtEnum> for soroban_sdk::Val {
         env: &soroban_sdk::Env,
         val: &UdtEnum,
     ) -> Result<Self, soroban_sdk::ConversionError> {
+        <UdtEnum as soroban_sdk::SpecAnchor>::spec_anchor();
         use soroban_sdk::{TryFromVal, TryIntoVal};
         match val {
             UdtEnum::UdtA => {
@@ -1017,21 +1142,65 @@ impl ::core::cmp::PartialEq for UdtTuple {
         self.0 == other.0 && self.1 == other.1
     }
 }
+impl soroban_sdk::SpecName for UdtTuple {
+    const SPEC_NAME: &'static str = {
+        const NAME: &str = "::test_udt::UdtTuple";
+        const CHECKED_NAME: &str = {
+            if !(NAME.len() <= soroban_sdk::xdr::SC_SPEC_TYPE_NAME_LIMIT as usize) {
+                {
+                    ::core::panicking::panic_fmt(
+                        format_args!(
+                            "type `UdtTuple` full name including its module path is longer than the contract spec\'s type name limit, shorten its module path or name: `::test_udt::UdtTuple`",
+                        ),
+                    );
+                }
+            }
+            NAME
+        };
+        CHECKED_NAME
+    };
+}
+impl soroban_sdk::SpecTypeDef for UdtTuple {
+    const SPEC_TYPE_DEF: soroban_sdk::xdr::r#const::ScSpecTypeDef =
+        soroban_sdk::xdr::r#const::ScSpecTypeDef::Udt(soroban_sdk::xdr::r#const::ScSpecTypeUdt {
+            name: soroban_sdk::xdr::r#const::StringM::try_from_str_or_panic(
+                <Self as soroban_sdk::SpecName>::SPEC_NAME,
+            ),
+        });
+}
 #[doc(hidden)]
 #[allow(dead_code)]
-static __SPEC_XDR_TYPE_UDTTUPLE: [u8; 64usize] = UdtTuple::spec_xdr();
+static __SPEC_XDR_TYPE_UDTTUPLE: [u8; UdtTuple::spec_xdr().len()] = UdtTuple::spec_xdr();
 impl UdtTuple {
-    pub const fn spec_xdr() -> [u8; 64usize] {
-        *b"\0\0\0\x01\0\0\0\0\0\0\0\0\0\0\0\x08UdtTuple\0\0\0\x02\0\0\0\0\0\0\0\x010\0\0\0\0\0\0\x07\0\0\0\0\0\0\0\x011\0\0\0\0\0\x03\xea\0\0\0\x07"
+    const __SPEC_XDR_ENTRY: soroban_sdk::xdr::r#const::ScSpecEntry =
+        soroban_sdk::xdr::r#const::ScSpecEntry::UdtStructV0(
+            soroban_sdk::xdr::r#const::ScSpecUdtStructV0 {
+                doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
+                lib: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
+                name: soroban_sdk::xdr::r#const::StringM::try_from_str_or_panic(
+                    <UdtTuple as soroban_sdk::SpecName>::SPEC_NAME,
+                ),
+                fields: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[
+                    soroban_sdk::xdr::r#const::ScSpecUdtStructFieldV0 {
+                        doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
+                        name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b"0"),
+                        type_: <i64 as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
+                    },
+                    soroban_sdk::xdr::r#const::ScSpecUdtStructFieldV0 {
+                        doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
+                        name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b"1"),
+                        type_: <Vec<i64> as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
+                    },
+                ]),
+            },
+        );
+    pub const fn spec_xdr() -> [u8; UdtTuple::__SPEC_XDR_ENTRY.const_xdr_len()] {
+        const { UdtTuple::__SPEC_XDR_ENTRY.const_to_xdr() }
     }
 }
-impl soroban_sdk::SpecShakingMarker for UdtTuple {
-    #[doc(hidden)]
-    #[inline(always)]
-    fn spec_shaking_marker() {
-        <i64 as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
-        <Vec<i64> as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
-    }
+impl soroban_sdk::SpecAnchor for UdtTuple {
+    #[inline(never)]
+    fn spec_anchor() {}
 }
 impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for UdtTuple {
     type Error = soroban_sdk::ConversionError;
@@ -1040,6 +1209,7 @@ impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for UdtTuple {
         env: &soroban_sdk::Env,
         val: &soroban_sdk::Val,
     ) -> Result<Self, soroban_sdk::ConversionError> {
+        <UdtTuple as soroban_sdk::SpecAnchor>::spec_anchor();
         use soroban_sdk::{ConversionError, EnvBase, TryIntoVal, Val, VecObject};
         let vec: VecObject = (*val).try_into().map_err(|_| ConversionError)?;
         let mut vals: [Val; 2usize] = [Val::VOID.to_val(); 2usize];
@@ -1058,6 +1228,7 @@ impl soroban_sdk::TryFromVal<soroban_sdk::Env, UdtTuple> for soroban_sdk::Val {
         env: &soroban_sdk::Env,
         val: &UdtTuple,
     ) -> Result<Self, soroban_sdk::ConversionError> {
+        <UdtTuple as soroban_sdk::SpecAnchor>::spec_anchor();
         use soroban_sdk::{ConversionError, EnvBase, TryIntoVal, Val};
         let vals: [Val; 2usize] = [
             (&val.0).try_into_val(env).map_err(|_| ConversionError)?,
@@ -1412,22 +1583,70 @@ impl ::core::cmp::PartialEq for UdtStruct {
         self.a == other.a && self.b == other.b && self.c == other.c
     }
 }
+impl soroban_sdk::SpecName for UdtStruct {
+    const SPEC_NAME: &'static str = {
+        const NAME: &str = "::test_udt::UdtStruct";
+        const CHECKED_NAME: &str = {
+            if !(NAME.len() <= soroban_sdk::xdr::SC_SPEC_TYPE_NAME_LIMIT as usize) {
+                {
+                    ::core::panicking::panic_fmt(
+                        format_args!(
+                            "type `UdtStruct` full name including its module path is longer than the contract spec\'s type name limit, shorten its module path or name: `::test_udt::UdtStruct`",
+                        ),
+                    );
+                }
+            }
+            NAME
+        };
+        CHECKED_NAME
+    };
+}
+impl soroban_sdk::SpecTypeDef for UdtStruct {
+    const SPEC_TYPE_DEF: soroban_sdk::xdr::r#const::ScSpecTypeDef =
+        soroban_sdk::xdr::r#const::ScSpecTypeDef::Udt(soroban_sdk::xdr::r#const::ScSpecTypeUdt {
+            name: soroban_sdk::xdr::r#const::StringM::try_from_str_or_panic(
+                <Self as soroban_sdk::SpecName>::SPEC_NAME,
+            ),
+        });
+}
 #[doc(hidden)]
 #[allow(dead_code)]
-static __SPEC_XDR_TYPE_UDTSTRUCT: [u8; 84usize] = UdtStruct::spec_xdr();
+static __SPEC_XDR_TYPE_UDTSTRUCT: [u8; UdtStruct::spec_xdr().len()] = UdtStruct::spec_xdr();
 impl UdtStruct {
-    pub const fn spec_xdr() -> [u8; 84usize] {
-        *b"\0\0\0\x01\0\0\0\0\0\0\0\0\0\0\0\tUdtStruct\0\0\0\0\0\0\x03\0\0\0\0\0\0\0\x01a\0\0\0\0\0\0\x07\0\0\0\0\0\0\0\x01b\0\0\0\0\0\0\x07\0\0\0\0\0\0\0\x01c\0\0\0\0\0\x03\xea\0\0\0\x07"
+    const __SPEC_XDR_ENTRY: soroban_sdk::xdr::r#const::ScSpecEntry =
+        soroban_sdk::xdr::r#const::ScSpecEntry::UdtStructV0(
+            soroban_sdk::xdr::r#const::ScSpecUdtStructV0 {
+                doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
+                lib: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
+                name: soroban_sdk::xdr::r#const::StringM::try_from_str_or_panic(
+                    <UdtStruct as soroban_sdk::SpecName>::SPEC_NAME,
+                ),
+                fields: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[
+                    soroban_sdk::xdr::r#const::ScSpecUdtStructFieldV0 {
+                        doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
+                        name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b"a"),
+                        type_: <i64 as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
+                    },
+                    soroban_sdk::xdr::r#const::ScSpecUdtStructFieldV0 {
+                        doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
+                        name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b"b"),
+                        type_: <i64 as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
+                    },
+                    soroban_sdk::xdr::r#const::ScSpecUdtStructFieldV0 {
+                        doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
+                        name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b"c"),
+                        type_: <Vec<i64> as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
+                    },
+                ]),
+            },
+        );
+    pub const fn spec_xdr() -> [u8; UdtStruct::__SPEC_XDR_ENTRY.const_xdr_len()] {
+        const { UdtStruct::__SPEC_XDR_ENTRY.const_to_xdr() }
     }
 }
-impl soroban_sdk::SpecShakingMarker for UdtStruct {
-    #[doc(hidden)]
-    #[inline(always)]
-    fn spec_shaking_marker() {
-        <i64 as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
-        <i64 as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
-        <Vec<i64> as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
-    }
+impl soroban_sdk::SpecAnchor for UdtStruct {
+    #[inline(never)]
+    fn spec_anchor() {}
 }
 impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for UdtStruct {
     type Error = soroban_sdk::ConversionError;
@@ -1435,6 +1654,7 @@ impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for UdtStruct {
         env: &soroban_sdk::Env,
         val: &soroban_sdk::Val,
     ) -> Result<Self, soroban_sdk::ConversionError> {
+        <UdtStruct as soroban_sdk::SpecAnchor>::spec_anchor();
         use soroban_sdk::{ConversionError, EnvBase, MapObject, TryIntoVal, Val};
         const KEYS: [&'static str; 3usize] = ["a", "b", "c"];
         let mut vals: [Val; 3usize] = [Val::VOID.to_val(); 3usize];
@@ -1460,6 +1680,7 @@ impl soroban_sdk::TryFromVal<soroban_sdk::Env, UdtStruct> for soroban_sdk::Val {
         env: &soroban_sdk::Env,
         val: &UdtStruct,
     ) -> Result<Self, soroban_sdk::ConversionError> {
+        <UdtStruct as soroban_sdk::SpecAnchor>::spec_anchor();
         use soroban_sdk::{ConversionError, EnvBase, TryIntoVal, Val};
         const KEYS: [&'static str; 3usize] = ["a", "b", "c"];
         let vals: [Val; 3usize] = [
@@ -1898,21 +2119,66 @@ impl ::core::cmp::PartialEq for UdtRecursive {
         self.a == other.a && self.b == other.b
     }
 }
+impl soroban_sdk::SpecName for UdtRecursive {
+    const SPEC_NAME: &'static str = {
+        const NAME: &str = "::test_udt::UdtRecursive";
+        const CHECKED_NAME: &str = {
+            if !(NAME.len() <= soroban_sdk::xdr::SC_SPEC_TYPE_NAME_LIMIT as usize) {
+                {
+                    ::core::panicking::panic_fmt(
+                        format_args!(
+                            "type `UdtRecursive` full name including its module path is longer than the contract spec\'s type name limit, shorten its module path or name: `::test_udt::UdtRecursive`",
+                        ),
+                    );
+                }
+            }
+            NAME
+        };
+        CHECKED_NAME
+    };
+}
+impl soroban_sdk::SpecTypeDef for UdtRecursive {
+    const SPEC_TYPE_DEF: soroban_sdk::xdr::r#const::ScSpecTypeDef =
+        soroban_sdk::xdr::r#const::ScSpecTypeDef::Udt(soroban_sdk::xdr::r#const::ScSpecTypeUdt {
+            name: soroban_sdk::xdr::r#const::StringM::try_from_str_or_panic(
+                <Self as soroban_sdk::SpecName>::SPEC_NAME,
+            ),
+        });
+}
 #[doc(hidden)]
 #[allow(dead_code)]
-static __SPEC_XDR_TYPE_UDTRECURSIVE: [u8; 84usize] = UdtRecursive::spec_xdr();
+static __SPEC_XDR_TYPE_UDTRECURSIVE: [u8; UdtRecursive::spec_xdr().len()] =
+    UdtRecursive::spec_xdr();
 impl UdtRecursive {
-    pub const fn spec_xdr() -> [u8; 84usize] {
-        *b"\0\0\0\x01\0\0\0\0\0\0\0\0\0\0\0\x0cUdtRecursive\0\0\0\x02\0\0\0\0\0\0\0\x01a\0\0\0\0\0\0\x11\0\0\0\0\0\0\0\x01b\0\0\0\0\0\x03\xea\0\0\x07\xd0\0\0\0\x0cUdtRecursive"
+    const __SPEC_XDR_ENTRY: soroban_sdk::xdr::r#const::ScSpecEntry =
+        soroban_sdk::xdr::r#const::ScSpecEntry::UdtStructV0(
+            soroban_sdk::xdr::r#const::ScSpecUdtStructV0 {
+                doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
+                lib: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
+                name: soroban_sdk::xdr::r#const::StringM::try_from_str_or_panic(
+                    <UdtRecursive as soroban_sdk::SpecName>::SPEC_NAME,
+                ),
+                fields: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[
+                    soroban_sdk::xdr::r#const::ScSpecUdtStructFieldV0 {
+                        doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
+                        name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b"a"),
+                        type_: <Symbol as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
+                    },
+                    soroban_sdk::xdr::r#const::ScSpecUdtStructFieldV0 {
+                        doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
+                        name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b"b"),
+                        type_: <Vec<UdtRecursive> as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
+                    },
+                ]),
+            },
+        );
+    pub const fn spec_xdr() -> [u8; UdtRecursive::__SPEC_XDR_ENTRY.const_xdr_len()] {
+        const { UdtRecursive::__SPEC_XDR_ENTRY.const_to_xdr() }
     }
 }
-impl soroban_sdk::SpecShakingMarker for UdtRecursive {
-    #[doc(hidden)]
-    #[inline(always)]
-    fn spec_shaking_marker() {
-        <Symbol as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
-        <Vec<UdtRecursive> as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
-    }
+impl soroban_sdk::SpecAnchor for UdtRecursive {
+    #[inline(never)]
+    fn spec_anchor() {}
 }
 impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for UdtRecursive {
     type Error = soroban_sdk::ConversionError;
@@ -1920,6 +2186,7 @@ impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for UdtRecursiv
         env: &soroban_sdk::Env,
         val: &soroban_sdk::Val,
     ) -> Result<Self, soroban_sdk::ConversionError> {
+        <UdtRecursive as soroban_sdk::SpecAnchor>::spec_anchor();
         use soroban_sdk::{ConversionError, EnvBase, MapObject, TryIntoVal, Val};
         const KEYS: [&'static str; 2usize] = ["a", "b"];
         let mut vals: [Val; 2usize] = [Val::VOID.to_val(); 2usize];
@@ -1942,6 +2209,7 @@ impl soroban_sdk::TryFromVal<soroban_sdk::Env, UdtRecursive> for soroban_sdk::Va
         env: &soroban_sdk::Env,
         val: &UdtRecursive,
     ) -> Result<Self, soroban_sdk::ConversionError> {
+        <UdtRecursive as soroban_sdk::SpecAnchor>::spec_anchor();
         use soroban_sdk::{ConversionError, EnvBase, TryIntoVal, Val};
         const KEYS: [&'static str; 2usize] = ["a", "b"];
         let vals: [Val; 2usize] = [
@@ -2334,21 +2602,66 @@ impl ::core::cmp::PartialEq for RecursiveToEnum {
         self.a == other.a && self.b == other.b
     }
 }
+impl soroban_sdk::SpecName for RecursiveToEnum {
+    const SPEC_NAME: &'static str = {
+        const NAME: &str = "::test_udt::RecursiveToEnum";
+        const CHECKED_NAME: &str = {
+            if !(NAME.len() <= soroban_sdk::xdr::SC_SPEC_TYPE_NAME_LIMIT as usize) {
+                {
+                    ::core::panicking::panic_fmt(
+                        format_args!(
+                            "type `RecursiveToEnum` full name including its module path is longer than the contract spec\'s type name limit, shorten its module path or name: `::test_udt::RecursiveToEnum`",
+                        ),
+                    );
+                }
+            }
+            NAME
+        };
+        CHECKED_NAME
+    };
+}
+impl soroban_sdk::SpecTypeDef for RecursiveToEnum {
+    const SPEC_TYPE_DEF: soroban_sdk::xdr::r#const::ScSpecTypeDef =
+        soroban_sdk::xdr::r#const::ScSpecTypeDef::Udt(soroban_sdk::xdr::r#const::ScSpecTypeUdt {
+            name: soroban_sdk::xdr::r#const::StringM::try_from_str_or_panic(
+                <Self as soroban_sdk::SpecName>::SPEC_NAME,
+            ),
+        });
+}
 #[doc(hidden)]
 #[allow(dead_code)]
-static __SPEC_XDR_TYPE_RECURSIVETOENUM: [u8; 96usize] = RecursiveToEnum::spec_xdr();
+static __SPEC_XDR_TYPE_RECURSIVETOENUM: [u8; RecursiveToEnum::spec_xdr().len()] =
+    RecursiveToEnum::spec_xdr();
 impl RecursiveToEnum {
-    pub const fn spec_xdr() -> [u8; 96usize] {
-        *b"\0\0\0\x01\0\0\0\0\0\0\0\0\0\0\0\x0fRecursiveToEnum\0\0\0\0\x02\0\0\0\0\0\0\0\x01a\0\0\0\0\0\0\x11\0\0\0\0\0\0\0\x01b\0\0\0\0\0\x03\xec\0\0\0\x04\0\0\x07\xd0\0\0\0\rRecursiveEnum\0\0\0"
+    const __SPEC_XDR_ENTRY: soroban_sdk::xdr::r#const::ScSpecEntry =
+        soroban_sdk::xdr::r#const::ScSpecEntry::UdtStructV0(
+            soroban_sdk::xdr::r#const::ScSpecUdtStructV0 {
+                doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
+                lib: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
+                name: soroban_sdk::xdr::r#const::StringM::try_from_str_or_panic(
+                    <RecursiveToEnum as soroban_sdk::SpecName>::SPEC_NAME,
+                ),
+                fields: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[
+                    soroban_sdk::xdr::r#const::ScSpecUdtStructFieldV0 {
+                        doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
+                        name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b"a"),
+                        type_: <Symbol as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
+                    },
+                    soroban_sdk::xdr::r#const::ScSpecUdtStructFieldV0 {
+                        doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
+                        name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b"b"),
+                        type_: <Map<u32, RecursiveEnum> as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
+                    },
+                ]),
+            },
+        );
+    pub const fn spec_xdr() -> [u8; RecursiveToEnum::__SPEC_XDR_ENTRY.const_xdr_len()] {
+        const { RecursiveToEnum::__SPEC_XDR_ENTRY.const_to_xdr() }
     }
 }
-impl soroban_sdk::SpecShakingMarker for RecursiveToEnum {
-    #[doc(hidden)]
-    #[inline(always)]
-    fn spec_shaking_marker() {
-        <Symbol as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
-        <Map<u32, RecursiveEnum> as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
-    }
+impl soroban_sdk::SpecAnchor for RecursiveToEnum {
+    #[inline(never)]
+    fn spec_anchor() {}
 }
 impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for RecursiveToEnum {
     type Error = soroban_sdk::ConversionError;
@@ -2356,6 +2669,7 @@ impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for RecursiveTo
         env: &soroban_sdk::Env,
         val: &soroban_sdk::Val,
     ) -> Result<Self, soroban_sdk::ConversionError> {
+        <RecursiveToEnum as soroban_sdk::SpecAnchor>::spec_anchor();
         use soroban_sdk::{ConversionError, EnvBase, MapObject, TryIntoVal, Val};
         const KEYS: [&'static str; 2usize] = ["a", "b"];
         let mut vals: [Val; 2usize] = [Val::VOID.to_val(); 2usize];
@@ -2378,6 +2692,7 @@ impl soroban_sdk::TryFromVal<soroban_sdk::Env, RecursiveToEnum> for soroban_sdk:
         env: &soroban_sdk::Env,
         val: &RecursiveToEnum,
     ) -> Result<Self, soroban_sdk::ConversionError> {
+        <RecursiveToEnum as soroban_sdk::SpecAnchor>::spec_anchor();
         use soroban_sdk::{ConversionError, EnvBase, TryIntoVal, Val};
         const KEYS: [&'static str; 2usize] = ["a", "b"];
         let vals: [Val; 2usize] = [
@@ -2784,20 +3099,75 @@ impl ::core::cmp::PartialEq for RecursiveEnum {
             }
     }
 }
+impl soroban_sdk::SpecName for RecursiveEnum {
+    const SPEC_NAME: &'static str = {
+        const NAME: &str = "::test_udt::RecursiveEnum";
+        const CHECKED_NAME: &str = {
+            if !(NAME.len() <= soroban_sdk::xdr::SC_SPEC_TYPE_NAME_LIMIT as usize) {
+                {
+                    ::core::panicking::panic_fmt(
+                        format_args!(
+                            "type `RecursiveEnum` full name including its module path is longer than the contract spec\'s type name limit, shorten its module path or name: `::test_udt::RecursiveEnum`",
+                        ),
+                    );
+                }
+            }
+            NAME
+        };
+        CHECKED_NAME
+    };
+}
+impl soroban_sdk::SpecTypeDef for RecursiveEnum {
+    const SPEC_TYPE_DEF: soroban_sdk::xdr::r#const::ScSpecTypeDef =
+        soroban_sdk::xdr::r#const::ScSpecTypeDef::Udt(soroban_sdk::xdr::r#const::ScSpecTypeUdt {
+            name: soroban_sdk::xdr::r#const::StringM::try_from_str_or_panic(
+                <Self as soroban_sdk::SpecName>::SPEC_NAME,
+            ),
+        });
+}
 #[doc(hidden)]
 #[allow(dead_code)]
-static __SPEC_XDR_TYPE_RECURSIVEENUM: [u8; 112usize] = RecursiveEnum::spec_xdr();
+static __SPEC_XDR_TYPE_RECURSIVEENUM: [u8; RecursiveEnum::spec_xdr().len()] =
+    RecursiveEnum::spec_xdr();
 impl RecursiveEnum {
-    pub const fn spec_xdr() -> [u8; 112usize] {
-        *b"\0\0\0\x02\0\0\0\0\0\0\0\0\0\0\0\rRecursiveEnum\0\0\0\0\0\0\x02\0\0\0\0\0\0\0\0\0\0\0\x0cNotRecursive\0\0\0\x01\0\0\0\0\0\0\0\tRecursive\0\0\0\0\0\0\x01\0\0\x07\xd0\0\0\0\x0fRecursiveToEnum\0"
+    const __SPEC_XDR_ENTRY: soroban_sdk::xdr::r#const::ScSpecEntry =
+        soroban_sdk::xdr::r#const::ScSpecEntry::UdtUnionV0(
+            soroban_sdk::xdr::r#const::ScSpecUdtUnionV0 {
+                doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
+                lib: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
+                name: soroban_sdk::xdr::r#const::StringM::try_from_str_or_panic(
+                    <RecursiveEnum as soroban_sdk::SpecName>::SPEC_NAME,
+                ),
+                cases: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[
+                    soroban_sdk::xdr::r#const::ScSpecUdtUnionCaseV0::VoidV0(
+                        soroban_sdk::xdr::r#const::ScSpecUdtUnionCaseVoidV0 {
+                            doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
+                            name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(
+                                b"NotRecursive",
+                            ),
+                        },
+                    ),
+                    soroban_sdk::xdr::r#const::ScSpecUdtUnionCaseV0::TupleV0(
+                        soroban_sdk::xdr::r#const::ScSpecUdtUnionCaseTupleV0 {
+                            doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
+                            name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(
+                                b"Recursive",
+                            ),
+                            type_: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[
+                                <RecursiveToEnum as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
+                            ]),
+                        },
+                    ),
+                ]),
+            },
+        );
+    pub const fn spec_xdr() -> [u8; RecursiveEnum::__SPEC_XDR_ENTRY.const_xdr_len()] {
+        const { RecursiveEnum::__SPEC_XDR_ENTRY.const_to_xdr() }
     }
 }
-impl soroban_sdk::SpecShakingMarker for RecursiveEnum {
-    #[doc(hidden)]
-    #[inline(always)]
-    fn spec_shaking_marker() {
-        <RecursiveToEnum as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
-    }
+impl soroban_sdk::SpecAnchor for RecursiveEnum {
+    #[inline(never)]
+    fn spec_anchor() {}
 }
 impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for RecursiveEnum {
     type Error = soroban_sdk::ConversionError;
@@ -2806,6 +3176,7 @@ impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for RecursiveEn
         env: &soroban_sdk::Env,
         val: &soroban_sdk::Val,
     ) -> Result<Self, soroban_sdk::ConversionError> {
+        <RecursiveEnum as soroban_sdk::SpecAnchor>::spec_anchor();
         use soroban_sdk::{EnvBase, TryFromVal, TryIntoVal};
         const CASES: &'static [&'static str] = &["NotRecursive", "Recursive"];
         let vec: soroban_sdk::Vec<soroban_sdk::Val> = val.try_into_val(env)?;
@@ -2846,6 +3217,7 @@ impl soroban_sdk::TryFromVal<soroban_sdk::Env, RecursiveEnum> for soroban_sdk::V
         env: &soroban_sdk::Env,
         val: &RecursiveEnum,
     ) -> Result<Self, soroban_sdk::ConversionError> {
+        <RecursiveEnum as soroban_sdk::SpecAnchor>::spec_anchor();
         use soroban_sdk::{TryFromVal, TryIntoVal};
         match val {
             RecursiveEnum::NotRecursive => {
@@ -3233,23 +3605,14 @@ pub struct ContractClient<'a> {
     pub env: soroban_sdk::Env,
     pub address: soroban_sdk::Address,
     #[doc(hidden)]
-    set_auths: Option<&'a [soroban_sdk::xdr::SorobanAuthorizationEntry]>,
-    #[doc(hidden)]
-    mock_auths: Option<&'a [soroban_sdk::testutils::MockAuth<'a>]>,
-    #[doc(hidden)]
-    mock_all_auths: bool,
-    #[doc(hidden)]
-    allow_non_root_auth: bool,
+    config: soroban_sdk::testutils::ClientInternalConfig<'a>,
 }
 impl<'a> ContractClient<'a> {
     pub fn new(env: &soroban_sdk::Env, address: &soroban_sdk::Address) -> Self {
         Self {
             env: env.clone(),
             address: address.clone(),
-            set_auths: None,
-            mock_auths: None,
-            mock_all_auths: false,
-            allow_non_root_auth: false,
+            config: soroban_sdk::testutils::ClientInternalConfig::default(),
         }
     }
     /// Set authorizations in the environment which will be consumed by
@@ -3264,10 +3627,7 @@ impl<'a> ContractClient<'a> {
         Self {
             env: self.env.clone(),
             address: self.address.clone(),
-            set_auths: Some(auths),
-            mock_auths: self.mock_auths.clone(),
-            mock_all_auths: false,
-            allow_non_root_auth: false,
+            config: self.config.set_auths(auths),
         }
     }
     /// Mock authorizations in the environment which will cause matching invokes
@@ -3279,10 +3639,7 @@ impl<'a> ContractClient<'a> {
         Self {
             env: self.env.clone(),
             address: self.address.clone(),
-            set_auths: self.set_auths.clone(),
-            mock_auths: Some(mock_auths),
-            mock_all_auths: false,
-            allow_non_root_auth: false,
+            config: self.config.mock_auths(mock_auths),
         }
     }
     /// Mock all calls to the `Address::require_auth` and
@@ -3295,10 +3652,7 @@ impl<'a> ContractClient<'a> {
         Self {
             env: self.env.clone(),
             address: self.address.clone(),
-            set_auths: None,
-            mock_auths: None,
-            mock_all_auths: true,
-            allow_non_root_auth: false,
+            config: self.config.mock_all_auths(),
         }
     }
     /// A version of `mock_all_auths` that allows authorizations that
@@ -3314,10 +3668,7 @@ impl<'a> ContractClient<'a> {
         Self {
             env: self.env.clone(),
             address: self.address.clone(),
-            set_auths: None,
-            mock_auths: None,
-            mock_all_auths: true,
-            allow_non_root_auth: true,
+            config: self.config.mock_all_auths_allowing_non_root_auth(),
         }
     }
 }
@@ -3394,12 +3745,38 @@ mod __Contract__add__spec {
     #[allow(non_snake_case)]
     #[allow(non_upper_case_globals)]
     #[allow(dead_code)]
-    static __SPEC_XDR_FN_ADD: [u8; 84usize] = super::Contract::spec_xdr_add();
+    static __SPEC_XDR_FN_ADD: [u8; super::Contract::spec_xdr_add().len()] =
+        super::Contract::spec_xdr_add();
 }
 impl Contract {
+    #[allow(non_upper_case_globals)]
+    const __SPEC_XDR_ENTRY_add: soroban_sdk::xdr::r#const::ScSpecEntry =
+        soroban_sdk::xdr::r#const::ScSpecEntry::FunctionV0(
+            soroban_sdk::xdr::r#const::ScSpecFunctionV0 {
+                doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
+                name: soroban_sdk::xdr::r#const::ScSymbol(
+                    soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b"add"),
+                ),
+                inputs: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[
+                    soroban_sdk::xdr::r#const::ScSpecFunctionInputV0 {
+                        doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
+                        name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b"a"),
+                        type_: <UdtEnum as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
+                    },
+                    soroban_sdk::xdr::r#const::ScSpecFunctionInputV0 {
+                        doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
+                        name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b"b"),
+                        type_: <UdtEnum as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
+                    },
+                ]),
+                outputs: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[
+                    <i64 as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
+                ]),
+            },
+        );
     #[allow(non_snake_case)]
-    pub const fn spec_xdr_add() -> [u8; 84usize] {
-        *b"\0\0\0\0\0\0\0\0\0\0\0\x03add\0\0\0\0\x02\0\0\0\0\0\0\0\x01a\0\0\0\0\0\x07\xd0\0\0\0\x07UdtEnum\0\0\0\0\0\0\0\0\x01b\0\0\0\0\0\x07\xd0\0\0\0\x07UdtEnum\0\0\0\0\x01\0\0\0\x07"
+    pub const fn spec_xdr_add() -> [u8; Contract::__SPEC_XDR_ENTRY_add.const_xdr_len()] {
+        const { Contract::__SPEC_XDR_ENTRY_add.const_to_xdr() }
     }
 }
 #[doc(hidden)]
@@ -3410,12 +3787,34 @@ mod __Contract__recursive__spec {
     #[allow(non_snake_case)]
     #[allow(non_upper_case_globals)]
     #[allow(dead_code)]
-    static __SPEC_XDR_FN_RECURSIVE: [u8; 88usize] = super::Contract::spec_xdr_recursive();
+    static __SPEC_XDR_FN_RECURSIVE: [u8; super::Contract::spec_xdr_recursive().len()] =
+        super::Contract::spec_xdr_recursive();
 }
 impl Contract {
+    #[allow(non_upper_case_globals)]
+    const __SPEC_XDR_ENTRY_recursive: soroban_sdk::xdr::r#const::ScSpecEntry =
+        soroban_sdk::xdr::r#const::ScSpecEntry::FunctionV0(
+            soroban_sdk::xdr::r#const::ScSpecFunctionV0 {
+                doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
+                name: soroban_sdk::xdr::r#const::ScSymbol(
+                    soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b"recursive"),
+                ),
+                inputs: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[
+                    soroban_sdk::xdr::r#const::ScSpecFunctionInputV0 {
+                        doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
+                        name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b"a"),
+                        type_: <UdtRecursive as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
+                    },
+                ]),
+                outputs: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[
+                    <Option<UdtRecursive> as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
+                ]),
+            },
+        );
     #[allow(non_snake_case)]
-    pub const fn spec_xdr_recursive() -> [u8; 88usize] {
-        *b"\0\0\0\0\0\0\0\0\0\0\0\trecursive\0\0\0\0\0\0\x01\0\0\0\0\0\0\0\x01a\0\0\0\0\0\x07\xd0\0\0\0\x0cUdtRecursive\0\0\0\x01\0\0\x03\xe8\0\0\x07\xd0\0\0\0\x0cUdtRecursive"
+    pub const fn spec_xdr_recursive() -> [u8; Contract::__SPEC_XDR_ENTRY_recursive.const_xdr_len()]
+    {
+        const { Contract::__SPEC_XDR_ENTRY_recursive.const_to_xdr() }
     }
 }
 #[doc(hidden)]
@@ -3426,38 +3825,46 @@ mod __Contract__recursive_enum__spec {
     #[allow(non_snake_case)]
     #[allow(non_upper_case_globals)]
     #[allow(dead_code)]
-    static __SPEC_XDR_FN_RECURSIVE_ENUM: [u8; 124usize] =
+    static __SPEC_XDR_FN_RECURSIVE_ENUM: [u8; super::Contract::spec_xdr_recursive_enum().len()] =
         super::Contract::spec_xdr_recursive_enum();
 }
 impl Contract {
+    #[allow(non_upper_case_globals)]
+    const __SPEC_XDR_ENTRY_recursive_enum: soroban_sdk::xdr::r#const::ScSpecEntry =
+        soroban_sdk::xdr::r#const::ScSpecEntry::FunctionV0(
+            soroban_sdk::xdr::r#const::ScSpecFunctionV0 {
+                doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
+                name: soroban_sdk::xdr::r#const::ScSymbol(
+                    soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b"recursive_enum"),
+                ),
+                inputs: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[
+                    soroban_sdk::xdr::r#const::ScSpecFunctionInputV0 {
+                        doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
+                        name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b"a"),
+                        type_: <RecursiveEnum as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
+                    },
+                    soroban_sdk::xdr::r#const::ScSpecFunctionInputV0 {
+                        doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
+                        name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b"key"),
+                        type_: <u32 as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
+                    },
+                ]),
+                outputs:
+                    soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[<Result<
+                        Option<RecursiveEnum>,
+                        Error,
+                    > as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF]),
+            },
+        );
     #[allow(non_snake_case)]
-    pub const fn spec_xdr_recursive_enum() -> [u8; 124usize] {
-        *b"\0\0\0\0\0\0\0\0\0\0\0\x0erecursive_enum\0\0\0\0\0\x02\0\0\0\0\0\0\0\x01a\0\0\0\0\0\x07\xd0\0\0\0\rRecursiveEnum\0\0\0\0\0\0\0\0\0\0\x03key\0\0\0\0\x04\0\0\0\x01\0\0\x03\xe9\0\0\x03\xe8\0\0\x07\xd0\0\0\0\rRecursiveEnum\0\0\0\0\0\0\x03"
+    pub const fn spec_xdr_recursive_enum(
+    ) -> [u8; Contract::__SPEC_XDR_ENTRY_recursive_enum.const_xdr_len()] {
+        const { Contract::__SPEC_XDR_ENTRY_recursive_enum.const_to_xdr() }
     }
 }
 impl<'a> ContractClient<'a> {
     pub fn add(&self, a: &UdtEnum, b: &UdtEnum) -> i64 {
-        use core::ops::Not;
-        let old_auth_manager = self
-            .env
-            .in_contract()
-            .not()
-            .then(|| self.env.host().snapshot_auth_manager().unwrap());
-        {
-            if let Some(set_auths) = self.set_auths {
-                self.env.set_auths(set_auths);
-            }
-            if let Some(mock_auths) = self.mock_auths {
-                self.env.mock_auths(mock_auths);
-            }
-            if self.mock_all_auths {
-                if self.allow_non_root_auth {
-                    self.env.mock_all_auths_allowing_non_root_auth();
-                } else {
-                    self.env.mock_all_auths();
-                }
-            }
-        }
+        let _call_scope = soroban_sdk::testutils::ClientCallScope::enter(&self.env, self.config);
         use soroban_sdk::{FromVal, IntoVal};
         let res = self.env.invoke_contract(
             &self.address,
@@ -3471,9 +3878,6 @@ impl<'a> ContractClient<'a> {
                 [a.into_val(&self.env), b.into_val(&self.env)],
             ),
         );
-        if let Some(old_auth_manager) = old_auth_manager {
-            self.env.host().set_auth_manager(old_auth_manager).unwrap();
-        }
         res
     }
     pub fn try_add(
@@ -3484,27 +3888,7 @@ impl<'a> ContractClient<'a> {
         Result<i64, <i64 as soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val>>::Error>,
         Result<soroban_sdk::Error, soroban_sdk::InvokeError>,
     > {
-        use core::ops::Not;
-        let old_auth_manager = self
-            .env
-            .in_contract()
-            .not()
-            .then(|| self.env.host().snapshot_auth_manager().unwrap());
-        {
-            if let Some(set_auths) = self.set_auths {
-                self.env.set_auths(set_auths);
-            }
-            if let Some(mock_auths) = self.mock_auths {
-                self.env.mock_auths(mock_auths);
-            }
-            if self.mock_all_auths {
-                if self.allow_non_root_auth {
-                    self.env.mock_all_auths_allowing_non_root_auth();
-                } else {
-                    self.env.mock_all_auths();
-                }
-            }
-        }
+        let _call_scope = soroban_sdk::testutils::ClientCallScope::enter(&self.env, self.config);
         use soroban_sdk::{FromVal, IntoVal};
         let res = self.env.try_invoke_contract(
             &self.address,
@@ -3518,33 +3902,10 @@ impl<'a> ContractClient<'a> {
                 [a.into_val(&self.env), b.into_val(&self.env)],
             ),
         );
-        if let Some(old_auth_manager) = old_auth_manager {
-            self.env.host().set_auth_manager(old_auth_manager).unwrap();
-        }
         res
     }
     pub fn recursive(&self, a: &UdtRecursive) -> Option<UdtRecursive> {
-        use core::ops::Not;
-        let old_auth_manager = self
-            .env
-            .in_contract()
-            .not()
-            .then(|| self.env.host().snapshot_auth_manager().unwrap());
-        {
-            if let Some(set_auths) = self.set_auths {
-                self.env.set_auths(set_auths);
-            }
-            if let Some(mock_auths) = self.mock_auths {
-                self.env.mock_auths(mock_auths);
-            }
-            if self.mock_all_auths {
-                if self.allow_non_root_auth {
-                    self.env.mock_all_auths_allowing_non_root_auth();
-                } else {
-                    self.env.mock_all_auths();
-                }
-            }
-        }
+        let _call_scope = soroban_sdk::testutils::ClientCallScope::enter(&self.env, self.config);
         use soroban_sdk::{FromVal, IntoVal};
         let res = self.env.invoke_contract(
             &self.address,
@@ -3555,9 +3916,6 @@ impl<'a> ContractClient<'a> {
             },
             ::soroban_sdk::Vec::from_array(&self.env, [a.into_val(&self.env)]),
         );
-        if let Some(old_auth_manager) = old_auth_manager {
-            self.env.host().set_auth_manager(old_auth_manager).unwrap();
-        }
         res
     }
     pub fn try_recursive(
@@ -3572,27 +3930,7 @@ impl<'a> ContractClient<'a> {
         >,
         Result<soroban_sdk::Error, soroban_sdk::InvokeError>,
     >{
-        use core::ops::Not;
-        let old_auth_manager = self
-            .env
-            .in_contract()
-            .not()
-            .then(|| self.env.host().snapshot_auth_manager().unwrap());
-        {
-            if let Some(set_auths) = self.set_auths {
-                self.env.set_auths(set_auths);
-            }
-            if let Some(mock_auths) = self.mock_auths {
-                self.env.mock_auths(mock_auths);
-            }
-            if self.mock_all_auths {
-                if self.allow_non_root_auth {
-                    self.env.mock_all_auths_allowing_non_root_auth();
-                } else {
-                    self.env.mock_all_auths();
-                }
-            }
-        }
+        let _call_scope = soroban_sdk::testutils::ClientCallScope::enter(&self.env, self.config);
         use soroban_sdk::{FromVal, IntoVal};
         let res = self.env.try_invoke_contract(
             &self.address,
@@ -3603,33 +3941,10 @@ impl<'a> ContractClient<'a> {
             },
             ::soroban_sdk::Vec::from_array(&self.env, [a.into_val(&self.env)]),
         );
-        if let Some(old_auth_manager) = old_auth_manager {
-            self.env.host().set_auth_manager(old_auth_manager).unwrap();
-        }
         res
     }
     pub fn recursive_enum(&self, a: &RecursiveEnum, key: &u32) -> Option<RecursiveEnum> {
-        use core::ops::Not;
-        let old_auth_manager = self
-            .env
-            .in_contract()
-            .not()
-            .then(|| self.env.host().snapshot_auth_manager().unwrap());
-        {
-            if let Some(set_auths) = self.set_auths {
-                self.env.set_auths(set_auths);
-            }
-            if let Some(mock_auths) = self.mock_auths {
-                self.env.mock_auths(mock_auths);
-            }
-            if self.mock_all_auths {
-                if self.allow_non_root_auth {
-                    self.env.mock_all_auths_allowing_non_root_auth();
-                } else {
-                    self.env.mock_all_auths();
-                }
-            }
-        }
+        let _call_scope = soroban_sdk::testutils::ClientCallScope::enter(&self.env, self.config);
         use soroban_sdk::{FromVal, IntoVal};
         let res = self.env.invoke_contract(
             &self.address,
@@ -3639,9 +3954,6 @@ impl<'a> ContractClient<'a> {
                 [a.into_val(&self.env), key.into_val(&self.env)],
             ),
         );
-        if let Some(old_auth_manager) = old_auth_manager {
-            self.env.host().set_auth_manager(old_auth_manager).unwrap();
-        }
         res
     }
     pub fn try_recursive_enum(
@@ -3658,27 +3970,7 @@ impl<'a> ContractClient<'a> {
         >,
         Result<Error, soroban_sdk::InvokeError>,
     > {
-        use core::ops::Not;
-        let old_auth_manager = self
-            .env
-            .in_contract()
-            .not()
-            .then(|| self.env.host().snapshot_auth_manager().unwrap());
-        {
-            if let Some(set_auths) = self.set_auths {
-                self.env.set_auths(set_auths);
-            }
-            if let Some(mock_auths) = self.mock_auths {
-                self.env.mock_auths(mock_auths);
-            }
-            if self.mock_all_auths {
-                if self.allow_non_root_auth {
-                    self.env.mock_all_auths_allowing_non_root_auth();
-                } else {
-                    self.env.mock_all_auths();
-                }
-            }
-        }
+        let _call_scope = soroban_sdk::testutils::ClientCallScope::enter(&self.env, self.config);
         use soroban_sdk::{FromVal, IntoVal};
         let res = self.env.try_invoke_contract(
             &self.address,
@@ -3688,9 +3980,6 @@ impl<'a> ContractClient<'a> {
                 [a.into_val(&self.env), key.into_val(&self.env)],
             ),
         );
-        if let Some(old_auth_manager) = old_auth_manager {
-            self.env.host().set_auth_manager(old_auth_manager).unwrap();
-        }
         res
     }
 }
@@ -4238,7 +4527,7 @@ mod test {
 mod test_with_wasm {
     use soroban_sdk::{symbol_short, vec, Env, Map};
     mod contract {
-        pub const WASM: &[u8] = b"\x00asm\x01\x00\x00\x00\x01N\r`\x01~\x01~`\x03~~~\x01~`\x02~~\x01~`\x04~~~~\x01~`\x02\x7f\x7f\x00`\x00\x00`\x03~\x7f\x7f\x01~`\x02\x7f\x7f\x01\x7f`\x05~\x7f\x7f\x7f\x7f\x00`\x02\x7f~\x00`\x01\x7f\x01~`\x03\x7f\x7f\x7f\x00`\x02\x7f\x7f\x01~\x02O\r\x01v\x013\x00\x00\x01v\x01h\x00\x01\x01i\x012\x00\x00\x01v\x011\x00\x02\x01i\x011\x00\x00\x01v\x018\x00\x00\x01m\x014\x00\x02\x01m\x011\x00\x02\x01v\x01g\x00\x02\x01b\x01j\x00\x02\x01m\x019\x00\x01\x01b\x01m\x00\x01\x01m\x01c\x00\x03\x03\x15\x14\x04\x05\x04\x06\x07\x08\t\t\t\x05\x05\x04\x02\x05\x00\n\x02\x0b\x0c\x05\x04\x05\x01p\x01\x04\x04\x05\x03\x01\x00\x11\x06!\x04\x7f\x01A\x80\x80\xc0\x00\x0b\x7f\x00A\xe8\x81\xc0\x00\x0b\x7f\x00A\xe8\x81\xc0\x00\x0b\x7f\x00A\xf0\x81\xc0\x00\x0b\x07L\x07\x06memory\x02\x00\x03add\x00\x19\trecursive\x00\x1b\x0erecursive_enum\x00\x1d\x01_\x03\x01\n__data_end\x03\x02\x0b__heap_base\x03\x03\t\t\x01\x00A\x01\x0b\x03\x0e\x16\x17\n\xf1\x1d\x14\x85\x07\x04\x01\x7f\x02~\x01\x7f\x01~#\x80\x80\x80\x80\x00A\xc0\x00k\"\x02$\x80\x80\x80\x80\x00 \x02A\x81\x80\x80\x80\x006\x02\x18 \x02(\x02\x18\x1aA\x00-\x00\xaa\x80\xc0\x80\x00\x1aA\x00-\x00\x8e\x80\xc0\x80\x00\x1a \x02A\x81\x80\x80\x80\x006\x02\x18 \x02(\x02\x18\x1aA\x00-\x00\x9c\x80\xc0\x80\x00\x1aA\x00-\x00\x80\x80\xc0\x80\x00\x1a\x02@\x02@ \x01)\x03\x00\"\x03B\xff\x01\x83B\xcb\x00Q\r\x00 \x00A\x04:\x00\x00\x0c\x01\x0b \x03\x10\x80\x80\x80\x80\x00!\x04 \x02A\x006\x02\x10 \x02 \x037\x03\x08 \x02 \x04B \x88>\x02\x14 \x02A\x18j \x02A\x08j\x10\x8f\x80\x80\x80\x00\x02@\x02@\x02@\x02@ \x02)\x03\x18\"\x03B\x02Q\r\x00 \x03\xa7A\x01q\r\x00\x02@ \x02)\x03 \"\x03\xa7A\xff\x01q\"\x01A\xca\x00F\r\x00 \x01A\x0eG\r\x01\x0b\x02@\x02@\x02@\x02@ \x03A\xf4\x80\xc0\x80\x00A\x04\x10\x90\x80\x80\x80\x00B \x88\xa7\x0e\x04\x00\x01\x02\x03\x05\x0b \x02(\x02\x10 \x02(\x02\x14\x10\x91\x80\x80\x80\x00\r\x04A\x00!\x05\x0c\x05\x0b \x02(\x02\x10 \x02(\x02\x14\x10\x91\x80\x80\x80\x00A\x01K\r\x03 \x02A\x18j \x02A\x08j\x10\x8f\x80\x80\x80\x00 \x02)\x03\x18\"\x03B\x02Q\r\x03 \x03\xa7A\x01q\r\x03 \x02)\x03 !\x03A\x00!\x01\x02@\x03@ \x01A\x18F\r\x01 \x02A\x18j \x01jB\x027\x03\x00 \x01A\x08j!\x01\x0c\x00\x0b\x0b \x03B\xff\x01\x83B\xcc\x00R\r\x03 \x03A\x98\x81\xc0\x80\x00A\x03 \x02A\x18jA\x03\x10\x92\x80\x80\x80\x00 \x02A0j \x02)\x03\x18\x10\x93\x80\x80\x80\x00 \x02(\x020\r\x03 \x02)\x038!\x04 \x02A0j \x02)\x03 \x10\x93\x80\x80\x80\x00 \x02(\x020\r\x03 \x02)\x03(\"\x06B\xff\x01\x83B\xcb\x00R\r\x03 \x02)\x038!\x03A\x01!\x05\x0c\x04\x0b \x02(\x02\x10 \x02(\x02\x14\x10\x91\x80\x80\x80\x00A\x01K\r\x02 \x02A\x18j \x02A\x08j\x10\x8f\x80\x80\x80\x00 \x02)\x03\x18\"\x03B\x02Q\r\x02 \x03\xa7A\x01q\r\x02 \x02)\x03 \"\x03B\xff\x01\x83B\x04R\r\x02A\nA\x0fA\t \x03B \x88\xa7\"\x01A\x0fF\x1b \x01A\nF\x1b\"\x01A\tF\r\x02A\x02!\x05\x0c\x04\x0b \x02(\x02\x10 \x02(\x02\x14\x10\x91\x80\x80\x80\x00A\x01K\r\x01 \x02A\x18j \x02A\x08j\x10\x8f\x80\x80\x80\x00 \x02)\x03\x18\"\x03B\x02Q\r\x01 \x03\xa7A\x01q\r\x01 \x02)\x03 \"\x03B\xff\x01\x83B\xcb\x00R\r\x01A\x00!\x01\x02@\x03@ \x01A\x10F\r\x01 \x02A0j \x01jB\x027\x03\x00 \x01A\x08j!\x01\x0c\x00\x0b\x0b \x03 \x02A0j\xadB \x86B\x04\x84B\x84\x80\x80\x80 \x10\x81\x80\x80\x80\x00\x1a \x02A\x18j \x02)\x030\x10\x93\x80\x80\x80\x00 \x02(\x02\x18A\x01F\r\x01 \x02)\x038\"\x03B\xff\x01\x83B\xcb\x00R\r\x01 \x02)\x03 !\x04A\x03!\x05\x0c\x02\x0b \x00A\x04:\x00\x00\x0c\x03\x0b \x00A\x04:\x00\x00\x0c\x02\x0b\x0b \x00 \x067\x03\x18 \x00 \x037\x03\x10 \x00 \x047\x03\x08 \x00 \x01:\x00\x01 \x00 \x05:\x00\x00\x0b \x02A\xc0\x00j$\x80\x80\x80\x80\x00\x0b\x02\x00\x0bJ\x02\x01~\x01\x7fB\x02!\x02\x02@ \x01(\x02\x08\"\x03 \x01(\x02\x0cO\r\x00 \x00 \x01)\x03\x00 \x03\xadB \x86B\x04\x84\x10\x83\x80\x80\x80\x007\x03\x08 \x01 \x03A\x01j6\x02\x08B\x00!\x02\x0b \x00 \x027\x03\x00\x0b\x1c\x00 \x00 \x01\xadB \x86B\x04\x84 \x02\xadB \x86B\x04\x84\x10\x8b\x80\x80\x80\x00\x0b\x19\x00\x02@ \x01 \x00I\r\x00 \x01 \x00k\x0f\x0b\x10\x9a\x80\x80\x80\x00\x00\x0b1\x00\x02@ \x02 \x04F\r\x00\x00\x0b \x00 \x01\xadB \x86B\x04\x84 \x03\xadB \x86B\x04\x84 \x02\xadB \x86B\x04\x84\x10\x8c\x80\x80\x80\x00\x1a\x0b]\x02\x01\x7f\x01~\x02@\x02@ \x01\xa7A\xff\x01q\"\x02A\xc1\x00F\r\x00\x02@ \x02A\x07F\r\x00B\x01!\x03B\x83\x90\x80\x80\x80\x01!\x01\x0c\x02\x0b \x01B\x08\x87!\x01B\x00!\x03\x0c\x01\x0bB\x00!\x03 \x01\x10\x82\x80\x80\x80\x00!\x01\x0b \x00 \x037\x03\x00 \x00 \x017\x03\x08\x0b\xb5\x01\x02\x02\x7f\x02~#\x80\x80\x80\x80\x00A\x10k\"\x02$\x80\x80\x80\x80\x00A\x00!\x03\x02@\x03@ \x03A\x10F\r\x01 \x02 \x03jB\x027\x03\x00 \x03A\x08j!\x03\x0c\x00\x0b\x0bB\x01!\x04\x02@ \x01B\xff\x01\x83B\xcc\x00R\r\x00 \x01A\xb0\x81\xc0\x80\x00A\x02 \x02A\x02\x10\x92\x80\x80\x80\x00\x02@ \x02)\x03\x00\"\x01\xa7A\xff\x01q\"\x03A\xca\x00F\r\x00 \x03A\x0eG\r\x01\x0b \x02)\x03\x08\"\x05B\xff\x01\x83B\xcb\x00R\r\x00 \x00 \x057\x03\x10 \x00 \x017\x03\x08B\x00!\x04\x0b \x00 \x047\x03\x00 \x02A\x10j$\x80\x80\x80\x80\x00\x0b\xb5\x01\x02\x02\x7f\x02~#\x80\x80\x80\x80\x00A\x10k\"\x02$\x80\x80\x80\x80\x00A\x00!\x03\x02@\x03@ \x03A\x10F\r\x01 \x02 \x03jB\x027\x03\x00 \x03A\x08j!\x03\x0c\x00\x0b\x0bB\x01!\x04\x02@ \x01B\xff\x01\x83B\xcc\x00R\r\x00 \x01A\xb0\x81\xc0\x80\x00A\x02 \x02A\x02\x10\x92\x80\x80\x80\x00\x02@ \x02)\x03\x00\"\x01\xa7A\xff\x01q\"\x03A\xca\x00F\r\x00 \x03A\x0eG\r\x01\x0b \x02)\x03\x08\"\x05B\xff\x01\x83B\xcc\x00R\r\x00 \x00 \x057\x03\x10 \x00 \x017\x03\x08B\x00!\x04\x0b \x00 \x047\x03\x00 \x02A\x10j$\x80\x80\x80\x80\x00\x0b(\x01\x01\x7f#\x80\x80\x80\x80\x00A\x10k\"\x00A\x82\x80\x80\x80\x006\x02\x0c \x00(\x02\x0c\x1aA\x00-\x00\xb8\x80\xc0\x80\x00\x1a\x0bC\x01\x01\x7f#\x80\x80\x80\x80\x00A\x10k\"\x00A\x81\x80\x80\x80\x006\x02\x0c \x00(\x02\x0c\x1a \x00A\x83\x80\x80\x80\x006\x02\x08 \x00(\x02\x08\x1aA\x00-\x00\xd4\x80\xc0\x80\x00\x1aA\x00-\x00\xc6\x80\xc0\x80\x00\x1a\x0bx\x03\x01\x7f\x01~\x01\x7f#\x80\x80\x80\x80\x00A\x10k\"\x02$\x80\x80\x80\x80\x00B\x02!\x03\x02@ \x01(\x02\x08\"\x04 \x01(\x02\x0cO\r\x00 \x02 \x01)\x03\x00 \x04\xadB \x86B\x04\x84\x10\x83\x80\x80\x80\x00\x10\x93\x80\x80\x80\x00 \x02)\x03\x00!\x03 \x00 \x02)\x03\x087\x03\x08 \x01 \x04A\x01j6\x02\x08\x0b \x00 \x037\x03\x00 \x02A\x10j$\x80\x80\x80\x80\x00\x0b\xd6\x04\x04\x02\x7f\x01~\x01\x7f\x05~#\x80\x80\x80\x80\x00A\xc0\x00k\"\x02$\x80\x80\x80\x80\x00 \x02 \x017\x03\x08 \x02 \x007\x03\x00 \x02A\x10j \x02\x10\x8d\x80\x80\x80\x00\x02@\x02@\x02@ \x02-\x00\x10\"\x03A\x04F\r\x00 \x02)\x03 !\x01 \x02)\x03\x18!\x04 \x021\x00\x11!\x00 \x02A\x10j \x02A\x08j\x10\x8d\x80\x80\x80\x00 \x02-\x00\x10\"\x05A\x04F\r\x00 \x02)\x03 !\x06 \x02)\x03\x18!\x07 \x021\x00\x11!\x08B\x00!\tB\x00!\n\x02@\x02@\x02@\x02@ \x03\x0e\x04\x05\x02\x01\x00\x05\x0b \x01\x10\x80\x80\x80\x80\x00!\x00 \x02A\x006\x028 \x02 \x017\x030 \x02 \x00B \x88>\x02<B\x00!\x01\x03@ \x02A\x10j \x02A0j\x10\x98\x80\x80\x80\x00 \x02)\x03\x10\"\x00B\x02Q\r\x03 \x00\xa7A\x01q\r\x06 \x02)\x03\x18\"\x00B\x00S \x01 \x00|\"\x00 \x01SG\r\x06 \x00!\x01\x0c\x00\x0b\x0b \x00!\n\x0c\x03\x0b \x01B\x00S \x04 \x01|\"\n \x04SsE\r\x02\x0c\x03\x0b \x01B\x00S \x04 \x01|\"\n \x04SsE\r\x01\x0c\x02\x0b\x00\x0b\x02@\x02@\x02@\x02@\x02@ \x05\x0e\x04\x04\x02\x01\x00\x04\x0b \x06\x10\x80\x80\x80\x80\x00!\x01 \x02A\x006\x028 \x02 \x067\x030 \x02 \x01B \x88>\x02<B\x00!\x01\x03@ \x02A\x10j \x02A0j\x10\x98\x80\x80\x80\x00 \x02)\x03\x10\"\x00B\x02Q\r\x03 \x00\xa7A\x01q\r\x05 \x02)\x03\x18\"\x00B\x00S \x01 \x00|\"\x00 \x01SG\r\x05 \x00!\x01\x0c\x00\x0b\x0b \x08!\t\x0c\x02\x0b \x06B\x00S \x07 \x06|\"\t \x07Ss\r\x02\x0c\x01\x0b \x01B\x00S \x07 \x01|\"\t \x07Ss\r\x01\x0b \tB\x00S \n \t|\"\x01 \nSs\r\x00\x02@\x02@ \x01B\x80\x80\x80\x80\x80\x80\x80\xc0\x00|B\xff\xff\xff\xff\xff\xff\xff\xff\x00V\r\x00 \x01B\x08\x86B\x07\x84!\x01\x0c\x01\x0b \x01\x10\x84\x80\x80\x80\x00!\x01\x0b \x02A\xc0\x00j$\x80\x80\x80\x80\x00 \x01\x0f\x0b\x10\x9a\x80\x80\x80\x00\x00\x0b\t\x00\x10\xa0\x80\x80\x80\x00\x00\x0b\xf9\x01\x02\x01\x7f\x01~#\x80\x80\x80\x80\x00A k\"\x01$\x80\x80\x80\x80\x00 \x01A\x82\x80\x80\x80\x006\x02\x08 \x01(\x02\x08\x1aA\x00-\x00\xb8\x80\xc0\x80\x00\x1a \x01A\x08j \x00\x10\x94\x80\x80\x80\x00\x02@ \x01(\x02\x08A\x01F\r\x00\x02@\x02@ \x01)\x03\x18\"\x00\x10\x80\x80\x80\x80\x00B\xff\xff\xff\xff\x0fV\r\x00 \x01A\x82\x80\x80\x80\x006\x02\x08 \x01(\x02\x08\x1aA\x00-\x00\xb8\x80\xc0\x80\x00\x1aB\x02!\x00\x0c\x01\x0b \x01A\x08j \x00\x10\x85\x80\x80\x80\x00\x10\x94\x80\x80\x80\x00 \x01(\x02\x08A\x01F\r\x01 \x01)\x03\x10!\x00 \x01)\x03\x18!\x02 \x01A\x82\x80\x80\x80\x006\x02\x08 \x01(\x02\x08\x1aA\x00-\x00\xb8\x80\xc0\x80\x00\x1a \x01 \x027\x03\x10 \x01 \x007\x03\x08 \x01A\x08j\x10\x9c\x80\x80\x80\x00!\x00\x0b \x01A j$\x80\x80\x80\x80\x00 \x00\x0f\x0b\x00\x0b$\x00A\xb0\x81\xc0\x80\x00\xadB \x86B\x04\x84 \x00\xadB \x86B\x04\x84B\x84\x80\x80\x80 \x10\x8a\x80\x80\x80\x00\x0b\x85\x07\x04\x01\x7f\x01~\x01\x7f\x01~#\x80\x80\x80\x80\x00A\xc0\x00k\"\x02$\x80\x80\x80\x80\x00 \x02A\x81\x80\x80\x80\x006\x02\x18 \x02(\x02\x18\x1a \x02A\x83\x80\x80\x80\x006\x02\x18 \x02(\x02\x18\x1aA\x00-\x00\xd4\x80\xc0\x80\x00\x1aA\x00-\x00\xc6\x80\xc0\x80\x00\x1a\x02@ \x00B\xff\x01\x83B\xcb\x00R\r\x00 \x00\x10\x80\x80\x80\x80\x00!\x03 \x02A\x006\x02\x10 \x02 \x007\x03\x08 \x02 \x03B \x88>\x02\x14 \x02A\x18j \x02A\x08j\x10\x8f\x80\x80\x80\x00 \x02)\x03\x18\"\x00B\x02Q\r\x00 \x00\xa7A\x01q\r\x00\x02@ \x02)\x03 \"\x00\xa7A\xff\x01q\"\x04A\xca\x00F\r\x00 \x04A\x0eG\r\x01\x0b\x02@\x02@\x02@\x02@\x02@\x02@ \x00A\xd8\x81\xc0\x80\x00A\x02\x10\x90\x80\x80\x80\x00B \x88\xa7\x0e\x02\x01\x00\x06\x0b \x02(\x02\x10 \x02(\x02\x14\x10\x91\x80\x80\x80\x00A\x01K\r\x05 \x02A0j \x02A\x08j\x10\x8f\x80\x80\x80\x00 \x02)\x030\"\x00B\x02Q\r\x05 \x00\xa7A\x01q\r\x05 \x02A\x18j \x02)\x038\x10\x95\x80\x80\x80\x00 \x02(\x02\x18A\x01F\r\x05 \x01B\xff\x01\x83B\x04R\r\x05 \x02)\x03(\"\x00 \x01B\x84\x80\x80\x80p\x83\"\x01\x10\x86\x80\x80\x80\x00B\x01R\r\x01 \x00 \x01\x10\x87\x80\x80\x80\x00\"\x00B\xff\x01\x83B\xcb\x00R\r\x05 \x00\x10\x80\x80\x80\x80\x00!\x01 \x02A\x006\x02\x10 \x02 \x007\x03\x08 \x02 \x01B \x88>\x02\x14 \x02A\x18j \x02A\x08j\x10\x8f\x80\x80\x80\x00 \x02)\x03\x18\"\x00B\x02Q\r\x05 \x00\xa7A\x01q\r\x05\x02@ \x02)\x03 \"\x00\xa7A\xff\x01q\"\x04A\xca\x00F\r\x00 \x04A\x0eG\r\x06\x0b \x00A\xd8\x81\xc0\x80\x00A\x02\x10\x90\x80\x80\x80\x00B \x88\xa7\x0e\x02\x02\x03\x05\x0b \x02(\x02\x10 \x02(\x02\x14\x10\x91\x80\x80\x80\x00\r\x04 \x01B\xff\x01\x83B\x04R\r\x04\x0bB\x02!\x00\x0c\x02\x0b \x02(\x02\x10 \x02(\x02\x14\x10\x91\x80\x80\x80\x00\r\x02B\x00!\x00\x0c\x01\x0b \x02(\x02\x10 \x02(\x02\x14\x10\x91\x80\x80\x80\x00A\x01K\r\x01 \x02A0j \x02A\x08j\x10\x8f\x80\x80\x80\x00 \x02)\x030\"\x00B\x02Q\r\x01 \x00\xa7A\x01q\r\x01 \x02A\x18j \x02)\x038\x10\x95\x80\x80\x80\x00 \x02(\x02\x18\r\x01 \x02)\x03(!\x05 \x02)\x03 !\x03B\x01!\x00\x0b \x02A\x81\x80\x80\x80\x006\x02\x18 \x02(\x02\x18\x1a \x02A\x83\x80\x80\x80\x006\x02\x18 \x02(\x02\x18\x1aA\x00-\x00\xd4\x80\xc0\x80\x00\x1aA\x00-\x00\xc6\x80\xc0\x80\x00\x1aB\x02!\x01\x02@ \x00B\x02Q\r\x00\x02@ \x00\xa7A\x01qE\r\x00 \x02A\x18jA\xcc\x81\xc0\x80\x00A\t\x10\x9e\x80\x80\x80\x00 \x02(\x02\x18\r\x02 \x02)\x03 !\x00 \x02 \x057\x03  \x02 \x037\x03\x18 \x02 \x02A\x18j\x10\x9c\x80\x80\x80\x007\x03  \x02 \x007\x03\x18 \x02A\x18jA\x02\x10\x9f\x80\x80\x80\x00!\x01\x0c\x01\x0b \x02A\x18jA\xc0\x81\xc0\x80\x00A\x0c\x10\x9e\x80\x80\x80\x00 \x02(\x02\x18\r\x01 \x02 \x02)\x03 7\x03\x18 \x02A\x18jA\x01\x10\x9f\x80\x80\x80\x00!\x01\x0b \x02A\xc0\x00j$\x80\x80\x80\x80\x00 \x01\x0f\x0b\x00\x0b\xd6\x01\x02\x01~\x03\x7f\x02@\x02@ \x02A\tK\r\x00B\x00!\x03A\x00!\x04\x03@\x02@ \x04A\tG\r\x00 \x03B\x08\x86B\x0e\x84!\x03\x0c\x03\x0bA\x01!\x05\x02@ \x01 \x04j-\x00\x00\"\x06A\xdf\x00F\r\x00\x02@\x02@ \x06APjA\xff\x01qA\nI\r\x00 \x06A\xbf\x7fjA\xff\x01qA\x1aI\r\x01 \x06A\x9f\x7fjA\xff\x01qA\x1aO\r\x04 \x06AEj!\x05\x0c\x02\x0b \x06ARj!\x05\x0c\x01\x0b \x06AKj!\x05\x0b \x03B\x06\x86 \x05\xadB\xff\x01\x83\x84!\x03 \x04A\x01j!\x04\x0c\x00\x0b\x0b \x01\xadB \x86B\x04\x84 \x02\xadB \x86B\x04\x84\x10\x89\x80\x80\x80\x00!\x03\x0b \x00B\x007\x03\x00 \x00 \x037\x03\x08\x0b\x1a\x00 \x00\xadB \x86B\x04\x84 \x01\xadB \x86B\x04\x84\x10\x88\x80\x80\x80\x00\x0b\x03\x00\x00\x0b\x0b\xf2\x01\x01\x00A\x80\x80\xc0\x00\x0b\xe8\x01SpEcV1\xf3\xb0\xab@i\rH\xb4SpEcV1\xaf\xf7\x93\xba\x9eM\xde\x9aSpEcV1\xeb\x9f\x12&\x9av(*SpEcV1\x16\'d8\xff\xc9\xb1\xf8SpEcV1\xc8\x12\x91\xfe\xd7\x13\xf5\x9cSpEcV1\xff{V \xab\r\xdcdSpEcV1\xe1oU\xdb\xd47\x98\x14UdtAUdtBUdtCUdtD\x00\x00b\x00\x10\x00\x04\x00\x00\x00f\x00\x10\x00\x04\x00\x00\x00j\x00\x10\x00\x04\x00\x00\x00n\x00\x10\x00\x04\x00\x00\x00abc\x00\x94\x00\x10\x00\x01\x00\x00\x00\x95\x00\x10\x00\x01\x00\x00\x00\x96\x00\x10\x00\x01\x00\x00\x00\x94\x00\x10\x00\x01\x00\x00\x00\x95\x00\x10\x00\x01\x00\x00\x00NotRecursiveRecursive\x00\x00\x00\xc0\x00\x10\x00\x0c\x00\x00\x00\xcc\x00\x10\x00\t\x00\x00\x00\x00\xff \x0econtractspecv0\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x03add\x00\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x01a\x00\x00\x00\x00\x00\x07\xd0\x00\x00\x00\x07UdtEnum\x00\x00\x00\x00\x00\x00\x00\x00\x01b\x00\x00\x00\x00\x00\x07\xd0\x00\x00\x00\x07UdtEnum\x00\x00\x00\x00\x01\x00\x00\x00\x07\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x07UdtEnum\x00\x00\x00\x00\x04\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x04UdtA\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x04UdtB\x00\x00\x00\x01\x00\x00\x07\xd0\x00\x00\x00\tUdtStruct\x00\x00\x00\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x04UdtC\x00\x00\x00\x01\x00\x00\x07\xd0\x00\x00\x00\x08UdtEnum2\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x04UdtD\x00\x00\x00\x01\x00\x00\x07\xd0\x00\x00\x00\x08UdtTuple\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x08UdtEnum2\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x01A\x00\x00\x00\x00\x00\x00\n\x00\x00\x00\x00\x00\x00\x00\x01B\x00\x00\x00\x00\x00\x00\x0f\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x08UdtTuple\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x010\x00\x00\x00\x00\x00\x00\x07\x00\x00\x00\x00\x00\x00\x00\x011\x00\x00\x00\x00\x00\x03\xea\x00\x00\x00\x07\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\tUdtStruct\x00\x00\x00\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00\x01a\x00\x00\x00\x00\x00\x00\x07\x00\x00\x00\x00\x00\x00\x00\x01b\x00\x00\x00\x00\x00\x00\x07\x00\x00\x00\x00\x00\x00\x00\x01c\x00\x00\x00\x00\x00\x03\xea\x00\x00\x00\x07\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\trecursive\x00\x00\x00\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x01a\x00\x00\x00\x00\x00\x07\xd0\x00\x00\x00\x0cUdtRecursive\x00\x00\x00\x01\x00\x00\x03\xe8\x00\x00\x07\xd0\x00\x00\x00\x0cUdtRecursive\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x0cUdtRecursive\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x01a\x00\x00\x00\x00\x00\x00\x11\x00\x00\x00\x00\x00\x00\x00\x01b\x00\x00\x00\x00\x00\x03\xea\x00\x00\x07\xd0\x00\x00\x00\x0cUdtRecursive\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\rRecursiveEnum\x00\x00\x00\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x0cNotRecursive\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\tRecursive\x00\x00\x00\x00\x00\x00\x01\x00\x00\x07\xd0\x00\x00\x00\x0fRecursiveToEnum\x00\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x0fRecursiveToEnum\x00\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x01a\x00\x00\x00\x00\x00\x00\x11\x00\x00\x00\x00\x00\x00\x00\x01b\x00\x00\x00\x00\x00\x03\xec\x00\x00\x00\x04\x00\x00\x07\xd0\x00\x00\x00\rRecursiveEnum\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x0erecursive_enum\x00\x00\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x01a\x00\x00\x00\x00\x00\x07\xd0\x00\x00\x00\rRecursiveEnum\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x03key\x00\x00\x00\x00\x04\x00\x00\x00\x01\x00\x00\x03\xe9\x00\x00\x03\xe8\x00\x00\x07\xd0\x00\x00\x00\rRecursiveEnum\x00\x00\x00\x00\x00\x00\x03\x00\x00\x00\x02\x00\x00\x00_Contract executable used for creating a new contract and used in\n`CreateContractHostFnContext`.\x00\x00\x00\x00\x00\x00\x00\x00\x12ContractExecutable\x00\x00\x00\x00\x00\x02\x00\x00\x00\x01\x00\x00\x00xExecutable specified by the contract instance as a specific Wasm contract code entry identified by its Wasm sha256 hash.\x00\x00\x00\x04Wasm\x00\x00\x00\x01\x00\x00\x03\xee\x00\x00\x00 \x00\x00\x00\x01\x00\x00\x00_Executable reference via a persistent storage entry owned by this contract or another contract.\x00\x00\x00\x00\x0bExternalRef\x00\x00\x00\x00\x01\x00\x00\x07\xd0\x00\x00\x00\x15ContractExecutableRef\x00\x00\x00\x00\x00\x00\x01\x00\x00\x00\xc0Executable referenced via a persistent storage entry owned by a contract,\neither this contract or another contract.\n\nThe persistent storage entry owned by the `owner` has the `tag` as its key.\x00\x00\x00\x00\x00\x00\x00\x15ContractExecutableRef\x00\x00\x00\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x05owner\x00\x00\x00\x00\x00\x00\x13\x00\x00\x00\x00\x00\x00\x00\x03tag\x00\x00\x00\x00\x10\x00\x00\x00\x02\x00\x00\x00\xe3Context of a single authorized call performed by an address.\n\nCustom account contracts that implement `__check_auth` special function\nreceive a list of `Context` values corresponding to all the calls that\nneed to be authorized.\x00\x00\x00\x00\x00\x00\x00\x00\x07Context\x00\x00\x00\x00\x03\x00\x00\x00\x01\x00\x00\x00\x14Contract invocation.\x00\x00\x00\x08Contract\x00\x00\x00\x01\x00\x00\x07\xd0\x00\x00\x00\x0fContractContext\x00\x00\x00\x00\x01\x00\x00\x00=Contract that has a constructor with no arguments is created.\x00\x00\x00\x00\x00\x00\x14CreateContractHostFn\x00\x00\x00\x01\x00\x00\x07\xd0\x00\x00\x00\x1bCreateContractHostFnContext\x00\x00\x00\x00\x01\x00\x00\x00DContract that has a constructor with 1 or more arguments is created.\x00\x00\x00\x1cCreateContractWithCtorHostFn\x00\x00\x00\x01\x00\x00\x07\xd0\x00\x00\x00*CreateContractWithConstructorHostFnContext\x00\x00\x00\x00\x00\x01\x00\x00\x00\xbdAuthorization context of a single contract call.\n\nThis struct corresponds to a `require_auth_for_args` call for an address\nfrom `contract` function with `fn_name` name and `args` arguments.\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x0fContractContext\x00\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00\x04args\x00\x00\x03\xea\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x08contract\x00\x00\x00\x13\x00\x00\x00\x00\x00\x00\x00\x07fn_name\x00\x00\x00\x00\x11\x00\x00\x00\x01\x00\x00\x008Value of contract node in InvokerContractAuthEntry tree.\x00\x00\x00\x00\x00\x00\x00\x15SubContractInvocation\x00\x00\x00\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x07context\x00\x00\x00\x07\xd0\x00\x00\x00\x0fContractContext\x00\x00\x00\x00\x00\x00\x00\x00\x0fsub_invocations\x00\x00\x00\x03\xea\x00\x00\x07\xd0\x00\x00\x00\x18InvokerContractAuthEntry\x00\x00\x00\x02\x00\x00\x01/A node in the tree of authorizations performed on behalf of the current\ncontract as invoker of the contracts deeper in the call stack.\n\nThis is used as an argument of `authorize_as_current_contract` host function.\n\nThis tree corresponds `require_auth[_for_args]` calls on behalf of the\ncurrent contract.\x00\x00\x00\x00\x00\x00\x00\x00\x18InvokerContractAuthEntry\x00\x00\x00\x03\x00\x00\x00\x01\x00\x00\x00\x12Invoke a contract.\x00\x00\x00\x00\x00\x08Contract\x00\x00\x00\x01\x00\x00\x07\xd0\x00\x00\x00\x15SubContractInvocation\x00\x00\x00\x00\x00\x00\x01\x00\x00\x005Create a contract passing 0 arguments to constructor.\x00\x00\x00\x00\x00\x00\x14CreateContractHostFn\x00\x00\x00\x01\x00\x00\x07\xd0\x00\x00\x00\x1bCreateContractHostFnContext\x00\x00\x00\x00\x01\x00\x00\x00=Create a contract passing 0 or more arguments to constructor.\x00\x00\x00\x00\x00\x00\x1cCreateContractWithCtorHostFn\x00\x00\x00\x01\x00\x00\x07\xd0\x00\x00\x00*CreateContractWithConstructorHostFnContext\x00\x00\x00\x00\x00\x01\x00\x00\x00vAuthorization context for `create_contract` host function that creates a\nnew contract on behalf of authorizer address.\x00\x00\x00\x00\x00\x00\x00\x00\x00\x1bCreateContractHostFnContext\x00\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\nexecutable\x00\x00\x00\x00\x07\xd0\x00\x00\x00\x12ContractExecutable\x00\x00\x00\x00\x00\x00\x00\x00\x00\x04salt\x00\x00\x03\xee\x00\x00\x00 \x00\x00\x00\x01\x00\x00\x00\xd6Authorization context for `create_contract` host function that creates a\nnew contract on behalf of authorizer address.\nThis is the same as `CreateContractHostFnContext`, but also has\ncontract constructor arguments.\x00\x00\x00\x00\x00\x00\x00\x00\x00*CreateContractWithConstructorHostFnContext\x00\x00\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00\x10constructor_args\x00\x00\x03\xea\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\nexecutable\x00\x00\x00\x00\x07\xd0\x00\x00\x00\x12ContractExecutable\x00\x00\x00\x00\x00\x00\x00\x00\x00\x04salt\x00\x00\x03\xee\x00\x00\x00 \x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\nExecutable\x00\x00\x00\x00\x00\x03\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x04Wasm\x00\x00\x00\x01\x00\x00\x03\xee\x00\x00\x00 \x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x0cStellarAsset\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x07Account\x00\x00\x1e\x11contractenvmetav0\x00\x00\x00\x00\x00\x00\x00\x1e\x00\x00\x00\x00\x00O\x0econtractmetav0\x00\x00\x00\x00\x00\x00\x00\x05rsver\x00\x00\x00\x00\x00\x00\x061.91.0\x00\x00\x00\x00\x00\x00\x00\x00\x00\x12rssdk_spec_shaking\x00\x00\x00\x00\x00\x012\x00\x00\x00";
+        pub const WASM: &[u8] = b"\x00asm\x01\x00\x00\x00\x01N\r`\x01~\x01~`\x03~~~\x01~`\x02~~\x01~`\x04~~~~\x01~`\x02\x7f~\x00`\x02\x7f\x7f\x00`\x03~\x7f\x7f\x01~`\x02\x7f\x7f\x01\x7f`\x05~\x7f\x7f\x7f\x7f\x00`\x00\x00`\x01\x7f\x01~`\x03\x7f\x7f\x7f\x00`\x02\x7f\x7f\x01~\x02O\r\x01v\x013\x00\x00\x01v\x01h\x00\x01\x01i\x012\x00\x00\x01v\x011\x00\x02\x01i\x011\x00\x00\x01v\x018\x00\x00\x01m\x014\x00\x02\x01m\x011\x00\x02\x01v\x01g\x00\x02\x01b\x01j\x00\x02\x01m\x019\x00\x01\x01b\x01m\x00\x01\x01m\x01c\x00\x03\x03\x12\x11\x04\x05\x06\x07\x08\x04\x04\x04\x05\x02\t\x00\n\x02\x0b\x0c\t\x05\x03\x01\x00\x11\x06!\x04\x7f\x01A\x80\x80\xc0\x00\x0b\x7f\x00A\x84\x81\xc0\x00\x0b\x7f\x00A\x84\x81\xc0\x00\x0b\x7f\x00A\x90\x81\xc0\x00\x0b\x07L\x07\x06memory\x02\x00\x03add\x00\x16\trecursive\x00\x18\x0erecursive_enum\x00\x1a\x01_\x03\x01\n__data_end\x03\x02\x0b__heap_base\x03\x03\n\xaa\x1a\x11\xb6\x06\x04\x01\x7f\x01~\x02\x7f\x01~#\x80\x80\x80\x80\x00A\xc0\x00k\"\x02$\x80\x80\x80\x80\x00\x02@\x02@ \x01B\xff\x01\x83B\xcb\x00Q\r\x00 \x00A\x04:\x00\x00\x0c\x01\x0b \x01\x10\x80\x80\x80\x80\x00!\x03 \x02A\x006\x02\x10 \x02 \x017\x03\x08 \x02 \x03B \x88>\x02\x14 \x02A\x18j \x02A\x08j\x10\x8e\x80\x80\x80\x00\x02@\x02@\x02@\x02@ \x02)\x03\x18\"\x01B\x02Q\r\x00 \x01\xa7A\x01q\r\x00\x02@ \x02)\x03 \"\x01\xa7A\xff\x01q\"\x04A\xca\x00F\r\x00 \x04A\x0eG\r\x01\x0b\x02@\x02@\x02@\x02@ \x01A\x90\x80\xc0\x80\x00A\x04\x10\x8f\x80\x80\x80\x00B \x88\xa7\x0e\x04\x00\x01\x02\x03\x05\x0b \x02(\x02\x10 \x02(\x02\x14\x10\x90\x80\x80\x80\x00\r\x04A\x00!\x05\x0c\x05\x0b \x02(\x02\x10 \x02(\x02\x14\x10\x90\x80\x80\x80\x00A\x01K\r\x03 \x02A\x18j \x02A\x08j\x10\x8e\x80\x80\x80\x00 \x02)\x03\x18\"\x01B\x02Q\r\x03 \x01\xa7A\x01q\r\x03 \x02)\x03 !\x01A\x00!\x04\x02@\x03@ \x04A\x18F\r\x01 \x02A\x18j \x04jB\x027\x03\x00 \x04A\x08j!\x04\x0c\x00\x0b\x0b \x01B\xff\x01\x83B\xcc\x00R\r\x03 \x01A\xb4\x80\xc0\x80\x00A\x03 \x02A\x18jA\x03\x10\x91\x80\x80\x80\x00 \x02A0j \x02)\x03\x18\x10\x92\x80\x80\x80\x00 \x02(\x020\r\x03 \x02)\x038!\x03 \x02A0j \x02)\x03 \x10\x92\x80\x80\x80\x00 \x02(\x020\r\x03 \x02)\x03(\"\x06B\xff\x01\x83B\xcb\x00R\r\x03 \x02)\x038!\x01A\x01!\x05\x0c\x04\x0b \x02(\x02\x10 \x02(\x02\x14\x10\x90\x80\x80\x80\x00A\x01K\r\x02 \x02A\x18j \x02A\x08j\x10\x8e\x80\x80\x80\x00 \x02)\x03\x18\"\x01B\x02Q\r\x02 \x01\xa7A\x01q\r\x02 \x02)\x03 \"\x01B\xff\x01\x83B\x04R\r\x02A\nA\x0fA\t \x01B \x88\xa7\"\x04A\x0fF\x1b \x04A\nF\x1b\"\x04A\tF\r\x02A\x02!\x05\x0c\x04\x0b \x02(\x02\x10 \x02(\x02\x14\x10\x90\x80\x80\x80\x00A\x01K\r\x01 \x02A\x18j \x02A\x08j\x10\x8e\x80\x80\x80\x00 \x02)\x03\x18\"\x01B\x02Q\r\x01 \x01\xa7A\x01q\r\x01 \x02)\x03 \"\x01B\xff\x01\x83B\xcb\x00R\r\x01A\x00!\x04\x02@\x03@ \x04A\x10F\r\x01 \x02A0j \x04jB\x027\x03\x00 \x04A\x08j!\x04\x0c\x00\x0b\x0b \x01 \x02A0j\xadB \x86B\x04\x84B\x84\x80\x80\x80 \x10\x81\x80\x80\x80\x00\x1a \x02A\x18j \x02)\x030\x10\x92\x80\x80\x80\x00 \x02(\x02\x18A\x01F\r\x01 \x02)\x038\"\x01B\xff\x01\x83B\xcb\x00R\r\x01 \x02)\x03 !\x03A\x03!\x05\x0c\x02\x0b \x00A\x04:\x00\x00\x0c\x03\x0b \x00A\x04:\x00\x00\x0c\x02\x0b\x0b \x00 \x067\x03\x18 \x00 \x017\x03\x10 \x00 \x037\x03\x08 \x00 \x04:\x00\x01 \x00 \x05:\x00\x00\x0b \x02A\xc0\x00j$\x80\x80\x80\x80\x00\x0bJ\x02\x01~\x01\x7fB\x02!\x02\x02@ \x01(\x02\x08\"\x03 \x01(\x02\x0cO\r\x00 \x00 \x01)\x03\x00 \x03\xadB \x86B\x04\x84\x10\x83\x80\x80\x80\x007\x03\x08 \x01 \x03A\x01j6\x02\x08B\x00!\x02\x0b \x00 \x027\x03\x00\x0b\x1c\x00 \x00 \x01\xadB \x86B\x04\x84 \x02\xadB \x86B\x04\x84\x10\x8b\x80\x80\x80\x00\x0b\x19\x00\x02@ \x01 \x00I\r\x00 \x01 \x00k\x0f\x0b\x10\x97\x80\x80\x80\x00\x00\x0b1\x00\x02@ \x02 \x04F\r\x00\x00\x0b \x00 \x01\xadB \x86B\x04\x84 \x03\xadB \x86B\x04\x84 \x02\xadB \x86B\x04\x84\x10\x8c\x80\x80\x80\x00\x1a\x0b]\x02\x01\x7f\x01~\x02@\x02@ \x01\xa7A\xff\x01q\"\x02A\xc1\x00F\r\x00\x02@ \x02A\x07F\r\x00B\x01!\x03B\x83\x90\x80\x80\x80\x01!\x01\x0c\x02\x0b \x01B\x08\x87!\x01B\x00!\x03\x0c\x01\x0bB\x00!\x03 \x01\x10\x82\x80\x80\x80\x00!\x01\x0b \x00 \x037\x03\x00 \x00 \x017\x03\x08\x0b\xb5\x01\x02\x02\x7f\x02~#\x80\x80\x80\x80\x00A\x10k\"\x02$\x80\x80\x80\x80\x00A\x00!\x03\x02@\x03@ \x03A\x10F\r\x01 \x02 \x03jB\x027\x03\x00 \x03A\x08j!\x03\x0c\x00\x0b\x0bB\x01!\x04\x02@ \x01B\xff\x01\x83B\xcc\x00R\r\x00 \x01A\xcc\x80\xc0\x80\x00A\x02 \x02A\x02\x10\x91\x80\x80\x80\x00\x02@ \x02)\x03\x00\"\x01\xa7A\xff\x01q\"\x03A\xca\x00F\r\x00 \x03A\x0eG\r\x01\x0b \x02)\x03\x08\"\x05B\xff\x01\x83B\xcb\x00R\r\x00 \x00 \x057\x03\x10 \x00 \x017\x03\x08B\x00!\x04\x0b \x00 \x047\x03\x00 \x02A\x10j$\x80\x80\x80\x80\x00\x0b\xb5\x01\x02\x02\x7f\x02~#\x80\x80\x80\x80\x00A\x10k\"\x02$\x80\x80\x80\x80\x00A\x00!\x03\x02@\x03@ \x03A\x10F\r\x01 \x02 \x03jB\x027\x03\x00 \x03A\x08j!\x03\x0c\x00\x0b\x0bB\x01!\x04\x02@ \x01B\xff\x01\x83B\xcc\x00R\r\x00 \x01A\xcc\x80\xc0\x80\x00A\x02 \x02A\x02\x10\x91\x80\x80\x80\x00\x02@ \x02)\x03\x00\"\x01\xa7A\xff\x01q\"\x03A\xca\x00F\r\x00 \x03A\x0eG\r\x01\x0b \x02)\x03\x08\"\x05B\xff\x01\x83B\xcc\x00R\r\x00 \x00 \x057\x03\x10 \x00 \x017\x03\x08B\x00!\x04\x0b \x00 \x047\x03\x00 \x02A\x10j$\x80\x80\x80\x80\x00\x0bx\x03\x01\x7f\x01~\x01\x7f#\x80\x80\x80\x80\x00A\x10k\"\x02$\x80\x80\x80\x80\x00B\x02!\x03\x02@ \x01(\x02\x08\"\x04 \x01(\x02\x0cO\r\x00 \x02 \x01)\x03\x00 \x04\xadB \x86B\x04\x84\x10\x83\x80\x80\x80\x00\x10\x92\x80\x80\x80\x00 \x02)\x03\x00!\x03 \x00 \x02)\x03\x087\x03\x08 \x01 \x04A\x01j6\x02\x08\x0b \x00 \x037\x03\x00 \x02A\x10j$\x80\x80\x80\x80\x00\x0b\xb7\x04\x04\x02\x7f\x02~\x01\x7f\x05~#\x80\x80\x80\x80\x00A0k\"\x02$\x80\x80\x80\x80\x00 \x02 \x00\x10\x8d\x80\x80\x80\x00\x02@\x02@\x02@ \x02-\x00\x00\"\x03A\x04F\r\x00 \x02)\x03\x10!\x00 \x02)\x03\x08!\x04 \x021\x00\x01!\x05 \x02 \x01\x10\x8d\x80\x80\x80\x00 \x02-\x00\x00\"\x06A\x04F\r\x00 \x02)\x03\x10!\x07 \x02)\x03\x08!\x08 \x021\x00\x01!\tB\x00!\nB\x00!\x0b\x02@\x02@\x02@\x02@ \x03\x0e\x04\x05\x02\x01\x00\x05\x0b \x00\x10\x80\x80\x80\x80\x00!\x01 \x02A\x006\x02( \x02 \x007\x03  \x02 \x01B \x88>\x02,B\x00!\x00\x03@ \x02 \x02A j\x10\x95\x80\x80\x80\x00 \x02)\x03\x00\"\x01B\x02Q\r\x03 \x01\xa7A\x01q\r\x06 \x02)\x03\x08\"\x01B\x00S \x00 \x01|\"\x01 \x00SG\r\x06 \x01!\x00\x0c\x00\x0b\x0b \x05!\x0b\x0c\x03\x0b \x00B\x00S \x04 \x00|\"\x0b \x04SsE\r\x02\x0c\x03\x0b \x00B\x00S \x04 \x00|\"\x0b \x04SsE\r\x01\x0c\x02\x0b\x00\x0b\x02@\x02@\x02@\x02@\x02@ \x06\x0e\x04\x04\x02\x01\x00\x04\x0b \x07\x10\x80\x80\x80\x80\x00!\x00 \x02A\x006\x02( \x02 \x077\x03  \x02 \x00B \x88>\x02,B\x00!\x00\x03@ \x02 \x02A j\x10\x95\x80\x80\x80\x00 \x02)\x03\x00\"\x01B\x02Q\r\x03 \x01\xa7A\x01q\r\x05 \x02)\x03\x08\"\x01B\x00S \x00 \x01|\"\x01 \x00SG\r\x05 \x01!\x00\x0c\x00\x0b\x0b \t!\n\x0c\x02\x0b \x07B\x00S \x08 \x07|\"\n \x08Ss\r\x02\x0c\x01\x0b \x00B\x00S \x08 \x00|\"\n \x08Ss\r\x01\x0b \nB\x00S \x0b \n|\"\x00 \x0bSs\r\x00\x02@\x02@ \x00B\x80\x80\x80\x80\x80\x80\x80\xc0\x00|B\xff\xff\xff\xff\xff\xff\xff\xff\x00V\r\x00 \x00B\x08\x86B\x07\x84!\x00\x0c\x01\x0b \x00\x10\x84\x80\x80\x80\x00!\x00\x0b \x02A0j$\x80\x80\x80\x80\x00 \x00\x0f\x0b\x10\x97\x80\x80\x80\x00\x00\x0b\t\x00\x10\x9d\x80\x80\x80\x00\x00\x0b\x9f\x01\x02\x01\x7f\x01~#\x80\x80\x80\x80\x00A k\"\x01$\x80\x80\x80\x80\x00 \x01A\x08j \x00\x10\x93\x80\x80\x80\x00\x02@ \x01(\x02\x08A\x01F\r\x00B\x02!\x00\x02@ \x01)\x03\x18\"\x02\x10\x80\x80\x80\x80\x00B\x80\x80\x80\x80\x10T\r\x00 \x01A\x08j \x02\x10\x85\x80\x80\x80\x00\x10\x93\x80\x80\x80\x00 \x01(\x02\x08A\x01F\r\x01 \x01)\x03\x10!\x00 \x01 \x01)\x03\x187\x03\x10 \x01 \x007\x03\x08 \x01A\x08j\x10\x99\x80\x80\x80\x00!\x00\x0b \x01A j$\x80\x80\x80\x80\x00 \x00\x0f\x0b\x00\x0b$\x00A\xcc\x80\xc0\x80\x00\xadB \x86B\x04\x84 \x00\xadB \x86B\x04\x84B\x84\x80\x80\x80 \x10\x8a\x80\x80\x80\x00\x0b\xf6\x05\x03\x01\x7f\x01~\x01\x7f#\x80\x80\x80\x80\x00A\xc0\x00k\"\x02$\x80\x80\x80\x80\x00\x02@ \x00B\xff\x01\x83B\xcb\x00R\r\x00 \x00\x10\x80\x80\x80\x80\x00!\x03 \x02A\x006\x02\x10 \x02 \x007\x03\x08 \x02 \x03B \x88>\x02\x14 \x02A\x18j \x02A\x08j\x10\x8e\x80\x80\x80\x00 \x02)\x03\x18\"\x00B\x02Q\r\x00 \x00\xa7A\x01q\r\x00\x02@ \x02)\x03 \"\x00\xa7A\xff\x01q\"\x04A\xca\x00F\r\x00 \x04A\x0eG\r\x01\x0b\x02@\x02@\x02@\x02@\x02@\x02@ \x00A\xf4\x80\xc0\x80\x00A\x02\x10\x8f\x80\x80\x80\x00B \x88\xa7\x0e\x02\x01\x00\x06\x0b \x02(\x02\x10 \x02(\x02\x14\x10\x90\x80\x80\x80\x00A\x01K\r\x05 \x02A0j \x02A\x08j\x10\x8e\x80\x80\x80\x00 \x02)\x030\"\x00B\x02Q\r\x05 \x00\xa7A\x01q\r\x05 \x02A\x18j \x02)\x038\x10\x94\x80\x80\x80\x00 \x02(\x02\x18A\x01F\r\x05 \x01B\xff\x01\x83B\x04R\r\x05 \x02)\x03(\"\x00 \x01B\x84\x80\x80\x80p\x83\"\x01\x10\x86\x80\x80\x80\x00B\x01R\r\x01 \x00 \x01\x10\x87\x80\x80\x80\x00\"\x00B\xff\x01\x83B\xcb\x00R\r\x05 \x00\x10\x80\x80\x80\x80\x00!\x01 \x02A\x006\x02\x10 \x02 \x007\x03\x08 \x02 \x01B \x88>\x02\x14 \x02A\x18j \x02A\x08j\x10\x8e\x80\x80\x80\x00 \x02)\x03\x18\"\x00B\x02Q\r\x05 \x00\xa7A\x01q\r\x05\x02@ \x02)\x03 \"\x00\xa7A\xff\x01q\"\x04A\xca\x00F\r\x00 \x04A\x0eG\r\x06\x0b \x00A\xf4\x80\xc0\x80\x00A\x02\x10\x8f\x80\x80\x80\x00B \x88\xa7\x0e\x02\x03\x02\x05\x0b \x02(\x02\x10 \x02(\x02\x14\x10\x90\x80\x80\x80\x00\r\x04 \x01B\xff\x01\x83B\x04R\r\x04\x0bB\x02!\x00\x0c\x02\x0b \x02(\x02\x10 \x02(\x02\x14\x10\x90\x80\x80\x80\x00A\x01K\r\x02 \x02A0j \x02A\x08j\x10\x8e\x80\x80\x80\x00 \x02)\x030\"\x00B\x02Q\r\x02 \x00\xa7A\x01q\r\x02 \x02A\x18j \x02)\x038\x10\x94\x80\x80\x80\x00 \x02(\x02\x18A\x01F\r\x02 \x02)\x03(!\x00 \x02)\x03 !\x01 \x02A\x18jA\xe8\x80\xc0\x80\x00A\t\x10\x9b\x80\x80\x80\x00 \x02(\x02\x18\r\x02 \x02)\x03 !\x03 \x02 \x007\x03  \x02 \x017\x03\x18 \x02 \x02A\x18j\x10\x99\x80\x80\x80\x007\x03  \x02 \x037\x03\x18 \x02A\x18jA\x02\x10\x9c\x80\x80\x80\x00!\x00\x0c\x01\x0b \x02(\x02\x10 \x02(\x02\x14\x10\x90\x80\x80\x80\x00\r\x01 \x02A\x18jA\xdc\x80\xc0\x80\x00A\x0c\x10\x9b\x80\x80\x80\x00 \x02(\x02\x18\r\x01 \x02 \x02)\x03 7\x03\x18 \x02A\x18jA\x01\x10\x9c\x80\x80\x80\x00!\x00\x0b \x02A\xc0\x00j$\x80\x80\x80\x80\x00 \x00\x0f\x0b\x00\x0b\xd6\x01\x02\x01~\x03\x7f\x02@\x02@ \x02A\tK\r\x00B\x00!\x03A\x00!\x04\x03@\x02@ \x04A\tG\r\x00 \x03B\x08\x86B\x0e\x84!\x03\x0c\x03\x0bA\x01!\x05\x02@ \x01 \x04j-\x00\x00\"\x06A\xdf\x00F\r\x00\x02@\x02@ \x06APjA\xff\x01qA\nI\r\x00 \x06A\xbf\x7fjA\xff\x01qA\x1aI\r\x01 \x06A\x9f\x7fjA\xff\x01qA\x1aO\r\x04 \x06AEj!\x05\x0c\x02\x0b \x06ARj!\x05\x0c\x01\x0b \x06AKj!\x05\x0b \x03B\x06\x86 \x05\xadB\xff\x01\x83\x84!\x03 \x04A\x01j!\x04\x0c\x00\x0b\x0b \x01\xadB \x86B\x04\x84 \x02\xadB \x86B\x04\x84\x10\x89\x80\x80\x80\x00!\x03\x0b \x00B\x007\x03\x00 \x00 \x037\x03\x08\x0b\x1a\x00 \x00\xadB \x86B\x04\x84 \x01\xadB \x86B\x04\x84\x10\x88\x80\x80\x80\x00\x0b\x03\x00\x00\x0b\x0b\x8e\x01\x01\x00A\x80\x80\xc0\x00\x0b\x84\x01UdtAUdtBUdtCUdtD\x00\x00\x10\x00\x04\x00\x00\x00\x04\x00\x10\x00\x04\x00\x00\x00\x08\x00\x10\x00\x04\x00\x00\x00\x0c\x00\x10\x00\x04\x00\x00\x00abc\x000\x00\x10\x00\x01\x00\x00\x001\x00\x10\x00\x01\x00\x00\x002\x00\x10\x00\x01\x00\x00\x000\x00\x10\x00\x01\x00\x00\x001\x00\x10\x00\x01\x00\x00\x00NotRecursiveRecursive\x00\x00\x00\\\x00\x10\x00\x0c\x00\x00\x00h\x00\x10\x00\t\x00\x00\x00\x00\xe3%\x0econtractspecv0\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x03add\x00\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x01a\x00\x00\x00\x00\x00\x07\xd0\x00\x00\x00\x13::test_udt::UdtEnum\x00\x00\x00\x00\x00\x00\x00\x00\x01b\x00\x00\x00\x00\x00\x07\xd0\x00\x00\x00\x13::test_udt::UdtEnum\x00\x00\x00\x00\x01\x00\x00\x00\x07\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x13::test_udt::UdtEnum\x00\x00\x00\x00\x04\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x04UdtA\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x04UdtB\x00\x00\x00\x01\x00\x00\x07\xd0\x00\x00\x00\x15::test_udt::UdtStruct\x00\x00\x00\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x04UdtC\x00\x00\x00\x01\x00\x00\x07\xd0\x00\x00\x00\x14::test_udt::UdtEnum2\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x04UdtD\x00\x00\x00\x01\x00\x00\x07\xd0\x00\x00\x00\x14::test_udt::UdtTuple\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x14::test_udt::UdtEnum2\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x01A\x00\x00\x00\x00\x00\x00\n\x00\x00\x00\x00\x00\x00\x00\x01B\x00\x00\x00\x00\x00\x00\x0f\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x14::test_udt::UdtTuple\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x010\x00\x00\x00\x00\x00\x00\x07\x00\x00\x00\x00\x00\x00\x00\x011\x00\x00\x00\x00\x00\x03\xea\x00\x00\x00\x07\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x15::test_udt::UdtStruct\x00\x00\x00\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00\x01a\x00\x00\x00\x00\x00\x00\x07\x00\x00\x00\x00\x00\x00\x00\x01b\x00\x00\x00\x00\x00\x00\x07\x00\x00\x00\x00\x00\x00\x00\x01c\x00\x00\x00\x00\x00\x03\xea\x00\x00\x00\x07\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\trecursive\x00\x00\x00\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x01a\x00\x00\x00\x00\x00\x07\xd0\x00\x00\x00\x18::test_udt::UdtRecursive\x00\x00\x00\x01\x00\x00\x03\xe8\x00\x00\x07\xd0\x00\x00\x00\x18::test_udt::UdtRecursive\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x18::test_udt::UdtRecursive\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x01a\x00\x00\x00\x00\x00\x00\x11\x00\x00\x00\x00\x00\x00\x00\x01b\x00\x00\x00\x00\x00\x03\xea\x00\x00\x07\xd0\x00\x00\x00\x18::test_udt::UdtRecursive\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x19::test_udt::RecursiveEnum\x00\x00\x00\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x0cNotRecursive\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\tRecursive\x00\x00\x00\x00\x00\x00\x01\x00\x00\x07\xd0\x00\x00\x00\x1b::test_udt::RecursiveToEnum\x00\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x1b::test_udt::RecursiveToEnum\x00\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x01a\x00\x00\x00\x00\x00\x00\x11\x00\x00\x00\x00\x00\x00\x00\x01b\x00\x00\x00\x00\x00\x03\xec\x00\x00\x00\x04\x00\x00\x07\xd0\x00\x00\x00\x19::test_udt::RecursiveEnum\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x0erecursive_enum\x00\x00\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x01a\x00\x00\x00\x00\x00\x07\xd0\x00\x00\x00\x19::test_udt::RecursiveEnum\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x03key\x00\x00\x00\x00\x04\x00\x00\x00\x01\x00\x00\x03\xe9\x00\x00\x03\xe8\x00\x00\x07\xd0\x00\x00\x00\x19::test_udt::RecursiveEnum\x00\x00\x00\x00\x00\x00\x03\x00\x00\x00\x02\x00\x00\x00_Contract executable used for creating a new contract and used in\n`CreateContractHostFnContext`.\x00\x00\x00\x00\x00\x00\x00\x00!::soroban_sdk::ContractExecutable\x00\x00\x00\x00\x00\x00\x02\x00\x00\x00\x01\x00\x00\x00xExecutable specified by the contract instance as a specific Wasm contract code entry identified by its Wasm sha256 hash.\x00\x00\x00\x04Wasm\x00\x00\x00\x01\x00\x00\x03\xee\x00\x00\x00 \x00\x00\x00\x01\x00\x00\x00_Executable reference via a persistent storage entry owned by this contract or another contract.\x00\x00\x00\x00\x0bExternalRef\x00\x00\x00\x00\x01\x00\x00\x07\xd0\x00\x00\x00$::soroban_sdk::ContractExecutableRef\x00\x00\x00\x01\x00\x00\x00\xc0Executable referenced via a persistent storage entry owned by a contract,\neither this contract or another contract.\n\nThe persistent storage entry owned by the `owner` has the `tag` as its key.\x00\x00\x00\x00\x00\x00\x00$::soroban_sdk::ContractExecutableRef\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x05owner\x00\x00\x00\x00\x00\x00\x13\x00\x00\x00\x00\x00\x00\x00\x03tag\x00\x00\x00\x00\x10\x00\x00\x00\x02\x00\x00\x00\xe3Context of a single authorized call performed by an address.\n\nCustom account contracts that implement `__check_auth` special function\nreceive a list of `Context` values corresponding to all the calls that\nneed to be authorized.\x00\x00\x00\x00\x00\x00\x00\x00\x1c::soroban_sdk::auth::Context\x00\x00\x00\x03\x00\x00\x00\x01\x00\x00\x00\x14Contract invocation.\x00\x00\x00\x08Contract\x00\x00\x00\x01\x00\x00\x07\xd0\x00\x00\x00$::soroban_sdk::auth::ContractContext\x00\x00\x00\x01\x00\x00\x00=Contract that has a constructor with no arguments is created.\x00\x00\x00\x00\x00\x00\x14CreateContractHostFn\x00\x00\x00\x01\x00\x00\x07\xd0\x00\x00\x000::soroban_sdk::auth::CreateContractHostFnContext\x00\x00\x00\x01\x00\x00\x00DContract that has a constructor with 1 or more arguments is created.\x00\x00\x00\x1cCreateContractWithCtorHostFn\x00\x00\x00\x01\x00\x00\x07\xd0\x00\x00\x00?::soroban_sdk::auth::CreateContractWithConstructorHostFnContext\x00\x00\x00\x00\x01\x00\x00\x00\xbdAuthorization context of a single contract call.\n\nThis struct corresponds to a `require_auth_for_args` call for an address\nfrom `contract` function with `fn_name` name and `args` arguments.\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00$::soroban_sdk::auth::ContractContext\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00\x04args\x00\x00\x03\xea\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x08contract\x00\x00\x00\x13\x00\x00\x00\x00\x00\x00\x00\x07fn_name\x00\x00\x00\x00\x11\x00\x00\x00\x01\x00\x00\x008Value of contract node in InvokerContractAuthEntry tree.\x00\x00\x00\x00\x00\x00\x00*::soroban_sdk::auth::SubContractInvocation\x00\x00\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x07context\x00\x00\x00\x07\xd0\x00\x00\x00$::soroban_sdk::auth::ContractContext\x00\x00\x00\x00\x00\x00\x00\x0fsub_invocations\x00\x00\x00\x03\xea\x00\x00\x07\xd0\x00\x00\x00-::soroban_sdk::auth::InvokerContractAuthEntry\x00\x00\x00\x00\x00\x00\x02\x00\x00\x01/A node in the tree of authorizations performed on behalf of the current\ncontract as invoker of the contracts deeper in the call stack.\n\nThis is used as an argument of `authorize_as_current_contract` host function.\n\nThis tree corresponds `require_auth[_for_args]` calls on behalf of the\ncurrent contract.\x00\x00\x00\x00\x00\x00\x00\x00-::soroban_sdk::auth::InvokerContractAuthEntry\x00\x00\x00\x00\x00\x00\x03\x00\x00\x00\x01\x00\x00\x00\x12Invoke a contract.\x00\x00\x00\x00\x00\x08Contract\x00\x00\x00\x01\x00\x00\x07\xd0\x00\x00\x00*::soroban_sdk::auth::SubContractInvocation\x00\x00\x00\x00\x00\x01\x00\x00\x005Create a contract passing 0 arguments to constructor.\x00\x00\x00\x00\x00\x00\x14CreateContractHostFn\x00\x00\x00\x01\x00\x00\x07\xd0\x00\x00\x000::soroban_sdk::auth::CreateContractHostFnContext\x00\x00\x00\x01\x00\x00\x00=Create a contract passing 0 or more arguments to constructor.\x00\x00\x00\x00\x00\x00\x1cCreateContractWithCtorHostFn\x00\x00\x00\x01\x00\x00\x07\xd0\x00\x00\x00?::soroban_sdk::auth::CreateContractWithConstructorHostFnContext\x00\x00\x00\x00\x01\x00\x00\x00vAuthorization context for `create_contract` host function that creates a\nnew contract on behalf of authorizer address.\x00\x00\x00\x00\x00\x00\x00\x00\x000::soroban_sdk::auth::CreateContractHostFnContext\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\nexecutable\x00\x00\x00\x00\x07\xd0\x00\x00\x00!::soroban_sdk::ContractExecutable\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x04salt\x00\x00\x03\xee\x00\x00\x00 \x00\x00\x00\x01\x00\x00\x00\xd6Authorization context for `create_contract` host function that creates a\nnew contract on behalf of authorizer address.\nThis is the same as `CreateContractHostFnContext`, but also has\ncontract constructor arguments.\x00\x00\x00\x00\x00\x00\x00\x00\x00?::soroban_sdk::auth::CreateContractWithConstructorHostFnContext\x00\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00\x10constructor_args\x00\x00\x03\xea\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\nexecutable\x00\x00\x00\x00\x07\xd0\x00\x00\x00!::soroban_sdk::ContractExecutable\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x04salt\x00\x00\x03\xee\x00\x00\x00 \x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\"::soroban_sdk::address::Executable\x00\x00\x00\x00\x00\x03\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x04Wasm\x00\x00\x00\x01\x00\x00\x03\xee\x00\x00\x00 \x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x0cStellarAsset\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x07Account\x00\x00\x1e\x11contractenvmetav0\x00\x00\x00\x00\x00\x00\x00\x1e\x00\x00\x00\x00\x00G\x0econtractmetav0\x00\x00\x00\x00\x00\x00\x00\x05rsver\x00\x00\x00\x00\x00\x00\x061.91.0\x00\x00\x00\x00\x00\x00\x00\x00\x00\x08rssdkver\x00\x00\x00\x0630.0.0\x00\x00";
         pub trait Contract {
             fn add(env: soroban_sdk::Env, a: UdtEnum, b: UdtEnum) -> i64;
             fn recursive(env: soroban_sdk::Env, a: UdtRecursive) -> Option<UdtRecursive>;
@@ -4253,23 +4542,14 @@ mod test_with_wasm {
             pub env: soroban_sdk::Env,
             pub address: soroban_sdk::Address,
             #[doc(hidden)]
-            set_auths: Option<&'a [soroban_sdk::xdr::SorobanAuthorizationEntry]>,
-            #[doc(hidden)]
-            mock_auths: Option<&'a [soroban_sdk::testutils::MockAuth<'a>]>,
-            #[doc(hidden)]
-            mock_all_auths: bool,
-            #[doc(hidden)]
-            allow_non_root_auth: bool,
+            config: soroban_sdk::testutils::ClientInternalConfig<'a>,
         }
         impl<'a> Client<'a> {
             pub fn new(env: &soroban_sdk::Env, address: &soroban_sdk::Address) -> Self {
                 Self {
                     env: env.clone(),
                     address: address.clone(),
-                    set_auths: None,
-                    mock_auths: None,
-                    mock_all_auths: false,
-                    allow_non_root_auth: false,
+                    config: soroban_sdk::testutils::ClientInternalConfig::default(),
                 }
             }
             /// Set authorizations in the environment which will be consumed by
@@ -4287,10 +4567,7 @@ mod test_with_wasm {
                 Self {
                     env: self.env.clone(),
                     address: self.address.clone(),
-                    set_auths: Some(auths),
-                    mock_auths: self.mock_auths.clone(),
-                    mock_all_auths: false,
-                    allow_non_root_auth: false,
+                    config: self.config.set_auths(auths),
                 }
             }
             /// Mock authorizations in the environment which will cause matching invokes
@@ -4305,10 +4582,7 @@ mod test_with_wasm {
                 Self {
                     env: self.env.clone(),
                     address: self.address.clone(),
-                    set_auths: self.set_auths.clone(),
-                    mock_auths: Some(mock_auths),
-                    mock_all_auths: false,
-                    allow_non_root_auth: false,
+                    config: self.config.mock_auths(mock_auths),
                 }
             }
             /// Mock all calls to the `Address::require_auth` and
@@ -4321,10 +4595,7 @@ mod test_with_wasm {
                 Self {
                     env: self.env.clone(),
                     address: self.address.clone(),
-                    set_auths: None,
-                    mock_auths: None,
-                    mock_all_auths: true,
-                    allow_non_root_auth: false,
+                    config: self.config.mock_all_auths(),
                 }
             }
             /// A version of `mock_all_auths` that allows authorizations that
@@ -4340,36 +4611,14 @@ mod test_with_wasm {
                 Self {
                     env: self.env.clone(),
                     address: self.address.clone(),
-                    set_auths: None,
-                    mock_auths: None,
-                    mock_all_auths: true,
-                    allow_non_root_auth: true,
+                    config: self.config.mock_all_auths_allowing_non_root_auth(),
                 }
             }
         }
         impl<'a> Client<'a> {
             pub fn add(&self, a: &UdtEnum, b: &UdtEnum) -> i64 {
-                use core::ops::Not;
-                let old_auth_manager = self
-                    .env
-                    .in_contract()
-                    .not()
-                    .then(|| self.env.host().snapshot_auth_manager().unwrap());
-                {
-                    if let Some(set_auths) = self.set_auths {
-                        self.env.set_auths(set_auths);
-                    }
-                    if let Some(mock_auths) = self.mock_auths {
-                        self.env.mock_auths(mock_auths);
-                    }
-                    if self.mock_all_auths {
-                        if self.allow_non_root_auth {
-                            self.env.mock_all_auths_allowing_non_root_auth();
-                        } else {
-                            self.env.mock_all_auths();
-                        }
-                    }
-                }
+                let _call_scope =
+                    soroban_sdk::testutils::ClientCallScope::enter(&self.env, self.config);
                 use soroban_sdk::{FromVal, IntoVal};
                 let res = self.env.invoke_contract(
                     &self.address,
@@ -4383,9 +4632,6 @@ mod test_with_wasm {
                         [a.into_val(&self.env), b.into_val(&self.env)],
                     ),
                 );
-                if let Some(old_auth_manager) = old_auth_manager {
-                    self.env.host().set_auth_manager(old_auth_manager).unwrap();
-                }
                 res
             }
             pub fn try_add(
@@ -4399,27 +4645,8 @@ mod test_with_wasm {
                 >,
                 Result<soroban_sdk::Error, soroban_sdk::InvokeError>,
             > {
-                use core::ops::Not;
-                let old_auth_manager = self
-                    .env
-                    .in_contract()
-                    .not()
-                    .then(|| self.env.host().snapshot_auth_manager().unwrap());
-                {
-                    if let Some(set_auths) = self.set_auths {
-                        self.env.set_auths(set_auths);
-                    }
-                    if let Some(mock_auths) = self.mock_auths {
-                        self.env.mock_auths(mock_auths);
-                    }
-                    if self.mock_all_auths {
-                        if self.allow_non_root_auth {
-                            self.env.mock_all_auths_allowing_non_root_auth();
-                        } else {
-                            self.env.mock_all_auths();
-                        }
-                    }
-                }
+                let _call_scope =
+                    soroban_sdk::testutils::ClientCallScope::enter(&self.env, self.config);
                 use soroban_sdk::{FromVal, IntoVal};
                 let res = self.env.try_invoke_contract(
                     &self.address,
@@ -4433,33 +4660,11 @@ mod test_with_wasm {
                         [a.into_val(&self.env), b.into_val(&self.env)],
                     ),
                 );
-                if let Some(old_auth_manager) = old_auth_manager {
-                    self.env.host().set_auth_manager(old_auth_manager).unwrap();
-                }
                 res
             }
             pub fn recursive(&self, a: &UdtRecursive) -> Option<UdtRecursive> {
-                use core::ops::Not;
-                let old_auth_manager = self
-                    .env
-                    .in_contract()
-                    .not()
-                    .then(|| self.env.host().snapshot_auth_manager().unwrap());
-                {
-                    if let Some(set_auths) = self.set_auths {
-                        self.env.set_auths(set_auths);
-                    }
-                    if let Some(mock_auths) = self.mock_auths {
-                        self.env.mock_auths(mock_auths);
-                    }
-                    if self.mock_all_auths {
-                        if self.allow_non_root_auth {
-                            self.env.mock_all_auths_allowing_non_root_auth();
-                        } else {
-                            self.env.mock_all_auths();
-                        }
-                    }
-                }
+                let _call_scope =
+                    soroban_sdk::testutils::ClientCallScope::enter(&self.env, self.config);
                 use soroban_sdk::{FromVal, IntoVal};
                 let res = self.env.invoke_contract(
                     &self.address,
@@ -4470,9 +4675,6 @@ mod test_with_wasm {
                     },
                     ::soroban_sdk::Vec::from_array(&self.env, [a.into_val(&self.env)]),
                 );
-                if let Some(old_auth_manager) = old_auth_manager {
-                    self.env.host().set_auth_manager(old_auth_manager).unwrap();
-                }
                 res
             }
             pub fn try_recursive(
@@ -4488,27 +4690,8 @@ mod test_with_wasm {
                 >,
                 Result<soroban_sdk::Error, soroban_sdk::InvokeError>,
             > {
-                use core::ops::Not;
-                let old_auth_manager = self
-                    .env
-                    .in_contract()
-                    .not()
-                    .then(|| self.env.host().snapshot_auth_manager().unwrap());
-                {
-                    if let Some(set_auths) = self.set_auths {
-                        self.env.set_auths(set_auths);
-                    }
-                    if let Some(mock_auths) = self.mock_auths {
-                        self.env.mock_auths(mock_auths);
-                    }
-                    if self.mock_all_auths {
-                        if self.allow_non_root_auth {
-                            self.env.mock_all_auths_allowing_non_root_auth();
-                        } else {
-                            self.env.mock_all_auths();
-                        }
-                    }
-                }
+                let _call_scope =
+                    soroban_sdk::testutils::ClientCallScope::enter(&self.env, self.config);
                 use soroban_sdk::{FromVal, IntoVal};
                 let res = self.env.try_invoke_contract(
                     &self.address,
@@ -4519,33 +4702,11 @@ mod test_with_wasm {
                     },
                     ::soroban_sdk::Vec::from_array(&self.env, [a.into_val(&self.env)]),
                 );
-                if let Some(old_auth_manager) = old_auth_manager {
-                    self.env.host().set_auth_manager(old_auth_manager).unwrap();
-                }
                 res
             }
             pub fn recursive_enum(&self, a: &RecursiveEnum, key: &u32) -> Option<RecursiveEnum> {
-                use core::ops::Not;
-                let old_auth_manager = self
-                    .env
-                    .in_contract()
-                    .not()
-                    .then(|| self.env.host().snapshot_auth_manager().unwrap());
-                {
-                    if let Some(set_auths) = self.set_auths {
-                        self.env.set_auths(set_auths);
-                    }
-                    if let Some(mock_auths) = self.mock_auths {
-                        self.env.mock_auths(mock_auths);
-                    }
-                    if self.mock_all_auths {
-                        if self.allow_non_root_auth {
-                            self.env.mock_all_auths_allowing_non_root_auth();
-                        } else {
-                            self.env.mock_all_auths();
-                        }
-                    }
-                }
+                let _call_scope =
+                    soroban_sdk::testutils::ClientCallScope::enter(&self.env, self.config);
                 use soroban_sdk::{FromVal, IntoVal};
                 let res = self.env.invoke_contract(
                     &self.address,
@@ -4555,9 +4716,6 @@ mod test_with_wasm {
                         [a.into_val(&self.env), key.into_val(&self.env)],
                     ),
                 );
-                if let Some(old_auth_manager) = old_auth_manager {
-                    self.env.host().set_auth_manager(old_auth_manager).unwrap();
-                }
                 res
             }
             pub fn try_recursive_enum(
@@ -4574,27 +4732,8 @@ mod test_with_wasm {
                 >,
                 Result<soroban_sdk::Error, soroban_sdk::InvokeError>,
             > {
-                use core::ops::Not;
-                let old_auth_manager = self
-                    .env
-                    .in_contract()
-                    .not()
-                    .then(|| self.env.host().snapshot_auth_manager().unwrap());
-                {
-                    if let Some(set_auths) = self.set_auths {
-                        self.env.set_auths(set_auths);
-                    }
-                    if let Some(mock_auths) = self.mock_auths {
-                        self.env.mock_auths(mock_auths);
-                    }
-                    if self.mock_all_auths {
-                        if self.allow_non_root_auth {
-                            self.env.mock_all_auths_allowing_non_root_auth();
-                        } else {
-                            self.env.mock_all_auths();
-                        }
-                    }
-                }
+                let _call_scope =
+                    soroban_sdk::testutils::ClientCallScope::enter(&self.env, self.config);
                 use soroban_sdk::{FromVal, IntoVal};
                 let res = self.env.try_invoke_contract(
                     &self.address,
@@ -4604,9 +4743,6 @@ mod test_with_wasm {
                         [a.into_val(&self.env), key.into_val(&self.env)],
                     ),
                 );
-                if let Some(old_auth_manager) = old_auth_manager {
-                    self.env.host().set_auth_manager(old_auth_manager).unwrap();
-                }
                 res
             }
         }
@@ -4694,21 +4830,76 @@ mod test_with_wasm {
                 }
             }
         }
+        impl soroban_sdk::SpecName for UdtTuple {
+            const SPEC_NAME: &'static str = {
+                const NAME: &str = "::test_udt::test_with_wasm::contract::UdtTuple";
+                const CHECKED_NAME: &str = {
+                    if !(NAME.len() <= soroban_sdk::xdr::SC_SPEC_TYPE_NAME_LIMIT as usize) {
+                        {
+                            ::core::panicking::panic_fmt(
+                                format_args!(
+                                    "type `UdtTuple` full name including its module path is longer than the contract spec\'s type name limit, shorten its module path or name: `::test_udt::test_with_wasm::contract::UdtTuple`",
+                                ),
+                            );
+                        }
+                    }
+                    NAME
+                };
+                CHECKED_NAME
+            };
+        }
+        impl soroban_sdk::SpecTypeDef for UdtTuple {
+            const SPEC_TYPE_DEF: soroban_sdk::xdr::r#const::ScSpecTypeDef =
+                soroban_sdk::xdr::r#const::ScSpecTypeDef::Udt(
+                    soroban_sdk::xdr::r#const::ScSpecTypeUdt {
+                        name: soroban_sdk::xdr::r#const::StringM::try_from_str_or_panic(
+                            <Self as soroban_sdk::SpecName>::SPEC_NAME,
+                        ),
+                    },
+                );
+        }
         #[doc(hidden)]
         #[allow(dead_code)]
-        static __SPEC_XDR_TYPE_UDTTUPLE: [u8; 64usize] = UdtTuple::spec_xdr();
+        static __SPEC_XDR_TYPE_UDTTUPLE: [u8; UdtTuple::spec_xdr().len()] = UdtTuple::spec_xdr();
         impl UdtTuple {
-            pub const fn spec_xdr() -> [u8; 64usize] {
-                *b"\0\0\0\x01\0\0\0\0\0\0\0\0\0\0\0\x08UdtTuple\0\0\0\x02\0\0\0\0\0\0\0\x010\0\0\0\0\0\0\x07\0\0\0\0\0\0\0\x011\0\0\0\0\0\x03\xea\0\0\0\x07"
+            const __SPEC_XDR_ENTRY: soroban_sdk::xdr::r#const::ScSpecEntry = soroban_sdk::xdr::r#const::ScSpecEntry::UdtStructV0(soroban_sdk::xdr::r#const::ScSpecUdtStructV0 {
+                doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
+                lib: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
+                name: soroban_sdk::xdr::r#const::StringM::try_from_str_or_panic(
+                    <UdtTuple as soroban_sdk::SpecName>::SPEC_NAME,
+                ),
+                fields: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(
+                    &[
+                        soroban_sdk::xdr::r#const::ScSpecUdtStructFieldV0 {
+                            doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(
+                                b"",
+                            ),
+                            name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(
+                                b"0",
+                            ),
+                            type_: <i64 as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
+                        },
+                        soroban_sdk::xdr::r#const::ScSpecUdtStructFieldV0 {
+                            doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(
+                                b"",
+                            ),
+                            name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(
+                                b"1",
+                            ),
+                            type_: <soroban_sdk::Vec<
+                                i64,
+                            > as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
+                        },
+                    ],
+                ),
+            });
+            pub const fn spec_xdr() -> [u8; UdtTuple::__SPEC_XDR_ENTRY.const_xdr_len()] {
+                const { UdtTuple::__SPEC_XDR_ENTRY.const_to_xdr() }
             }
         }
-        impl soroban_sdk::SpecShakingMarker for UdtTuple {
-            #[doc(hidden)]
-            #[inline(always)]
-            fn spec_shaking_marker() {
-                <i64 as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
-                <soroban_sdk::Vec<i64> as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
-            }
+        impl soroban_sdk::SpecAnchor for UdtTuple {
+            #[inline(never)]
+            fn spec_anchor() {}
         }
         impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for UdtTuple {
             type Error = soroban_sdk::ConversionError;
@@ -4717,6 +4908,7 @@ mod test_with_wasm {
                 env: &soroban_sdk::Env,
                 val: &soroban_sdk::Val,
             ) -> Result<Self, soroban_sdk::ConversionError> {
+                <UdtTuple as soroban_sdk::SpecAnchor>::spec_anchor();
                 use soroban_sdk::{ConversionError, EnvBase, TryIntoVal, Val, VecObject};
                 let vec: VecObject = (*val).try_into().map_err(|_| ConversionError)?;
                 let mut vals: [Val; 2usize] = [Val::VOID.to_val(); 2usize];
@@ -4735,6 +4927,7 @@ mod test_with_wasm {
                 env: &soroban_sdk::Env,
                 val: &UdtTuple,
             ) -> Result<Self, soroban_sdk::ConversionError> {
+                <UdtTuple as soroban_sdk::SpecAnchor>::spec_anchor();
                 use soroban_sdk::{ConversionError, EnvBase, TryIntoVal, Val};
                 let vals: [Val; 2usize] = [
                     (&val.0).try_into_val(env).map_err(|_| ConversionError)?,
@@ -5134,22 +5327,85 @@ mod test_with_wasm {
                 }
             }
         }
+        impl soroban_sdk::SpecName for UdtStruct {
+            const SPEC_NAME: &'static str = {
+                const NAME: &str = "::test_udt::test_with_wasm::contract::UdtStruct";
+                const CHECKED_NAME: &str = {
+                    if !(NAME.len() <= soroban_sdk::xdr::SC_SPEC_TYPE_NAME_LIMIT as usize) {
+                        {
+                            ::core::panicking::panic_fmt(
+                                format_args!(
+                                    "type `UdtStruct` full name including its module path is longer than the contract spec\'s type name limit, shorten its module path or name: `::test_udt::test_with_wasm::contract::UdtStruct`",
+                                ),
+                            );
+                        }
+                    }
+                    NAME
+                };
+                CHECKED_NAME
+            };
+        }
+        impl soroban_sdk::SpecTypeDef for UdtStruct {
+            const SPEC_TYPE_DEF: soroban_sdk::xdr::r#const::ScSpecTypeDef =
+                soroban_sdk::xdr::r#const::ScSpecTypeDef::Udt(
+                    soroban_sdk::xdr::r#const::ScSpecTypeUdt {
+                        name: soroban_sdk::xdr::r#const::StringM::try_from_str_or_panic(
+                            <Self as soroban_sdk::SpecName>::SPEC_NAME,
+                        ),
+                    },
+                );
+        }
         #[doc(hidden)]
         #[allow(dead_code)]
-        static __SPEC_XDR_TYPE_UDTSTRUCT: [u8; 84usize] = UdtStruct::spec_xdr();
+        static __SPEC_XDR_TYPE_UDTSTRUCT: [u8; UdtStruct::spec_xdr().len()] = UdtStruct::spec_xdr();
         impl UdtStruct {
-            pub const fn spec_xdr() -> [u8; 84usize] {
-                *b"\0\0\0\x01\0\0\0\0\0\0\0\0\0\0\0\tUdtStruct\0\0\0\0\0\0\x03\0\0\0\0\0\0\0\x01a\0\0\0\0\0\0\x07\0\0\0\0\0\0\0\x01b\0\0\0\0\0\0\x07\0\0\0\0\0\0\0\x01c\0\0\0\0\0\x03\xea\0\0\0\x07"
+            const __SPEC_XDR_ENTRY: soroban_sdk::xdr::r#const::ScSpecEntry = soroban_sdk::xdr::r#const::ScSpecEntry::UdtStructV0(soroban_sdk::xdr::r#const::ScSpecUdtStructV0 {
+                doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
+                lib: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
+                name: soroban_sdk::xdr::r#const::StringM::try_from_str_or_panic(
+                    <UdtStruct as soroban_sdk::SpecName>::SPEC_NAME,
+                ),
+                fields: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(
+                    &[
+                        soroban_sdk::xdr::r#const::ScSpecUdtStructFieldV0 {
+                            doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(
+                                b"",
+                            ),
+                            name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(
+                                b"a",
+                            ),
+                            type_: <i64 as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
+                        },
+                        soroban_sdk::xdr::r#const::ScSpecUdtStructFieldV0 {
+                            doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(
+                                b"",
+                            ),
+                            name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(
+                                b"b",
+                            ),
+                            type_: <i64 as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
+                        },
+                        soroban_sdk::xdr::r#const::ScSpecUdtStructFieldV0 {
+                            doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(
+                                b"",
+                            ),
+                            name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(
+                                b"c",
+                            ),
+                            type_: <soroban_sdk::Vec<
+                                i64,
+                            > as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
+                        },
+                    ],
+                ),
+            });
+            pub const fn spec_xdr() -> [u8; UdtStruct::__SPEC_XDR_ENTRY.const_xdr_len()] {
+                const { UdtStruct::__SPEC_XDR_ENTRY.const_to_xdr() }
             }
         }
-        impl soroban_sdk::SpecShakingMarker for UdtStruct {
-            #[doc(hidden)]
-            #[inline(always)]
-            fn spec_shaking_marker() {
-                <i64 as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
-                <i64 as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
-                <soroban_sdk::Vec<i64> as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
-            }
+        impl soroban_sdk::SpecAnchor for UdtStruct {
+            #[inline(never)]
+            fn spec_anchor() {}
         }
         impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for UdtStruct {
             type Error = soroban_sdk::ConversionError;
@@ -5157,6 +5413,7 @@ mod test_with_wasm {
                 env: &soroban_sdk::Env,
                 val: &soroban_sdk::Val,
             ) -> Result<Self, soroban_sdk::ConversionError> {
+                <UdtStruct as soroban_sdk::SpecAnchor>::spec_anchor();
                 use soroban_sdk::{ConversionError, EnvBase, MapObject, TryIntoVal, Val};
                 const KEYS: [&'static str; 3usize] = ["a", "b", "c"];
                 let mut vals: [Val; 3usize] = [Val::VOID.to_val(); 3usize];
@@ -5182,6 +5439,7 @@ mod test_with_wasm {
                 env: &soroban_sdk::Env,
                 val: &UdtStruct,
             ) -> Result<Self, soroban_sdk::ConversionError> {
+                <UdtStruct as soroban_sdk::SpecAnchor>::spec_anchor();
                 use soroban_sdk::{ConversionError, EnvBase, TryIntoVal, Val};
                 const KEYS: [&'static str; 3usize] = ["a", "b", "c"];
                 let vals: [Val; 3usize] = [
@@ -5657,23 +5915,77 @@ mod test_with_wasm {
                 }
             }
         }
+        impl soroban_sdk::SpecName for UdtRecursive {
+            const SPEC_NAME: &'static str = {
+                const NAME: &str = "::test_udt::test_with_wasm::contract::UdtRecursive";
+                const CHECKED_NAME: &str = {
+                    if !(NAME.len() <= soroban_sdk::xdr::SC_SPEC_TYPE_NAME_LIMIT as usize) {
+                        {
+                            ::core::panicking::panic_fmt(
+                                format_args!(
+                                    "type `UdtRecursive` full name including its module path is longer than the contract spec\'s type name limit, shorten its module path or name: `::test_udt::test_with_wasm::contract::UdtRecursive`",
+                                ),
+                            );
+                        }
+                    }
+                    NAME
+                };
+                CHECKED_NAME
+            };
+        }
+        impl soroban_sdk::SpecTypeDef for UdtRecursive {
+            const SPEC_TYPE_DEF: soroban_sdk::xdr::r#const::ScSpecTypeDef =
+                soroban_sdk::xdr::r#const::ScSpecTypeDef::Udt(
+                    soroban_sdk::xdr::r#const::ScSpecTypeUdt {
+                        name: soroban_sdk::xdr::r#const::StringM::try_from_str_or_panic(
+                            <Self as soroban_sdk::SpecName>::SPEC_NAME,
+                        ),
+                    },
+                );
+        }
         #[doc(hidden)]
         #[allow(dead_code)]
-        static __SPEC_XDR_TYPE_UDTRECURSIVE: [u8; 84usize] = UdtRecursive::spec_xdr();
+        static __SPEC_XDR_TYPE_UDTRECURSIVE: [u8; UdtRecursive::spec_xdr().len()] =
+            UdtRecursive::spec_xdr();
         impl UdtRecursive {
-            pub const fn spec_xdr() -> [u8; 84usize] {
-                *b"\0\0\0\x01\0\0\0\0\0\0\0\0\0\0\0\x0cUdtRecursive\0\0\0\x02\0\0\0\0\0\0\0\x01a\0\0\0\0\0\0\x11\0\0\0\0\0\0\0\x01b\0\0\0\0\0\x03\xea\0\0\x07\xd0\0\0\0\x0cUdtRecursive"
+            const __SPEC_XDR_ENTRY: soroban_sdk::xdr::r#const::ScSpecEntry = soroban_sdk::xdr::r#const::ScSpecEntry::UdtStructV0(soroban_sdk::xdr::r#const::ScSpecUdtStructV0 {
+                doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
+                lib: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
+                name: soroban_sdk::xdr::r#const::StringM::try_from_str_or_panic(
+                    <UdtRecursive as soroban_sdk::SpecName>::SPEC_NAME,
+                ),
+                fields: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(
+                    &[
+                        soroban_sdk::xdr::r#const::ScSpecUdtStructFieldV0 {
+                            doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(
+                                b"",
+                            ),
+                            name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(
+                                b"a",
+                            ),
+                            type_: <soroban_sdk::Symbol as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
+                        },
+                        soroban_sdk::xdr::r#const::ScSpecUdtStructFieldV0 {
+                            doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(
+                                b"",
+                            ),
+                            name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(
+                                b"b",
+                            ),
+                            type_: <soroban_sdk::Vec<
+                                UdtRecursive,
+                            > as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
+                        },
+                    ],
+                ),
+            });
+            pub const fn spec_xdr() -> [u8; UdtRecursive::__SPEC_XDR_ENTRY.const_xdr_len()] {
+                const { UdtRecursive::__SPEC_XDR_ENTRY.const_to_xdr() }
             }
         }
-        impl soroban_sdk::SpecShakingMarker for UdtRecursive {
-            #[doc(hidden)]
-            #[inline(always)]
-            fn spec_shaking_marker() {
-                <soroban_sdk::Symbol as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
-                <soroban_sdk::Vec<
-                    UdtRecursive,
-                > as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
-            }
+        impl soroban_sdk::SpecAnchor for UdtRecursive {
+            #[inline(never)]
+            fn spec_anchor() {}
         }
         impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for UdtRecursive {
             type Error = soroban_sdk::ConversionError;
@@ -5681,6 +5993,7 @@ mod test_with_wasm {
                 env: &soroban_sdk::Env,
                 val: &soroban_sdk::Val,
             ) -> Result<Self, soroban_sdk::ConversionError> {
+                <UdtRecursive as soroban_sdk::SpecAnchor>::spec_anchor();
                 use soroban_sdk::{ConversionError, EnvBase, MapObject, TryIntoVal, Val};
                 const KEYS: [&'static str; 2usize] = ["a", "b"];
                 let mut vals: [Val; 2usize] = [Val::VOID.to_val(); 2usize];
@@ -5703,6 +6016,7 @@ mod test_with_wasm {
                 env: &soroban_sdk::Env,
                 val: &UdtRecursive,
             ) -> Result<Self, soroban_sdk::ConversionError> {
+                <UdtRecursive as soroban_sdk::SpecAnchor>::spec_anchor();
                 use soroban_sdk::{ConversionError, EnvBase, TryIntoVal, Val};
                 const KEYS: [&'static str; 2usize] = ["a", "b"];
                 let vals: [Val; 2usize] = [
@@ -6128,24 +6442,78 @@ mod test_with_wasm {
                 }
             }
         }
+        impl soroban_sdk::SpecName for RecursiveToEnum {
+            const SPEC_NAME: &'static str = {
+                const NAME: &str = "::test_udt::test_with_wasm::contract::RecursiveToEnum";
+                const CHECKED_NAME: &str = {
+                    if !(NAME.len() <= soroban_sdk::xdr::SC_SPEC_TYPE_NAME_LIMIT as usize) {
+                        {
+                            ::core::panicking::panic_fmt(
+                                format_args!(
+                                    "type `RecursiveToEnum` full name including its module path is longer than the contract spec\'s type name limit, shorten its module path or name: `::test_udt::test_with_wasm::contract::RecursiveToEnum`",
+                                ),
+                            );
+                        }
+                    }
+                    NAME
+                };
+                CHECKED_NAME
+            };
+        }
+        impl soroban_sdk::SpecTypeDef for RecursiveToEnum {
+            const SPEC_TYPE_DEF: soroban_sdk::xdr::r#const::ScSpecTypeDef =
+                soroban_sdk::xdr::r#const::ScSpecTypeDef::Udt(
+                    soroban_sdk::xdr::r#const::ScSpecTypeUdt {
+                        name: soroban_sdk::xdr::r#const::StringM::try_from_str_or_panic(
+                            <Self as soroban_sdk::SpecName>::SPEC_NAME,
+                        ),
+                    },
+                );
+        }
         #[doc(hidden)]
         #[allow(dead_code)]
-        static __SPEC_XDR_TYPE_RECURSIVETOENUM: [u8; 96usize] = RecursiveToEnum::spec_xdr();
+        static __SPEC_XDR_TYPE_RECURSIVETOENUM: [u8; RecursiveToEnum::spec_xdr().len()] =
+            RecursiveToEnum::spec_xdr();
         impl RecursiveToEnum {
-            pub const fn spec_xdr() -> [u8; 96usize] {
-                *b"\0\0\0\x01\0\0\0\0\0\0\0\0\0\0\0\x0fRecursiveToEnum\0\0\0\0\x02\0\0\0\0\0\0\0\x01a\0\0\0\0\0\0\x11\0\0\0\0\0\0\0\x01b\0\0\0\0\0\x03\xec\0\0\0\x04\0\0\x07\xd0\0\0\0\rRecursiveEnum\0\0\0"
+            const __SPEC_XDR_ENTRY: soroban_sdk::xdr::r#const::ScSpecEntry = soroban_sdk::xdr::r#const::ScSpecEntry::UdtStructV0(soroban_sdk::xdr::r#const::ScSpecUdtStructV0 {
+                doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
+                lib: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
+                name: soroban_sdk::xdr::r#const::StringM::try_from_str_or_panic(
+                    <RecursiveToEnum as soroban_sdk::SpecName>::SPEC_NAME,
+                ),
+                fields: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(
+                    &[
+                        soroban_sdk::xdr::r#const::ScSpecUdtStructFieldV0 {
+                            doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(
+                                b"",
+                            ),
+                            name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(
+                                b"a",
+                            ),
+                            type_: <soroban_sdk::Symbol as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
+                        },
+                        soroban_sdk::xdr::r#const::ScSpecUdtStructFieldV0 {
+                            doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(
+                                b"",
+                            ),
+                            name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(
+                                b"b",
+                            ),
+                            type_: <soroban_sdk::Map<
+                                u32,
+                                RecursiveEnum,
+                            > as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
+                        },
+                    ],
+                ),
+            });
+            pub const fn spec_xdr() -> [u8; RecursiveToEnum::__SPEC_XDR_ENTRY.const_xdr_len()] {
+                const { RecursiveToEnum::__SPEC_XDR_ENTRY.const_to_xdr() }
             }
         }
-        impl soroban_sdk::SpecShakingMarker for RecursiveToEnum {
-            #[doc(hidden)]
-            #[inline(always)]
-            fn spec_shaking_marker() {
-                <soroban_sdk::Symbol as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
-                <soroban_sdk::Map<
-                    u32,
-                    RecursiveEnum,
-                > as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
-            }
+        impl soroban_sdk::SpecAnchor for RecursiveToEnum {
+            #[inline(never)]
+            fn spec_anchor() {}
         }
         impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for RecursiveToEnum {
             type Error = soroban_sdk::ConversionError;
@@ -6153,6 +6521,7 @@ mod test_with_wasm {
                 env: &soroban_sdk::Env,
                 val: &soroban_sdk::Val,
             ) -> Result<Self, soroban_sdk::ConversionError> {
+                <RecursiveToEnum as soroban_sdk::SpecAnchor>::spec_anchor();
                 use soroban_sdk::{ConversionError, EnvBase, MapObject, TryIntoVal, Val};
                 const KEYS: [&'static str; 2usize] = ["a", "b"];
                 let mut vals: [Val; 2usize] = [Val::VOID.to_val(); 2usize];
@@ -6175,6 +6544,7 @@ mod test_with_wasm {
                 env: &soroban_sdk::Env,
                 val: &RecursiveToEnum,
             ) -> Result<Self, soroban_sdk::ConversionError> {
+                <RecursiveToEnum as soroban_sdk::SpecAnchor>::spec_anchor();
                 use soroban_sdk::{ConversionError, EnvBase, TryIntoVal, Val};
                 const KEYS: [&'static str; 2usize] = ["a", "b"];
                 let vals: [Val; 2usize] = [
@@ -6603,22 +6973,76 @@ mod test_with_wasm {
                 }
             }
         }
+        impl soroban_sdk::SpecName for ContractExecutableRef {
+            const SPEC_NAME: &'static str = {
+                const NAME: &str = "::test_udt::test_with_wasm::contract::ContractExecutableRef";
+                const CHECKED_NAME: &str = {
+                    if !(NAME.len() <= soroban_sdk::xdr::SC_SPEC_TYPE_NAME_LIMIT as usize) {
+                        {
+                            ::core::panicking::panic_fmt(
+                                format_args!(
+                                    "type `ContractExecutableRef` full name including its module path is longer than the contract spec\'s type name limit, shorten its module path or name: `::test_udt::test_with_wasm::contract::ContractExecutableRef`",
+                                ),
+                            );
+                        }
+                    }
+                    NAME
+                };
+                CHECKED_NAME
+            };
+        }
+        impl soroban_sdk::SpecTypeDef for ContractExecutableRef {
+            const SPEC_TYPE_DEF: soroban_sdk::xdr::r#const::ScSpecTypeDef =
+                soroban_sdk::xdr::r#const::ScSpecTypeDef::Udt(
+                    soroban_sdk::xdr::r#const::ScSpecTypeUdt {
+                        name: soroban_sdk::xdr::r#const::StringM::try_from_str_or_panic(
+                            <Self as soroban_sdk::SpecName>::SPEC_NAME,
+                        ),
+                    },
+                );
+        }
         #[doc(hidden)]
         #[allow(dead_code)]
-        static __SPEC_XDR_TYPE_CONTRACTEXECUTABLEREF: [u8; 80usize] =
-            ContractExecutableRef::spec_xdr();
+        static __SPEC_XDR_TYPE_CONTRACTEXECUTABLEREF: [u8; ContractExecutableRef::spec_xdr()
+            .len()] = ContractExecutableRef::spec_xdr();
         impl ContractExecutableRef {
-            pub const fn spec_xdr() -> [u8; 80usize] {
-                *b"\0\0\0\x01\0\0\0\0\0\0\0\0\0\0\0\x15ContractExecutableRef\0\0\0\0\0\0\x02\0\0\0\0\0\0\0\x05owner\0\0\0\0\0\0\x13\0\0\0\0\0\0\0\x03tag\0\0\0\0\x10"
+            const __SPEC_XDR_ENTRY: soroban_sdk::xdr::r#const::ScSpecEntry = soroban_sdk::xdr::r#const::ScSpecEntry::UdtStructV0(soroban_sdk::xdr::r#const::ScSpecUdtStructV0 {
+                doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
+                lib: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
+                name: soroban_sdk::xdr::r#const::StringM::try_from_str_or_panic(
+                    <ContractExecutableRef as soroban_sdk::SpecName>::SPEC_NAME,
+                ),
+                fields: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(
+                    &[
+                        soroban_sdk::xdr::r#const::ScSpecUdtStructFieldV0 {
+                            doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(
+                                b"",
+                            ),
+                            name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(
+                                b"owner",
+                            ),
+                            type_: <soroban_sdk::Address as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
+                        },
+                        soroban_sdk::xdr::r#const::ScSpecUdtStructFieldV0 {
+                            doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(
+                                b"",
+                            ),
+                            name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(
+                                b"tag",
+                            ),
+                            type_: <soroban_sdk::String as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
+                        },
+                    ],
+                ),
+            });
+            pub const fn spec_xdr() -> [u8; ContractExecutableRef::__SPEC_XDR_ENTRY.const_xdr_len()]
+            {
+                const { ContractExecutableRef::__SPEC_XDR_ENTRY.const_to_xdr() }
             }
         }
-        impl soroban_sdk::SpecShakingMarker for ContractExecutableRef {
-            #[doc(hidden)]
-            #[inline(always)]
-            fn spec_shaking_marker() {
-                <soroban_sdk::Address as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
-                <soroban_sdk::String as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
-            }
+        impl soroban_sdk::SpecAnchor for ContractExecutableRef {
+            #[inline(never)]
+            fn spec_anchor() {}
         }
         impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for ContractExecutableRef {
             type Error = soroban_sdk::ConversionError;
@@ -6626,6 +7050,7 @@ mod test_with_wasm {
                 env: &soroban_sdk::Env,
                 val: &soroban_sdk::Val,
             ) -> Result<Self, soroban_sdk::ConversionError> {
+                <ContractExecutableRef as soroban_sdk::SpecAnchor>::spec_anchor();
                 use soroban_sdk::{ConversionError, EnvBase, MapObject, TryIntoVal, Val};
                 const KEYS: [&'static str; 2usize] = ["owner", "tag"];
                 let mut vals: [Val; 2usize] = [Val::VOID.to_val(); 2usize];
@@ -6648,6 +7073,7 @@ mod test_with_wasm {
                 env: &soroban_sdk::Env,
                 val: &ContractExecutableRef,
             ) -> Result<Self, soroban_sdk::ConversionError> {
+                <ContractExecutableRef as soroban_sdk::SpecAnchor>::spec_anchor();
                 use soroban_sdk::{ConversionError, EnvBase, TryIntoVal, Val};
                 const KEYS: [&'static str; 2usize] = ["owner", "tag"];
                 let vals: [Val; 2usize] = [
@@ -7098,24 +7524,86 @@ mod test_with_wasm {
                 }
             }
         }
+        impl soroban_sdk::SpecName for ContractContext {
+            const SPEC_NAME: &'static str = {
+                const NAME: &str = "::test_udt::test_with_wasm::contract::ContractContext";
+                const CHECKED_NAME: &str = {
+                    if !(NAME.len() <= soroban_sdk::xdr::SC_SPEC_TYPE_NAME_LIMIT as usize) {
+                        {
+                            ::core::panicking::panic_fmt(
+                                format_args!(
+                                    "type `ContractContext` full name including its module path is longer than the contract spec\'s type name limit, shorten its module path or name: `::test_udt::test_with_wasm::contract::ContractContext`",
+                                ),
+                            );
+                        }
+                    }
+                    NAME
+                };
+                CHECKED_NAME
+            };
+        }
+        impl soroban_sdk::SpecTypeDef for ContractContext {
+            const SPEC_TYPE_DEF: soroban_sdk::xdr::r#const::ScSpecTypeDef =
+                soroban_sdk::xdr::r#const::ScSpecTypeDef::Udt(
+                    soroban_sdk::xdr::r#const::ScSpecTypeUdt {
+                        name: soroban_sdk::xdr::r#const::StringM::try_from_str_or_panic(
+                            <Self as soroban_sdk::SpecName>::SPEC_NAME,
+                        ),
+                    },
+                );
+        }
         #[doc(hidden)]
         #[allow(dead_code)]
-        static __SPEC_XDR_TYPE_CONTRACTCONTEXT: [u8; 96usize] = ContractContext::spec_xdr();
+        static __SPEC_XDR_TYPE_CONTRACTCONTEXT: [u8; ContractContext::spec_xdr().len()] =
+            ContractContext::spec_xdr();
         impl ContractContext {
-            pub const fn spec_xdr() -> [u8; 96usize] {
-                *b"\0\0\0\x01\0\0\0\0\0\0\0\0\0\0\0\x0fContractContext\0\0\0\0\x03\0\0\0\0\0\0\0\x04args\0\0\x03\xea\0\0\0\0\0\0\0\0\0\0\0\x08contract\0\0\0\x13\0\0\0\0\0\0\0\x07fn_name\0\0\0\0\x11"
+            const __SPEC_XDR_ENTRY: soroban_sdk::xdr::r#const::ScSpecEntry = soroban_sdk::xdr::r#const::ScSpecEntry::UdtStructV0(soroban_sdk::xdr::r#const::ScSpecUdtStructV0 {
+                doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
+                lib: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
+                name: soroban_sdk::xdr::r#const::StringM::try_from_str_or_panic(
+                    <ContractContext as soroban_sdk::SpecName>::SPEC_NAME,
+                ),
+                fields: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(
+                    &[
+                        soroban_sdk::xdr::r#const::ScSpecUdtStructFieldV0 {
+                            doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(
+                                b"",
+                            ),
+                            name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(
+                                b"args",
+                            ),
+                            type_: <soroban_sdk::Vec<
+                                soroban_sdk::Val,
+                            > as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
+                        },
+                        soroban_sdk::xdr::r#const::ScSpecUdtStructFieldV0 {
+                            doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(
+                                b"",
+                            ),
+                            name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(
+                                b"contract",
+                            ),
+                            type_: <soroban_sdk::Address as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
+                        },
+                        soroban_sdk::xdr::r#const::ScSpecUdtStructFieldV0 {
+                            doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(
+                                b"",
+                            ),
+                            name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(
+                                b"fn_name",
+                            ),
+                            type_: <soroban_sdk::Symbol as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
+                        },
+                    ],
+                ),
+            });
+            pub const fn spec_xdr() -> [u8; ContractContext::__SPEC_XDR_ENTRY.const_xdr_len()] {
+                const { ContractContext::__SPEC_XDR_ENTRY.const_to_xdr() }
             }
         }
-        impl soroban_sdk::SpecShakingMarker for ContractContext {
-            #[doc(hidden)]
-            #[inline(always)]
-            fn spec_shaking_marker() {
-                <soroban_sdk::Vec<
-                    soroban_sdk::Val,
-                > as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
-                <soroban_sdk::Address as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
-                <soroban_sdk::Symbol as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
-            }
+        impl soroban_sdk::SpecAnchor for ContractContext {
+            #[inline(never)]
+            fn spec_anchor() {}
         }
         impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for ContractContext {
             type Error = soroban_sdk::ConversionError;
@@ -7123,6 +7611,7 @@ mod test_with_wasm {
                 env: &soroban_sdk::Env,
                 val: &soroban_sdk::Val,
             ) -> Result<Self, soroban_sdk::ConversionError> {
+                <ContractContext as soroban_sdk::SpecAnchor>::spec_anchor();
                 use soroban_sdk::{ConversionError, EnvBase, MapObject, TryIntoVal, Val};
                 const KEYS: [&'static str; 3usize] = ["args", "contract", "fn_name"];
                 let mut vals: [Val; 3usize] = [Val::VOID.to_val(); 3usize];
@@ -7148,6 +7637,7 @@ mod test_with_wasm {
                 env: &soroban_sdk::Env,
                 val: &ContractContext,
             ) -> Result<Self, soroban_sdk::ConversionError> {
+                <ContractContext as soroban_sdk::SpecAnchor>::spec_anchor();
                 use soroban_sdk::{ConversionError, EnvBase, TryIntoVal, Val};
                 const KEYS: [&'static str; 3usize] = ["args", "contract", "fn_name"];
                 let vals: [Val; 3usize] = [
@@ -7648,24 +8138,78 @@ mod test_with_wasm {
                 }
             }
         }
+        impl soroban_sdk::SpecName for SubContractInvocation {
+            const SPEC_NAME: &'static str = {
+                const NAME: &str = "::test_udt::test_with_wasm::contract::SubContractInvocation";
+                const CHECKED_NAME: &str = {
+                    if !(NAME.len() <= soroban_sdk::xdr::SC_SPEC_TYPE_NAME_LIMIT as usize) {
+                        {
+                            ::core::panicking::panic_fmt(
+                                format_args!(
+                                    "type `SubContractInvocation` full name including its module path is longer than the contract spec\'s type name limit, shorten its module path or name: `::test_udt::test_with_wasm::contract::SubContractInvocation`",
+                                ),
+                            );
+                        }
+                    }
+                    NAME
+                };
+                CHECKED_NAME
+            };
+        }
+        impl soroban_sdk::SpecTypeDef for SubContractInvocation {
+            const SPEC_TYPE_DEF: soroban_sdk::xdr::r#const::ScSpecTypeDef =
+                soroban_sdk::xdr::r#const::ScSpecTypeDef::Udt(
+                    soroban_sdk::xdr::r#const::ScSpecTypeUdt {
+                        name: soroban_sdk::xdr::r#const::StringM::try_from_str_or_panic(
+                            <Self as soroban_sdk::SpecName>::SPEC_NAME,
+                        ),
+                    },
+                );
+        }
         #[doc(hidden)]
         #[allow(dead_code)]
-        static __SPEC_XDR_TYPE_SUBCONTRACTINVOCATION: [u8; 144usize] =
-            SubContractInvocation::spec_xdr();
+        static __SPEC_XDR_TYPE_SUBCONTRACTINVOCATION: [u8; SubContractInvocation::spec_xdr()
+            .len()] = SubContractInvocation::spec_xdr();
         impl SubContractInvocation {
-            pub const fn spec_xdr() -> [u8; 144usize] {
-                *b"\0\0\0\x01\0\0\0\0\0\0\0\0\0\0\0\x15SubContractInvocation\0\0\0\0\0\0\x02\0\0\0\0\0\0\0\x07context\0\0\0\x07\xd0\0\0\0\x0fContractContext\0\0\0\0\0\0\0\0\x0fsub_invocations\0\0\0\x03\xea\0\0\x07\xd0\0\0\0\x18InvokerContractAuthEntry"
+            const __SPEC_XDR_ENTRY: soroban_sdk::xdr::r#const::ScSpecEntry = soroban_sdk::xdr::r#const::ScSpecEntry::UdtStructV0(soroban_sdk::xdr::r#const::ScSpecUdtStructV0 {
+                doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
+                lib: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
+                name: soroban_sdk::xdr::r#const::StringM::try_from_str_or_panic(
+                    <SubContractInvocation as soroban_sdk::SpecName>::SPEC_NAME,
+                ),
+                fields: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(
+                    &[
+                        soroban_sdk::xdr::r#const::ScSpecUdtStructFieldV0 {
+                            doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(
+                                b"",
+                            ),
+                            name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(
+                                b"context",
+                            ),
+                            type_: <ContractContext as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
+                        },
+                        soroban_sdk::xdr::r#const::ScSpecUdtStructFieldV0 {
+                            doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(
+                                b"",
+                            ),
+                            name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(
+                                b"sub_invocations",
+                            ),
+                            type_: <soroban_sdk::Vec<
+                                InvokerContractAuthEntry,
+                            > as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
+                        },
+                    ],
+                ),
+            });
+            pub const fn spec_xdr() -> [u8; SubContractInvocation::__SPEC_XDR_ENTRY.const_xdr_len()]
+            {
+                const { SubContractInvocation::__SPEC_XDR_ENTRY.const_to_xdr() }
             }
         }
-        impl soroban_sdk::SpecShakingMarker for SubContractInvocation {
-            #[doc(hidden)]
-            #[inline(always)]
-            fn spec_shaking_marker() {
-                <ContractContext as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
-                <soroban_sdk::Vec<
-                    InvokerContractAuthEntry,
-                > as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
-            }
+        impl soroban_sdk::SpecAnchor for SubContractInvocation {
+            #[inline(never)]
+            fn spec_anchor() {}
         }
         impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for SubContractInvocation {
             type Error = soroban_sdk::ConversionError;
@@ -7673,6 +8217,7 @@ mod test_with_wasm {
                 env: &soroban_sdk::Env,
                 val: &soroban_sdk::Val,
             ) -> Result<Self, soroban_sdk::ConversionError> {
+                <SubContractInvocation as soroban_sdk::SpecAnchor>::spec_anchor();
                 use soroban_sdk::{ConversionError, EnvBase, MapObject, TryIntoVal, Val};
                 const KEYS: [&'static str; 2usize] = ["context", "sub_invocations"];
                 let mut vals: [Val; 2usize] = [Val::VOID.to_val(); 2usize];
@@ -7695,6 +8240,7 @@ mod test_with_wasm {
                 env: &soroban_sdk::Env,
                 val: &SubContractInvocation,
             ) -> Result<Self, soroban_sdk::ConversionError> {
+                <SubContractInvocation as soroban_sdk::SpecAnchor>::spec_anchor();
                 use soroban_sdk::{ConversionError, EnvBase, TryIntoVal, Val};
                 const KEYS: [&'static str; 2usize] = ["context", "sub_invocations"];
                 let vals: [Val; 2usize] = [
@@ -8136,22 +8682,80 @@ mod test_with_wasm {
                 }
             }
         }
+        impl soroban_sdk::SpecName for CreateContractHostFnContext {
+            const SPEC_NAME: &'static str = {
+                const NAME: &str =
+                    "::test_udt::test_with_wasm::contract::CreateContractHostFnContext";
+                const CHECKED_NAME: &str = {
+                    if !(NAME.len() <= soroban_sdk::xdr::SC_SPEC_TYPE_NAME_LIMIT as usize) {
+                        {
+                            ::core::panicking::panic_fmt(
+                                format_args!(
+                                    "type `CreateContractHostFnContext` full name including its module path is longer than the contract spec\'s type name limit, shorten its module path or name: `::test_udt::test_with_wasm::contract::CreateContractHostFnContext`",
+                                ),
+                            );
+                        }
+                    }
+                    NAME
+                };
+                CHECKED_NAME
+            };
+        }
+        impl soroban_sdk::SpecTypeDef for CreateContractHostFnContext {
+            const SPEC_TYPE_DEF: soroban_sdk::xdr::r#const::ScSpecTypeDef =
+                soroban_sdk::xdr::r#const::ScSpecTypeDef::Udt(
+                    soroban_sdk::xdr::r#const::ScSpecTypeUdt {
+                        name: soroban_sdk::xdr::r#const::StringM::try_from_str_or_panic(
+                            <Self as soroban_sdk::SpecName>::SPEC_NAME,
+                        ),
+                    },
+                );
+        }
         #[doc(hidden)]
         #[allow(dead_code)]
-        static __SPEC_XDR_TYPE_CREATECONTRACTHOSTFNCONTEXT: [u8; 116usize] =
+        static __SPEC_XDR_TYPE_CREATECONTRACTHOSTFNCONTEXT: [u8;
+            CreateContractHostFnContext::spec_xdr().len()] =
             CreateContractHostFnContext::spec_xdr();
         impl CreateContractHostFnContext {
-            pub const fn spec_xdr() -> [u8; 116usize] {
-                *b"\0\0\0\x01\0\0\0\0\0\0\0\0\0\0\0\x1bCreateContractHostFnContext\0\0\0\0\x02\0\0\0\0\0\0\0\nexecutable\0\0\0\0\x07\xd0\0\0\0\x12ContractExecutable\0\0\0\0\0\0\0\0\0\x04salt\0\0\x03\xee\0\0\0 "
+            const __SPEC_XDR_ENTRY: soroban_sdk::xdr::r#const::ScSpecEntry = soroban_sdk::xdr::r#const::ScSpecEntry::UdtStructV0(soroban_sdk::xdr::r#const::ScSpecUdtStructV0 {
+                doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
+                lib: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
+                name: soroban_sdk::xdr::r#const::StringM::try_from_str_or_panic(
+                    <CreateContractHostFnContext as soroban_sdk::SpecName>::SPEC_NAME,
+                ),
+                fields: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(
+                    &[
+                        soroban_sdk::xdr::r#const::ScSpecUdtStructFieldV0 {
+                            doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(
+                                b"",
+                            ),
+                            name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(
+                                b"executable",
+                            ),
+                            type_: <ContractExecutable as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
+                        },
+                        soroban_sdk::xdr::r#const::ScSpecUdtStructFieldV0 {
+                            doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(
+                                b"",
+                            ),
+                            name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(
+                                b"salt",
+                            ),
+                            type_: <soroban_sdk::BytesN<
+                                32,
+                            > as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
+                        },
+                    ],
+                ),
+            });
+            pub const fn spec_xdr(
+            ) -> [u8; CreateContractHostFnContext::__SPEC_XDR_ENTRY.const_xdr_len()] {
+                const { CreateContractHostFnContext::__SPEC_XDR_ENTRY.const_to_xdr() }
             }
         }
-        impl soroban_sdk::SpecShakingMarker for CreateContractHostFnContext {
-            #[doc(hidden)]
-            #[inline(always)]
-            fn spec_shaking_marker() {
-                <ContractExecutable as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
-                <soroban_sdk::BytesN<32> as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
-            }
+        impl soroban_sdk::SpecAnchor for CreateContractHostFnContext {
+            #[inline(never)]
+            fn spec_anchor() {}
         }
         impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for CreateContractHostFnContext {
             type Error = soroban_sdk::ConversionError;
@@ -8159,6 +8763,7 @@ mod test_with_wasm {
                 env: &soroban_sdk::Env,
                 val: &soroban_sdk::Val,
             ) -> Result<Self, soroban_sdk::ConversionError> {
+                <CreateContractHostFnContext as soroban_sdk::SpecAnchor>::spec_anchor();
                 use soroban_sdk::{ConversionError, EnvBase, MapObject, TryIntoVal, Val};
                 const KEYS: [&'static str; 2usize] = ["executable", "salt"];
                 let mut vals: [Val; 2usize] = [Val::VOID.to_val(); 2usize];
@@ -8181,6 +8786,7 @@ mod test_with_wasm {
                 env: &soroban_sdk::Env,
                 val: &CreateContractHostFnContext,
             ) -> Result<Self, soroban_sdk::ConversionError> {
+                <CreateContractHostFnContext as soroban_sdk::SpecAnchor>::spec_anchor();
                 use soroban_sdk::{ConversionError, EnvBase, TryIntoVal, Val};
                 const KEYS: [&'static str; 2usize] = ["executable", "salt"];
                 let vals: [Val; 2usize] = [
@@ -8656,25 +9262,91 @@ mod test_with_wasm {
                 }
             }
         }
+        impl soroban_sdk::SpecName for CreateContractWithConstructorHostFnContext {
+            const SPEC_NAME: &'static str = {
+                const NAME: &str = "::test_udt::test_with_wasm::contract::CreateContractWithConstructorHostFnContext";
+                const CHECKED_NAME: &str = {
+                    if !(NAME.len() <= soroban_sdk::xdr::SC_SPEC_TYPE_NAME_LIMIT as usize) {
+                        {
+                            ::core::panicking::panic_fmt(
+                                format_args!(
+                                    "type `CreateContractWithConstructorHostFnContext` full name including its module path is longer than the contract spec\'s type name limit, shorten its module path or name: `::test_udt::test_with_wasm::contract::CreateContractWithConstructorHostFnContext`",
+                                ),
+                            );
+                        }
+                    }
+                    NAME
+                };
+                CHECKED_NAME
+            };
+        }
+        impl soroban_sdk::SpecTypeDef for CreateContractWithConstructorHostFnContext {
+            const SPEC_TYPE_DEF: soroban_sdk::xdr::r#const::ScSpecTypeDef =
+                soroban_sdk::xdr::r#const::ScSpecTypeDef::Udt(
+                    soroban_sdk::xdr::r#const::ScSpecTypeUdt {
+                        name: soroban_sdk::xdr::r#const::StringM::try_from_str_or_panic(
+                            <Self as soroban_sdk::SpecName>::SPEC_NAME,
+                        ),
+                    },
+                );
+        }
         #[doc(hidden)]
         #[allow(dead_code)]
-        static __SPEC_XDR_TYPE_CREATECONTRACTWITHCONSTRUCTORHOSTFNCONTEXT: [u8; 164usize] =
+        static __SPEC_XDR_TYPE_CREATECONTRACTWITHCONSTRUCTORHOSTFNCONTEXT: [u8;
+            CreateContractWithConstructorHostFnContext::spec_xdr().len()] =
             CreateContractWithConstructorHostFnContext::spec_xdr();
         impl CreateContractWithConstructorHostFnContext {
-            pub const fn spec_xdr() -> [u8; 164usize] {
-                *b"\0\0\0\x01\0\0\0\0\0\0\0\0\0\0\0*CreateContractWithConstructorHostFnContext\0\0\0\0\0\x03\0\0\0\0\0\0\0\x10constructor_args\0\0\x03\xea\0\0\0\0\0\0\0\0\0\0\0\nexecutable\0\0\0\0\x07\xd0\0\0\0\x12ContractExecutable\0\0\0\0\0\0\0\0\0\x04salt\0\0\x03\xee\0\0\0 "
+            const __SPEC_XDR_ENTRY: soroban_sdk::xdr::r#const::ScSpecEntry = soroban_sdk::xdr::r#const::ScSpecEntry::UdtStructV0(soroban_sdk::xdr::r#const::ScSpecUdtStructV0 {
+                doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
+                lib: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
+                name: soroban_sdk::xdr::r#const::StringM::try_from_str_or_panic(
+                    <CreateContractWithConstructorHostFnContext as soroban_sdk::SpecName>::SPEC_NAME,
+                ),
+                fields: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(
+                    &[
+                        soroban_sdk::xdr::r#const::ScSpecUdtStructFieldV0 {
+                            doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(
+                                b"",
+                            ),
+                            name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(
+                                b"constructor_args",
+                            ),
+                            type_: <soroban_sdk::Vec<
+                                soroban_sdk::Val,
+                            > as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
+                        },
+                        soroban_sdk::xdr::r#const::ScSpecUdtStructFieldV0 {
+                            doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(
+                                b"",
+                            ),
+                            name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(
+                                b"executable",
+                            ),
+                            type_: <ContractExecutable as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
+                        },
+                        soroban_sdk::xdr::r#const::ScSpecUdtStructFieldV0 {
+                            doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(
+                                b"",
+                            ),
+                            name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(
+                                b"salt",
+                            ),
+                            type_: <soroban_sdk::BytesN<
+                                32,
+                            > as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
+                        },
+                    ],
+                ),
+            });
+            pub const fn spec_xdr(
+            ) -> [u8; CreateContractWithConstructorHostFnContext::__SPEC_XDR_ENTRY.const_xdr_len()]
+            {
+                const { CreateContractWithConstructorHostFnContext::__SPEC_XDR_ENTRY.const_to_xdr() }
             }
         }
-        impl soroban_sdk::SpecShakingMarker for CreateContractWithConstructorHostFnContext {
-            #[doc(hidden)]
-            #[inline(always)]
-            fn spec_shaking_marker() {
-                <soroban_sdk::Vec<
-                    soroban_sdk::Val,
-                > as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
-                <ContractExecutable as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
-                <soroban_sdk::BytesN<32> as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
-            }
+        impl soroban_sdk::SpecAnchor for CreateContractWithConstructorHostFnContext {
+            #[inline(never)]
+            fn spec_anchor() {}
         }
         impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val>
             for CreateContractWithConstructorHostFnContext
@@ -8684,6 +9356,7 @@ mod test_with_wasm {
                 env: &soroban_sdk::Env,
                 val: &soroban_sdk::Val,
             ) -> Result<Self, soroban_sdk::ConversionError> {
+                <CreateContractWithConstructorHostFnContext as soroban_sdk::SpecAnchor>::spec_anchor();
                 use soroban_sdk::{ConversionError, EnvBase, MapObject, TryIntoVal, Val};
                 const KEYS: [&'static str; 3usize] = ["constructor_args", "executable", "salt"];
                 let mut vals: [Val; 3usize] = [Val::VOID.to_val(); 3usize];
@@ -8711,6 +9384,7 @@ mod test_with_wasm {
                 env: &soroban_sdk::Env,
                 val: &CreateContractWithConstructorHostFnContext,
             ) -> Result<Self, soroban_sdk::ConversionError> {
+                <CreateContractWithConstructorHostFnContext as soroban_sdk::SpecAnchor>::spec_anchor();
                 use soroban_sdk::{ConversionError, EnvBase, TryIntoVal, Val};
                 const KEYS: [&'static str; 3usize] = ["constructor_args", "executable", "salt"];
                 let vals: [Val; 3usize] = [
@@ -9280,22 +9954,114 @@ mod test_with_wasm {
                 }
             }
         }
+        impl soroban_sdk::SpecName for UdtEnum {
+            const SPEC_NAME: &'static str = {
+                const NAME: &str = "::test_udt::test_with_wasm::contract::UdtEnum";
+                const CHECKED_NAME: &str = {
+                    if !(NAME.len() <= soroban_sdk::xdr::SC_SPEC_TYPE_NAME_LIMIT as usize) {
+                        {
+                            ::core::panicking::panic_fmt(
+                                format_args!(
+                                    "type `UdtEnum` full name including its module path is longer than the contract spec\'s type name limit, shorten its module path or name: `::test_udt::test_with_wasm::contract::UdtEnum`",
+                                ),
+                            );
+                        }
+                    }
+                    NAME
+                };
+                CHECKED_NAME
+            };
+        }
+        impl soroban_sdk::SpecTypeDef for UdtEnum {
+            const SPEC_TYPE_DEF: soroban_sdk::xdr::r#const::ScSpecTypeDef =
+                soroban_sdk::xdr::r#const::ScSpecTypeDef::Udt(
+                    soroban_sdk::xdr::r#const::ScSpecTypeUdt {
+                        name: soroban_sdk::xdr::r#const::StringM::try_from_str_or_panic(
+                            <Self as soroban_sdk::SpecName>::SPEC_NAME,
+                        ),
+                    },
+                );
+        }
         #[doc(hidden)]
         #[allow(dead_code)]
-        static __SPEC_XDR_TYPE_UDTENUM: [u8; 156usize] = UdtEnum::spec_xdr();
+        static __SPEC_XDR_TYPE_UDTENUM: [u8; UdtEnum::spec_xdr().len()] = UdtEnum::spec_xdr();
         impl UdtEnum {
-            pub const fn spec_xdr() -> [u8; 156usize] {
-                *b"\0\0\0\x02\0\0\0\0\0\0\0\0\0\0\0\x07UdtEnum\0\0\0\0\x04\0\0\0\0\0\0\0\0\0\0\0\x04UdtA\0\0\0\x01\0\0\0\0\0\0\0\x04UdtB\0\0\0\x01\0\0\x07\xd0\0\0\0\tUdtStruct\0\0\0\0\0\0\x01\0\0\0\0\0\0\0\x04UdtC\0\0\0\x01\0\0\x07\xd0\0\0\0\x08UdtEnum2\0\0\0\x01\0\0\0\0\0\0\0\x04UdtD\0\0\0\x01\0\0\x07\xd0\0\0\0\x08UdtTuple"
+            const __SPEC_XDR_ENTRY: soroban_sdk::xdr::r#const::ScSpecEntry =
+                soroban_sdk::xdr::r#const::ScSpecEntry::UdtUnionV0(
+                    soroban_sdk::xdr::r#const::ScSpecUdtUnionV0 {
+                        doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
+                        lib: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
+                        name: soroban_sdk::xdr::r#const::StringM::try_from_str_or_panic(
+                            <UdtEnum as soroban_sdk::SpecName>::SPEC_NAME,
+                        ),
+                        cases: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[
+                            soroban_sdk::xdr::r#const::ScSpecUdtUnionCaseV0::VoidV0(
+                                soroban_sdk::xdr::r#const::ScSpecUdtUnionCaseVoidV0 {
+                                    doc:
+                                        soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(
+                                            b"",
+                                        ),
+                                    name:
+                                        soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(
+                                            b"UdtA",
+                                        ),
+                                },
+                            ),
+                            soroban_sdk::xdr::r#const::ScSpecUdtUnionCaseV0::TupleV0(
+                                soroban_sdk::xdr::r#const::ScSpecUdtUnionCaseTupleV0 {
+                                    doc:
+                                        soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(
+                                            b"",
+                                        ),
+                                    name:
+                                        soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(
+                                            b"UdtB",
+                                        ),
+                                    type_: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(
+                                        &[<UdtStruct as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF],
+                                    ),
+                                },
+                            ),
+                            soroban_sdk::xdr::r#const::ScSpecUdtUnionCaseV0::TupleV0(
+                                soroban_sdk::xdr::r#const::ScSpecUdtUnionCaseTupleV0 {
+                                    doc:
+                                        soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(
+                                            b"",
+                                        ),
+                                    name:
+                                        soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(
+                                            b"UdtC",
+                                        ),
+                                    type_: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(
+                                        &[<UdtEnum2 as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF],
+                                    ),
+                                },
+                            ),
+                            soroban_sdk::xdr::r#const::ScSpecUdtUnionCaseV0::TupleV0(
+                                soroban_sdk::xdr::r#const::ScSpecUdtUnionCaseTupleV0 {
+                                    doc:
+                                        soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(
+                                            b"",
+                                        ),
+                                    name:
+                                        soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(
+                                            b"UdtD",
+                                        ),
+                                    type_: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(
+                                        &[<UdtTuple as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF],
+                                    ),
+                                },
+                            ),
+                        ]),
+                    },
+                );
+            pub const fn spec_xdr() -> [u8; UdtEnum::__SPEC_XDR_ENTRY.const_xdr_len()] {
+                const { UdtEnum::__SPEC_XDR_ENTRY.const_to_xdr() }
             }
         }
-        impl soroban_sdk::SpecShakingMarker for UdtEnum {
-            #[doc(hidden)]
-            #[inline(always)]
-            fn spec_shaking_marker() {
-                <UdtStruct as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
-                <UdtEnum2 as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
-                <UdtTuple as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
-            }
+        impl soroban_sdk::SpecAnchor for UdtEnum {
+            #[inline(never)]
+            fn spec_anchor() {}
         }
         impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for UdtEnum {
             type Error = soroban_sdk::ConversionError;
@@ -9304,6 +10070,7 @@ mod test_with_wasm {
                 env: &soroban_sdk::Env,
                 val: &soroban_sdk::Val,
             ) -> Result<Self, soroban_sdk::ConversionError> {
+                <UdtEnum as soroban_sdk::SpecAnchor>::spec_anchor();
                 use soroban_sdk::{EnvBase, TryFromVal, TryIntoVal};
                 const CASES: &'static [&'static str] = &["UdtA", "UdtB", "UdtC", "UdtD"];
                 let vec: soroban_sdk::Vec<soroban_sdk::Val> = val.try_into_val(env)?;
@@ -9365,6 +10132,7 @@ mod test_with_wasm {
                 env: &soroban_sdk::Env,
                 val: &UdtEnum,
             ) -> Result<Self, soroban_sdk::ConversionError> {
+                <UdtEnum as soroban_sdk::SpecAnchor>::spec_anchor();
                 use soroban_sdk::{TryFromVal, TryIntoVal};
                 match val {
                     UdtEnum::UdtA => {
@@ -9972,20 +10740,78 @@ mod test_with_wasm {
                 }
             }
         }
+        impl soroban_sdk::SpecName for RecursiveEnum {
+            const SPEC_NAME: &'static str = {
+                const NAME: &str = "::test_udt::test_with_wasm::contract::RecursiveEnum";
+                const CHECKED_NAME: &str = {
+                    if !(NAME.len() <= soroban_sdk::xdr::SC_SPEC_TYPE_NAME_LIMIT as usize) {
+                        {
+                            ::core::panicking::panic_fmt(
+                                format_args!(
+                                    "type `RecursiveEnum` full name including its module path is longer than the contract spec\'s type name limit, shorten its module path or name: `::test_udt::test_with_wasm::contract::RecursiveEnum`",
+                                ),
+                            );
+                        }
+                    }
+                    NAME
+                };
+                CHECKED_NAME
+            };
+        }
+        impl soroban_sdk::SpecTypeDef for RecursiveEnum {
+            const SPEC_TYPE_DEF: soroban_sdk::xdr::r#const::ScSpecTypeDef =
+                soroban_sdk::xdr::r#const::ScSpecTypeDef::Udt(
+                    soroban_sdk::xdr::r#const::ScSpecTypeUdt {
+                        name: soroban_sdk::xdr::r#const::StringM::try_from_str_or_panic(
+                            <Self as soroban_sdk::SpecName>::SPEC_NAME,
+                        ),
+                    },
+                );
+        }
         #[doc(hidden)]
         #[allow(dead_code)]
-        static __SPEC_XDR_TYPE_RECURSIVEENUM: [u8; 112usize] = RecursiveEnum::spec_xdr();
+        static __SPEC_XDR_TYPE_RECURSIVEENUM: [u8; RecursiveEnum::spec_xdr().len()] =
+            RecursiveEnum::spec_xdr();
         impl RecursiveEnum {
-            pub const fn spec_xdr() -> [u8; 112usize] {
-                *b"\0\0\0\x02\0\0\0\0\0\0\0\0\0\0\0\rRecursiveEnum\0\0\0\0\0\0\x02\0\0\0\0\0\0\0\0\0\0\0\x0cNotRecursive\0\0\0\x01\0\0\0\0\0\0\0\tRecursive\0\0\0\0\0\0\x01\0\0\x07\xd0\0\0\0\x0fRecursiveToEnum\0"
+            const __SPEC_XDR_ENTRY: soroban_sdk::xdr::r#const::ScSpecEntry = soroban_sdk::xdr::r#const::ScSpecEntry::UdtUnionV0(soroban_sdk::xdr::r#const::ScSpecUdtUnionV0 {
+                doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
+                lib: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
+                name: soroban_sdk::xdr::r#const::StringM::try_from_str_or_panic(
+                    <RecursiveEnum as soroban_sdk::SpecName>::SPEC_NAME,
+                ),
+                cases: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(
+                    &[
+                        soroban_sdk::xdr::r#const::ScSpecUdtUnionCaseV0::VoidV0(soroban_sdk::xdr::r#const::ScSpecUdtUnionCaseVoidV0 {
+                            doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(
+                                b"",
+                            ),
+                            name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(
+                                b"NotRecursive",
+                            ),
+                        }),
+                        soroban_sdk::xdr::r#const::ScSpecUdtUnionCaseV0::TupleV0(soroban_sdk::xdr::r#const::ScSpecUdtUnionCaseTupleV0 {
+                            doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(
+                                b"",
+                            ),
+                            name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(
+                                b"Recursive",
+                            ),
+                            type_: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(
+                                &[
+                                    <RecursiveToEnum as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
+                                ],
+                            ),
+                        }),
+                    ],
+                ),
+            });
+            pub const fn spec_xdr() -> [u8; RecursiveEnum::__SPEC_XDR_ENTRY.const_xdr_len()] {
+                const { RecursiveEnum::__SPEC_XDR_ENTRY.const_to_xdr() }
             }
         }
-        impl soroban_sdk::SpecShakingMarker for RecursiveEnum {
-            #[doc(hidden)]
-            #[inline(always)]
-            fn spec_shaking_marker() {
-                <RecursiveToEnum as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
-            }
+        impl soroban_sdk::SpecAnchor for RecursiveEnum {
+            #[inline(never)]
+            fn spec_anchor() {}
         }
         impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for RecursiveEnum {
             type Error = soroban_sdk::ConversionError;
@@ -9994,6 +10820,7 @@ mod test_with_wasm {
                 env: &soroban_sdk::Env,
                 val: &soroban_sdk::Val,
             ) -> Result<Self, soroban_sdk::ConversionError> {
+                <RecursiveEnum as soroban_sdk::SpecAnchor>::spec_anchor();
                 use soroban_sdk::{EnvBase, TryFromVal, TryIntoVal};
                 const CASES: &'static [&'static str] = &["NotRecursive", "Recursive"];
                 let vec: soroban_sdk::Vec<soroban_sdk::Val> = val.try_into_val(env)?;
@@ -10035,6 +10862,7 @@ mod test_with_wasm {
                 env: &soroban_sdk::Env,
                 val: &RecursiveEnum,
             ) -> Result<Self, soroban_sdk::ConversionError> {
+                <RecursiveEnum as soroban_sdk::SpecAnchor>::spec_anchor();
                 use soroban_sdk::{TryFromVal, TryIntoVal};
                 match val {
                     RecursiveEnum::NotRecursive => {
@@ -10538,21 +11366,85 @@ mod test_with_wasm {
                 }
             }
         }
+        impl soroban_sdk::SpecName for ContractExecutable {
+            const SPEC_NAME: &'static str = {
+                const NAME: &str = "::test_udt::test_with_wasm::contract::ContractExecutable";
+                const CHECKED_NAME: &str = {
+                    if !(NAME.len() <= soroban_sdk::xdr::SC_SPEC_TYPE_NAME_LIMIT as usize) {
+                        {
+                            ::core::panicking::panic_fmt(
+                                format_args!(
+                                    "type `ContractExecutable` full name including its module path is longer than the contract spec\'s type name limit, shorten its module path or name: `::test_udt::test_with_wasm::contract::ContractExecutable`",
+                                ),
+                            );
+                        }
+                    }
+                    NAME
+                };
+                CHECKED_NAME
+            };
+        }
+        impl soroban_sdk::SpecTypeDef for ContractExecutable {
+            const SPEC_TYPE_DEF: soroban_sdk::xdr::r#const::ScSpecTypeDef =
+                soroban_sdk::xdr::r#const::ScSpecTypeDef::Udt(
+                    soroban_sdk::xdr::r#const::ScSpecTypeUdt {
+                        name: soroban_sdk::xdr::r#const::StringM::try_from_str_or_panic(
+                            <Self as soroban_sdk::SpecName>::SPEC_NAME,
+                        ),
+                    },
+                );
+        }
         #[doc(hidden)]
         #[allow(dead_code)]
-        static __SPEC_XDR_TYPE_CONTRACTEXECUTABLE: [u8; 128usize] = ContractExecutable::spec_xdr();
+        static __SPEC_XDR_TYPE_CONTRACTEXECUTABLE: [u8; ContractExecutable::spec_xdr().len()] =
+            ContractExecutable::spec_xdr();
         impl ContractExecutable {
-            pub const fn spec_xdr() -> [u8; 128usize] {
-                *b"\0\0\0\x02\0\0\0\0\0\0\0\0\0\0\0\x12ContractExecutable\0\0\0\0\0\x02\0\0\0\x01\0\0\0\0\0\0\0\x04Wasm\0\0\0\x01\0\0\x03\xee\0\0\0 \0\0\0\x01\0\0\0\0\0\0\0\x0bExternalRef\0\0\0\0\x01\0\0\x07\xd0\0\0\0\x15ContractExecutableRef\0\0\0"
+            const __SPEC_XDR_ENTRY: soroban_sdk::xdr::r#const::ScSpecEntry = soroban_sdk::xdr::r#const::ScSpecEntry::UdtUnionV0(soroban_sdk::xdr::r#const::ScSpecUdtUnionV0 {
+                doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
+                lib: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
+                name: soroban_sdk::xdr::r#const::StringM::try_from_str_or_panic(
+                    <ContractExecutable as soroban_sdk::SpecName>::SPEC_NAME,
+                ),
+                cases: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(
+                    &[
+                        soroban_sdk::xdr::r#const::ScSpecUdtUnionCaseV0::TupleV0(soroban_sdk::xdr::r#const::ScSpecUdtUnionCaseTupleV0 {
+                            doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(
+                                b"",
+                            ),
+                            name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(
+                                b"Wasm",
+                            ),
+                            type_: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(
+                                &[
+                                    <soroban_sdk::BytesN<
+                                        32,
+                                    > as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
+                                ],
+                            ),
+                        }),
+                        soroban_sdk::xdr::r#const::ScSpecUdtUnionCaseV0::TupleV0(soroban_sdk::xdr::r#const::ScSpecUdtUnionCaseTupleV0 {
+                            doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(
+                                b"",
+                            ),
+                            name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(
+                                b"ExternalRef",
+                            ),
+                            type_: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(
+                                &[
+                                    <ContractExecutableRef as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
+                                ],
+                            ),
+                        }),
+                    ],
+                ),
+            });
+            pub const fn spec_xdr() -> [u8; ContractExecutable::__SPEC_XDR_ENTRY.const_xdr_len()] {
+                const { ContractExecutable::__SPEC_XDR_ENTRY.const_to_xdr() }
             }
         }
-        impl soroban_sdk::SpecShakingMarker for ContractExecutable {
-            #[doc(hidden)]
-            #[inline(always)]
-            fn spec_shaking_marker() {
-                <soroban_sdk::BytesN<32> as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
-                <ContractExecutableRef as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
-            }
+        impl soroban_sdk::SpecAnchor for ContractExecutable {
+            #[inline(never)]
+            fn spec_anchor() {}
         }
         impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for ContractExecutable {
             type Error = soroban_sdk::ConversionError;
@@ -10561,6 +11453,7 @@ mod test_with_wasm {
                 env: &soroban_sdk::Env,
                 val: &soroban_sdk::Val,
             ) -> Result<Self, soroban_sdk::ConversionError> {
+                <ContractExecutable as soroban_sdk::SpecAnchor>::spec_anchor();
                 use soroban_sdk::{EnvBase, TryFromVal, TryIntoVal};
                 const CASES: &'static [&'static str] = &["Wasm", "ExternalRef"];
                 let vec: soroban_sdk::Vec<soroban_sdk::Val> = val.try_into_val(env)?;
@@ -10606,6 +11499,7 @@ mod test_with_wasm {
                 env: &soroban_sdk::Env,
                 val: &ContractExecutable,
             ) -> Result<Self, soroban_sdk::ConversionError> {
+                <ContractExecutable as soroban_sdk::SpecAnchor>::spec_anchor();
                 use soroban_sdk::{TryFromVal, TryIntoVal};
                 match val {
                     ContractExecutable::Wasm(ref value0) => {
@@ -11179,22 +12073,95 @@ mod test_with_wasm {
                 }
             }
         }
+        impl soroban_sdk::SpecName for Context {
+            const SPEC_NAME: &'static str = {
+                const NAME: &str = "::test_udt::test_with_wasm::contract::Context";
+                const CHECKED_NAME: &str = {
+                    if !(NAME.len() <= soroban_sdk::xdr::SC_SPEC_TYPE_NAME_LIMIT as usize) {
+                        {
+                            ::core::panicking::panic_fmt(
+                                format_args!(
+                                    "type `Context` full name including its module path is longer than the contract spec\'s type name limit, shorten its module path or name: `::test_udt::test_with_wasm::contract::Context`",
+                                ),
+                            );
+                        }
+                    }
+                    NAME
+                };
+                CHECKED_NAME
+            };
+        }
+        impl soroban_sdk::SpecTypeDef for Context {
+            const SPEC_TYPE_DEF: soroban_sdk::xdr::r#const::ScSpecTypeDef =
+                soroban_sdk::xdr::r#const::ScSpecTypeDef::Udt(
+                    soroban_sdk::xdr::r#const::ScSpecTypeUdt {
+                        name: soroban_sdk::xdr::r#const::StringM::try_from_str_or_panic(
+                            <Self as soroban_sdk::SpecName>::SPEC_NAME,
+                        ),
+                    },
+                );
+        }
         #[doc(hidden)]
         #[allow(dead_code)]
-        static __SPEC_XDR_TYPE_CONTEXT: [u8; 244usize] = Context::spec_xdr();
+        static __SPEC_XDR_TYPE_CONTEXT: [u8; Context::spec_xdr().len()] = Context::spec_xdr();
         impl Context {
-            pub const fn spec_xdr() -> [u8; 244usize] {
-                *b"\0\0\0\x02\0\0\0\0\0\0\0\0\0\0\0\x07Context\0\0\0\0\x03\0\0\0\x01\0\0\0\0\0\0\0\x08Contract\0\0\0\x01\0\0\x07\xd0\0\0\0\x0fContractContext\0\0\0\0\x01\0\0\0\0\0\0\0\x14CreateContractHostFn\0\0\0\x01\0\0\x07\xd0\0\0\0\x1bCreateContractHostFnContext\0\0\0\0\x01\0\0\0\0\0\0\0\x1cCreateContractWithCtorHostFn\0\0\0\x01\0\0\x07\xd0\0\0\0*CreateContractWithConstructorHostFnContext\0\0"
+            const __SPEC_XDR_ENTRY: soroban_sdk::xdr::r#const::ScSpecEntry = soroban_sdk::xdr::r#const::ScSpecEntry::UdtUnionV0(soroban_sdk::xdr::r#const::ScSpecUdtUnionV0 {
+                doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
+                lib: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
+                name: soroban_sdk::xdr::r#const::StringM::try_from_str_or_panic(
+                    <Context as soroban_sdk::SpecName>::SPEC_NAME,
+                ),
+                cases: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(
+                    &[
+                        soroban_sdk::xdr::r#const::ScSpecUdtUnionCaseV0::TupleV0(soroban_sdk::xdr::r#const::ScSpecUdtUnionCaseTupleV0 {
+                            doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(
+                                b"",
+                            ),
+                            name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(
+                                b"Contract",
+                            ),
+                            type_: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(
+                                &[
+                                    <ContractContext as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
+                                ],
+                            ),
+                        }),
+                        soroban_sdk::xdr::r#const::ScSpecUdtUnionCaseV0::TupleV0(soroban_sdk::xdr::r#const::ScSpecUdtUnionCaseTupleV0 {
+                            doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(
+                                b"",
+                            ),
+                            name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(
+                                b"CreateContractHostFn",
+                            ),
+                            type_: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(
+                                &[
+                                    <CreateContractHostFnContext as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
+                                ],
+                            ),
+                        }),
+                        soroban_sdk::xdr::r#const::ScSpecUdtUnionCaseV0::TupleV0(soroban_sdk::xdr::r#const::ScSpecUdtUnionCaseTupleV0 {
+                            doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(
+                                b"",
+                            ),
+                            name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(
+                                b"CreateContractWithCtorHostFn",
+                            ),
+                            type_: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(
+                                &[
+                                    <CreateContractWithConstructorHostFnContext as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
+                                ],
+                            ),
+                        }),
+                    ],
+                ),
+            });
+            pub const fn spec_xdr() -> [u8; Context::__SPEC_XDR_ENTRY.const_xdr_len()] {
+                const { Context::__SPEC_XDR_ENTRY.const_to_xdr() }
             }
         }
-        impl soroban_sdk::SpecShakingMarker for Context {
-            #[doc(hidden)]
-            #[inline(always)]
-            fn spec_shaking_marker() {
-                <ContractContext as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
-                <CreateContractHostFnContext as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
-                <CreateContractWithConstructorHostFnContext as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
-            }
+        impl soroban_sdk::SpecAnchor for Context {
+            #[inline(never)]
+            fn spec_anchor() {}
         }
         impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for Context {
             type Error = soroban_sdk::ConversionError;
@@ -11203,6 +12170,7 @@ mod test_with_wasm {
                 env: &soroban_sdk::Env,
                 val: &soroban_sdk::Val,
             ) -> Result<Self, soroban_sdk::ConversionError> {
+                <Context as soroban_sdk::SpecAnchor>::spec_anchor();
                 use soroban_sdk::{EnvBase, TryFromVal, TryIntoVal};
                 const CASES: &'static [&'static str] = &[
                     "Contract",
@@ -11262,6 +12230,7 @@ mod test_with_wasm {
                 env: &soroban_sdk::Env,
                 val: &Context,
             ) -> Result<Self, soroban_sdk::ConversionError> {
+                <Context as soroban_sdk::SpecAnchor>::spec_anchor();
                 use soroban_sdk::{TryFromVal, TryIntoVal};
                 match val {
                     Context::Contract(ref value0) => {
@@ -11920,23 +12889,98 @@ mod test_with_wasm {
                 }
             }
         }
+        impl soroban_sdk::SpecName for InvokerContractAuthEntry {
+            const SPEC_NAME: &'static str = {
+                const NAME: &str = "::test_udt::test_with_wasm::contract::InvokerContractAuthEntry";
+                const CHECKED_NAME: &str = {
+                    if !(NAME.len() <= soroban_sdk::xdr::SC_SPEC_TYPE_NAME_LIMIT as usize) {
+                        {
+                            ::core::panicking::panic_fmt(
+                                format_args!(
+                                    "type `InvokerContractAuthEntry` full name including its module path is longer than the contract spec\'s type name limit, shorten its module path or name: `::test_udt::test_with_wasm::contract::InvokerContractAuthEntry`",
+                                ),
+                            );
+                        }
+                    }
+                    NAME
+                };
+                CHECKED_NAME
+            };
+        }
+        impl soroban_sdk::SpecTypeDef for InvokerContractAuthEntry {
+            const SPEC_TYPE_DEF: soroban_sdk::xdr::r#const::ScSpecTypeDef =
+                soroban_sdk::xdr::r#const::ScSpecTypeDef::Udt(
+                    soroban_sdk::xdr::r#const::ScSpecTypeUdt {
+                        name: soroban_sdk::xdr::r#const::StringM::try_from_str_or_panic(
+                            <Self as soroban_sdk::SpecName>::SPEC_NAME,
+                        ),
+                    },
+                );
+        }
         #[doc(hidden)]
         #[allow(dead_code)]
-        static __SPEC_XDR_TYPE_INVOKERCONTRACTAUTHENTRY: [u8; 268usize] =
-            InvokerContractAuthEntry::spec_xdr();
+        static __SPEC_XDR_TYPE_INVOKERCONTRACTAUTHENTRY: [u8; InvokerContractAuthEntry::spec_xdr(
+        )
+        .len()] = InvokerContractAuthEntry::spec_xdr();
         impl InvokerContractAuthEntry {
-            pub const fn spec_xdr() -> [u8; 268usize] {
-                *b"\0\0\0\x02\0\0\0\0\0\0\0\0\0\0\0\x18InvokerContractAuthEntry\0\0\0\x03\0\0\0\x01\0\0\0\0\0\0\0\x08Contract\0\0\0\x01\0\0\x07\xd0\0\0\0\x15SubContractInvocation\0\0\0\0\0\0\x01\0\0\0\0\0\0\0\x14CreateContractHostFn\0\0\0\x01\0\0\x07\xd0\0\0\0\x1bCreateContractHostFnContext\0\0\0\0\x01\0\0\0\0\0\0\0\x1cCreateContractWithCtorHostFn\0\0\0\x01\0\0\x07\xd0\0\0\0*CreateContractWithConstructorHostFnContext\0\0"
+            const __SPEC_XDR_ENTRY: soroban_sdk::xdr::r#const::ScSpecEntry = soroban_sdk::xdr::r#const::ScSpecEntry::UdtUnionV0(soroban_sdk::xdr::r#const::ScSpecUdtUnionV0 {
+                doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
+                lib: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
+                name: soroban_sdk::xdr::r#const::StringM::try_from_str_or_panic(
+                    <InvokerContractAuthEntry as soroban_sdk::SpecName>::SPEC_NAME,
+                ),
+                cases: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(
+                    &[
+                        soroban_sdk::xdr::r#const::ScSpecUdtUnionCaseV0::TupleV0(soroban_sdk::xdr::r#const::ScSpecUdtUnionCaseTupleV0 {
+                            doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(
+                                b"",
+                            ),
+                            name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(
+                                b"Contract",
+                            ),
+                            type_: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(
+                                &[
+                                    <SubContractInvocation as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
+                                ],
+                            ),
+                        }),
+                        soroban_sdk::xdr::r#const::ScSpecUdtUnionCaseV0::TupleV0(soroban_sdk::xdr::r#const::ScSpecUdtUnionCaseTupleV0 {
+                            doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(
+                                b"",
+                            ),
+                            name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(
+                                b"CreateContractHostFn",
+                            ),
+                            type_: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(
+                                &[
+                                    <CreateContractHostFnContext as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
+                                ],
+                            ),
+                        }),
+                        soroban_sdk::xdr::r#const::ScSpecUdtUnionCaseV0::TupleV0(soroban_sdk::xdr::r#const::ScSpecUdtUnionCaseTupleV0 {
+                            doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(
+                                b"",
+                            ),
+                            name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(
+                                b"CreateContractWithCtorHostFn",
+                            ),
+                            type_: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(
+                                &[
+                                    <CreateContractWithConstructorHostFnContext as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
+                                ],
+                            ),
+                        }),
+                    ],
+                ),
+            });
+            pub const fn spec_xdr(
+            ) -> [u8; InvokerContractAuthEntry::__SPEC_XDR_ENTRY.const_xdr_len()] {
+                const { InvokerContractAuthEntry::__SPEC_XDR_ENTRY.const_to_xdr() }
             }
         }
-        impl soroban_sdk::SpecShakingMarker for InvokerContractAuthEntry {
-            #[doc(hidden)]
-            #[inline(always)]
-            fn spec_shaking_marker() {
-                <SubContractInvocation as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
-                <CreateContractHostFnContext as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
-                <CreateContractWithConstructorHostFnContext as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
-            }
+        impl soroban_sdk::SpecAnchor for InvokerContractAuthEntry {
+            #[inline(never)]
+            fn spec_anchor() {}
         }
         impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for InvokerContractAuthEntry {
             type Error = soroban_sdk::ConversionError;
@@ -11945,6 +12989,7 @@ mod test_with_wasm {
                 env: &soroban_sdk::Env,
                 val: &soroban_sdk::Val,
             ) -> Result<Self, soroban_sdk::ConversionError> {
+                <InvokerContractAuthEntry as soroban_sdk::SpecAnchor>::spec_anchor();
                 use soroban_sdk::{EnvBase, TryFromVal, TryIntoVal};
                 const CASES: &'static [&'static str] = &[
                     "Contract",
@@ -12004,6 +13049,7 @@ mod test_with_wasm {
                 env: &soroban_sdk::Env,
                 val: &InvokerContractAuthEntry,
             ) -> Result<Self, soroban_sdk::ConversionError> {
+                <InvokerContractAuthEntry as soroban_sdk::SpecAnchor>::spec_anchor();
                 use soroban_sdk::{TryFromVal, TryIntoVal};
                 match val {
                     InvokerContractAuthEntry::Contract(ref value0) => {
@@ -12656,20 +13702,88 @@ mod test_with_wasm {
                 }
             }
         }
+        impl soroban_sdk::SpecName for Executable {
+            const SPEC_NAME: &'static str = {
+                const NAME: &str = "::test_udt::test_with_wasm::contract::Executable";
+                const CHECKED_NAME: &str = {
+                    if !(NAME.len() <= soroban_sdk::xdr::SC_SPEC_TYPE_NAME_LIMIT as usize) {
+                        {
+                            ::core::panicking::panic_fmt(
+                                format_args!(
+                                    "type `Executable` full name including its module path is longer than the contract spec\'s type name limit, shorten its module path or name: `::test_udt::test_with_wasm::contract::Executable`",
+                                ),
+                            );
+                        }
+                    }
+                    NAME
+                };
+                CHECKED_NAME
+            };
+        }
+        impl soroban_sdk::SpecTypeDef for Executable {
+            const SPEC_TYPE_DEF: soroban_sdk::xdr::r#const::ScSpecTypeDef =
+                soroban_sdk::xdr::r#const::ScSpecTypeDef::Udt(
+                    soroban_sdk::xdr::r#const::ScSpecTypeUdt {
+                        name: soroban_sdk::xdr::r#const::StringM::try_from_str_or_panic(
+                            <Self as soroban_sdk::SpecName>::SPEC_NAME,
+                        ),
+                    },
+                );
+        }
         #[doc(hidden)]
         #[allow(dead_code)]
-        static __SPEC_XDR_TYPE_EXECUTABLE: [u8; 104usize] = Executable::spec_xdr();
+        static __SPEC_XDR_TYPE_EXECUTABLE: [u8; Executable::spec_xdr().len()] =
+            Executable::spec_xdr();
         impl Executable {
-            pub const fn spec_xdr() -> [u8; 104usize] {
-                *b"\0\0\0\x02\0\0\0\0\0\0\0\0\0\0\0\nExecutable\0\0\0\0\0\x03\0\0\0\x01\0\0\0\0\0\0\0\x04Wasm\0\0\0\x01\0\0\x03\xee\0\0\0 \0\0\0\0\0\0\0\0\0\0\0\x0cStellarAsset\0\0\0\0\0\0\0\0\0\0\0\x07Account\0"
+            const __SPEC_XDR_ENTRY: soroban_sdk::xdr::r#const::ScSpecEntry = soroban_sdk::xdr::r#const::ScSpecEntry::UdtUnionV0(soroban_sdk::xdr::r#const::ScSpecUdtUnionV0 {
+                doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
+                lib: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
+                name: soroban_sdk::xdr::r#const::StringM::try_from_str_or_panic(
+                    <Executable as soroban_sdk::SpecName>::SPEC_NAME,
+                ),
+                cases: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(
+                    &[
+                        soroban_sdk::xdr::r#const::ScSpecUdtUnionCaseV0::TupleV0(soroban_sdk::xdr::r#const::ScSpecUdtUnionCaseTupleV0 {
+                            doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(
+                                b"",
+                            ),
+                            name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(
+                                b"Wasm",
+                            ),
+                            type_: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(
+                                &[
+                                    <soroban_sdk::BytesN<
+                                        32,
+                                    > as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
+                                ],
+                            ),
+                        }),
+                        soroban_sdk::xdr::r#const::ScSpecUdtUnionCaseV0::VoidV0(soroban_sdk::xdr::r#const::ScSpecUdtUnionCaseVoidV0 {
+                            doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(
+                                b"",
+                            ),
+                            name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(
+                                b"StellarAsset",
+                            ),
+                        }),
+                        soroban_sdk::xdr::r#const::ScSpecUdtUnionCaseV0::VoidV0(soroban_sdk::xdr::r#const::ScSpecUdtUnionCaseVoidV0 {
+                            doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(
+                                b"",
+                            ),
+                            name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(
+                                b"Account",
+                            ),
+                        }),
+                    ],
+                ),
+            });
+            pub const fn spec_xdr() -> [u8; Executable::__SPEC_XDR_ENTRY.const_xdr_len()] {
+                const { Executable::__SPEC_XDR_ENTRY.const_to_xdr() }
             }
         }
-        impl soroban_sdk::SpecShakingMarker for Executable {
-            #[doc(hidden)]
-            #[inline(always)]
-            fn spec_shaking_marker() {
-                <soroban_sdk::BytesN<32> as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
-            }
+        impl soroban_sdk::SpecAnchor for Executable {
+            #[inline(never)]
+            fn spec_anchor() {}
         }
         impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for Executable {
             type Error = soroban_sdk::ConversionError;
@@ -12678,6 +13792,7 @@ mod test_with_wasm {
                 env: &soroban_sdk::Env,
                 val: &soroban_sdk::Val,
             ) -> Result<Self, soroban_sdk::ConversionError> {
+                <Executable as soroban_sdk::SpecAnchor>::spec_anchor();
                 use soroban_sdk::{EnvBase, TryFromVal, TryIntoVal};
                 const CASES: &'static [&'static str] = &["Wasm", "StellarAsset", "Account"];
                 let vec: soroban_sdk::Vec<soroban_sdk::Val> = val.try_into_val(env)?;
@@ -12725,6 +13840,7 @@ mod test_with_wasm {
                 env: &soroban_sdk::Env,
                 val: &Executable,
             ) -> Result<Self, soroban_sdk::ConversionError> {
+                <Executable as soroban_sdk::SpecAnchor>::spec_anchor();
                 use soroban_sdk::{TryFromVal, TryIntoVal};
                 match val {
                     Executable::Wasm(ref value0) => {
@@ -13213,18 +14329,75 @@ mod test_with_wasm {
                 ::core::cmp::PartialOrd::partial_cmp(&__self_discr, &__arg1_discr)
             }
         }
+        impl soroban_sdk::SpecName for UdtEnum2 {
+            const SPEC_NAME: &'static str = {
+                const NAME: &str = "::test_udt::test_with_wasm::contract::UdtEnum2";
+                const CHECKED_NAME: &str = {
+                    if !(NAME.len() <= soroban_sdk::xdr::SC_SPEC_TYPE_NAME_LIMIT as usize) {
+                        {
+                            ::core::panicking::panic_fmt(
+                                format_args!(
+                                    "type `UdtEnum2` full name including its module path is longer than the contract spec\'s type name limit, shorten its module path or name: `::test_udt::test_with_wasm::contract::UdtEnum2`",
+                                ),
+                            );
+                        }
+                    }
+                    NAME
+                };
+                CHECKED_NAME
+            };
+        }
+        impl soroban_sdk::SpecTypeDef for UdtEnum2 {
+            const SPEC_TYPE_DEF: soroban_sdk::xdr::r#const::ScSpecTypeDef =
+                soroban_sdk::xdr::r#const::ScSpecTypeDef::Udt(
+                    soroban_sdk::xdr::r#const::ScSpecTypeUdt {
+                        name: soroban_sdk::xdr::r#const::StringM::try_from_str_or_panic(
+                            <Self as soroban_sdk::SpecName>::SPEC_NAME,
+                        ),
+                    },
+                );
+        }
         #[doc(hidden)]
         #[allow(dead_code)]
-        static __SPEC_XDR_TYPE_UDTENUM2: [u8; 60usize] = UdtEnum2::spec_xdr();
+        static __SPEC_XDR_TYPE_UDTENUM2: [u8; UdtEnum2::spec_xdr().len()] = UdtEnum2::spec_xdr();
         impl UdtEnum2 {
-            pub const fn spec_xdr() -> [u8; 60usize] {
-                *b"\0\0\0\x03\0\0\0\0\0\0\0\0\0\0\0\x08UdtEnum2\0\0\0\x02\0\0\0\0\0\0\0\x01A\0\0\0\0\0\0\n\0\0\0\0\0\0\0\x01B\0\0\0\0\0\0\x0f"
+            const __SPEC_XDR_ENTRY: soroban_sdk::xdr::r#const::ScSpecEntry =
+                soroban_sdk::xdr::r#const::ScSpecEntry::UdtEnumV0(
+                    soroban_sdk::xdr::r#const::ScSpecUdtEnumV0 {
+                        doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
+                        lib: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
+                        name: soroban_sdk::xdr::r#const::StringM::try_from_str_or_panic(
+                            <UdtEnum2 as soroban_sdk::SpecName>::SPEC_NAME,
+                        ),
+                        cases: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[
+                            soroban_sdk::xdr::r#const::ScSpecUdtEnumCaseV0 {
+                                doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(
+                                    b"",
+                                ),
+                                name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(
+                                    b"A",
+                                ),
+                                value: 10u32,
+                            },
+                            soroban_sdk::xdr::r#const::ScSpecUdtEnumCaseV0 {
+                                doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(
+                                    b"",
+                                ),
+                                name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(
+                                    b"B",
+                                ),
+                                value: 15u32,
+                            },
+                        ]),
+                    },
+                );
+            pub const fn spec_xdr() -> [u8; UdtEnum2::__SPEC_XDR_ENTRY.const_xdr_len()] {
+                const { UdtEnum2::__SPEC_XDR_ENTRY.const_to_xdr() }
             }
         }
-        impl soroban_sdk::SpecShakingMarker for UdtEnum2 {
-            #[doc(hidden)]
-            #[inline(always)]
-            fn spec_shaking_marker() {}
+        impl soroban_sdk::SpecAnchor for UdtEnum2 {
+            #[inline(never)]
+            fn spec_anchor() {}
         }
         impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for UdtEnum2 {
             type Error = soroban_sdk::ConversionError;
@@ -13233,6 +14406,7 @@ mod test_with_wasm {
                 env: &soroban_sdk::Env,
                 val: &soroban_sdk::Val,
             ) -> Result<Self, soroban_sdk::ConversionError> {
+                <UdtEnum2 as soroban_sdk::SpecAnchor>::spec_anchor();
                 use soroban_sdk::TryIntoVal;
                 let discriminant: u32 = val.try_into_val(env)?;
                 Ok(match discriminant {
@@ -13249,6 +14423,7 @@ mod test_with_wasm {
                 env: &soroban_sdk::Env,
                 val: &UdtEnum2,
             ) -> Result<Self, soroban_sdk::ConversionError> {
+                <UdtEnum2 as soroban_sdk::SpecAnchor>::spec_anchor();
                 Ok(match val {
                     UdtEnum2::A => 10u32.into(),
                     UdtEnum2::B => 15u32.into(),

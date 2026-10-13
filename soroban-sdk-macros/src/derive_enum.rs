@@ -1,17 +1,17 @@
 use itertools::MultiUnzip;
 use proc_macro2::{Literal, TokenStream as TokenStream2};
-use quote::{format_ident, quote, ToTokens};
+use quote::{format_ident, quote};
 use syn::{
     ext::IdentExt as _, spanned::Spanned, Attribute, DataEnum, Error, Fields, Ident, Path,
     Visibility,
 };
 
-use stellar_xdr::{
-    Error as XdrError, ScSpecEntry, ScSpecTypeDef, ScSpecUdtUnionCaseTupleV0, ScSpecUdtUnionCaseV0,
-    ScSpecUdtUnionCaseVoidV0, ScSpecUdtUnionV0, StringM, VecM, WriteXdr, SCSYMBOL_LIMIT,
-};
+use stellar_xdr::{StringM, SCSYMBOL_LIMIT};
 
-use crate::{doc::docs_from_attrs, map_type::map_type, shaking, DEFAULT_XDR_RW_LIMITS};
+use crate::{
+    doc::docs_from_attrs,
+    spec::{const_view_string, const_view_type_def, spec_anchor_impl, spec_type_def_gen},
+};
 
 pub fn derive_type_enum(
     path: &Path,
@@ -97,7 +97,6 @@ pub fn derive_type_enum(
                     case_ident,
                     &variant.attrs,
                     &variant.fields,
-                    &mut errors,
                 );
                 (
                     spec_case,
@@ -143,20 +142,45 @@ pub fn derive_type_enum(
         return quote! { #(#compile_errors)* };
     }
 
-    // Compute spec XDR once.
-    let spec_entry = ScSpecEntry::UdtUnionV0(ScSpecUdtUnionV0 {
-        doc: docs_from_attrs(attrs),
-        // set to empty string always because the field is no longer used
-        lib: StringM::default(),
-        name: enum_ident.unraw().to_string().try_into().unwrap(),
-        cases: spec_cases.try_into().unwrap(),
-    });
-    let spec_xdr = spec_entry.to_xdr(DEFAULT_XDR_RW_LIMITS).unwrap();
-
-    // Generated code spec.
+    // Generated code spec. The spec entry is rendered as the equivalent
+    // const::ScSpecEntry, which the contract crate encodes to XDR at compile time.
+    let spec_type_def = spec_type_def_gen(path, enum_ident, None, None, None);
+    let spec_anchor = spec_anchor_impl(path, enum_ident, None, None, None);
     let spec_gen = {
-        let spec_xdr_lit = proc_macro2::Literal::byte_string(spec_xdr.as_slice());
-        let spec_xdr_len = spec_xdr.len();
+        let doc = const_view_string(path, &docs_from_attrs(attrs));
+        // Set to empty string always because the field is no longer used.
+        let lib = const_view_string(path, &StringM::<80>::default());
+        let cases = spec_cases
+            .iter()
+            .zip(&variant_field_types)
+            .map(|(c, field_types)| {
+                let doc = const_view_string(path, &c.doc);
+                let name = const_view_string(path, &c.name);
+                if !c.tuple {
+                    quote!(#path::xdr::r#const::ScSpecUdtUnionCaseV0::VoidV0(
+                        #path::xdr::r#const::ScSpecUdtUnionCaseVoidV0 { doc: #doc, name: #name }
+                    ))
+                } else {
+                    let type_ = field_types
+                        .iter()
+                        .map(|rust| const_view_type_def(path, rust));
+                    quote!(#path::xdr::r#const::ScSpecUdtUnionCaseV0::TupleV0(
+                        #path::xdr::r#const::ScSpecUdtUnionCaseTupleV0 {
+                            doc: #doc,
+                            name: #name,
+                            type_: #path::xdr::r#const::VecM::try_from_slice_or_panic(&[#(#type_),*]),
+                        }
+                    ))
+                }
+            });
+        let spec_entry = quote! {
+            #path::xdr::r#const::ScSpecEntry::UdtUnionV0(#path::xdr::r#const::ScSpecUdtUnionV0 {
+                doc: #doc,
+                lib: #lib,
+                name: #path::xdr::r#const::StringM::try_from_str_or_panic(<#enum_ident as #path::SpecName>::SPEC_NAME),
+                cases: #path::xdr::r#const::VecM::try_from_slice_or_panic(&[#(#cases),*]),
+            })
+        };
         let spec_ident = format_ident!(
             "__SPEC_XDR_TYPE_{}",
             enum_ident.unraw().to_string().to_uppercase()
@@ -165,45 +189,31 @@ pub fn derive_type_enum(
             #[doc(hidden)]
             #[allow(dead_code)]
             #[cfg_attr(target_family = "wasm", link_section = "contractspecv0")]
-            static #spec_ident: [u8; #spec_xdr_len] = #enum_ident::spec_xdr();
+            static #spec_ident: [u8; #enum_ident::spec_xdr().len()] = #enum_ident::spec_xdr();
 
             impl #enum_ident {
-                pub const fn spec_xdr() -> [u8; #spec_xdr_len] {
-                    *#spec_xdr_lit
+                const __SPEC_XDR_ENTRY: #path::xdr::r#const::ScSpecEntry = #spec_entry;
+
+                pub const fn spec_xdr() -> [u8; #enum_ident::__SPEC_XDR_ENTRY.const_xdr_len()] {
+                    const { #enum_ident::__SPEC_XDR_ENTRY.const_to_xdr() }
                 }
             }
         }
     };
 
-    // SpecShakingMarker impl.
-    let spec_shaking_impl = {
-        // Flatten all variant field types for shaking calls, deduplicating
-        // to avoid redundant calls for types that appear in multiple variants.
-        let all_field_types =
-            itertools::Itertools::unique_by(variant_field_types.iter().flatten(), |t| {
-                t.to_token_stream().to_string()
-            });
-        shaking::generate_marker_impl(
-            path,
-            quote!(#enum_ident),
-            &spec_xdr,
-            all_field_types.cloned(),
-            None,
-            None,
-            None,
-        )
-    };
-
     // Output.
     let mut output = quote! {
+        #spec_type_def
+
         #spec_gen
 
-        #spec_shaking_impl
+        #spec_anchor
 
         impl #path::TryFromVal<#path::Env, #path::Val> for #enum_ident {
             type Error = #path::ConversionError;
             #[inline(always)]
             fn try_from_val(env: &#path::Env, val: &#path::Val) -> Result<Self, #path::ConversionError> {
+                <#enum_ident as #path::SpecAnchor>::spec_anchor();
                 use #path::{EnvBase,TryIntoVal,TryFromVal};
                 const CASES: &'static [&'static str] = &[#(#case_name_str_lits),*];
                 let vec: #path::Vec<#path::Val> = val.try_into_val(env)?;
@@ -220,6 +230,7 @@ pub fn derive_type_enum(
             type Error = #path::ConversionError;
             #[inline(always)]
             fn try_from_val(env: &#path::Env, val: &#enum_ident) -> Result<Self, #path::ConversionError> {
+                <#enum_ident as #path::SpecAnchor>::spec_anchor();
                 use #path::{TryIntoVal,TryFromVal};
                 match val {
                     #(#try_intos,)*
@@ -312,8 +323,17 @@ pub fn derive_type_enum(
     output
 }
 
+/// A union case's doc and name, as the spec holds them, and whether it is a
+/// tuple case. The spec types of a tuple case's values come from the Rust types
+/// of its fields.
+struct SpecCase {
+    doc: StringM<1024>,
+    name: StringM<60>,
+    tuple: bool,
+}
+
 struct VariantTokens {
-    spec_case: ScSpecUdtUnionCaseV0,
+    spec_case: SpecCase,
     try_from: TokenStream2,
     try_into: TokenStream2,
     try_from_xdr: TokenStream2,
@@ -329,10 +349,11 @@ fn map_empty_variant(
     case_ident: &Ident,
     attrs: &[Attribute],
 ) -> VariantTokens {
-    let spec_case = ScSpecUdtUnionCaseV0::VoidV0(ScSpecUdtUnionCaseVoidV0 {
+    let spec_case = SpecCase {
         doc: docs_from_attrs(attrs),
         name: case_name.try_into().unwrap_or_else(|_| StringM::default()),
-    });
+        tuple: false,
+    };
     let try_from = quote! {
         #case_num_lit => {
             if iter.len() > 0 {
@@ -381,46 +402,11 @@ fn map_tuple_variant(
     case_ident: &Ident,
     attrs: &[Attribute],
     fields: &Fields,
-    errors: &mut Vec<Error>,
 ) -> VariantTokens {
-    let spec_case = {
-        let field_types = fields
-            .iter()
-            .map(|f| match map_type(&f.ty, false, false) {
-                Ok(t) => t,
-                Err(e) => {
-                    errors.push(e);
-                    ScSpecTypeDef::I32
-                }
-            })
-            .collect::<Vec<_>>();
-        let field_types = match VecM::try_from(field_types) {
-            Ok(t) => t,
-            Err(e) => {
-                let v = VecM::default();
-                let max_len = v.max_len();
-                match e {
-                    XdrError::LengthExceedsMax => {
-                        errors.push(Error::new(
-                            fields.span(),
-                            format!(
-                                "enum variant name {} has too many tuple values, max {} supported",
-                                case_ident, max_len
-                            ),
-                        ));
-                    }
-                    e => {
-                        errors.push(Error::new(fields.span(), format!("{e}")));
-                    }
-                }
-                v
-            }
-        };
-        ScSpecUdtUnionCaseV0::TupleV0(ScSpecUdtUnionCaseTupleV0 {
-            doc: docs_from_attrs(attrs),
-            name: case_name.try_into().unwrap_or_else(|_| StringM::default()),
-            type_: field_types,
-        })
+    let spec_case = SpecCase {
+        doc: docs_from_attrs(attrs),
+        name: case_name.try_into().unwrap_or_else(|_| StringM::default()),
+        tuple: true,
     };
 
     let num_fields = fields.iter().len();

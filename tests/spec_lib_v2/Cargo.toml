@@ -1,0 +1,17 @@
+[package]
+name = "test_spec_lib_v2"
+version.workspace = true
+authors = ["Stellar Development Foundation <info@stellar.org>"]
+license = "Apache-2.0"
+edition = "2021"
+publish = false
+rust-version.workspace = true
+
+# test_spec_lib_v3's src built with soroban-sdk 29.0.1, for the v2 crates.
+[lib]
+path = "../spec_lib_v3/src/lib.rs"
+crate-type = ["rlib"]
+doctest = false
+
+[dependencies]
+soroban-sdk = "=29.0.1"

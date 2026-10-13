@@ -22,7 +22,8 @@
 //!
 //! Build contracts with `stellar contract build` from [stellar-cli], which targets `wasm32v1-none`
 //! and applies the build settings the Soroban runtime requires. Do not build contracts with
-//! `cargo build`. As of soroban-sdk v28, [stellar-cli] v25.2.0 or newer is required.
+//! `cargo build`. The major version of [stellar-cli] must be the same as or greater than the major
+//! version of soroban-sdk.
 //!
 //! The `wasm32-unknown-unknown` target is not supported when building with Rust 1.82 or newer,
 //! because on those versions the target enables wasm features (reference-types, multi-value) that
@@ -165,22 +166,19 @@ const _: () = {
     // Rustc version.
     contractmeta!(key = "rsver", val = env!("RUSTC_VERSION"),);
 
-    // Rust Soroban SDK version. Don't emit when the cfg is set. The cfg is set when building test
-    // wasms in this repository, so that every commit in this repo does not cause the test wasms in
-    // this repo to have a new hash due to the revision being embedded. The wasm hash gets embedded
-    // into a few places, such as test snapshots, or get used in test themselves where if they are
-    // constantly changing creates repetitive diffs.
+    // Rust Soroban SDK version. The stellar-cli reads the major version to select how the spec is
+    // shaken, see soroban_spec::shaking::model_for_meta. Leave out the revision when the cfg is set.
+    // The cfg is set when building test wasms in this repository, so that every commit in this repo
+    // does not cause the test wasms in this repo to have a new hash due to the revision being
+    // embedded. The wasm hash gets embedded into a few places, such as test snapshots, or get used
+    // in test themselves where if they are constantly changing creates repetitive diffs.
     #[cfg(not(soroban_sdk_internal_no_rssdkver_meta))]
     contractmeta!(
         key = "rssdkver",
         val = concat!(env!("CARGO_PKG_VERSION"), "#", env!("GIT_REVISION")),
     );
-
-    // An indicator of the spec shaking version in use. Signals to the stellar-cli that the .wasm
-    // needs to have its spec shaken. See soroban_spec::shaking for constants and version detection.
-    // The contractmeta! macro requires string literals, so we assert the literals match the
-    // constants defined in soroban_spec::shaking.
-    contractmeta!(key = "rssdk_spec_shaking", val = "2");
+    #[cfg(soroban_sdk_internal_no_rssdkver_meta)]
+    contractmeta!(key = "rssdkver", val = env!("CARGO_PKG_VERSION"));
 };
 
 // Re-exports of dependencies used by macros.
@@ -189,6 +187,7 @@ pub mod reexports_for_macros {
     pub use bytes_lit;
     #[cfg(any(test, feature = "testutils"))]
     pub use ctor;
+    pub use soroban_spec;
 }
 
 /// `debug_assert_in_contract!` asserts that the contract is currently executing within a
@@ -1145,17 +1144,11 @@ macro_rules! sdk_panic {
     ($_msg:literal) => {
         panic!()
     };
-    () => {
-        panic!()
-    };
 }
 #[cfg(not(target_family = "wasm"))]
 macro_rules! sdk_panic {
     ($msg:literal) => {
         panic!($msg)
-    };
-    () => {
-        panic!()
     };
 }
 
@@ -1223,7 +1216,7 @@ pub use env::VecObject;
 mod try_from_val_for_contract_fn;
 #[doc(hidden)]
 #[allow(deprecated)]
-pub use try_from_val_for_contract_fn::TryFromValForContractFn;
+pub use try_from_val_for_contract_fn::{TryFromValForCheckAuthPayload, TryFromValForContractFn};
 
 mod into_val_for_contract_fn;
 #[doc(hidden)]
@@ -1233,6 +1226,14 @@ pub use into_val_for_contract_fn::IntoValForContractFn;
 mod spec_shaking;
 #[doc(hidden)]
 pub use spec_shaking::SpecShakingMarker;
+
+mod spec_anchor;
+#[doc(hidden)]
+pub use spec_anchor::SpecAnchor;
+
+mod spec_type_def;
+#[doc(hidden)]
+pub use spec_type_def::{SpecName, SpecTypeDef};
 
 #[doc(hidden)]
 #[deprecated(note = "use storage")]

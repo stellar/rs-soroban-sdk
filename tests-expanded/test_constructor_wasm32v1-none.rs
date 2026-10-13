@@ -29,25 +29,89 @@ pub enum DataKey {
     Temp(u32),
     Instance(u32),
 }
+impl soroban_sdk::SpecName for DataKey {
+    const SPEC_NAME: &'static str = {
+        const NAME: &str = "::test_constructor::DataKey";
+        const CHECKED_NAME: &str = {
+            if !(NAME.len() <= soroban_sdk::xdr::SC_SPEC_TYPE_NAME_LIMIT as usize) {
+                {
+                    ::core::panicking::panic_fmt(
+                        format_args!(
+                            "type `DataKey` full name including its module path is longer than the contract spec\'s type name limit, shorten its module path or name: `::test_constructor::DataKey`",
+                        ),
+                    );
+                }
+            }
+            NAME
+        };
+        CHECKED_NAME
+    };
+}
+impl soroban_sdk::SpecTypeDef for DataKey {
+    const SPEC_TYPE_DEF: soroban_sdk::xdr::r#const::ScSpecTypeDef =
+        soroban_sdk::xdr::r#const::ScSpecTypeDef::Udt(soroban_sdk::xdr::r#const::ScSpecTypeUdt {
+            name: soroban_sdk::xdr::r#const::StringM::try_from_str_or_panic(
+                <Self as soroban_sdk::SpecName>::SPEC_NAME,
+            ),
+        });
+}
 #[doc(hidden)]
 #[allow(dead_code)]
 #[link_section = "contractspecv0"]
-static __SPEC_XDR_TYPE_DATAKEY: [u8; 112usize] = DataKey::spec_xdr();
+static __SPEC_XDR_TYPE_DATAKEY: [u8; DataKey::spec_xdr().len()] = DataKey::spec_xdr();
 impl DataKey {
-    pub const fn spec_xdr() -> [u8; 112usize] {
-        *b"\0\0\0\x02\0\0\0\0\0\0\0\0\0\0\0\x07DataKey\0\0\0\0\x03\0\0\0\x01\0\0\0\0\0\0\0\nPersistent\0\0\0\0\0\x01\0\0\0\x04\0\0\0\x01\0\0\0\0\0\0\0\x04Temp\0\0\0\x01\0\0\0\x04\0\0\0\x01\0\0\0\0\0\0\0\x08Instance\0\0\0\x01\0\0\0\x04"
+    const __SPEC_XDR_ENTRY: soroban_sdk::xdr::r#const::ScSpecEntry =
+        soroban_sdk::xdr::r#const::ScSpecEntry::UdtUnionV0(
+            soroban_sdk::xdr::r#const::ScSpecUdtUnionV0 {
+                doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
+                lib: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
+                name: soroban_sdk::xdr::r#const::StringM::try_from_str_or_panic(
+                    <DataKey as soroban_sdk::SpecName>::SPEC_NAME,
+                ),
+                cases: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[
+                    soroban_sdk::xdr::r#const::ScSpecUdtUnionCaseV0::TupleV0(
+                        soroban_sdk::xdr::r#const::ScSpecUdtUnionCaseTupleV0 {
+                            doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
+                            name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(
+                                b"Persistent",
+                            ),
+                            type_: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[
+                                <u32 as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
+                            ]),
+                        },
+                    ),
+                    soroban_sdk::xdr::r#const::ScSpecUdtUnionCaseV0::TupleV0(
+                        soroban_sdk::xdr::r#const::ScSpecUdtUnionCaseTupleV0 {
+                            doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
+                            name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(
+                                b"Temp",
+                            ),
+                            type_: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[
+                                <u32 as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
+                            ]),
+                        },
+                    ),
+                    soroban_sdk::xdr::r#const::ScSpecUdtUnionCaseV0::TupleV0(
+                        soroban_sdk::xdr::r#const::ScSpecUdtUnionCaseTupleV0 {
+                            doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
+                            name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(
+                                b"Instance",
+                            ),
+                            type_: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[
+                                <u32 as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
+                            ]),
+                        },
+                    ),
+                ]),
+            },
+        );
+    pub const fn spec_xdr() -> [u8; DataKey::__SPEC_XDR_ENTRY.const_xdr_len()] {
+        const { DataKey::__SPEC_XDR_ENTRY.const_to_xdr() }
     }
 }
-impl soroban_sdk::SpecShakingMarker for DataKey {
-    #[doc(hidden)]
-    #[inline(always)]
-    fn spec_shaking_marker() {
-        <u32 as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
-        {
-            static MARKER: [u8; 14usize] = *b"SpEcV1\x14\x94}~\xec\x15\x94\x84";
-            let _ = unsafe { ::core::ptr::read_volatile(MARKER.as_ptr()) };
-        }
-    }
+impl soroban_sdk::SpecAnchor for DataKey {
+    #[inline(never)]
+    fn spec_anchor() {}
 }
 impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for DataKey {
     type Error = soroban_sdk::ConversionError;
@@ -56,6 +120,7 @@ impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for DataKey {
         env: &soroban_sdk::Env,
         val: &soroban_sdk::Val,
     ) -> Result<Self, soroban_sdk::ConversionError> {
+        <DataKey as soroban_sdk::SpecAnchor>::spec_anchor();
         use soroban_sdk::{EnvBase, TryFromVal, TryIntoVal};
         const CASES: &'static [&'static str] = &["Persistent", "Temp", "Instance"];
         let vec: soroban_sdk::Vec<soroban_sdk::Val> = val.try_into_val(env)?;
@@ -110,6 +175,7 @@ impl soroban_sdk::TryFromVal<soroban_sdk::Env, DataKey> for soroban_sdk::Val {
         env: &soroban_sdk::Env,
         val: &DataKey,
     ) -> Result<Self, soroban_sdk::ConversionError> {
+        <DataKey as soroban_sdk::SpecAnchor>::spec_anchor();
         use soroban_sdk::{TryFromVal, TryIntoVal};
         match val {
             DataKey::Persistent(ref value0) => {
@@ -175,12 +241,41 @@ mod __Contract____constructor__spec {
     #[allow(non_upper_case_globals)]
     #[allow(dead_code)]
     #[link_section = "contractspecv0"]
-    static __SPEC_XDR_FN___CONSTRUCTOR: [u8; 80usize] = super::Contract::spec_xdr___constructor();
+    static __SPEC_XDR_FN___CONSTRUCTOR: [u8; super::Contract::spec_xdr___constructor().len()] =
+        super::Contract::spec_xdr___constructor();
 }
 impl Contract {
+    #[allow(non_upper_case_globals)]
+    const __SPEC_XDR_ENTRY___constructor: soroban_sdk::xdr::r#const::ScSpecEntry =
+        soroban_sdk::xdr::r#const::ScSpecEntry::FunctionV0(
+            soroban_sdk::xdr::r#const::ScSpecFunctionV0 {
+                doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
+                name: soroban_sdk::xdr::r#const::ScSymbol(
+                    soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b"__constructor"),
+                ),
+                inputs: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[
+                    soroban_sdk::xdr::r#const::ScSpecFunctionInputV0 {
+                        doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
+                        name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(
+                            b"init_key",
+                        ),
+                        type_: <u32 as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
+                    },
+                    soroban_sdk::xdr::r#const::ScSpecFunctionInputV0 {
+                        doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
+                        name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(
+                            b"init_value",
+                        ),
+                        type_: <i64 as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
+                    },
+                ]),
+                outputs: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[]),
+            },
+        );
     #[allow(non_snake_case)]
-    pub const fn spec_xdr___constructor() -> [u8; 80usize] {
-        *b"\0\0\0\0\0\0\0\0\0\0\0\r__constructor\0\0\0\0\0\0\x02\0\0\0\0\0\0\0\x08init_key\0\0\0\x04\0\0\0\0\0\0\0\ninit_value\0\0\0\0\0\x07\0\0\0\0"
+    pub const fn spec_xdr___constructor(
+    ) -> [u8; Contract::__SPEC_XDR_ENTRY___constructor.const_xdr_len()] {
+        const { Contract::__SPEC_XDR_ENTRY___constructor.const_to_xdr() }
     }
 }
 #[doc(hidden)]
@@ -192,12 +287,33 @@ mod __Contract__get_data__spec {
     #[allow(non_upper_case_globals)]
     #[allow(dead_code)]
     #[link_section = "contractspecv0"]
-    static __SPEC_XDR_FN_GET_DATA: [u8; 64usize] = super::Contract::spec_xdr_get_data();
+    static __SPEC_XDR_FN_GET_DATA: [u8; super::Contract::spec_xdr_get_data().len()] =
+        super::Contract::spec_xdr_get_data();
 }
 impl Contract {
+    #[allow(non_upper_case_globals)]
+    const __SPEC_XDR_ENTRY_get_data: soroban_sdk::xdr::r#const::ScSpecEntry =
+        soroban_sdk::xdr::r#const::ScSpecEntry::FunctionV0(
+            soroban_sdk::xdr::r#const::ScSpecFunctionV0 {
+                doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
+                name: soroban_sdk::xdr::r#const::ScSymbol(
+                    soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b"get_data"),
+                ),
+                inputs: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[
+                    soroban_sdk::xdr::r#const::ScSpecFunctionInputV0 {
+                        doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
+                        name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b"key"),
+                        type_: <DataKey as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
+                    },
+                ]),
+                outputs: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[
+                    <Option<i64> as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
+                ]),
+            },
+        );
     #[allow(non_snake_case)]
-    pub const fn spec_xdr_get_data() -> [u8; 64usize] {
-        *b"\0\0\0\0\0\0\0\0\0\0\0\x08get_data\0\0\0\x01\0\0\0\0\0\0\0\x03key\0\0\0\x07\xd0\0\0\0\x07DataKey\0\0\0\0\x01\0\0\x03\xe8\0\0\0\x07"
+    pub const fn spec_xdr_get_data() -> [u8; Contract::__SPEC_XDR_ENTRY_get_data.const_xdr_len()] {
+        const { Contract::__SPEC_XDR_ENTRY_get_data.const_to_xdr() }
     }
 }
 impl<'a> ContractClient<'a> {

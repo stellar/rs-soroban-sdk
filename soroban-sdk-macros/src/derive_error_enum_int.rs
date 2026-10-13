@@ -1,12 +1,16 @@
 use itertools::MultiUnzip;
 use proc_macro2::TokenStream as TokenStream2;
 use quote::{format_ident, quote};
-use stellar_xdr::{ScSpecEntry, ScSpecUdtErrorEnumCaseV0, ScSpecUdtErrorEnumV0, StringM, WriteXdr};
+use stellar_xdr::{ScSpecUdtErrorEnumCaseV0, ScSpecUdtErrorEnumV0, StringM};
 use syn::{
     ext::IdentExt as _, spanned::Spanned, Attribute, DataEnum, Error, ExprLit, Ident, Lit, Path,
 };
 
-use crate::{doc::docs_from_attrs, shaking, DEFAULT_XDR_RW_LIMITS};
+use crate::{
+    doc::docs_from_attrs,
+    shaking,
+    spec::{const_view_string, spec_anchor_impl, spec_type_def_gen},
+};
 
 pub fn derive_type_error_enum_int(
     path: &Path,
@@ -62,20 +66,35 @@ pub fn derive_type_error_enum_int(
         return quote! { #(#compile_errors)* };
     }
 
-    // Compute spec XDR once.
-    let spec_entry = ScSpecEntry::UdtErrorEnumV0(ScSpecUdtErrorEnumV0 {
+    // Build the spec entry once.
+    let spec = ScSpecUdtErrorEnumV0 {
         doc: docs_from_attrs(attrs),
         // set to empty string always because the field is no longer used
         lib: StringM::default(),
         name: enum_ident.unraw().to_string().try_into().unwrap(),
         cases: spec_cases.try_into().unwrap(),
-    });
-    let spec_xdr = spec_entry.to_xdr(DEFAULT_XDR_RW_LIMITS).unwrap();
+    };
 
-    // Generated code spec.
+    // Generated code spec. The spec entry is rendered as the equivalent
+    // const::ScSpecEntry, which the contract crate encodes to XDR at compile time.
+    let spec_type_def = spec_type_def_gen(path, enum_ident, None, None, None);
     let spec_gen = {
-        let spec_xdr_lit = proc_macro2::Literal::byte_string(spec_xdr.as_slice());
-        let spec_xdr_len = spec_xdr.len();
+        let doc = const_view_string(path, &spec.doc);
+        let lib = const_view_string(path, &spec.lib);
+        let cases = spec.cases.iter().map(|c| {
+            let doc = const_view_string(path, &c.doc);
+            let name = const_view_string(path, &c.name);
+            let value = c.value;
+            quote!(#path::xdr::r#const::ScSpecUdtErrorEnumCaseV0 { doc: #doc, name: #name, value: #value })
+        });
+        let spec_entry = quote! {
+            #path::xdr::r#const::ScSpecEntry::UdtErrorEnumV0(#path::xdr::r#const::ScSpecUdtErrorEnumV0 {
+                doc: #doc,
+                lib: #lib,
+                name: #path::xdr::r#const::StringM::try_from_str_or_panic(<#enum_ident as #path::SpecName>::SPEC_NAME),
+                cases: #path::xdr::r#const::VecM::try_from_slice_or_panic(&[#(#cases),*]),
+            })
+        };
         let spec_ident = format_ident!(
             "__SPEC_XDR_TYPE_{}",
             enum_ident.unraw().to_string().to_uppercase()
@@ -84,37 +103,40 @@ pub fn derive_type_error_enum_int(
             #[doc(hidden)]
             #[allow(dead_code)]
             #[cfg_attr(target_family = "wasm", link_section = "contractspecv0")]
-            static #spec_ident: [u8; #spec_xdr_len] = #enum_ident::spec_xdr();
+            static #spec_ident: [u8; #enum_ident::spec_xdr().len()] = #enum_ident::spec_xdr();
 
             impl #enum_ident {
-                pub const fn spec_xdr() -> [u8; #spec_xdr_len] {
-                    *#spec_xdr_lit
+                const __SPEC_XDR_ENTRY: #path::xdr::r#const::ScSpecEntry = #spec_entry;
+
+                pub const fn spec_xdr() -> [u8; #enum_ident::__SPEC_XDR_ENTRY.const_xdr_len()] {
+                    const { #enum_ident::__SPEC_XDR_ENTRY.const_to_xdr() }
                 }
             }
         }
     };
 
     // SpecShakingMarker impl.
-    let spec_shaking_impl = shaking::generate_marker_impl(
-        path,
-        quote!(#enum_ident),
-        &spec_xdr,
-        std::iter::empty(),
-        None,
-        None,
-        None,
-    );
+    let spec_shaking_impl =
+        shaking::generate_marker_impl(path, quote!(#enum_ident), None, None, None);
+
+    // SpecAnchor impl.
+    let spec_anchor = spec_anchor_impl(path, enum_ident, None, None, None);
 
     // Output.
     quote! {
+        #spec_type_def
+
         #spec_gen
 
         #spec_shaking_impl
+
+        #spec_anchor
 
         impl TryFrom<#path::Error> for #enum_ident {
             type Error = #path::Error;
             #[inline(always)]
             fn try_from(error: #path::Error) -> Result<Self, #path::Error> {
+                <#enum_ident as #path::SpecAnchor>::spec_anchor();
                 if error.is_type(#path::xdr::ScErrorType::Contract) {
                     let discriminant = error.get_code();
                     Ok(match discriminant {
@@ -145,6 +167,7 @@ pub fn derive_type_error_enum_int(
         impl From<&#enum_ident> for #path::Error {
             #[inline(always)]
             fn from(val: &#enum_ident) -> #path::Error {
+                <#enum_ident as #path::SpecAnchor>::spec_anchor();
                 match val {
                     #(#into_errors,)*
                 }
@@ -155,6 +178,7 @@ pub fn derive_type_error_enum_int(
             type Error = #path::InvokeError;
             #[inline(always)]
             fn try_from(error: #path::InvokeError) -> Result<Self, #path::InvokeError> {
+                <#enum_ident as #path::SpecAnchor>::spec_anchor();
                 match error {
                     #path::InvokeError::Abort => Err(error),
                     #path::InvokeError::Contract(code) => Ok(match code {
@@ -183,6 +207,7 @@ pub fn derive_type_error_enum_int(
         impl From<&#enum_ident> for #path::InvokeError {
             #[inline(always)]
             fn from(val: &#enum_ident) -> #path::InvokeError {
+                <#enum_ident as #path::SpecAnchor>::spec_anchor();
                 match val {
                     #(#into_invoke_errors,)*
                 }

@@ -1,5 +1,4 @@
 use stellar_xdr;
-extern crate proc_macro;
 
 mod arbitrary;
 mod attribute;
@@ -17,9 +16,9 @@ mod derive_struct;
 mod derive_struct_tuple;
 mod derive_trait;
 mod doc;
-mod map_type;
 mod path;
 mod shaking;
+mod spec;
 mod symbol;
 mod syn_ext;
 
@@ -41,15 +40,15 @@ use derive_trait::derive_trait;
 
 use darling::{ast::NestedMeta, util::SpannedValue, FromMeta};
 use macro_string::MacroString;
-use map_type::is_mapped_type_udt;
 use proc_macro::TokenStream;
 use proc_macro2::{Span, TokenStream as TokenStream2};
 use quote::{format_ident, quote, ToTokens};
 use sha2::{Digest, Sha256};
+use spec::check_udt_ident;
 use std::{fmt::Write, fs};
 use syn::{
     ext::IdentExt as _, parse_macro_input, parse_str, spanned::Spanned, Data, DeriveInput, Error,
-    Expr, Fields, ItemImpl, ItemStruct, LitStr, Path, Type,
+    Expr, Fields, ItemImpl, ItemStruct, LitStr, Path, PathArguments, Type,
 };
 use syn_ext::HasFnsItem;
 
@@ -96,6 +95,8 @@ pub(crate) fn default_crate_path() -> Path {
 
 #[derive(Debug, FromMeta)]
 struct ContractSpecArgs {
+    #[darling(default = "default_crate_path")]
+    crate_path: Path,
     name: Type,
     export: Option<bool>,
 }
@@ -117,7 +118,7 @@ pub fn contractspecfn(metadata: TokenStream, input: TokenStream) -> TokenStream 
     let methods: Vec<_> = item.fns();
     let export = args.export.unwrap_or(true);
 
-    let derived = derive_fns_spec(&args.name, &methods, export);
+    let derived = derive_fns_spec(&args.crate_path, &args.name, &methods, export);
 
     match derived {
         Ok(derived_ok) => quote! {
@@ -154,10 +155,47 @@ pub fn contract(metadata: TokenStream, input: TokenStream) -> TokenStream {
 
     let input2: TokenStream2 = input.clone().into();
 
-    let item = parse_macro_input!(input as ItemStruct);
+    let item = match syn::parse::<ItemStruct>(input) {
+        Ok(item) => item,
+        Err(e) => {
+            let e = Error::new(
+                e.span(),
+                "contract must be a struct, e.g. `pub struct Contract;`",
+            )
+            .into_compile_error();
+            return quote! { #e #input2 }.into();
+        }
+    };
 
+    // The SDK never constructs the contract type, so fields and generics on it
+    // are unusable. Only `struct Contract;` and `struct Contract {}` are accepted.
+    let mut errors = Vec::<Error>::new();
+    if !item.generics.params.is_empty() {
+        errors.push(Error::new_spanned(
+            &item.generics,
+            "contract struct must not have generics",
+        ));
+    }
+    if let Some(where_clause) = &item.generics.where_clause {
+        errors.push(Error::new_spanned(
+            where_clause,
+            "contract struct must not have a where clause",
+        ));
+    }
+    let fields_ok = match &item.fields {
+        Fields::Unit => true,
+        Fields::Named(named) => named.named.is_empty(),
+        Fields::Unnamed(_) => false,
+    };
+    if !fields_ok {
+        errors.push(Error::new_spanned(
+            &item.fields,
+            "contract struct must not have fields, e.g. `pub struct Contract;`",
+        ));
+    }
     let ty = &item.ident;
     let ty_str = ty.unraw().to_string();
+    let (impl_generics, ty_generics, where_clause) = item.generics.split_for_impl();
 
     let client_ident = format!("{ty_str}Client");
     let fn_set_registry_ident = format_ident!("__{}_fn_set_registry", ty_str.to_lowercase());
@@ -165,7 +203,9 @@ pub fn contract(metadata: TokenStream, input: TokenStream) -> TokenStream {
     let client = derive_client_type(&args.crate_path, &ty_str, &client_ident);
     let args_ident = format!("{ty_str}Args");
     let contract_args = derive_args_type(&ty_str, &args_ident);
+    let compile_errors = errors.iter().map(Error::to_compile_error);
     let mut output = quote! {
+        #(#compile_errors)*
         #input2
         #contract_args
         #client
@@ -193,14 +233,14 @@ pub fn contract(metadata: TokenStream, input: TokenStream) -> TokenStream {
                 }
             }
 
-            impl #crate_path::testutils::ContractFunctionRegister for #ty {
+            impl #impl_generics #crate_path::testutils::ContractFunctionRegister for #ty #ty_generics #where_clause {
                 fn register(name: &'static str, func: &'static #fn_set_registry_ident::F) {
                     #fn_set_registry_ident::register(name, func);
                 }
             }
 
             #[doc(hidden)]
-            impl #crate_path::testutils::ContractFunctionSet for #ty {
+            impl #impl_generics #crate_path::testutils::ContractFunctionSet for #ty #ty_generics #where_clause {
                 fn call(&self, func: &str, env: #crate_path::Env, args: &[#crate_path::Val]) -> Option<#crate_path::Val> {
                     #fn_set_registry_ident::call(func, env, args)
                 }
@@ -248,6 +288,26 @@ pub fn contractimpl(metadata: TokenStream, input: TokenStream) -> TokenStream {
         return quote! { #imp #e }.into();
     }
 
+    // Contract types cannot be generic (see `contract`), and generic self types
+    // cannot be turned into the identifiers generated below. Generics on the
+    // impl itself, such as lifetimes, are still allowed.
+    let self_ty_generic = match &*imp.self_ty {
+        Type::Path(path) => path
+            .path
+            .segments
+            .iter()
+            .any(|s| !matches!(s.arguments, PathArguments::None)),
+        _ => false,
+    };
+    if self_ty_generic {
+        let e = Error::new_spanned(
+            &imp.self_ty,
+            "contractimpl does not support generic contract types",
+        )
+        .into_compile_error();
+        return quote! { #imp #e }.into();
+    }
+
     let ty = &imp.self_ty;
     let ty_str = quote!(#ty).to_string();
 
@@ -290,7 +350,7 @@ pub fn contractimpl(metadata: TokenStream, input: TokenStream) -> TokenStream {
             let mut output = quote! {
                 #[#crate_path::contractargs(name = #args_ident, impl_only = true)]
                 #[#crate_path::contractclient(crate_path = #crate_path_str, name = #client_ident, impl_only = true)]
-                #[#crate_path::contractspecfn(name = #ty_str)]
+                #[#crate_path::contractspecfn(crate_path = #crate_path_str, name = #ty_str)]
                 #imp
                 #derived_ok
             };
@@ -302,6 +362,7 @@ pub fn contractimpl(metadata: TokenStream, input: TokenStream) -> TokenStream {
                     .filter(|_| args.contracttrait)
                     .map(|trait_ident| {
                         generate_call_to_contractimpl_for_trait(
+                            crate_path,
                             trait_ident,
                             ty,
                             &pub_methods,
@@ -458,7 +519,7 @@ pub fn contracttype(metadata: TokenStream, input: TokenStream) -> TokenStream {
     let vis = &input.vis;
     let ident = &input.ident;
     let attrs = &input.attrs;
-    match is_mapped_type_udt(ident, &input.generics) {
+    match check_udt_ident(ident, &input.generics) {
         Ok(()) => {}
         Err(e) => return e.to_compile_error().into(),
     }
@@ -520,6 +581,10 @@ pub fn contracterror(metadata: TokenStream, input: TokenStream) -> TokenStream {
     let input = parse_macro_input!(input as DeriveInput);
     let ident = &input.ident;
     let attrs = &input.attrs;
+    match check_udt_ident(ident, &input.generics) {
+        Ok(()) => {}
+        Err(e) => return e.to_compile_error().into(),
+    }
     // The spec is always emitted and reachability determines what is retained,
     // so the `export` argument is no longer accepted.
     let export_error = export_arg_error(&args.export);

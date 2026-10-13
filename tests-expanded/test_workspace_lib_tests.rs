@@ -33,20 +33,60 @@ impl ::core::cmp::PartialEq for Value {
         self.value == other.value
     }
 }
+impl soroban_sdk::SpecName for Value {
+    const SPEC_NAME: &'static str = {
+        const NAME: &str = "::test_workspace_lib::Value";
+        const CHECKED_NAME: &str = {
+            if !(NAME.len() <= soroban_sdk::xdr::SC_SPEC_TYPE_NAME_LIMIT as usize) {
+                {
+                    ::core::panicking::panic_fmt(
+                        format_args!(
+                            "type `Value` full name including its module path is longer than the contract spec\'s type name limit, shorten its module path or name: `::test_workspace_lib::Value`",
+                        ),
+                    );
+                }
+            }
+            NAME
+        };
+        CHECKED_NAME
+    };
+}
+impl soroban_sdk::SpecTypeDef for Value {
+    const SPEC_TYPE_DEF: soroban_sdk::xdr::r#const::ScSpecTypeDef =
+        soroban_sdk::xdr::r#const::ScSpecTypeDef::Udt(soroban_sdk::xdr::r#const::ScSpecTypeUdt {
+            name: soroban_sdk::xdr::r#const::StringM::try_from_str_or_panic(
+                <Self as soroban_sdk::SpecName>::SPEC_NAME,
+            ),
+        });
+}
 #[doc(hidden)]
 #[allow(dead_code)]
-static __SPEC_XDR_TYPE_VALUE: [u8; 48usize] = Value::spec_xdr();
+static __SPEC_XDR_TYPE_VALUE: [u8; Value::spec_xdr().len()] = Value::spec_xdr();
 impl Value {
-    pub const fn spec_xdr() -> [u8; 48usize] {
-        *b"\0\0\0\x01\0\0\0\0\0\0\0\0\0\0\0\x05Value\0\0\0\0\0\0\x01\0\0\0\0\0\0\0\x05value\0\0\0\0\0\0\x05"
+    const __SPEC_XDR_ENTRY: soroban_sdk::xdr::r#const::ScSpecEntry =
+        soroban_sdk::xdr::r#const::ScSpecEntry::UdtStructV0(
+            soroban_sdk::xdr::r#const::ScSpecUdtStructV0 {
+                doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
+                lib: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
+                name: soroban_sdk::xdr::r#const::StringM::try_from_str_or_panic(
+                    <Value as soroban_sdk::SpecName>::SPEC_NAME,
+                ),
+                fields: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[
+                    soroban_sdk::xdr::r#const::ScSpecUdtStructFieldV0 {
+                        doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
+                        name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b"value"),
+                        type_: <i32 as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
+                    },
+                ]),
+            },
+        );
+    pub const fn spec_xdr() -> [u8; Value::__SPEC_XDR_ENTRY.const_xdr_len()] {
+        const { Value::__SPEC_XDR_ENTRY.const_to_xdr() }
     }
 }
-impl soroban_sdk::SpecShakingMarker for Value {
-    #[doc(hidden)]
-    #[inline(always)]
-    fn spec_shaking_marker() {
-        <i32 as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
-    }
+impl soroban_sdk::SpecAnchor for Value {
+    #[inline(never)]
+    fn spec_anchor() {}
 }
 impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for Value {
     type Error = soroban_sdk::ConversionError;
@@ -54,6 +94,7 @@ impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for Value {
         env: &soroban_sdk::Env,
         val: &soroban_sdk::Val,
     ) -> Result<Self, soroban_sdk::ConversionError> {
+        <Value as soroban_sdk::SpecAnchor>::spec_anchor();
         use soroban_sdk::{ConversionError, EnvBase, MapObject, TryIntoVal, Val};
         const KEYS: [&'static str; 1usize] = ["value"];
         let mut vals: [Val; 1usize] = [Val::VOID.to_val(); 1usize];
@@ -73,6 +114,7 @@ impl soroban_sdk::TryFromVal<soroban_sdk::Env, Value> for soroban_sdk::Val {
         env: &soroban_sdk::Env,
         val: &Value,
     ) -> Result<Self, soroban_sdk::ConversionError> {
+        <Value as soroban_sdk::SpecAnchor>::spec_anchor();
         use soroban_sdk::{ConversionError, EnvBase, TryIntoVal, Val};
         const KEYS: [&'static str; 1usize] = ["value"];
         let vals: [Val; 1usize] = [(&val.value)

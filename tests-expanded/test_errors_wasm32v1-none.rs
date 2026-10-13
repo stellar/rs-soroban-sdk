@@ -45,24 +45,81 @@ impl ::core::cmp::PartialEq for Flag {
         __self_discr == __arg1_discr
     }
 }
+impl soroban_sdk::SpecName for Flag {
+    const SPEC_NAME: &'static str = {
+        const NAME: &str = "::test_errors::Flag";
+        const CHECKED_NAME: &str = {
+            if !(NAME.len() <= soroban_sdk::xdr::SC_SPEC_TYPE_NAME_LIMIT as usize) {
+                {
+                    ::core::panicking::panic_fmt(
+                        format_args!(
+                            "type `Flag` full name including its module path is longer than the contract spec\'s type name limit, shorten its module path or name: `::test_errors::Flag`",
+                        ),
+                    );
+                }
+            }
+            NAME
+        };
+        CHECKED_NAME
+    };
+}
+impl soroban_sdk::SpecTypeDef for Flag {
+    const SPEC_TYPE_DEF: soroban_sdk::xdr::r#const::ScSpecTypeDef =
+        soroban_sdk::xdr::r#const::ScSpecTypeDef::Udt(soroban_sdk::xdr::r#const::ScSpecTypeUdt {
+            name: soroban_sdk::xdr::r#const::StringM::try_from_str_or_panic(
+                <Self as soroban_sdk::SpecName>::SPEC_NAME,
+            ),
+        });
+}
 #[doc(hidden)]
 #[allow(dead_code)]
 #[link_section = "contractspecv0"]
-static __SPEC_XDR_TYPE_FLAG: [u8; 104usize] = Flag::spec_xdr();
+static __SPEC_XDR_TYPE_FLAG: [u8; Flag::spec_xdr().len()] = Flag::spec_xdr();
 impl Flag {
-    pub const fn spec_xdr() -> [u8; 104usize] {
-        *b"\0\0\0\x03\0\0\0\0\0\0\0\0\0\0\0\x04Flag\0\0\0\x05\0\0\0\0\0\0\0\x01A\0\0\0\0\0\0\0\0\0\0\0\0\0\0\x01B\0\0\0\0\0\0\x01\0\0\0\0\0\0\0\x01C\0\0\0\0\0\0\x02\0\0\0\0\0\0\0\x01D\0\0\0\0\0\0\x03\0\0\0\0\0\0\0\x01E\0\0\0\0\0\0\x04"
+    const __SPEC_XDR_ENTRY: soroban_sdk::xdr::r#const::ScSpecEntry =
+        soroban_sdk::xdr::r#const::ScSpecEntry::UdtEnumV0(
+            soroban_sdk::xdr::r#const::ScSpecUdtEnumV0 {
+                doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
+                lib: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
+                name: soroban_sdk::xdr::r#const::StringM::try_from_str_or_panic(
+                    <Flag as soroban_sdk::SpecName>::SPEC_NAME,
+                ),
+                cases: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[
+                    soroban_sdk::xdr::r#const::ScSpecUdtEnumCaseV0 {
+                        doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
+                        name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b"A"),
+                        value: 0u32,
+                    },
+                    soroban_sdk::xdr::r#const::ScSpecUdtEnumCaseV0 {
+                        doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
+                        name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b"B"),
+                        value: 1u32,
+                    },
+                    soroban_sdk::xdr::r#const::ScSpecUdtEnumCaseV0 {
+                        doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
+                        name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b"C"),
+                        value: 2u32,
+                    },
+                    soroban_sdk::xdr::r#const::ScSpecUdtEnumCaseV0 {
+                        doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
+                        name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b"D"),
+                        value: 3u32,
+                    },
+                    soroban_sdk::xdr::r#const::ScSpecUdtEnumCaseV0 {
+                        doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
+                        name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b"E"),
+                        value: 4u32,
+                    },
+                ]),
+            },
+        );
+    pub const fn spec_xdr() -> [u8; Flag::__SPEC_XDR_ENTRY.const_xdr_len()] {
+        const { Flag::__SPEC_XDR_ENTRY.const_to_xdr() }
     }
 }
-impl soroban_sdk::SpecShakingMarker for Flag {
-    #[doc(hidden)]
-    #[inline(always)]
-    fn spec_shaking_marker() {
-        {
-            static MARKER: [u8; 14usize] = *b"SpEcV1g\x19\x8d\xc6\x8aP\xeb\xb7";
-            let _ = unsafe { ::core::ptr::read_volatile(MARKER.as_ptr()) };
-        }
-    }
+impl soroban_sdk::SpecAnchor for Flag {
+    #[inline(never)]
+    fn spec_anchor() {}
 }
 impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for Flag {
     type Error = soroban_sdk::ConversionError;
@@ -71,6 +128,7 @@ impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for Flag {
         env: &soroban_sdk::Env,
         val: &soroban_sdk::Val,
     ) -> Result<Self, soroban_sdk::ConversionError> {
+        <Flag as soroban_sdk::SpecAnchor>::spec_anchor();
         use soroban_sdk::TryIntoVal;
         let discriminant: u32 = val.try_into_val(env)?;
         Ok(match discriminant {
@@ -90,6 +148,7 @@ impl soroban_sdk::TryFromVal<soroban_sdk::Env, Flag> for soroban_sdk::Val {
         env: &soroban_sdk::Env,
         val: &Flag,
     ) -> Result<Self, soroban_sdk::ConversionError> {
+        <Flag as soroban_sdk::SpecAnchor>::spec_anchor();
         Ok(match val {
             Flag::A => 0u32.into(),
             Flag::B => 1u32.into(),
@@ -135,13 +194,58 @@ impl ::core::cmp::PartialEq for Error {
         true
     }
 }
+impl soroban_sdk::SpecName for Error {
+    const SPEC_NAME: &'static str = {
+        const NAME: &str = "::test_errors::Error";
+        const CHECKED_NAME: &str = {
+            if !(NAME.len() <= soroban_sdk::xdr::SC_SPEC_TYPE_NAME_LIMIT as usize) {
+                {
+                    ::core::panicking::panic_fmt(
+                        format_args!(
+                            "type `Error` full name including its module path is longer than the contract spec\'s type name limit, shorten its module path or name: `::test_errors::Error`",
+                        ),
+                    );
+                }
+            }
+            NAME
+        };
+        CHECKED_NAME
+    };
+}
+impl soroban_sdk::SpecTypeDef for Error {
+    const SPEC_TYPE_DEF: soroban_sdk::xdr::r#const::ScSpecTypeDef =
+        soroban_sdk::xdr::r#const::ScSpecTypeDef::Udt(soroban_sdk::xdr::r#const::ScSpecTypeUdt {
+            name: soroban_sdk::xdr::r#const::StringM::try_from_str_or_panic(
+                <Self as soroban_sdk::SpecName>::SPEC_NAME,
+            ),
+        });
+}
 #[doc(hidden)]
 #[allow(dead_code)]
 #[link_section = "contractspecv0"]
-static __SPEC_XDR_TYPE_ERROR: [u8; 48usize] = Error::spec_xdr();
+static __SPEC_XDR_TYPE_ERROR: [u8; Error::spec_xdr().len()] = Error::spec_xdr();
 impl Error {
-    pub const fn spec_xdr() -> [u8; 48usize] {
-        *b"\0\0\0\x04\0\0\0\0\0\0\0\0\0\0\0\x05Error\0\0\0\0\0\0\x01\0\0\0\0\0\0\0\x07AnError\0\0\0\0\x01"
+    const __SPEC_XDR_ENTRY: soroban_sdk::xdr::r#const::ScSpecEntry =
+        soroban_sdk::xdr::r#const::ScSpecEntry::UdtErrorEnumV0(
+            soroban_sdk::xdr::r#const::ScSpecUdtErrorEnumV0 {
+                doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
+                lib: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
+                name: soroban_sdk::xdr::r#const::StringM::try_from_str_or_panic(
+                    <Error as soroban_sdk::SpecName>::SPEC_NAME,
+                ),
+                cases: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[
+                    soroban_sdk::xdr::r#const::ScSpecUdtErrorEnumCaseV0 {
+                        doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
+                        name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(
+                            b"AnError",
+                        ),
+                        value: 1u32,
+                    },
+                ]),
+            },
+        );
+    pub const fn spec_xdr() -> [u8; Error::__SPEC_XDR_ENTRY.const_xdr_len()] {
+        const { Error::__SPEC_XDR_ENTRY.const_to_xdr() }
     }
 }
 impl soroban_sdk::SpecShakingMarker for Error {
@@ -149,15 +253,23 @@ impl soroban_sdk::SpecShakingMarker for Error {
     #[inline(always)]
     fn spec_shaking_marker() {
         {
-            static MARKER: [u8; 14usize] = *b"SpEcV1\xbc\x04\x04\xea\xa4\x9e6(";
+            static MARKER: soroban_sdk::reexports_for_macros::soroban_spec::shaking::Marker =
+                soroban_sdk::reexports_for_macros::soroban_spec::shaking::generate_marker_for_xdr(
+                    &Error::spec_xdr(),
+                );
             let _ = unsafe { ::core::ptr::read_volatile(MARKER.as_ptr()) };
         }
     }
+}
+impl soroban_sdk::SpecAnchor for Error {
+    #[inline(never)]
+    fn spec_anchor() {}
 }
 impl TryFrom<soroban_sdk::Error> for Error {
     type Error = soroban_sdk::Error;
     #[inline(always)]
     fn try_from(error: soroban_sdk::Error) -> Result<Self, soroban_sdk::Error> {
+        <Error as soroban_sdk::SpecAnchor>::spec_anchor();
         if error.is_type(soroban_sdk::xdr::ScErrorType::Contract) {
             let discriminant = error.get_code();
             Ok(match discriminant {
@@ -185,6 +297,7 @@ impl From<Error> for soroban_sdk::Error {
 impl From<&Error> for soroban_sdk::Error {
     #[inline(always)]
     fn from(val: &Error) -> soroban_sdk::Error {
+        <Error as soroban_sdk::SpecAnchor>::spec_anchor();
         match val {
             Error::AnError => soroban_sdk::Error::from_contract_error(1u32),
         }
@@ -194,6 +307,7 @@ impl TryFrom<soroban_sdk::InvokeError> for Error {
     type Error = soroban_sdk::InvokeError;
     #[inline(always)]
     fn try_from(error: soroban_sdk::InvokeError) -> Result<Self, soroban_sdk::InvokeError> {
+        <Error as soroban_sdk::SpecAnchor>::spec_anchor();
         match error {
             soroban_sdk::InvokeError::Abort => Err(error),
             soroban_sdk::InvokeError::Contract(code) => Ok(match code {
@@ -219,6 +333,7 @@ impl From<Error> for soroban_sdk::InvokeError {
 impl From<&Error> for soroban_sdk::InvokeError {
     #[inline(always)]
     fn from(val: &Error) -> soroban_sdk::InvokeError {
+        <Error as soroban_sdk::SpecAnchor>::spec_anchor();
         match val {
             Error::AnError => soroban_sdk::InvokeError::Contract(1u32),
         }
@@ -301,12 +416,33 @@ mod __Contract__hello__spec {
     #[allow(non_upper_case_globals)]
     #[allow(dead_code)]
     #[link_section = "contractspecv0"]
-    static __SPEC_XDR_FN_HELLO: [u8; 64usize] = super::Contract::spec_xdr_hello();
+    static __SPEC_XDR_FN_HELLO: [u8; super::Contract::spec_xdr_hello().len()] =
+        super::Contract::spec_xdr_hello();
 }
 impl Contract {
+    #[allow(non_upper_case_globals)]
+    const __SPEC_XDR_ENTRY_hello: soroban_sdk::xdr::r#const::ScSpecEntry =
+        soroban_sdk::xdr::r#const::ScSpecEntry::FunctionV0(
+            soroban_sdk::xdr::r#const::ScSpecFunctionV0 {
+                doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
+                name: soroban_sdk::xdr::r#const::ScSymbol(
+                    soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b"hello"),
+                ),
+                inputs: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[
+                    soroban_sdk::xdr::r#const::ScSpecFunctionInputV0 {
+                        doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
+                        name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b"flag"),
+                        type_: <Flag as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
+                    },
+                ]),
+                outputs: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[
+                    <Result<Symbol, Error> as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
+                ]),
+            },
+        );
     #[allow(non_snake_case)]
-    pub const fn spec_xdr_hello() -> [u8; 64usize] {
-        *b"\0\0\0\0\0\0\0\0\0\0\0\x05hello\0\0\0\0\0\0\x01\0\0\0\0\0\0\0\x04flag\0\0\x07\xd0\0\0\0\x04Flag\0\0\0\x01\0\0\x03\xe9\0\0\0\x11\0\0\0\x03"
+    pub const fn spec_xdr_hello() -> [u8; Contract::__SPEC_XDR_ENTRY_hello.const_xdr_len()] {
+        const { Contract::__SPEC_XDR_ENTRY_hello.const_to_xdr() }
     }
 }
 impl Contract {}

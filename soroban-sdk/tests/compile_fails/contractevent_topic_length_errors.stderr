@@ -1,0 +1,11 @@
+error: topic `a_topic_that_is_longer_than_the_limit` has length 37 greater than length limit of 32
+ --> tests/compile_fails/contractevent_topic_length_errors.rs:3:27
+  |
+3 | #[contractevent(topics = ["a_topic_that_is_longer_than_the_limit"])]
+  |                           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+error: topic `ab_cd_ef_gh_ij_kl_mn_op_qr_st_uv_wx` has length 35 greater than length limit of 32
+  --> tests/compile_fails/contractevent_topic_length_errors.rs:11:12
+   |
+11 | pub struct AbCdEfGhIjKlMnOpQrStUvWx {
+   |            ^^^^^^^^^^^^^^^^^^^^^^^^

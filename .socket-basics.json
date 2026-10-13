@@ -1,0 +1,11 @@
+{
+  "workspace": ".",
+  "rust_sast_enabled": true,
+  "rust_disabled_rules": "rust-memory-safety,rust-panic-in-production,rust-sql-injection,rust-unsafe-usage",
+  "sast_ignore_overrides": "rust-hardcoded-secrets:soroban-spec/src/shaking.rs,rust-env-injection:soroban-sdk-macros/src/path.rs,rust-env-injection:soroban-sdk/build.rs,rust-integer-overflow:soroban-sdk-macros/src/doc.rs",
+  "secret_scanning_enabled": true,
+  "console_tabular_enabled": true,
+  "socket_tier_1_enabled": false,
+  "trivy_vuln_enabled": false,
+  "trufflehog_exclude_dir": "target,.git,yarn.lock,package-lock.json,pnpm-lock.yaml,Cargo.lock,go.sum,poetry.lock,Gemfile.lock,composer.lock"
+}

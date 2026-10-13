@@ -49,21 +49,65 @@ impl ::core::cmp::PartialEq for MyStruct {
         self.a == other.a && self.b == other.b
     }
 }
+impl soroban_sdk::SpecName for MyStruct {
+    const SPEC_NAME: &'static str = {
+        const NAME: &str = "::test_contracttrait_trait::MyStruct";
+        const CHECKED_NAME: &str = {
+            if !(NAME.len() <= soroban_sdk::xdr::SC_SPEC_TYPE_NAME_LIMIT as usize) {
+                {
+                    ::core::panicking::panic_fmt(
+                        format_args!(
+                            "type `MyStruct` full name including its module path is longer than the contract spec\'s type name limit, shorten its module path or name: `::test_contracttrait_trait::MyStruct`",
+                        ),
+                    );
+                }
+            }
+            NAME
+        };
+        CHECKED_NAME
+    };
+}
+impl soroban_sdk::SpecTypeDef for MyStruct {
+    const SPEC_TYPE_DEF: soroban_sdk::xdr::r#const::ScSpecTypeDef =
+        soroban_sdk::xdr::r#const::ScSpecTypeDef::Udt(soroban_sdk::xdr::r#const::ScSpecTypeUdt {
+            name: soroban_sdk::xdr::r#const::StringM::try_from_str_or_panic(
+                <Self as soroban_sdk::SpecName>::SPEC_NAME,
+            ),
+        });
+}
 #[doc(hidden)]
 #[allow(dead_code)]
-static __SPEC_XDR_TYPE_MYSTRUCT: [u8; 60usize] = MyStruct::spec_xdr();
+static __SPEC_XDR_TYPE_MYSTRUCT: [u8; MyStruct::spec_xdr().len()] = MyStruct::spec_xdr();
 impl MyStruct {
-    pub const fn spec_xdr() -> [u8; 60usize] {
-        *b"\0\0\0\x01\0\0\0\0\0\0\0\0\0\0\0\x08MyStruct\0\0\0\x02\0\0\0\0\0\0\0\x01a\0\0\0\0\0\0\x07\0\0\0\0\0\0\0\x01b\0\0\0\0\0\0\x07"
+    const __SPEC_XDR_ENTRY: soroban_sdk::xdr::r#const::ScSpecEntry =
+        soroban_sdk::xdr::r#const::ScSpecEntry::UdtStructV0(
+            soroban_sdk::xdr::r#const::ScSpecUdtStructV0 {
+                doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
+                lib: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
+                name: soroban_sdk::xdr::r#const::StringM::try_from_str_or_panic(
+                    <MyStruct as soroban_sdk::SpecName>::SPEC_NAME,
+                ),
+                fields: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[
+                    soroban_sdk::xdr::r#const::ScSpecUdtStructFieldV0 {
+                        doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
+                        name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b"a"),
+                        type_: <i64 as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
+                    },
+                    soroban_sdk::xdr::r#const::ScSpecUdtStructFieldV0 {
+                        doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
+                        name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b"b"),
+                        type_: <i64 as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
+                    },
+                ]),
+            },
+        );
+    pub const fn spec_xdr() -> [u8; MyStruct::__SPEC_XDR_ENTRY.const_xdr_len()] {
+        const { MyStruct::__SPEC_XDR_ENTRY.const_to_xdr() }
     }
 }
-impl soroban_sdk::SpecShakingMarker for MyStruct {
-    #[doc(hidden)]
-    #[inline(always)]
-    fn spec_shaking_marker() {
-        <i64 as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
-        <i64 as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
-    }
+impl soroban_sdk::SpecAnchor for MyStruct {
+    #[inline(never)]
+    fn spec_anchor() {}
 }
 impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for MyStruct {
     type Error = soroban_sdk::ConversionError;
@@ -71,6 +115,7 @@ impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for MyStruct {
         env: &soroban_sdk::Env,
         val: &soroban_sdk::Val,
     ) -> Result<Self, soroban_sdk::ConversionError> {
+        <MyStruct as soroban_sdk::SpecAnchor>::spec_anchor();
         use soroban_sdk::{ConversionError, EnvBase, MapObject, TryIntoVal, Val};
         const KEYS: [&'static str; 2usize] = ["a", "b"];
         let mut vals: [Val; 2usize] = [Val::VOID.to_val(); 2usize];
@@ -93,6 +138,7 @@ impl soroban_sdk::TryFromVal<soroban_sdk::Env, MyStruct> for soroban_sdk::Val {
         env: &soroban_sdk::Env,
         val: &MyStruct,
     ) -> Result<Self, soroban_sdk::ConversionError> {
+        <MyStruct as soroban_sdk::SpecAnchor>::spec_anchor();
         use soroban_sdk::{ConversionError, EnvBase, TryIntoVal, Val};
         const KEYS: [&'static str; 2usize] = ["a", "b"];
         let vals: [Val; 2usize] = [
@@ -478,18 +524,65 @@ impl ::core::cmp::PartialEq for MyEnumUnit {
         __self_discr == __arg1_discr
     }
 }
+impl soroban_sdk::SpecName for MyEnumUnit {
+    const SPEC_NAME: &'static str = {
+        const NAME: &str = "::test_contracttrait_trait::MyEnumUnit";
+        const CHECKED_NAME: &str = {
+            if !(NAME.len() <= soroban_sdk::xdr::SC_SPEC_TYPE_NAME_LIMIT as usize) {
+                {
+                    ::core::panicking::panic_fmt(
+                        format_args!(
+                            "type `MyEnumUnit` full name including its module path is longer than the contract spec\'s type name limit, shorten its module path or name: `::test_contracttrait_trait::MyEnumUnit`",
+                        ),
+                    );
+                }
+            }
+            NAME
+        };
+        CHECKED_NAME
+    };
+}
+impl soroban_sdk::SpecTypeDef for MyEnumUnit {
+    const SPEC_TYPE_DEF: soroban_sdk::xdr::r#const::ScSpecTypeDef =
+        soroban_sdk::xdr::r#const::ScSpecTypeDef::Udt(soroban_sdk::xdr::r#const::ScSpecTypeUdt {
+            name: soroban_sdk::xdr::r#const::StringM::try_from_str_or_panic(
+                <Self as soroban_sdk::SpecName>::SPEC_NAME,
+            ),
+        });
+}
 #[doc(hidden)]
 #[allow(dead_code)]
-static __SPEC_XDR_TYPE_MYENUMUNIT: [u8; 64usize] = MyEnumUnit::spec_xdr();
+static __SPEC_XDR_TYPE_MYENUMUNIT: [u8; MyEnumUnit::spec_xdr().len()] = MyEnumUnit::spec_xdr();
 impl MyEnumUnit {
-    pub const fn spec_xdr() -> [u8; 64usize] {
-        *b"\0\0\0\x03\0\0\0\0\0\0\0\0\0\0\0\nMyEnumUnit\0\0\0\0\0\x02\0\0\0\0\0\0\0\x01A\0\0\0\0\0\0\x01\0\0\0\0\0\0\0\x01B\0\0\0\0\0\0\x02"
+    const __SPEC_XDR_ENTRY: soroban_sdk::xdr::r#const::ScSpecEntry =
+        soroban_sdk::xdr::r#const::ScSpecEntry::UdtEnumV0(
+            soroban_sdk::xdr::r#const::ScSpecUdtEnumV0 {
+                doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
+                lib: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
+                name: soroban_sdk::xdr::r#const::StringM::try_from_str_or_panic(
+                    <MyEnumUnit as soroban_sdk::SpecName>::SPEC_NAME,
+                ),
+                cases: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[
+                    soroban_sdk::xdr::r#const::ScSpecUdtEnumCaseV0 {
+                        doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
+                        name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b"A"),
+                        value: 1u32,
+                    },
+                    soroban_sdk::xdr::r#const::ScSpecUdtEnumCaseV0 {
+                        doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
+                        name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b"B"),
+                        value: 2u32,
+                    },
+                ]),
+            },
+        );
+    pub const fn spec_xdr() -> [u8; MyEnumUnit::__SPEC_XDR_ENTRY.const_xdr_len()] {
+        const { MyEnumUnit::__SPEC_XDR_ENTRY.const_to_xdr() }
     }
 }
-impl soroban_sdk::SpecShakingMarker for MyEnumUnit {
-    #[doc(hidden)]
-    #[inline(always)]
-    fn spec_shaking_marker() {}
+impl soroban_sdk::SpecAnchor for MyEnumUnit {
+    #[inline(never)]
+    fn spec_anchor() {}
 }
 impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for MyEnumUnit {
     type Error = soroban_sdk::ConversionError;
@@ -498,6 +591,7 @@ impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for MyEnumUnit 
         env: &soroban_sdk::Env,
         val: &soroban_sdk::Val,
     ) -> Result<Self, soroban_sdk::ConversionError> {
+        <MyEnumUnit as soroban_sdk::SpecAnchor>::spec_anchor();
         use soroban_sdk::TryIntoVal;
         let discriminant: u32 = val.try_into_val(env)?;
         Ok(match discriminant {
@@ -514,6 +608,7 @@ impl soroban_sdk::TryFromVal<soroban_sdk::Env, MyEnumUnit> for soroban_sdk::Val 
         env: &soroban_sdk::Env,
         val: &MyEnumUnit,
     ) -> Result<Self, soroban_sdk::ConversionError> {
+        <MyEnumUnit as soroban_sdk::SpecAnchor>::spec_anchor();
         Ok(match val {
             MyEnumUnit::A => 1u32.into(),
             MyEnumUnit::B => 2u32.into(),
@@ -830,21 +925,86 @@ impl ::core::cmp::PartialEq for MyEnumVariants {
             }
     }
 }
+impl soroban_sdk::SpecName for MyEnumVariants {
+    const SPEC_NAME: &'static str = {
+        const NAME: &str = "::test_contracttrait_trait::MyEnumVariants";
+        const CHECKED_NAME: &str = {
+            if !(NAME.len() <= soroban_sdk::xdr::SC_SPEC_TYPE_NAME_LIMIT as usize) {
+                {
+                    ::core::panicking::panic_fmt(
+                        format_args!(
+                            "type `MyEnumVariants` full name including its module path is longer than the contract spec\'s type name limit, shorten its module path or name: `::test_contracttrait_trait::MyEnumVariants`",
+                        ),
+                    );
+                }
+            }
+            NAME
+        };
+        CHECKED_NAME
+    };
+}
+impl soroban_sdk::SpecTypeDef for MyEnumVariants {
+    const SPEC_TYPE_DEF: soroban_sdk::xdr::r#const::ScSpecTypeDef =
+        soroban_sdk::xdr::r#const::ScSpecTypeDef::Udt(soroban_sdk::xdr::r#const::ScSpecTypeUdt {
+            name: soroban_sdk::xdr::r#const::StringM::try_from_str_or_panic(
+                <Self as soroban_sdk::SpecName>::SPEC_NAME,
+            ),
+        });
+}
 #[doc(hidden)]
 #[allow(dead_code)]
-static __SPEC_XDR_TYPE_MYENUMVARIANTS: [u8; 128usize] = MyEnumVariants::spec_xdr();
+static __SPEC_XDR_TYPE_MYENUMVARIANTS: [u8; MyEnumVariants::spec_xdr().len()] =
+    MyEnumVariants::spec_xdr();
 impl MyEnumVariants {
-    pub const fn spec_xdr() -> [u8; 128usize] {
-        *b"\0\0\0\x02\0\0\0\0\0\0\0\0\0\0\0\x0eMyEnumVariants\0\0\0\0\0\x03\0\0\0\0\0\0\0\0\0\0\0\x04VarA\0\0\0\x01\0\0\0\0\0\0\0\x04VarB\0\0\0\x01\0\0\x07\xd0\0\0\0\x08MyStruct\0\0\0\x01\0\0\0\0\0\0\0\x04VarC\0\0\0\x01\0\0\x07\xd0\0\0\0\nMyEnumUnit\0\0"
+    const __SPEC_XDR_ENTRY: soroban_sdk::xdr::r#const::ScSpecEntry =
+        soroban_sdk::xdr::r#const::ScSpecEntry::UdtUnionV0(
+            soroban_sdk::xdr::r#const::ScSpecUdtUnionV0 {
+                doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
+                lib: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
+                name: soroban_sdk::xdr::r#const::StringM::try_from_str_or_panic(
+                    <MyEnumVariants as soroban_sdk::SpecName>::SPEC_NAME,
+                ),
+                cases: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[
+                    soroban_sdk::xdr::r#const::ScSpecUdtUnionCaseV0::VoidV0(
+                        soroban_sdk::xdr::r#const::ScSpecUdtUnionCaseVoidV0 {
+                            doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
+                            name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(
+                                b"VarA",
+                            ),
+                        },
+                    ),
+                    soroban_sdk::xdr::r#const::ScSpecUdtUnionCaseV0::TupleV0(
+                        soroban_sdk::xdr::r#const::ScSpecUdtUnionCaseTupleV0 {
+                            doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
+                            name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(
+                                b"VarB",
+                            ),
+                            type_: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[
+                                <MyStruct as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
+                            ]),
+                        },
+                    ),
+                    soroban_sdk::xdr::r#const::ScSpecUdtUnionCaseV0::TupleV0(
+                        soroban_sdk::xdr::r#const::ScSpecUdtUnionCaseTupleV0 {
+                            doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
+                            name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(
+                                b"VarC",
+                            ),
+                            type_: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[
+                                <MyEnumUnit as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
+                            ]),
+                        },
+                    ),
+                ]),
+            },
+        );
+    pub const fn spec_xdr() -> [u8; MyEnumVariants::__SPEC_XDR_ENTRY.const_xdr_len()] {
+        const { MyEnumVariants::__SPEC_XDR_ENTRY.const_to_xdr() }
     }
 }
-impl soroban_sdk::SpecShakingMarker for MyEnumVariants {
-    #[doc(hidden)]
-    #[inline(always)]
-    fn spec_shaking_marker() {
-        <MyStruct as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
-        <MyEnumUnit as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
-    }
+impl soroban_sdk::SpecAnchor for MyEnumVariants {
+    #[inline(never)]
+    fn spec_anchor() {}
 }
 impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for MyEnumVariants {
     type Error = soroban_sdk::ConversionError;
@@ -853,6 +1013,7 @@ impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for MyEnumVaria
         env: &soroban_sdk::Env,
         val: &soroban_sdk::Val,
     ) -> Result<Self, soroban_sdk::ConversionError> {
+        <MyEnumVariants as soroban_sdk::SpecAnchor>::spec_anchor();
         use soroban_sdk::{EnvBase, TryFromVal, TryIntoVal};
         const CASES: &'static [&'static str] = &["VarA", "VarB", "VarC"];
         let vec: soroban_sdk::Vec<soroban_sdk::Val> = val.try_into_val(env)?;
@@ -903,6 +1064,7 @@ impl soroban_sdk::TryFromVal<soroban_sdk::Env, MyEnumVariants> for soroban_sdk::
         env: &soroban_sdk::Env,
         val: &MyEnumVariants,
     ) -> Result<Self, soroban_sdk::ConversionError> {
+        <MyEnumVariants as soroban_sdk::SpecAnchor>::spec_anchor();
         use soroban_sdk::{TryFromVal, TryIntoVal};
         match val {
             MyEnumVariants::VarA => {
@@ -1427,23 +1589,14 @@ pub struct AllTypesClient<'a> {
     pub env: soroban_sdk::Env,
     pub address: soroban_sdk::Address,
     #[doc(hidden)]
-    set_auths: Option<&'a [soroban_sdk::xdr::SorobanAuthorizationEntry]>,
-    #[doc(hidden)]
-    mock_auths: Option<&'a [soroban_sdk::testutils::MockAuth<'a>]>,
-    #[doc(hidden)]
-    mock_all_auths: bool,
-    #[doc(hidden)]
-    allow_non_root_auth: bool,
+    config: soroban_sdk::testutils::ClientInternalConfig<'a>,
 }
 impl<'a> AllTypesClient<'a> {
     pub fn new(env: &soroban_sdk::Env, address: &soroban_sdk::Address) -> Self {
         Self {
             env: env.clone(),
             address: address.clone(),
-            set_auths: None,
-            mock_auths: None,
-            mock_all_auths: false,
-            allow_non_root_auth: false,
+            config: soroban_sdk::testutils::ClientInternalConfig::default(),
         }
     }
     /// Set authorizations in the environment which will be consumed by
@@ -1458,10 +1611,7 @@ impl<'a> AllTypesClient<'a> {
         Self {
             env: self.env.clone(),
             address: self.address.clone(),
-            set_auths: Some(auths),
-            mock_auths: self.mock_auths.clone(),
-            mock_all_auths: false,
-            allow_non_root_auth: false,
+            config: self.config.set_auths(auths),
         }
     }
     /// Mock authorizations in the environment which will cause matching invokes
@@ -1473,10 +1623,7 @@ impl<'a> AllTypesClient<'a> {
         Self {
             env: self.env.clone(),
             address: self.address.clone(),
-            set_auths: self.set_auths.clone(),
-            mock_auths: Some(mock_auths),
-            mock_all_auths: false,
-            allow_non_root_auth: false,
+            config: self.config.mock_auths(mock_auths),
         }
     }
     /// Mock all calls to the `Address::require_auth` and
@@ -1489,10 +1636,7 @@ impl<'a> AllTypesClient<'a> {
         Self {
             env: self.env.clone(),
             address: self.address.clone(),
-            set_auths: None,
-            mock_auths: None,
-            mock_all_auths: true,
-            allow_non_root_auth: false,
+            config: self.config.mock_all_auths(),
         }
     }
     /// A version of `mock_all_auths` that allows authorizations that
@@ -1508,10 +1652,7 @@ impl<'a> AllTypesClient<'a> {
         Self {
             env: self.env.clone(),
             address: self.address.clone(),
-            set_auths: None,
-            mock_auths: None,
-            mock_all_auths: true,
-            allow_non_root_auth: true,
+            config: self.config.mock_all_auths_allowing_non_root_auth(),
         }
     }
 }
@@ -1519,27 +1660,7 @@ impl<'a> AllTypesClient<'a> {
     /// Test u32 values.
     /// Returns the input unchanged.
     pub fn test_u32(&self, v: &u32) -> u32 {
-        use core::ops::Not;
-        let old_auth_manager = self
-            .env
-            .in_contract()
-            .not()
-            .then(|| self.env.host().snapshot_auth_manager().unwrap());
-        {
-            if let Some(set_auths) = self.set_auths {
-                self.env.set_auths(set_auths);
-            }
-            if let Some(mock_auths) = self.mock_auths {
-                self.env.mock_auths(mock_auths);
-            }
-            if self.mock_all_auths {
-                if self.allow_non_root_auth {
-                    self.env.mock_all_auths_allowing_non_root_auth();
-                } else {
-                    self.env.mock_all_auths();
-                }
-            }
-        }
+        let _call_scope = soroban_sdk::testutils::ClientCallScope::enter(&self.env, self.config);
         use soroban_sdk::{FromVal, IntoVal};
         let res = self.env.invoke_contract(
             &self.address,
@@ -1550,9 +1671,6 @@ impl<'a> AllTypesClient<'a> {
             },
             ::soroban_sdk::Vec::from_array(&self.env, [v.into_val(&self.env)]),
         );
-        if let Some(old_auth_manager) = old_auth_manager {
-            self.env.host().set_auth_manager(old_auth_manager).unwrap();
-        }
         res
     }
     /// Test u32 values.
@@ -1564,27 +1682,7 @@ impl<'a> AllTypesClient<'a> {
         Result<u32, <u32 as soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val>>::Error>,
         Result<soroban_sdk::Error, soroban_sdk::InvokeError>,
     > {
-        use core::ops::Not;
-        let old_auth_manager = self
-            .env
-            .in_contract()
-            .not()
-            .then(|| self.env.host().snapshot_auth_manager().unwrap());
-        {
-            if let Some(set_auths) = self.set_auths {
-                self.env.set_auths(set_auths);
-            }
-            if let Some(mock_auths) = self.mock_auths {
-                self.env.mock_auths(mock_auths);
-            }
-            if self.mock_all_auths {
-                if self.allow_non_root_auth {
-                    self.env.mock_all_auths_allowing_non_root_auth();
-                } else {
-                    self.env.mock_all_auths();
-                }
-            }
-        }
+        let _call_scope = soroban_sdk::testutils::ClientCallScope::enter(&self.env, self.config);
         use soroban_sdk::{FromVal, IntoVal};
         let res = self.env.try_invoke_contract(
             &self.address,
@@ -1595,34 +1693,11 @@ impl<'a> AllTypesClient<'a> {
             },
             ::soroban_sdk::Vec::from_array(&self.env, [v.into_val(&self.env)]),
         );
-        if let Some(old_auth_manager) = old_auth_manager {
-            self.env.host().set_auth_manager(old_auth_manager).unwrap();
-        }
         res
     }
     /// Test i32 values.
     pub fn test_i32(&self, v: &i32) -> i32 {
-        use core::ops::Not;
-        let old_auth_manager = self
-            .env
-            .in_contract()
-            .not()
-            .then(|| self.env.host().snapshot_auth_manager().unwrap());
-        {
-            if let Some(set_auths) = self.set_auths {
-                self.env.set_auths(set_auths);
-            }
-            if let Some(mock_auths) = self.mock_auths {
-                self.env.mock_auths(mock_auths);
-            }
-            if self.mock_all_auths {
-                if self.allow_non_root_auth {
-                    self.env.mock_all_auths_allowing_non_root_auth();
-                } else {
-                    self.env.mock_all_auths();
-                }
-            }
-        }
+        let _call_scope = soroban_sdk::testutils::ClientCallScope::enter(&self.env, self.config);
         use soroban_sdk::{FromVal, IntoVal};
         let res = self.env.invoke_contract(
             &self.address,
@@ -1633,9 +1708,6 @@ impl<'a> AllTypesClient<'a> {
             },
             ::soroban_sdk::Vec::from_array(&self.env, [v.into_val(&self.env)]),
         );
-        if let Some(old_auth_manager) = old_auth_manager {
-            self.env.host().set_auth_manager(old_auth_manager).unwrap();
-        }
         res
     }
     /// Test i32 values.
@@ -1646,27 +1718,7 @@ impl<'a> AllTypesClient<'a> {
         Result<i32, <i32 as soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val>>::Error>,
         Result<soroban_sdk::Error, soroban_sdk::InvokeError>,
     > {
-        use core::ops::Not;
-        let old_auth_manager = self
-            .env
-            .in_contract()
-            .not()
-            .then(|| self.env.host().snapshot_auth_manager().unwrap());
-        {
-            if let Some(set_auths) = self.set_auths {
-                self.env.set_auths(set_auths);
-            }
-            if let Some(mock_auths) = self.mock_auths {
-                self.env.mock_auths(mock_auths);
-            }
-            if self.mock_all_auths {
-                if self.allow_non_root_auth {
-                    self.env.mock_all_auths_allowing_non_root_auth();
-                } else {
-                    self.env.mock_all_auths();
-                }
-            }
-        }
+        let _call_scope = soroban_sdk::testutils::ClientCallScope::enter(&self.env, self.config);
         use soroban_sdk::{FromVal, IntoVal};
         let res = self.env.try_invoke_contract(
             &self.address,
@@ -1677,33 +1729,10 @@ impl<'a> AllTypesClient<'a> {
             },
             ::soroban_sdk::Vec::from_array(&self.env, [v.into_val(&self.env)]),
         );
-        if let Some(old_auth_manager) = old_auth_manager {
-            self.env.host().set_auth_manager(old_auth_manager).unwrap();
-        }
         res
     }
     pub fn test_u64(&self, v: &u64) -> u64 {
-        use core::ops::Not;
-        let old_auth_manager = self
-            .env
-            .in_contract()
-            .not()
-            .then(|| self.env.host().snapshot_auth_manager().unwrap());
-        {
-            if let Some(set_auths) = self.set_auths {
-                self.env.set_auths(set_auths);
-            }
-            if let Some(mock_auths) = self.mock_auths {
-                self.env.mock_auths(mock_auths);
-            }
-            if self.mock_all_auths {
-                if self.allow_non_root_auth {
-                    self.env.mock_all_auths_allowing_non_root_auth();
-                } else {
-                    self.env.mock_all_auths();
-                }
-            }
-        }
+        let _call_scope = soroban_sdk::testutils::ClientCallScope::enter(&self.env, self.config);
         use soroban_sdk::{FromVal, IntoVal};
         let res = self.env.invoke_contract(
             &self.address,
@@ -1714,9 +1743,6 @@ impl<'a> AllTypesClient<'a> {
             },
             ::soroban_sdk::Vec::from_array(&self.env, [v.into_val(&self.env)]),
         );
-        if let Some(old_auth_manager) = old_auth_manager {
-            self.env.host().set_auth_manager(old_auth_manager).unwrap();
-        }
         res
     }
     pub fn try_test_u64(
@@ -1726,27 +1752,7 @@ impl<'a> AllTypesClient<'a> {
         Result<u64, <u64 as soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val>>::Error>,
         Result<soroban_sdk::Error, soroban_sdk::InvokeError>,
     > {
-        use core::ops::Not;
-        let old_auth_manager = self
-            .env
-            .in_contract()
-            .not()
-            .then(|| self.env.host().snapshot_auth_manager().unwrap());
-        {
-            if let Some(set_auths) = self.set_auths {
-                self.env.set_auths(set_auths);
-            }
-            if let Some(mock_auths) = self.mock_auths {
-                self.env.mock_auths(mock_auths);
-            }
-            if self.mock_all_auths {
-                if self.allow_non_root_auth {
-                    self.env.mock_all_auths_allowing_non_root_auth();
-                } else {
-                    self.env.mock_all_auths();
-                }
-            }
-        }
+        let _call_scope = soroban_sdk::testutils::ClientCallScope::enter(&self.env, self.config);
         use soroban_sdk::{FromVal, IntoVal};
         let res = self.env.try_invoke_contract(
             &self.address,
@@ -1757,33 +1763,10 @@ impl<'a> AllTypesClient<'a> {
             },
             ::soroban_sdk::Vec::from_array(&self.env, [v.into_val(&self.env)]),
         );
-        if let Some(old_auth_manager) = old_auth_manager {
-            self.env.host().set_auth_manager(old_auth_manager).unwrap();
-        }
         res
     }
     pub fn test_i64(&self, v: &i64) -> i64 {
-        use core::ops::Not;
-        let old_auth_manager = self
-            .env
-            .in_contract()
-            .not()
-            .then(|| self.env.host().snapshot_auth_manager().unwrap());
-        {
-            if let Some(set_auths) = self.set_auths {
-                self.env.set_auths(set_auths);
-            }
-            if let Some(mock_auths) = self.mock_auths {
-                self.env.mock_auths(mock_auths);
-            }
-            if self.mock_all_auths {
-                if self.allow_non_root_auth {
-                    self.env.mock_all_auths_allowing_non_root_auth();
-                } else {
-                    self.env.mock_all_auths();
-                }
-            }
-        }
+        let _call_scope = soroban_sdk::testutils::ClientCallScope::enter(&self.env, self.config);
         use soroban_sdk::{FromVal, IntoVal};
         let res = self.env.invoke_contract(
             &self.address,
@@ -1794,9 +1777,6 @@ impl<'a> AllTypesClient<'a> {
             },
             ::soroban_sdk::Vec::from_array(&self.env, [v.into_val(&self.env)]),
         );
-        if let Some(old_auth_manager) = old_auth_manager {
-            self.env.host().set_auth_manager(old_auth_manager).unwrap();
-        }
         res
     }
     pub fn try_test_i64(
@@ -1806,27 +1786,7 @@ impl<'a> AllTypesClient<'a> {
         Result<i64, <i64 as soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val>>::Error>,
         Result<soroban_sdk::Error, soroban_sdk::InvokeError>,
     > {
-        use core::ops::Not;
-        let old_auth_manager = self
-            .env
-            .in_contract()
-            .not()
-            .then(|| self.env.host().snapshot_auth_manager().unwrap());
-        {
-            if let Some(set_auths) = self.set_auths {
-                self.env.set_auths(set_auths);
-            }
-            if let Some(mock_auths) = self.mock_auths {
-                self.env.mock_auths(mock_auths);
-            }
-            if self.mock_all_auths {
-                if self.allow_non_root_auth {
-                    self.env.mock_all_auths_allowing_non_root_auth();
-                } else {
-                    self.env.mock_all_auths();
-                }
-            }
-        }
+        let _call_scope = soroban_sdk::testutils::ClientCallScope::enter(&self.env, self.config);
         use soroban_sdk::{FromVal, IntoVal};
         let res = self.env.try_invoke_contract(
             &self.address,
@@ -1837,33 +1797,10 @@ impl<'a> AllTypesClient<'a> {
             },
             ::soroban_sdk::Vec::from_array(&self.env, [v.into_val(&self.env)]),
         );
-        if let Some(old_auth_manager) = old_auth_manager {
-            self.env.host().set_auth_manager(old_auth_manager).unwrap();
-        }
         res
     }
     pub fn test_u128(&self, v: &u128) -> u128 {
-        use core::ops::Not;
-        let old_auth_manager = self
-            .env
-            .in_contract()
-            .not()
-            .then(|| self.env.host().snapshot_auth_manager().unwrap());
-        {
-            if let Some(set_auths) = self.set_auths {
-                self.env.set_auths(set_auths);
-            }
-            if let Some(mock_auths) = self.mock_auths {
-                self.env.mock_auths(mock_auths);
-            }
-            if self.mock_all_auths {
-                if self.allow_non_root_auth {
-                    self.env.mock_all_auths_allowing_non_root_auth();
-                } else {
-                    self.env.mock_all_auths();
-                }
-            }
-        }
+        let _call_scope = soroban_sdk::testutils::ClientCallScope::enter(&self.env, self.config);
         use soroban_sdk::{FromVal, IntoVal};
         let res = self.env.invoke_contract(
             &self.address,
@@ -1874,9 +1811,6 @@ impl<'a> AllTypesClient<'a> {
             },
             ::soroban_sdk::Vec::from_array(&self.env, [v.into_val(&self.env)]),
         );
-        if let Some(old_auth_manager) = old_auth_manager {
-            self.env.host().set_auth_manager(old_auth_manager).unwrap();
-        }
         res
     }
     pub fn try_test_u128(
@@ -1886,27 +1820,7 @@ impl<'a> AllTypesClient<'a> {
         Result<u128, <u128 as soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val>>::Error>,
         Result<soroban_sdk::Error, soroban_sdk::InvokeError>,
     > {
-        use core::ops::Not;
-        let old_auth_manager = self
-            .env
-            .in_contract()
-            .not()
-            .then(|| self.env.host().snapshot_auth_manager().unwrap());
-        {
-            if let Some(set_auths) = self.set_auths {
-                self.env.set_auths(set_auths);
-            }
-            if let Some(mock_auths) = self.mock_auths {
-                self.env.mock_auths(mock_auths);
-            }
-            if self.mock_all_auths {
-                if self.allow_non_root_auth {
-                    self.env.mock_all_auths_allowing_non_root_auth();
-                } else {
-                    self.env.mock_all_auths();
-                }
-            }
-        }
+        let _call_scope = soroban_sdk::testutils::ClientCallScope::enter(&self.env, self.config);
         use soroban_sdk::{FromVal, IntoVal};
         let res = self.env.try_invoke_contract(
             &self.address,
@@ -1917,33 +1831,10 @@ impl<'a> AllTypesClient<'a> {
             },
             ::soroban_sdk::Vec::from_array(&self.env, [v.into_val(&self.env)]),
         );
-        if let Some(old_auth_manager) = old_auth_manager {
-            self.env.host().set_auth_manager(old_auth_manager).unwrap();
-        }
         res
     }
     pub fn test_i128(&self, v: &i128) -> i128 {
-        use core::ops::Not;
-        let old_auth_manager = self
-            .env
-            .in_contract()
-            .not()
-            .then(|| self.env.host().snapshot_auth_manager().unwrap());
-        {
-            if let Some(set_auths) = self.set_auths {
-                self.env.set_auths(set_auths);
-            }
-            if let Some(mock_auths) = self.mock_auths {
-                self.env.mock_auths(mock_auths);
-            }
-            if self.mock_all_auths {
-                if self.allow_non_root_auth {
-                    self.env.mock_all_auths_allowing_non_root_auth();
-                } else {
-                    self.env.mock_all_auths();
-                }
-            }
-        }
+        let _call_scope = soroban_sdk::testutils::ClientCallScope::enter(&self.env, self.config);
         use soroban_sdk::{FromVal, IntoVal};
         let res = self.env.invoke_contract(
             &self.address,
@@ -1954,9 +1845,6 @@ impl<'a> AllTypesClient<'a> {
             },
             ::soroban_sdk::Vec::from_array(&self.env, [v.into_val(&self.env)]),
         );
-        if let Some(old_auth_manager) = old_auth_manager {
-            self.env.host().set_auth_manager(old_auth_manager).unwrap();
-        }
         res
     }
     pub fn try_test_i128(
@@ -1966,27 +1854,7 @@ impl<'a> AllTypesClient<'a> {
         Result<i128, <i128 as soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val>>::Error>,
         Result<soroban_sdk::Error, soroban_sdk::InvokeError>,
     > {
-        use core::ops::Not;
-        let old_auth_manager = self
-            .env
-            .in_contract()
-            .not()
-            .then(|| self.env.host().snapshot_auth_manager().unwrap());
-        {
-            if let Some(set_auths) = self.set_auths {
-                self.env.set_auths(set_auths);
-            }
-            if let Some(mock_auths) = self.mock_auths {
-                self.env.mock_auths(mock_auths);
-            }
-            if self.mock_all_auths {
-                if self.allow_non_root_auth {
-                    self.env.mock_all_auths_allowing_non_root_auth();
-                } else {
-                    self.env.mock_all_auths();
-                }
-            }
-        }
+        let _call_scope = soroban_sdk::testutils::ClientCallScope::enter(&self.env, self.config);
         use soroban_sdk::{FromVal, IntoVal};
         let res = self.env.try_invoke_contract(
             &self.address,
@@ -1997,33 +1865,10 @@ impl<'a> AllTypesClient<'a> {
             },
             ::soroban_sdk::Vec::from_array(&self.env, [v.into_val(&self.env)]),
         );
-        if let Some(old_auth_manager) = old_auth_manager {
-            self.env.host().set_auth_manager(old_auth_manager).unwrap();
-        }
         res
     }
     pub fn test_bool(&self, v: &bool) -> bool {
-        use core::ops::Not;
-        let old_auth_manager = self
-            .env
-            .in_contract()
-            .not()
-            .then(|| self.env.host().snapshot_auth_manager().unwrap());
-        {
-            if let Some(set_auths) = self.set_auths {
-                self.env.set_auths(set_auths);
-            }
-            if let Some(mock_auths) = self.mock_auths {
-                self.env.mock_auths(mock_auths);
-            }
-            if self.mock_all_auths {
-                if self.allow_non_root_auth {
-                    self.env.mock_all_auths_allowing_non_root_auth();
-                } else {
-                    self.env.mock_all_auths();
-                }
-            }
-        }
+        let _call_scope = soroban_sdk::testutils::ClientCallScope::enter(&self.env, self.config);
         use soroban_sdk::{FromVal, IntoVal};
         let res = self.env.invoke_contract(
             &self.address,
@@ -2034,9 +1879,6 @@ impl<'a> AllTypesClient<'a> {
             },
             ::soroban_sdk::Vec::from_array(&self.env, [v.into_val(&self.env)]),
         );
-        if let Some(old_auth_manager) = old_auth_manager {
-            self.env.host().set_auth_manager(old_auth_manager).unwrap();
-        }
         res
     }
     pub fn try_test_bool(
@@ -2046,27 +1888,7 @@ impl<'a> AllTypesClient<'a> {
         Result<bool, <bool as soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val>>::Error>,
         Result<soroban_sdk::Error, soroban_sdk::InvokeError>,
     > {
-        use core::ops::Not;
-        let old_auth_manager = self
-            .env
-            .in_contract()
-            .not()
-            .then(|| self.env.host().snapshot_auth_manager().unwrap());
-        {
-            if let Some(set_auths) = self.set_auths {
-                self.env.set_auths(set_auths);
-            }
-            if let Some(mock_auths) = self.mock_auths {
-                self.env.mock_auths(mock_auths);
-            }
-            if self.mock_all_auths {
-                if self.allow_non_root_auth {
-                    self.env.mock_all_auths_allowing_non_root_auth();
-                } else {
-                    self.env.mock_all_auths();
-                }
-            }
-        }
+        let _call_scope = soroban_sdk::testutils::ClientCallScope::enter(&self.env, self.config);
         use soroban_sdk::{FromVal, IntoVal};
         let res = self.env.try_invoke_contract(
             &self.address,
@@ -2077,42 +1899,16 @@ impl<'a> AllTypesClient<'a> {
             },
             ::soroban_sdk::Vec::from_array(&self.env, [v.into_val(&self.env)]),
         );
-        if let Some(old_auth_manager) = old_auth_manager {
-            self.env.host().set_auth_manager(old_auth_manager).unwrap();
-        }
         res
     }
     pub fn test_address(&self, v: &Address) -> Address {
-        use core::ops::Not;
-        let old_auth_manager = self
-            .env
-            .in_contract()
-            .not()
-            .then(|| self.env.host().snapshot_auth_manager().unwrap());
-        {
-            if let Some(set_auths) = self.set_auths {
-                self.env.set_auths(set_auths);
-            }
-            if let Some(mock_auths) = self.mock_auths {
-                self.env.mock_auths(mock_auths);
-            }
-            if self.mock_all_auths {
-                if self.allow_non_root_auth {
-                    self.env.mock_all_auths_allowing_non_root_auth();
-                } else {
-                    self.env.mock_all_auths();
-                }
-            }
-        }
+        let _call_scope = soroban_sdk::testutils::ClientCallScope::enter(&self.env, self.config);
         use soroban_sdk::{FromVal, IntoVal};
         let res = self.env.invoke_contract(
             &self.address,
             &{ soroban_sdk::Symbol::new(&self.env, "test_address") },
             ::soroban_sdk::Vec::from_array(&self.env, [v.into_val(&self.env)]),
         );
-        if let Some(old_auth_manager) = old_auth_manager {
-            self.env.host().set_auth_manager(old_auth_manager).unwrap();
-        }
         res
     }
     pub fn try_test_address(
@@ -2125,69 +1921,23 @@ impl<'a> AllTypesClient<'a> {
         >,
         Result<soroban_sdk::Error, soroban_sdk::InvokeError>,
     > {
-        use core::ops::Not;
-        let old_auth_manager = self
-            .env
-            .in_contract()
-            .not()
-            .then(|| self.env.host().snapshot_auth_manager().unwrap());
-        {
-            if let Some(set_auths) = self.set_auths {
-                self.env.set_auths(set_auths);
-            }
-            if let Some(mock_auths) = self.mock_auths {
-                self.env.mock_auths(mock_auths);
-            }
-            if self.mock_all_auths {
-                if self.allow_non_root_auth {
-                    self.env.mock_all_auths_allowing_non_root_auth();
-                } else {
-                    self.env.mock_all_auths();
-                }
-            }
-        }
+        let _call_scope = soroban_sdk::testutils::ClientCallScope::enter(&self.env, self.config);
         use soroban_sdk::{FromVal, IntoVal};
         let res = self.env.try_invoke_contract(
             &self.address,
             &{ soroban_sdk::Symbol::new(&self.env, "test_address") },
             ::soroban_sdk::Vec::from_array(&self.env, [v.into_val(&self.env)]),
         );
-        if let Some(old_auth_manager) = old_auth_manager {
-            self.env.host().set_auth_manager(old_auth_manager).unwrap();
-        }
         res
     }
     pub fn test_bytes(&self, v: &Bytes) -> Bytes {
-        use core::ops::Not;
-        let old_auth_manager = self
-            .env
-            .in_contract()
-            .not()
-            .then(|| self.env.host().snapshot_auth_manager().unwrap());
-        {
-            if let Some(set_auths) = self.set_auths {
-                self.env.set_auths(set_auths);
-            }
-            if let Some(mock_auths) = self.mock_auths {
-                self.env.mock_auths(mock_auths);
-            }
-            if self.mock_all_auths {
-                if self.allow_non_root_auth {
-                    self.env.mock_all_auths_allowing_non_root_auth();
-                } else {
-                    self.env.mock_all_auths();
-                }
-            }
-        }
+        let _call_scope = soroban_sdk::testutils::ClientCallScope::enter(&self.env, self.config);
         use soroban_sdk::{FromVal, IntoVal};
         let res = self.env.invoke_contract(
             &self.address,
             &{ soroban_sdk::Symbol::new(&self.env, "test_bytes") },
             ::soroban_sdk::Vec::from_array(&self.env, [v.into_val(&self.env)]),
         );
-        if let Some(old_auth_manager) = old_auth_manager {
-            self.env.host().set_auth_manager(old_auth_manager).unwrap();
-        }
         res
     }
     pub fn try_test_bytes(
@@ -2200,69 +1950,23 @@ impl<'a> AllTypesClient<'a> {
         >,
         Result<soroban_sdk::Error, soroban_sdk::InvokeError>,
     > {
-        use core::ops::Not;
-        let old_auth_manager = self
-            .env
-            .in_contract()
-            .not()
-            .then(|| self.env.host().snapshot_auth_manager().unwrap());
-        {
-            if let Some(set_auths) = self.set_auths {
-                self.env.set_auths(set_auths);
-            }
-            if let Some(mock_auths) = self.mock_auths {
-                self.env.mock_auths(mock_auths);
-            }
-            if self.mock_all_auths {
-                if self.allow_non_root_auth {
-                    self.env.mock_all_auths_allowing_non_root_auth();
-                } else {
-                    self.env.mock_all_auths();
-                }
-            }
-        }
+        let _call_scope = soroban_sdk::testutils::ClientCallScope::enter(&self.env, self.config);
         use soroban_sdk::{FromVal, IntoVal};
         let res = self.env.try_invoke_contract(
             &self.address,
             &{ soroban_sdk::Symbol::new(&self.env, "test_bytes") },
             ::soroban_sdk::Vec::from_array(&self.env, [v.into_val(&self.env)]),
         );
-        if let Some(old_auth_manager) = old_auth_manager {
-            self.env.host().set_auth_manager(old_auth_manager).unwrap();
-        }
         res
     }
     pub fn test_bytes_n(&self, v: &BytesN<32>) -> BytesN<32> {
-        use core::ops::Not;
-        let old_auth_manager = self
-            .env
-            .in_contract()
-            .not()
-            .then(|| self.env.host().snapshot_auth_manager().unwrap());
-        {
-            if let Some(set_auths) = self.set_auths {
-                self.env.set_auths(set_auths);
-            }
-            if let Some(mock_auths) = self.mock_auths {
-                self.env.mock_auths(mock_auths);
-            }
-            if self.mock_all_auths {
-                if self.allow_non_root_auth {
-                    self.env.mock_all_auths_allowing_non_root_auth();
-                } else {
-                    self.env.mock_all_auths();
-                }
-            }
-        }
+        let _call_scope = soroban_sdk::testutils::ClientCallScope::enter(&self.env, self.config);
         use soroban_sdk::{FromVal, IntoVal};
         let res = self.env.invoke_contract(
             &self.address,
             &{ soroban_sdk::Symbol::new(&self.env, "test_bytes_n") },
             ::soroban_sdk::Vec::from_array(&self.env, [v.into_val(&self.env)]),
         );
-        if let Some(old_auth_manager) = old_auth_manager {
-            self.env.host().set_auth_manager(old_auth_manager).unwrap();
-        }
         res
     }
     pub fn try_test_bytes_n(
@@ -2275,69 +1979,23 @@ impl<'a> AllTypesClient<'a> {
         >,
         Result<soroban_sdk::Error, soroban_sdk::InvokeError>,
     > {
-        use core::ops::Not;
-        let old_auth_manager = self
-            .env
-            .in_contract()
-            .not()
-            .then(|| self.env.host().snapshot_auth_manager().unwrap());
-        {
-            if let Some(set_auths) = self.set_auths {
-                self.env.set_auths(set_auths);
-            }
-            if let Some(mock_auths) = self.mock_auths {
-                self.env.mock_auths(mock_auths);
-            }
-            if self.mock_all_auths {
-                if self.allow_non_root_auth {
-                    self.env.mock_all_auths_allowing_non_root_auth();
-                } else {
-                    self.env.mock_all_auths();
-                }
-            }
-        }
+        let _call_scope = soroban_sdk::testutils::ClientCallScope::enter(&self.env, self.config);
         use soroban_sdk::{FromVal, IntoVal};
         let res = self.env.try_invoke_contract(
             &self.address,
             &{ soroban_sdk::Symbol::new(&self.env, "test_bytes_n") },
             ::soroban_sdk::Vec::from_array(&self.env, [v.into_val(&self.env)]),
         );
-        if let Some(old_auth_manager) = old_auth_manager {
-            self.env.host().set_auth_manager(old_auth_manager).unwrap();
-        }
         res
     }
     pub fn test_string(&self, v: &String) -> String {
-        use core::ops::Not;
-        let old_auth_manager = self
-            .env
-            .in_contract()
-            .not()
-            .then(|| self.env.host().snapshot_auth_manager().unwrap());
-        {
-            if let Some(set_auths) = self.set_auths {
-                self.env.set_auths(set_auths);
-            }
-            if let Some(mock_auths) = self.mock_auths {
-                self.env.mock_auths(mock_auths);
-            }
-            if self.mock_all_auths {
-                if self.allow_non_root_auth {
-                    self.env.mock_all_auths_allowing_non_root_auth();
-                } else {
-                    self.env.mock_all_auths();
-                }
-            }
-        }
+        let _call_scope = soroban_sdk::testutils::ClientCallScope::enter(&self.env, self.config);
         use soroban_sdk::{FromVal, IntoVal};
         let res = self.env.invoke_contract(
             &self.address,
             &{ soroban_sdk::Symbol::new(&self.env, "test_string") },
             ::soroban_sdk::Vec::from_array(&self.env, [v.into_val(&self.env)]),
         );
-        if let Some(old_auth_manager) = old_auth_manager {
-            self.env.host().set_auth_manager(old_auth_manager).unwrap();
-        }
         res
     }
     pub fn try_test_string(
@@ -2350,69 +2008,23 @@ impl<'a> AllTypesClient<'a> {
         >,
         Result<soroban_sdk::Error, soroban_sdk::InvokeError>,
     > {
-        use core::ops::Not;
-        let old_auth_manager = self
-            .env
-            .in_contract()
-            .not()
-            .then(|| self.env.host().snapshot_auth_manager().unwrap());
-        {
-            if let Some(set_auths) = self.set_auths {
-                self.env.set_auths(set_auths);
-            }
-            if let Some(mock_auths) = self.mock_auths {
-                self.env.mock_auths(mock_auths);
-            }
-            if self.mock_all_auths {
-                if self.allow_non_root_auth {
-                    self.env.mock_all_auths_allowing_non_root_auth();
-                } else {
-                    self.env.mock_all_auths();
-                }
-            }
-        }
+        let _call_scope = soroban_sdk::testutils::ClientCallScope::enter(&self.env, self.config);
         use soroban_sdk::{FromVal, IntoVal};
         let res = self.env.try_invoke_contract(
             &self.address,
             &{ soroban_sdk::Symbol::new(&self.env, "test_string") },
             ::soroban_sdk::Vec::from_array(&self.env, [v.into_val(&self.env)]),
         );
-        if let Some(old_auth_manager) = old_auth_manager {
-            self.env.host().set_auth_manager(old_auth_manager).unwrap();
-        }
         res
     }
     pub fn test_symbol(&self, v: &Symbol) -> Symbol {
-        use core::ops::Not;
-        let old_auth_manager = self
-            .env
-            .in_contract()
-            .not()
-            .then(|| self.env.host().snapshot_auth_manager().unwrap());
-        {
-            if let Some(set_auths) = self.set_auths {
-                self.env.set_auths(set_auths);
-            }
-            if let Some(mock_auths) = self.mock_auths {
-                self.env.mock_auths(mock_auths);
-            }
-            if self.mock_all_auths {
-                if self.allow_non_root_auth {
-                    self.env.mock_all_auths_allowing_non_root_auth();
-                } else {
-                    self.env.mock_all_auths();
-                }
-            }
-        }
+        let _call_scope = soroban_sdk::testutils::ClientCallScope::enter(&self.env, self.config);
         use soroban_sdk::{FromVal, IntoVal};
         let res = self.env.invoke_contract(
             &self.address,
             &{ soroban_sdk::Symbol::new(&self.env, "test_symbol") },
             ::soroban_sdk::Vec::from_array(&self.env, [v.into_val(&self.env)]),
         );
-        if let Some(old_auth_manager) = old_auth_manager {
-            self.env.host().set_auth_manager(old_auth_manager).unwrap();
-        }
         res
     }
     pub fn try_test_symbol(
@@ -2425,60 +2037,17 @@ impl<'a> AllTypesClient<'a> {
         >,
         Result<soroban_sdk::Error, soroban_sdk::InvokeError>,
     > {
-        use core::ops::Not;
-        let old_auth_manager = self
-            .env
-            .in_contract()
-            .not()
-            .then(|| self.env.host().snapshot_auth_manager().unwrap());
-        {
-            if let Some(set_auths) = self.set_auths {
-                self.env.set_auths(set_auths);
-            }
-            if let Some(mock_auths) = self.mock_auths {
-                self.env.mock_auths(mock_auths);
-            }
-            if self.mock_all_auths {
-                if self.allow_non_root_auth {
-                    self.env.mock_all_auths_allowing_non_root_auth();
-                } else {
-                    self.env.mock_all_auths();
-                }
-            }
-        }
+        let _call_scope = soroban_sdk::testutils::ClientCallScope::enter(&self.env, self.config);
         use soroban_sdk::{FromVal, IntoVal};
         let res = self.env.try_invoke_contract(
             &self.address,
             &{ soroban_sdk::Symbol::new(&self.env, "test_symbol") },
             ::soroban_sdk::Vec::from_array(&self.env, [v.into_val(&self.env)]),
         );
-        if let Some(old_auth_manager) = old_auth_manager {
-            self.env.host().set_auth_manager(old_auth_manager).unwrap();
-        }
         res
     }
     pub fn test_vec(&self, v: &Vec<u32>) -> Vec<u32> {
-        use core::ops::Not;
-        let old_auth_manager = self
-            .env
-            .in_contract()
-            .not()
-            .then(|| self.env.host().snapshot_auth_manager().unwrap());
-        {
-            if let Some(set_auths) = self.set_auths {
-                self.env.set_auths(set_auths);
-            }
-            if let Some(mock_auths) = self.mock_auths {
-                self.env.mock_auths(mock_auths);
-            }
-            if self.mock_all_auths {
-                if self.allow_non_root_auth {
-                    self.env.mock_all_auths_allowing_non_root_auth();
-                } else {
-                    self.env.mock_all_auths();
-                }
-            }
-        }
+        let _call_scope = soroban_sdk::testutils::ClientCallScope::enter(&self.env, self.config);
         use soroban_sdk::{FromVal, IntoVal};
         let res = self.env.invoke_contract(
             &self.address,
@@ -2489,9 +2058,6 @@ impl<'a> AllTypesClient<'a> {
             },
             ::soroban_sdk::Vec::from_array(&self.env, [v.into_val(&self.env)]),
         );
-        if let Some(old_auth_manager) = old_auth_manager {
-            self.env.host().set_auth_manager(old_auth_manager).unwrap();
-        }
         res
     }
     pub fn try_test_vec(
@@ -2504,27 +2070,7 @@ impl<'a> AllTypesClient<'a> {
         >,
         Result<soroban_sdk::Error, soroban_sdk::InvokeError>,
     > {
-        use core::ops::Not;
-        let old_auth_manager = self
-            .env
-            .in_contract()
-            .not()
-            .then(|| self.env.host().snapshot_auth_manager().unwrap());
-        {
-            if let Some(set_auths) = self.set_auths {
-                self.env.set_auths(set_auths);
-            }
-            if let Some(mock_auths) = self.mock_auths {
-                self.env.mock_auths(mock_auths);
-            }
-            if self.mock_all_auths {
-                if self.allow_non_root_auth {
-                    self.env.mock_all_auths_allowing_non_root_auth();
-                } else {
-                    self.env.mock_all_auths();
-                }
-            }
-        }
+        let _call_scope = soroban_sdk::testutils::ClientCallScope::enter(&self.env, self.config);
         use soroban_sdk::{FromVal, IntoVal};
         let res = self.env.try_invoke_contract(
             &self.address,
@@ -2535,33 +2081,10 @@ impl<'a> AllTypesClient<'a> {
             },
             ::soroban_sdk::Vec::from_array(&self.env, [v.into_val(&self.env)]),
         );
-        if let Some(old_auth_manager) = old_auth_manager {
-            self.env.host().set_auth_manager(old_auth_manager).unwrap();
-        }
         res
     }
     pub fn test_map(&self, v: &Map<u32, u32>) -> Map<u32, u32> {
-        use core::ops::Not;
-        let old_auth_manager = self
-            .env
-            .in_contract()
-            .not()
-            .then(|| self.env.host().snapshot_auth_manager().unwrap());
-        {
-            if let Some(set_auths) = self.set_auths {
-                self.env.set_auths(set_auths);
-            }
-            if let Some(mock_auths) = self.mock_auths {
-                self.env.mock_auths(mock_auths);
-            }
-            if self.mock_all_auths {
-                if self.allow_non_root_auth {
-                    self.env.mock_all_auths_allowing_non_root_auth();
-                } else {
-                    self.env.mock_all_auths();
-                }
-            }
-        }
+        let _call_scope = soroban_sdk::testutils::ClientCallScope::enter(&self.env, self.config);
         use soroban_sdk::{FromVal, IntoVal};
         let res = self.env.invoke_contract(
             &self.address,
@@ -2572,9 +2095,6 @@ impl<'a> AllTypesClient<'a> {
             },
             ::soroban_sdk::Vec::from_array(&self.env, [v.into_val(&self.env)]),
         );
-        if let Some(old_auth_manager) = old_auth_manager {
-            self.env.host().set_auth_manager(old_auth_manager).unwrap();
-        }
         res
     }
     pub fn try_test_map(
@@ -2587,27 +2107,7 @@ impl<'a> AllTypesClient<'a> {
         >,
         Result<soroban_sdk::Error, soroban_sdk::InvokeError>,
     > {
-        use core::ops::Not;
-        let old_auth_manager = self
-            .env
-            .in_contract()
-            .not()
-            .then(|| self.env.host().snapshot_auth_manager().unwrap());
-        {
-            if let Some(set_auths) = self.set_auths {
-                self.env.set_auths(set_auths);
-            }
-            if let Some(mock_auths) = self.mock_auths {
-                self.env.mock_auths(mock_auths);
-            }
-            if self.mock_all_auths {
-                if self.allow_non_root_auth {
-                    self.env.mock_all_auths_allowing_non_root_auth();
-                } else {
-                    self.env.mock_all_auths();
-                }
-            }
-        }
+        let _call_scope = soroban_sdk::testutils::ClientCallScope::enter(&self.env, self.config);
         use soroban_sdk::{FromVal, IntoVal};
         let res = self.env.try_invoke_contract(
             &self.address,
@@ -2618,42 +2118,16 @@ impl<'a> AllTypesClient<'a> {
             },
             ::soroban_sdk::Vec::from_array(&self.env, [v.into_val(&self.env)]),
         );
-        if let Some(old_auth_manager) = old_auth_manager {
-            self.env.host().set_auth_manager(old_auth_manager).unwrap();
-        }
         res
     }
     pub fn test_duration(&self, v: &Duration) -> Duration {
-        use core::ops::Not;
-        let old_auth_manager = self
-            .env
-            .in_contract()
-            .not()
-            .then(|| self.env.host().snapshot_auth_manager().unwrap());
-        {
-            if let Some(set_auths) = self.set_auths {
-                self.env.set_auths(set_auths);
-            }
-            if let Some(mock_auths) = self.mock_auths {
-                self.env.mock_auths(mock_auths);
-            }
-            if self.mock_all_auths {
-                if self.allow_non_root_auth {
-                    self.env.mock_all_auths_allowing_non_root_auth();
-                } else {
-                    self.env.mock_all_auths();
-                }
-            }
-        }
+        let _call_scope = soroban_sdk::testutils::ClientCallScope::enter(&self.env, self.config);
         use soroban_sdk::{FromVal, IntoVal};
         let res = self.env.invoke_contract(
             &self.address,
             &{ soroban_sdk::Symbol::new(&self.env, "test_duration") },
             ::soroban_sdk::Vec::from_array(&self.env, [v.into_val(&self.env)]),
         );
-        if let Some(old_auth_manager) = old_auth_manager {
-            self.env.host().set_auth_manager(old_auth_manager).unwrap();
-        }
         res
     }
     pub fn try_test_duration(
@@ -2666,69 +2140,23 @@ impl<'a> AllTypesClient<'a> {
         >,
         Result<soroban_sdk::Error, soroban_sdk::InvokeError>,
     > {
-        use core::ops::Not;
-        let old_auth_manager = self
-            .env
-            .in_contract()
-            .not()
-            .then(|| self.env.host().snapshot_auth_manager().unwrap());
-        {
-            if let Some(set_auths) = self.set_auths {
-                self.env.set_auths(set_auths);
-            }
-            if let Some(mock_auths) = self.mock_auths {
-                self.env.mock_auths(mock_auths);
-            }
-            if self.mock_all_auths {
-                if self.allow_non_root_auth {
-                    self.env.mock_all_auths_allowing_non_root_auth();
-                } else {
-                    self.env.mock_all_auths();
-                }
-            }
-        }
+        let _call_scope = soroban_sdk::testutils::ClientCallScope::enter(&self.env, self.config);
         use soroban_sdk::{FromVal, IntoVal};
         let res = self.env.try_invoke_contract(
             &self.address,
             &{ soroban_sdk::Symbol::new(&self.env, "test_duration") },
             ::soroban_sdk::Vec::from_array(&self.env, [v.into_val(&self.env)]),
         );
-        if let Some(old_auth_manager) = old_auth_manager {
-            self.env.host().set_auth_manager(old_auth_manager).unwrap();
-        }
         res
     }
     pub fn test_timepoint(&self, v: &Timepoint) -> Timepoint {
-        use core::ops::Not;
-        let old_auth_manager = self
-            .env
-            .in_contract()
-            .not()
-            .then(|| self.env.host().snapshot_auth_manager().unwrap());
-        {
-            if let Some(set_auths) = self.set_auths {
-                self.env.set_auths(set_auths);
-            }
-            if let Some(mock_auths) = self.mock_auths {
-                self.env.mock_auths(mock_auths);
-            }
-            if self.mock_all_auths {
-                if self.allow_non_root_auth {
-                    self.env.mock_all_auths_allowing_non_root_auth();
-                } else {
-                    self.env.mock_all_auths();
-                }
-            }
-        }
+        let _call_scope = soroban_sdk::testutils::ClientCallScope::enter(&self.env, self.config);
         use soroban_sdk::{FromVal, IntoVal};
         let res = self.env.invoke_contract(
             &self.address,
             &{ soroban_sdk::Symbol::new(&self.env, "test_timepoint") },
             ::soroban_sdk::Vec::from_array(&self.env, [v.into_val(&self.env)]),
         );
-        if let Some(old_auth_manager) = old_auth_manager {
-            self.env.host().set_auth_manager(old_auth_manager).unwrap();
-        }
         res
     }
     pub fn try_test_timepoint(
@@ -2741,60 +2169,17 @@ impl<'a> AllTypesClient<'a> {
         >,
         Result<soroban_sdk::Error, soroban_sdk::InvokeError>,
     > {
-        use core::ops::Not;
-        let old_auth_manager = self
-            .env
-            .in_contract()
-            .not()
-            .then(|| self.env.host().snapshot_auth_manager().unwrap());
-        {
-            if let Some(set_auths) = self.set_auths {
-                self.env.set_auths(set_auths);
-            }
-            if let Some(mock_auths) = self.mock_auths {
-                self.env.mock_auths(mock_auths);
-            }
-            if self.mock_all_auths {
-                if self.allow_non_root_auth {
-                    self.env.mock_all_auths_allowing_non_root_auth();
-                } else {
-                    self.env.mock_all_auths();
-                }
-            }
-        }
+        let _call_scope = soroban_sdk::testutils::ClientCallScope::enter(&self.env, self.config);
         use soroban_sdk::{FromVal, IntoVal};
         let res = self.env.try_invoke_contract(
             &self.address,
             &{ soroban_sdk::Symbol::new(&self.env, "test_timepoint") },
             ::soroban_sdk::Vec::from_array(&self.env, [v.into_val(&self.env)]),
         );
-        if let Some(old_auth_manager) = old_auth_manager {
-            self.env.host().set_auth_manager(old_auth_manager).unwrap();
-        }
         res
     }
     pub fn test_i256(&self, v: &I256) -> I256 {
-        use core::ops::Not;
-        let old_auth_manager = self
-            .env
-            .in_contract()
-            .not()
-            .then(|| self.env.host().snapshot_auth_manager().unwrap());
-        {
-            if let Some(set_auths) = self.set_auths {
-                self.env.set_auths(set_auths);
-            }
-            if let Some(mock_auths) = self.mock_auths {
-                self.env.mock_auths(mock_auths);
-            }
-            if self.mock_all_auths {
-                if self.allow_non_root_auth {
-                    self.env.mock_all_auths_allowing_non_root_auth();
-                } else {
-                    self.env.mock_all_auths();
-                }
-            }
-        }
+        let _call_scope = soroban_sdk::testutils::ClientCallScope::enter(&self.env, self.config);
         use soroban_sdk::{FromVal, IntoVal};
         let res = self.env.invoke_contract(
             &self.address,
@@ -2805,9 +2190,6 @@ impl<'a> AllTypesClient<'a> {
             },
             ::soroban_sdk::Vec::from_array(&self.env, [v.into_val(&self.env)]),
         );
-        if let Some(old_auth_manager) = old_auth_manager {
-            self.env.host().set_auth_manager(old_auth_manager).unwrap();
-        }
         res
     }
     pub fn try_test_i256(
@@ -2817,27 +2199,7 @@ impl<'a> AllTypesClient<'a> {
         Result<I256, <I256 as soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val>>::Error>,
         Result<soroban_sdk::Error, soroban_sdk::InvokeError>,
     > {
-        use core::ops::Not;
-        let old_auth_manager = self
-            .env
-            .in_contract()
-            .not()
-            .then(|| self.env.host().snapshot_auth_manager().unwrap());
-        {
-            if let Some(set_auths) = self.set_auths {
-                self.env.set_auths(set_auths);
-            }
-            if let Some(mock_auths) = self.mock_auths {
-                self.env.mock_auths(mock_auths);
-            }
-            if self.mock_all_auths {
-                if self.allow_non_root_auth {
-                    self.env.mock_all_auths_allowing_non_root_auth();
-                } else {
-                    self.env.mock_all_auths();
-                }
-            }
-        }
+        let _call_scope = soroban_sdk::testutils::ClientCallScope::enter(&self.env, self.config);
         use soroban_sdk::{FromVal, IntoVal};
         let res = self.env.try_invoke_contract(
             &self.address,
@@ -2848,33 +2210,10 @@ impl<'a> AllTypesClient<'a> {
             },
             ::soroban_sdk::Vec::from_array(&self.env, [v.into_val(&self.env)]),
         );
-        if let Some(old_auth_manager) = old_auth_manager {
-            self.env.host().set_auth_manager(old_auth_manager).unwrap();
-        }
         res
     }
     pub fn test_u256(&self, v: &U256) -> U256 {
-        use core::ops::Not;
-        let old_auth_manager = self
-            .env
-            .in_contract()
-            .not()
-            .then(|| self.env.host().snapshot_auth_manager().unwrap());
-        {
-            if let Some(set_auths) = self.set_auths {
-                self.env.set_auths(set_auths);
-            }
-            if let Some(mock_auths) = self.mock_auths {
-                self.env.mock_auths(mock_auths);
-            }
-            if self.mock_all_auths {
-                if self.allow_non_root_auth {
-                    self.env.mock_all_auths_allowing_non_root_auth();
-                } else {
-                    self.env.mock_all_auths();
-                }
-            }
-        }
+        let _call_scope = soroban_sdk::testutils::ClientCallScope::enter(&self.env, self.config);
         use soroban_sdk::{FromVal, IntoVal};
         let res = self.env.invoke_contract(
             &self.address,
@@ -2885,9 +2224,6 @@ impl<'a> AllTypesClient<'a> {
             },
             ::soroban_sdk::Vec::from_array(&self.env, [v.into_val(&self.env)]),
         );
-        if let Some(old_auth_manager) = old_auth_manager {
-            self.env.host().set_auth_manager(old_auth_manager).unwrap();
-        }
         res
     }
     pub fn try_test_u256(
@@ -2897,27 +2233,7 @@ impl<'a> AllTypesClient<'a> {
         Result<U256, <U256 as soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val>>::Error>,
         Result<soroban_sdk::Error, soroban_sdk::InvokeError>,
     > {
-        use core::ops::Not;
-        let old_auth_manager = self
-            .env
-            .in_contract()
-            .not()
-            .then(|| self.env.host().snapshot_auth_manager().unwrap());
-        {
-            if let Some(set_auths) = self.set_auths {
-                self.env.set_auths(set_auths);
-            }
-            if let Some(mock_auths) = self.mock_auths {
-                self.env.mock_auths(mock_auths);
-            }
-            if self.mock_all_auths {
-                if self.allow_non_root_auth {
-                    self.env.mock_all_auths_allowing_non_root_auth();
-                } else {
-                    self.env.mock_all_auths();
-                }
-            }
-        }
+        let _call_scope = soroban_sdk::testutils::ClientCallScope::enter(&self.env, self.config);
         use soroban_sdk::{FromVal, IntoVal};
         let res = self.env.try_invoke_contract(
             &self.address,
@@ -2928,42 +2244,16 @@ impl<'a> AllTypesClient<'a> {
             },
             ::soroban_sdk::Vec::from_array(&self.env, [v.into_val(&self.env)]),
         );
-        if let Some(old_auth_manager) = old_auth_manager {
-            self.env.host().set_auth_manager(old_auth_manager).unwrap();
-        }
         res
     }
     pub fn test_env_param(&self) -> u32 {
-        use core::ops::Not;
-        let old_auth_manager = self
-            .env
-            .in_contract()
-            .not()
-            .then(|| self.env.host().snapshot_auth_manager().unwrap());
-        {
-            if let Some(set_auths) = self.set_auths {
-                self.env.set_auths(set_auths);
-            }
-            if let Some(mock_auths) = self.mock_auths {
-                self.env.mock_auths(mock_auths);
-            }
-            if self.mock_all_auths {
-                if self.allow_non_root_auth {
-                    self.env.mock_all_auths_allowing_non_root_auth();
-                } else {
-                    self.env.mock_all_auths();
-                }
-            }
-        }
+        let _call_scope = soroban_sdk::testutils::ClientCallScope::enter(&self.env, self.config);
         use soroban_sdk::{FromVal, IntoVal};
         let res = self.env.invoke_contract(
             &self.address,
             &{ soroban_sdk::Symbol::new(&self.env, "test_env_param") },
             ::soroban_sdk::Vec::new(&self.env),
         );
-        if let Some(old_auth_manager) = old_auth_manager {
-            self.env.host().set_auth_manager(old_auth_manager).unwrap();
-        }
         res
     }
     pub fn try_test_env_param(
@@ -2972,69 +2262,23 @@ impl<'a> AllTypesClient<'a> {
         Result<u32, <u32 as soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val>>::Error>,
         Result<soroban_sdk::Error, soroban_sdk::InvokeError>,
     > {
-        use core::ops::Not;
-        let old_auth_manager = self
-            .env
-            .in_contract()
-            .not()
-            .then(|| self.env.host().snapshot_auth_manager().unwrap());
-        {
-            if let Some(set_auths) = self.set_auths {
-                self.env.set_auths(set_auths);
-            }
-            if let Some(mock_auths) = self.mock_auths {
-                self.env.mock_auths(mock_auths);
-            }
-            if self.mock_all_auths {
-                if self.allow_non_root_auth {
-                    self.env.mock_all_auths_allowing_non_root_auth();
-                } else {
-                    self.env.mock_all_auths();
-                }
-            }
-        }
+        let _call_scope = soroban_sdk::testutils::ClientCallScope::enter(&self.env, self.config);
         use soroban_sdk::{FromVal, IntoVal};
         let res = self.env.try_invoke_contract(
             &self.address,
             &{ soroban_sdk::Symbol::new(&self.env, "test_env_param") },
             ::soroban_sdk::Vec::new(&self.env),
         );
-        if let Some(old_auth_manager) = old_auth_manager {
-            self.env.host().set_auth_manager(old_auth_manager).unwrap();
-        }
         res
     }
     pub fn test_struct(&self, v: &MyStruct) -> MyStruct {
-        use core::ops::Not;
-        let old_auth_manager = self
-            .env
-            .in_contract()
-            .not()
-            .then(|| self.env.host().snapshot_auth_manager().unwrap());
-        {
-            if let Some(set_auths) = self.set_auths {
-                self.env.set_auths(set_auths);
-            }
-            if let Some(mock_auths) = self.mock_auths {
-                self.env.mock_auths(mock_auths);
-            }
-            if self.mock_all_auths {
-                if self.allow_non_root_auth {
-                    self.env.mock_all_auths_allowing_non_root_auth();
-                } else {
-                    self.env.mock_all_auths();
-                }
-            }
-        }
+        let _call_scope = soroban_sdk::testutils::ClientCallScope::enter(&self.env, self.config);
         use soroban_sdk::{FromVal, IntoVal};
         let res = self.env.invoke_contract(
             &self.address,
             &{ soroban_sdk::Symbol::new(&self.env, "test_struct") },
             ::soroban_sdk::Vec::from_array(&self.env, [v.into_val(&self.env)]),
         );
-        if let Some(old_auth_manager) = old_auth_manager {
-            self.env.host().set_auth_manager(old_auth_manager).unwrap();
-        }
         res
     }
     pub fn try_test_struct(
@@ -3047,69 +2291,23 @@ impl<'a> AllTypesClient<'a> {
         >,
         Result<soroban_sdk::Error, soroban_sdk::InvokeError>,
     > {
-        use core::ops::Not;
-        let old_auth_manager = self
-            .env
-            .in_contract()
-            .not()
-            .then(|| self.env.host().snapshot_auth_manager().unwrap());
-        {
-            if let Some(set_auths) = self.set_auths {
-                self.env.set_auths(set_auths);
-            }
-            if let Some(mock_auths) = self.mock_auths {
-                self.env.mock_auths(mock_auths);
-            }
-            if self.mock_all_auths {
-                if self.allow_non_root_auth {
-                    self.env.mock_all_auths_allowing_non_root_auth();
-                } else {
-                    self.env.mock_all_auths();
-                }
-            }
-        }
+        let _call_scope = soroban_sdk::testutils::ClientCallScope::enter(&self.env, self.config);
         use soroban_sdk::{FromVal, IntoVal};
         let res = self.env.try_invoke_contract(
             &self.address,
             &{ soroban_sdk::Symbol::new(&self.env, "test_struct") },
             ::soroban_sdk::Vec::from_array(&self.env, [v.into_val(&self.env)]),
         );
-        if let Some(old_auth_manager) = old_auth_manager {
-            self.env.host().set_auth_manager(old_auth_manager).unwrap();
-        }
         res
     }
     pub fn test_enum_unit(&self, v: &MyEnumUnit) -> MyEnumUnit {
-        use core::ops::Not;
-        let old_auth_manager = self
-            .env
-            .in_contract()
-            .not()
-            .then(|| self.env.host().snapshot_auth_manager().unwrap());
-        {
-            if let Some(set_auths) = self.set_auths {
-                self.env.set_auths(set_auths);
-            }
-            if let Some(mock_auths) = self.mock_auths {
-                self.env.mock_auths(mock_auths);
-            }
-            if self.mock_all_auths {
-                if self.allow_non_root_auth {
-                    self.env.mock_all_auths_allowing_non_root_auth();
-                } else {
-                    self.env.mock_all_auths();
-                }
-            }
-        }
+        let _call_scope = soroban_sdk::testutils::ClientCallScope::enter(&self.env, self.config);
         use soroban_sdk::{FromVal, IntoVal};
         let res = self.env.invoke_contract(
             &self.address,
             &{ soroban_sdk::Symbol::new(&self.env, "test_enum_unit") },
             ::soroban_sdk::Vec::from_array(&self.env, [v.into_val(&self.env)]),
         );
-        if let Some(old_auth_manager) = old_auth_manager {
-            self.env.host().set_auth_manager(old_auth_manager).unwrap();
-        }
         res
     }
     pub fn try_test_enum_unit(
@@ -3122,69 +2320,23 @@ impl<'a> AllTypesClient<'a> {
         >,
         Result<soroban_sdk::Error, soroban_sdk::InvokeError>,
     > {
-        use core::ops::Not;
-        let old_auth_manager = self
-            .env
-            .in_contract()
-            .not()
-            .then(|| self.env.host().snapshot_auth_manager().unwrap());
-        {
-            if let Some(set_auths) = self.set_auths {
-                self.env.set_auths(set_auths);
-            }
-            if let Some(mock_auths) = self.mock_auths {
-                self.env.mock_auths(mock_auths);
-            }
-            if self.mock_all_auths {
-                if self.allow_non_root_auth {
-                    self.env.mock_all_auths_allowing_non_root_auth();
-                } else {
-                    self.env.mock_all_auths();
-                }
-            }
-        }
+        let _call_scope = soroban_sdk::testutils::ClientCallScope::enter(&self.env, self.config);
         use soroban_sdk::{FromVal, IntoVal};
         let res = self.env.try_invoke_contract(
             &self.address,
             &{ soroban_sdk::Symbol::new(&self.env, "test_enum_unit") },
             ::soroban_sdk::Vec::from_array(&self.env, [v.into_val(&self.env)]),
         );
-        if let Some(old_auth_manager) = old_auth_manager {
-            self.env.host().set_auth_manager(old_auth_manager).unwrap();
-        }
         res
     }
     pub fn test_enum_variants(&self, v: &MyEnumVariants) -> MyEnumVariants {
-        use core::ops::Not;
-        let old_auth_manager = self
-            .env
-            .in_contract()
-            .not()
-            .then(|| self.env.host().snapshot_auth_manager().unwrap());
-        {
-            if let Some(set_auths) = self.set_auths {
-                self.env.set_auths(set_auths);
-            }
-            if let Some(mock_auths) = self.mock_auths {
-                self.env.mock_auths(mock_auths);
-            }
-            if self.mock_all_auths {
-                if self.allow_non_root_auth {
-                    self.env.mock_all_auths_allowing_non_root_auth();
-                } else {
-                    self.env.mock_all_auths();
-                }
-            }
-        }
+        let _call_scope = soroban_sdk::testutils::ClientCallScope::enter(&self.env, self.config);
         use soroban_sdk::{FromVal, IntoVal};
         let res = self.env.invoke_contract(
             &self.address,
             &{ soroban_sdk::Symbol::new(&self.env, "test_enum_variants") },
             ::soroban_sdk::Vec::from_array(&self.env, [v.into_val(&self.env)]),
         );
-        if let Some(old_auth_manager) = old_auth_manager {
-            self.env.host().set_auth_manager(old_auth_manager).unwrap();
-        }
         res
     }
     pub fn try_test_enum_variants(
@@ -3197,36 +2349,13 @@ impl<'a> AllTypesClient<'a> {
         >,
         Result<soroban_sdk::Error, soroban_sdk::InvokeError>,
     > {
-        use core::ops::Not;
-        let old_auth_manager = self
-            .env
-            .in_contract()
-            .not()
-            .then(|| self.env.host().snapshot_auth_manager().unwrap());
-        {
-            if let Some(set_auths) = self.set_auths {
-                self.env.set_auths(set_auths);
-            }
-            if let Some(mock_auths) = self.mock_auths {
-                self.env.mock_auths(mock_auths);
-            }
-            if self.mock_all_auths {
-                if self.allow_non_root_auth {
-                    self.env.mock_all_auths_allowing_non_root_auth();
-                } else {
-                    self.env.mock_all_auths();
-                }
-            }
-        }
+        let _call_scope = soroban_sdk::testutils::ClientCallScope::enter(&self.env, self.config);
         use soroban_sdk::{FromVal, IntoVal};
         let res = self.env.try_invoke_contract(
             &self.address,
             &{ soroban_sdk::Symbol::new(&self.env, "test_enum_variants") },
             ::soroban_sdk::Vec::from_array(&self.env, [v.into_val(&self.env)]),
         );
-        if let Some(old_auth_manager) = old_auth_manager {
-            self.env.host().set_auth_manager(old_auth_manager).unwrap();
-        }
         res
     }
 }
@@ -3348,138 +2477,603 @@ impl AllTypesArgs {
     }
 }
 impl AllTypesSpec {
+    #[allow(non_upper_case_globals)]
+    /// Test u32 values.
+    /// Returns the input unchanged.
+    const __SPEC_XDR_ENTRY_test_u32: soroban_sdk::xdr::r#const::ScSpecEntry =
+        soroban_sdk::xdr::r#const::ScSpecEntry::FunctionV0(
+            soroban_sdk::xdr::r#const::ScSpecFunctionV0 {
+                doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(
+                    b"Test u32 values.\nReturns the input unchanged.",
+                ),
+                name: soroban_sdk::xdr::r#const::ScSymbol(
+                    soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b"test_u32"),
+                ),
+                inputs: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[
+                    soroban_sdk::xdr::r#const::ScSpecFunctionInputV0 {
+                        doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
+                        name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b"v"),
+                        type_: <u32 as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
+                    },
+                ]),
+                outputs: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[
+                    <u32 as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
+                ]),
+            },
+        );
     #[allow(non_snake_case)]
     /// Test u32 values.
     /// Returns the input unchanged.
-    pub const fn spec_xdr_test_u32() -> [u8; 96usize] {
-        *b"\0\0\0\0\0\0\0-Test u32 values.\nReturns the input unchanged.\0\0\0\0\0\0\x08test_u32\0\0\0\x01\0\0\0\0\0\0\0\x01v\0\0\0\0\0\0\x04\0\0\0\x01\0\0\0\x04"
+    pub const fn spec_xdr_test_u32() -> [u8; AllTypesSpec::__SPEC_XDR_ENTRY_test_u32.const_xdr_len()]
+    {
+        const { AllTypesSpec::__SPEC_XDR_ENTRY_test_u32.const_to_xdr() }
     }
 }
 impl AllTypesSpec {
+    #[allow(non_upper_case_globals)]
+    /// Test i32 values.
+    const __SPEC_XDR_ENTRY_test_i32: soroban_sdk::xdr::r#const::ScSpecEntry =
+        soroban_sdk::xdr::r#const::ScSpecEntry::FunctionV0(
+            soroban_sdk::xdr::r#const::ScSpecFunctionV0 {
+                doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(
+                    b"Test i32 values.",
+                ),
+                name: soroban_sdk::xdr::r#const::ScSymbol(
+                    soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b"test_i32"),
+                ),
+                inputs: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[
+                    soroban_sdk::xdr::r#const::ScSpecFunctionInputV0 {
+                        doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
+                        name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b"v"),
+                        type_: <i32 as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
+                    },
+                ]),
+                outputs: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[
+                    <i32 as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
+                ]),
+            },
+        );
     #[allow(non_snake_case)]
     /// Test i32 values.
-    pub const fn spec_xdr_test_i32() -> [u8; 64usize] {
-        *b"\0\0\0\0\0\0\0\x10Test i32 values.\0\0\0\x08test_i32\0\0\0\x01\0\0\0\0\0\0\0\x01v\0\0\0\0\0\0\x05\0\0\0\x01\0\0\0\x05"
+    pub const fn spec_xdr_test_i32() -> [u8; AllTypesSpec::__SPEC_XDR_ENTRY_test_i32.const_xdr_len()]
+    {
+        const { AllTypesSpec::__SPEC_XDR_ENTRY_test_i32.const_to_xdr() }
     }
 }
 impl AllTypesSpec {
+    #[allow(non_upper_case_globals)]
+    const __SPEC_XDR_ENTRY_test_u64: soroban_sdk::xdr::r#const::ScSpecEntry =
+        soroban_sdk::xdr::r#const::ScSpecEntry::FunctionV0(
+            soroban_sdk::xdr::r#const::ScSpecFunctionV0 {
+                doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
+                name: soroban_sdk::xdr::r#const::ScSymbol(
+                    soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b"test_u64"),
+                ),
+                inputs: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[
+                    soroban_sdk::xdr::r#const::ScSpecFunctionInputV0 {
+                        doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
+                        name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b"v"),
+                        type_: <u64 as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
+                    },
+                ]),
+                outputs: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[
+                    <u64 as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
+                ]),
+            },
+        );
     #[allow(non_snake_case)]
-    pub const fn spec_xdr_test_u64() -> [u8; 48usize] {
-        *b"\0\0\0\0\0\0\0\0\0\0\0\x08test_u64\0\0\0\x01\0\0\0\0\0\0\0\x01v\0\0\0\0\0\0\x06\0\0\0\x01\0\0\0\x06"
+    pub const fn spec_xdr_test_u64() -> [u8; AllTypesSpec::__SPEC_XDR_ENTRY_test_u64.const_xdr_len()]
+    {
+        const { AllTypesSpec::__SPEC_XDR_ENTRY_test_u64.const_to_xdr() }
     }
 }
 impl AllTypesSpec {
+    #[allow(non_upper_case_globals)]
+    const __SPEC_XDR_ENTRY_test_i64: soroban_sdk::xdr::r#const::ScSpecEntry =
+        soroban_sdk::xdr::r#const::ScSpecEntry::FunctionV0(
+            soroban_sdk::xdr::r#const::ScSpecFunctionV0 {
+                doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
+                name: soroban_sdk::xdr::r#const::ScSymbol(
+                    soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b"test_i64"),
+                ),
+                inputs: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[
+                    soroban_sdk::xdr::r#const::ScSpecFunctionInputV0 {
+                        doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
+                        name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b"v"),
+                        type_: <i64 as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
+                    },
+                ]),
+                outputs: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[
+                    <i64 as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
+                ]),
+            },
+        );
     #[allow(non_snake_case)]
-    pub const fn spec_xdr_test_i64() -> [u8; 48usize] {
-        *b"\0\0\0\0\0\0\0\0\0\0\0\x08test_i64\0\0\0\x01\0\0\0\0\0\0\0\x01v\0\0\0\0\0\0\x07\0\0\0\x01\0\0\0\x07"
+    pub const fn spec_xdr_test_i64() -> [u8; AllTypesSpec::__SPEC_XDR_ENTRY_test_i64.const_xdr_len()]
+    {
+        const { AllTypesSpec::__SPEC_XDR_ENTRY_test_i64.const_to_xdr() }
     }
 }
 impl AllTypesSpec {
+    #[allow(non_upper_case_globals)]
+    const __SPEC_XDR_ENTRY_test_u128: soroban_sdk::xdr::r#const::ScSpecEntry =
+        soroban_sdk::xdr::r#const::ScSpecEntry::FunctionV0(
+            soroban_sdk::xdr::r#const::ScSpecFunctionV0 {
+                doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
+                name: soroban_sdk::xdr::r#const::ScSymbol(
+                    soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b"test_u128"),
+                ),
+                inputs: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[
+                    soroban_sdk::xdr::r#const::ScSpecFunctionInputV0 {
+                        doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
+                        name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b"v"),
+                        type_: <u128 as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
+                    },
+                ]),
+                outputs: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[
+                    <u128 as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
+                ]),
+            },
+        );
     #[allow(non_snake_case)]
-    pub const fn spec_xdr_test_u128() -> [u8; 52usize] {
-        *b"\0\0\0\0\0\0\0\0\0\0\0\ttest_u128\0\0\0\0\0\0\x01\0\0\0\0\0\0\0\x01v\0\0\0\0\0\0\n\0\0\0\x01\0\0\0\n"
+    pub const fn spec_xdr_test_u128(
+    ) -> [u8; AllTypesSpec::__SPEC_XDR_ENTRY_test_u128.const_xdr_len()] {
+        const { AllTypesSpec::__SPEC_XDR_ENTRY_test_u128.const_to_xdr() }
     }
 }
 impl AllTypesSpec {
+    #[allow(non_upper_case_globals)]
+    const __SPEC_XDR_ENTRY_test_i128: soroban_sdk::xdr::r#const::ScSpecEntry =
+        soroban_sdk::xdr::r#const::ScSpecEntry::FunctionV0(
+            soroban_sdk::xdr::r#const::ScSpecFunctionV0 {
+                doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
+                name: soroban_sdk::xdr::r#const::ScSymbol(
+                    soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b"test_i128"),
+                ),
+                inputs: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[
+                    soroban_sdk::xdr::r#const::ScSpecFunctionInputV0 {
+                        doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
+                        name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b"v"),
+                        type_: <i128 as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
+                    },
+                ]),
+                outputs: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[
+                    <i128 as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
+                ]),
+            },
+        );
     #[allow(non_snake_case)]
-    pub const fn spec_xdr_test_i128() -> [u8; 52usize] {
-        *b"\0\0\0\0\0\0\0\0\0\0\0\ttest_i128\0\0\0\0\0\0\x01\0\0\0\0\0\0\0\x01v\0\0\0\0\0\0\x0b\0\0\0\x01\0\0\0\x0b"
+    pub const fn spec_xdr_test_i128(
+    ) -> [u8; AllTypesSpec::__SPEC_XDR_ENTRY_test_i128.const_xdr_len()] {
+        const { AllTypesSpec::__SPEC_XDR_ENTRY_test_i128.const_to_xdr() }
     }
 }
 impl AllTypesSpec {
+    #[allow(non_upper_case_globals)]
+    const __SPEC_XDR_ENTRY_test_bool: soroban_sdk::xdr::r#const::ScSpecEntry =
+        soroban_sdk::xdr::r#const::ScSpecEntry::FunctionV0(
+            soroban_sdk::xdr::r#const::ScSpecFunctionV0 {
+                doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
+                name: soroban_sdk::xdr::r#const::ScSymbol(
+                    soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b"test_bool"),
+                ),
+                inputs: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[
+                    soroban_sdk::xdr::r#const::ScSpecFunctionInputV0 {
+                        doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
+                        name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b"v"),
+                        type_: <bool as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
+                    },
+                ]),
+                outputs: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[
+                    <bool as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
+                ]),
+            },
+        );
     #[allow(non_snake_case)]
-    pub const fn spec_xdr_test_bool() -> [u8; 52usize] {
-        *b"\0\0\0\0\0\0\0\0\0\0\0\ttest_bool\0\0\0\0\0\0\x01\0\0\0\0\0\0\0\x01v\0\0\0\0\0\0\x01\0\0\0\x01\0\0\0\x01"
+    pub const fn spec_xdr_test_bool(
+    ) -> [u8; AllTypesSpec::__SPEC_XDR_ENTRY_test_bool.const_xdr_len()] {
+        const { AllTypesSpec::__SPEC_XDR_ENTRY_test_bool.const_to_xdr() }
     }
 }
 impl AllTypesSpec {
+    #[allow(non_upper_case_globals)]
+    const __SPEC_XDR_ENTRY_test_address: soroban_sdk::xdr::r#const::ScSpecEntry =
+        soroban_sdk::xdr::r#const::ScSpecEntry::FunctionV0(
+            soroban_sdk::xdr::r#const::ScSpecFunctionV0 {
+                doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
+                name: soroban_sdk::xdr::r#const::ScSymbol(
+                    soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b"test_address"),
+                ),
+                inputs: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[
+                    soroban_sdk::xdr::r#const::ScSpecFunctionInputV0 {
+                        doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
+                        name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b"v"),
+                        type_: <Address as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
+                    },
+                ]),
+                outputs: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[
+                    <Address as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
+                ]),
+            },
+        );
     #[allow(non_snake_case)]
-    pub const fn spec_xdr_test_address() -> [u8; 52usize] {
-        *b"\0\0\0\0\0\0\0\0\0\0\0\x0ctest_address\0\0\0\x01\0\0\0\0\0\0\0\x01v\0\0\0\0\0\0\x13\0\0\0\x01\0\0\0\x13"
+    pub const fn spec_xdr_test_address(
+    ) -> [u8; AllTypesSpec::__SPEC_XDR_ENTRY_test_address.const_xdr_len()] {
+        const { AllTypesSpec::__SPEC_XDR_ENTRY_test_address.const_to_xdr() }
     }
 }
 impl AllTypesSpec {
+    #[allow(non_upper_case_globals)]
+    const __SPEC_XDR_ENTRY_test_bytes: soroban_sdk::xdr::r#const::ScSpecEntry =
+        soroban_sdk::xdr::r#const::ScSpecEntry::FunctionV0(
+            soroban_sdk::xdr::r#const::ScSpecFunctionV0 {
+                doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
+                name: soroban_sdk::xdr::r#const::ScSymbol(
+                    soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b"test_bytes"),
+                ),
+                inputs: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[
+                    soroban_sdk::xdr::r#const::ScSpecFunctionInputV0 {
+                        doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
+                        name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b"v"),
+                        type_: <Bytes as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
+                    },
+                ]),
+                outputs: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[
+                    <Bytes as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
+                ]),
+            },
+        );
     #[allow(non_snake_case)]
-    pub const fn spec_xdr_test_bytes() -> [u8; 52usize] {
-        *b"\0\0\0\0\0\0\0\0\0\0\0\ntest_bytes\0\0\0\0\0\x01\0\0\0\0\0\0\0\x01v\0\0\0\0\0\0\x0e\0\0\0\x01\0\0\0\x0e"
+    pub const fn spec_xdr_test_bytes(
+    ) -> [u8; AllTypesSpec::__SPEC_XDR_ENTRY_test_bytes.const_xdr_len()] {
+        const { AllTypesSpec::__SPEC_XDR_ENTRY_test_bytes.const_to_xdr() }
     }
 }
 impl AllTypesSpec {
+    #[allow(non_upper_case_globals)]
+    const __SPEC_XDR_ENTRY_test_bytes_n: soroban_sdk::xdr::r#const::ScSpecEntry =
+        soroban_sdk::xdr::r#const::ScSpecEntry::FunctionV0(
+            soroban_sdk::xdr::r#const::ScSpecFunctionV0 {
+                doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
+                name: soroban_sdk::xdr::r#const::ScSymbol(
+                    soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b"test_bytes_n"),
+                ),
+                inputs: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[
+                    soroban_sdk::xdr::r#const::ScSpecFunctionInputV0 {
+                        doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
+                        name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b"v"),
+                        type_: <BytesN<32> as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
+                    },
+                ]),
+                outputs: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[
+                    <BytesN<32> as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
+                ]),
+            },
+        );
     #[allow(non_snake_case)]
-    pub const fn spec_xdr_test_bytes_n() -> [u8; 60usize] {
-        *b"\0\0\0\0\0\0\0\0\0\0\0\x0ctest_bytes_n\0\0\0\x01\0\0\0\0\0\0\0\x01v\0\0\0\0\0\x03\xee\0\0\0 \0\0\0\x01\0\0\x03\xee\0\0\0 "
+    pub const fn spec_xdr_test_bytes_n(
+    ) -> [u8; AllTypesSpec::__SPEC_XDR_ENTRY_test_bytes_n.const_xdr_len()] {
+        const { AllTypesSpec::__SPEC_XDR_ENTRY_test_bytes_n.const_to_xdr() }
     }
 }
 impl AllTypesSpec {
+    #[allow(non_upper_case_globals)]
+    const __SPEC_XDR_ENTRY_test_string: soroban_sdk::xdr::r#const::ScSpecEntry =
+        soroban_sdk::xdr::r#const::ScSpecEntry::FunctionV0(
+            soroban_sdk::xdr::r#const::ScSpecFunctionV0 {
+                doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
+                name: soroban_sdk::xdr::r#const::ScSymbol(
+                    soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b"test_string"),
+                ),
+                inputs: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[
+                    soroban_sdk::xdr::r#const::ScSpecFunctionInputV0 {
+                        doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
+                        name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b"v"),
+                        type_: <String as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
+                    },
+                ]),
+                outputs: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[
+                    <String as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
+                ]),
+            },
+        );
     #[allow(non_snake_case)]
-    pub const fn spec_xdr_test_string() -> [u8; 52usize] {
-        *b"\0\0\0\0\0\0\0\0\0\0\0\x0btest_string\0\0\0\0\x01\0\0\0\0\0\0\0\x01v\0\0\0\0\0\0\x10\0\0\0\x01\0\0\0\x10"
+    pub const fn spec_xdr_test_string(
+    ) -> [u8; AllTypesSpec::__SPEC_XDR_ENTRY_test_string.const_xdr_len()] {
+        const { AllTypesSpec::__SPEC_XDR_ENTRY_test_string.const_to_xdr() }
     }
 }
 impl AllTypesSpec {
+    #[allow(non_upper_case_globals)]
+    const __SPEC_XDR_ENTRY_test_symbol: soroban_sdk::xdr::r#const::ScSpecEntry =
+        soroban_sdk::xdr::r#const::ScSpecEntry::FunctionV0(
+            soroban_sdk::xdr::r#const::ScSpecFunctionV0 {
+                doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
+                name: soroban_sdk::xdr::r#const::ScSymbol(
+                    soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b"test_symbol"),
+                ),
+                inputs: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[
+                    soroban_sdk::xdr::r#const::ScSpecFunctionInputV0 {
+                        doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
+                        name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b"v"),
+                        type_: <Symbol as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
+                    },
+                ]),
+                outputs: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[
+                    <Symbol as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
+                ]),
+            },
+        );
     #[allow(non_snake_case)]
-    pub const fn spec_xdr_test_symbol() -> [u8; 52usize] {
-        *b"\0\0\0\0\0\0\0\0\0\0\0\x0btest_symbol\0\0\0\0\x01\0\0\0\0\0\0\0\x01v\0\0\0\0\0\0\x11\0\0\0\x01\0\0\0\x11"
+    pub const fn spec_xdr_test_symbol(
+    ) -> [u8; AllTypesSpec::__SPEC_XDR_ENTRY_test_symbol.const_xdr_len()] {
+        const { AllTypesSpec::__SPEC_XDR_ENTRY_test_symbol.const_to_xdr() }
     }
 }
 impl AllTypesSpec {
+    #[allow(non_upper_case_globals)]
+    const __SPEC_XDR_ENTRY_test_vec: soroban_sdk::xdr::r#const::ScSpecEntry =
+        soroban_sdk::xdr::r#const::ScSpecEntry::FunctionV0(
+            soroban_sdk::xdr::r#const::ScSpecFunctionV0 {
+                doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
+                name: soroban_sdk::xdr::r#const::ScSymbol(
+                    soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b"test_vec"),
+                ),
+                inputs: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[
+                    soroban_sdk::xdr::r#const::ScSpecFunctionInputV0 {
+                        doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
+                        name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b"v"),
+                        type_: <Vec<u32> as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
+                    },
+                ]),
+                outputs: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[
+                    <Vec<u32> as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
+                ]),
+            },
+        );
     #[allow(non_snake_case)]
-    pub const fn spec_xdr_test_vec() -> [u8; 56usize] {
-        *b"\0\0\0\0\0\0\0\0\0\0\0\x08test_vec\0\0\0\x01\0\0\0\0\0\0\0\x01v\0\0\0\0\0\x03\xea\0\0\0\x04\0\0\0\x01\0\0\x03\xea\0\0\0\x04"
+    pub const fn spec_xdr_test_vec() -> [u8; AllTypesSpec::__SPEC_XDR_ENTRY_test_vec.const_xdr_len()]
+    {
+        const { AllTypesSpec::__SPEC_XDR_ENTRY_test_vec.const_to_xdr() }
     }
 }
 impl AllTypesSpec {
+    #[allow(non_upper_case_globals)]
+    const __SPEC_XDR_ENTRY_test_map: soroban_sdk::xdr::r#const::ScSpecEntry =
+        soroban_sdk::xdr::r#const::ScSpecEntry::FunctionV0(
+            soroban_sdk::xdr::r#const::ScSpecFunctionV0 {
+                doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
+                name: soroban_sdk::xdr::r#const::ScSymbol(
+                    soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b"test_map"),
+                ),
+                inputs: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[
+                    soroban_sdk::xdr::r#const::ScSpecFunctionInputV0 {
+                        doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
+                        name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b"v"),
+                        type_: <Map<u32, u32> as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
+                    },
+                ]),
+                outputs: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[
+                    <Map<u32, u32> as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
+                ]),
+            },
+        );
     #[allow(non_snake_case)]
-    pub const fn spec_xdr_test_map() -> [u8; 64usize] {
-        *b"\0\0\0\0\0\0\0\0\0\0\0\x08test_map\0\0\0\x01\0\0\0\0\0\0\0\x01v\0\0\0\0\0\x03\xec\0\0\0\x04\0\0\0\x04\0\0\0\x01\0\0\x03\xec\0\0\0\x04\0\0\0\x04"
+    pub const fn spec_xdr_test_map() -> [u8; AllTypesSpec::__SPEC_XDR_ENTRY_test_map.const_xdr_len()]
+    {
+        const { AllTypesSpec::__SPEC_XDR_ENTRY_test_map.const_to_xdr() }
     }
 }
 impl AllTypesSpec {
+    #[allow(non_upper_case_globals)]
+    const __SPEC_XDR_ENTRY_test_duration: soroban_sdk::xdr::r#const::ScSpecEntry =
+        soroban_sdk::xdr::r#const::ScSpecEntry::FunctionV0(
+            soroban_sdk::xdr::r#const::ScSpecFunctionV0 {
+                doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
+                name: soroban_sdk::xdr::r#const::ScSymbol(
+                    soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b"test_duration"),
+                ),
+                inputs: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[
+                    soroban_sdk::xdr::r#const::ScSpecFunctionInputV0 {
+                        doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
+                        name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b"v"),
+                        type_: <Duration as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
+                    },
+                ]),
+                outputs: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[
+                    <Duration as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
+                ]),
+            },
+        );
     #[allow(non_snake_case)]
-    pub const fn spec_xdr_test_duration() -> [u8; 56usize] {
-        *b"\0\0\0\0\0\0\0\0\0\0\0\rtest_duration\0\0\0\0\0\0\x01\0\0\0\0\0\0\0\x01v\0\0\0\0\0\0\t\0\0\0\x01\0\0\0\t"
+    pub const fn spec_xdr_test_duration(
+    ) -> [u8; AllTypesSpec::__SPEC_XDR_ENTRY_test_duration.const_xdr_len()] {
+        const { AllTypesSpec::__SPEC_XDR_ENTRY_test_duration.const_to_xdr() }
     }
 }
 impl AllTypesSpec {
+    #[allow(non_upper_case_globals)]
+    const __SPEC_XDR_ENTRY_test_timepoint: soroban_sdk::xdr::r#const::ScSpecEntry =
+        soroban_sdk::xdr::r#const::ScSpecEntry::FunctionV0(
+            soroban_sdk::xdr::r#const::ScSpecFunctionV0 {
+                doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
+                name: soroban_sdk::xdr::r#const::ScSymbol(
+                    soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b"test_timepoint"),
+                ),
+                inputs: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[
+                    soroban_sdk::xdr::r#const::ScSpecFunctionInputV0 {
+                        doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
+                        name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b"v"),
+                        type_: <Timepoint as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
+                    },
+                ]),
+                outputs: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[
+                    <Timepoint as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
+                ]),
+            },
+        );
     #[allow(non_snake_case)]
-    pub const fn spec_xdr_test_timepoint() -> [u8; 56usize] {
-        *b"\0\0\0\0\0\0\0\0\0\0\0\x0etest_timepoint\0\0\0\0\0\x01\0\0\0\0\0\0\0\x01v\0\0\0\0\0\0\x08\0\0\0\x01\0\0\0\x08"
+    pub const fn spec_xdr_test_timepoint(
+    ) -> [u8; AllTypesSpec::__SPEC_XDR_ENTRY_test_timepoint.const_xdr_len()] {
+        const { AllTypesSpec::__SPEC_XDR_ENTRY_test_timepoint.const_to_xdr() }
     }
 }
 impl AllTypesSpec {
+    #[allow(non_upper_case_globals)]
+    const __SPEC_XDR_ENTRY_test_i256: soroban_sdk::xdr::r#const::ScSpecEntry =
+        soroban_sdk::xdr::r#const::ScSpecEntry::FunctionV0(
+            soroban_sdk::xdr::r#const::ScSpecFunctionV0 {
+                doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
+                name: soroban_sdk::xdr::r#const::ScSymbol(
+                    soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b"test_i256"),
+                ),
+                inputs: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[
+                    soroban_sdk::xdr::r#const::ScSpecFunctionInputV0 {
+                        doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
+                        name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b"v"),
+                        type_: <I256 as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
+                    },
+                ]),
+                outputs: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[
+                    <I256 as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
+                ]),
+            },
+        );
     #[allow(non_snake_case)]
-    pub const fn spec_xdr_test_i256() -> [u8; 52usize] {
-        *b"\0\0\0\0\0\0\0\0\0\0\0\ttest_i256\0\0\0\0\0\0\x01\0\0\0\0\0\0\0\x01v\0\0\0\0\0\0\r\0\0\0\x01\0\0\0\r"
+    pub const fn spec_xdr_test_i256(
+    ) -> [u8; AllTypesSpec::__SPEC_XDR_ENTRY_test_i256.const_xdr_len()] {
+        const { AllTypesSpec::__SPEC_XDR_ENTRY_test_i256.const_to_xdr() }
     }
 }
 impl AllTypesSpec {
+    #[allow(non_upper_case_globals)]
+    const __SPEC_XDR_ENTRY_test_u256: soroban_sdk::xdr::r#const::ScSpecEntry =
+        soroban_sdk::xdr::r#const::ScSpecEntry::FunctionV0(
+            soroban_sdk::xdr::r#const::ScSpecFunctionV0 {
+                doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
+                name: soroban_sdk::xdr::r#const::ScSymbol(
+                    soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b"test_u256"),
+                ),
+                inputs: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[
+                    soroban_sdk::xdr::r#const::ScSpecFunctionInputV0 {
+                        doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
+                        name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b"v"),
+                        type_: <U256 as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
+                    },
+                ]),
+                outputs: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[
+                    <U256 as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
+                ]),
+            },
+        );
     #[allow(non_snake_case)]
-    pub const fn spec_xdr_test_u256() -> [u8; 52usize] {
-        *b"\0\0\0\0\0\0\0\0\0\0\0\ttest_u256\0\0\0\0\0\0\x01\0\0\0\0\0\0\0\x01v\0\0\0\0\0\0\x0c\0\0\0\x01\0\0\0\x0c"
+    pub const fn spec_xdr_test_u256(
+    ) -> [u8; AllTypesSpec::__SPEC_XDR_ENTRY_test_u256.const_xdr_len()] {
+        const { AllTypesSpec::__SPEC_XDR_ENTRY_test_u256.const_to_xdr() }
     }
 }
 impl AllTypesSpec {
+    #[allow(non_upper_case_globals)]
+    const __SPEC_XDR_ENTRY_test_env_param: soroban_sdk::xdr::r#const::ScSpecEntry =
+        soroban_sdk::xdr::r#const::ScSpecEntry::FunctionV0(
+            soroban_sdk::xdr::r#const::ScSpecFunctionV0 {
+                doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
+                name: soroban_sdk::xdr::r#const::ScSymbol(
+                    soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b"test_env_param"),
+                ),
+                inputs: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[]),
+                outputs: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[
+                    <u32 as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
+                ]),
+            },
+        );
     #[allow(non_snake_case)]
-    pub const fn spec_xdr_test_env_param() -> [u8; 40usize] {
-        *b"\0\0\0\0\0\0\0\0\0\0\0\x0etest_env_param\0\0\0\0\0\0\0\0\0\x01\0\0\0\x04"
+    pub const fn spec_xdr_test_env_param(
+    ) -> [u8; AllTypesSpec::__SPEC_XDR_ENTRY_test_env_param.const_xdr_len()] {
+        const { AllTypesSpec::__SPEC_XDR_ENTRY_test_env_param.const_to_xdr() }
     }
 }
 impl AllTypesSpec {
+    #[allow(non_upper_case_globals)]
+    const __SPEC_XDR_ENTRY_test_struct: soroban_sdk::xdr::r#const::ScSpecEntry =
+        soroban_sdk::xdr::r#const::ScSpecEntry::FunctionV0(
+            soroban_sdk::xdr::r#const::ScSpecFunctionV0 {
+                doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
+                name: soroban_sdk::xdr::r#const::ScSymbol(
+                    soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b"test_struct"),
+                ),
+                inputs: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[
+                    soroban_sdk::xdr::r#const::ScSpecFunctionInputV0 {
+                        doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
+                        name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b"v"),
+                        type_: <MyStruct as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
+                    },
+                ]),
+                outputs: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[
+                    <MyStruct as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
+                ]),
+            },
+        );
     #[allow(non_snake_case)]
-    pub const fn spec_xdr_test_struct() -> [u8; 76usize] {
-        *b"\0\0\0\0\0\0\0\0\0\0\0\x0btest_struct\0\0\0\0\x01\0\0\0\0\0\0\0\x01v\0\0\0\0\0\x07\xd0\0\0\0\x08MyStruct\0\0\0\x01\0\0\x07\xd0\0\0\0\x08MyStruct"
+    pub const fn spec_xdr_test_struct(
+    ) -> [u8; AllTypesSpec::__SPEC_XDR_ENTRY_test_struct.const_xdr_len()] {
+        const { AllTypesSpec::__SPEC_XDR_ENTRY_test_struct.const_to_xdr() }
     }
 }
 impl AllTypesSpec {
+    #[allow(non_upper_case_globals)]
+    const __SPEC_XDR_ENTRY_test_enum_unit: soroban_sdk::xdr::r#const::ScSpecEntry =
+        soroban_sdk::xdr::r#const::ScSpecEntry::FunctionV0(
+            soroban_sdk::xdr::r#const::ScSpecFunctionV0 {
+                doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
+                name: soroban_sdk::xdr::r#const::ScSymbol(
+                    soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b"test_enum_unit"),
+                ),
+                inputs: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[
+                    soroban_sdk::xdr::r#const::ScSpecFunctionInputV0 {
+                        doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
+                        name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b"v"),
+                        type_: <MyEnumUnit as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
+                    },
+                ]),
+                outputs: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[
+                    <MyEnumUnit as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
+                ]),
+            },
+        );
     #[allow(non_snake_case)]
-    pub const fn spec_xdr_test_enum_unit() -> [u8; 88usize] {
-        *b"\0\0\0\0\0\0\0\0\0\0\0\x0etest_enum_unit\0\0\0\0\0\x01\0\0\0\0\0\0\0\x01v\0\0\0\0\0\x07\xd0\0\0\0\nMyEnumUnit\0\0\0\0\0\x01\0\0\x07\xd0\0\0\0\nMyEnumUnit\0\0"
+    pub const fn spec_xdr_test_enum_unit(
+    ) -> [u8; AllTypesSpec::__SPEC_XDR_ENTRY_test_enum_unit.const_xdr_len()] {
+        const { AllTypesSpec::__SPEC_XDR_ENTRY_test_enum_unit.const_to_xdr() }
     }
 }
 impl AllTypesSpec {
+    #[allow(non_upper_case_globals)]
+    const __SPEC_XDR_ENTRY_test_enum_variants: soroban_sdk::xdr::r#const::ScSpecEntry =
+        soroban_sdk::xdr::r#const::ScSpecEntry::FunctionV0(
+            soroban_sdk::xdr::r#const::ScSpecFunctionV0 {
+                doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
+                name: soroban_sdk::xdr::r#const::ScSymbol(
+                    soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(
+                        b"test_enum_variants",
+                    ),
+                ),
+                inputs: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[
+                    soroban_sdk::xdr::r#const::ScSpecFunctionInputV0 {
+                        doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
+                        name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b"v"),
+                        type_: <MyEnumVariants as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
+                    },
+                ]),
+                outputs: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[
+                    <MyEnumVariants as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
+                ]),
+            },
+        );
     #[allow(non_snake_case)]
-    pub const fn spec_xdr_test_enum_variants() -> [u8; 100usize] {
-        *b"\0\0\0\0\0\0\0\0\0\0\0\x12test_enum_variants\0\0\0\0\0\x01\0\0\0\0\0\0\0\x01v\0\0\0\0\0\x07\xd0\0\0\0\x0eMyEnumVariants\0\0\0\0\0\x01\0\0\x07\xd0\0\0\0\x0eMyEnumVariants\0\0"
+    pub const fn spec_xdr_test_enum_variants(
+    ) -> [u8; AllTypesSpec::__SPEC_XDR_ENTRY_test_enum_variants.const_xdr_len()] {
+        const { AllTypesSpec::__SPEC_XDR_ENTRY_test_enum_variants.const_to_xdr() }
     }
 }
 mod test {
@@ -3495,23 +3089,14 @@ mod test {
         pub env: soroban_sdk::Env,
         pub address: soroban_sdk::Address,
         #[doc(hidden)]
-        set_auths: Option<&'a [soroban_sdk::xdr::SorobanAuthorizationEntry]>,
-        #[doc(hidden)]
-        mock_auths: Option<&'a [soroban_sdk::testutils::MockAuth<'a>]>,
-        #[doc(hidden)]
-        mock_all_auths: bool,
-        #[doc(hidden)]
-        allow_non_root_auth: bool,
+        config: soroban_sdk::testutils::ClientInternalConfig<'a>,
     }
     impl<'a> ContractClient<'a> {
         pub fn new(env: &soroban_sdk::Env, address: &soroban_sdk::Address) -> Self {
             Self {
                 env: env.clone(),
                 address: address.clone(),
-                set_auths: None,
-                mock_auths: None,
-                mock_all_auths: false,
-                allow_non_root_auth: false,
+                config: soroban_sdk::testutils::ClientInternalConfig::default(),
             }
         }
         /// Set authorizations in the environment which will be consumed by
@@ -3526,10 +3111,7 @@ mod test {
             Self {
                 env: self.env.clone(),
                 address: self.address.clone(),
-                set_auths: Some(auths),
-                mock_auths: self.mock_auths.clone(),
-                mock_all_auths: false,
-                allow_non_root_auth: false,
+                config: self.config.set_auths(auths),
             }
         }
         /// Mock authorizations in the environment which will cause matching invokes
@@ -3541,10 +3123,7 @@ mod test {
             Self {
                 env: self.env.clone(),
                 address: self.address.clone(),
-                set_auths: self.set_auths.clone(),
-                mock_auths: Some(mock_auths),
-                mock_all_auths: false,
-                allow_non_root_auth: false,
+                config: self.config.mock_auths(mock_auths),
             }
         }
         /// Mock all calls to the `Address::require_auth` and
@@ -3557,10 +3136,7 @@ mod test {
             Self {
                 env: self.env.clone(),
                 address: self.address.clone(),
-                set_auths: None,
-                mock_auths: None,
-                mock_all_auths: true,
-                allow_non_root_auth: false,
+                config: self.config.mock_all_auths(),
             }
         }
         /// A version of `mock_all_auths` that allows authorizations that
@@ -3576,10 +3152,7 @@ mod test {
             Self {
                 env: self.env.clone(),
                 address: self.address.clone(),
-                set_auths: None,
-                mock_auths: None,
-                mock_all_auths: true,
-                allow_non_root_auth: true,
+                config: self.config.mock_all_auths_allowing_non_root_auth(),
             }
         }
     }
@@ -4686,14 +4259,40 @@ mod test {
         #[allow(dead_code)]
         /// Test u32 values.
         /// Returns the input unchanged.
-        static __SPEC_XDR_FN_TEST_U32: [u8; 96usize] = super::Contract::spec_xdr_test_u32();
+        static __SPEC_XDR_FN_TEST_U32: [u8; super::Contract::spec_xdr_test_u32().len()] =
+            super::Contract::spec_xdr_test_u32();
     }
     impl Contract {
+        #[allow(non_upper_case_globals)]
+        /// Test u32 values.
+        /// Returns the input unchanged.
+        const __SPEC_XDR_ENTRY_test_u32: soroban_sdk::xdr::r#const::ScSpecEntry =
+            soroban_sdk::xdr::r#const::ScSpecEntry::FunctionV0(
+                soroban_sdk::xdr::r#const::ScSpecFunctionV0 {
+                    doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(
+                        b"Test u32 values.\nReturns the input unchanged.",
+                    ),
+                    name: soroban_sdk::xdr::r#const::ScSymbol(
+                        soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b"test_u32"),
+                    ),
+                    inputs: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[
+                        soroban_sdk::xdr::r#const::ScSpecFunctionInputV0 {
+                            doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
+                            name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b"v"),
+                            type_: <u32 as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
+                        },
+                    ]),
+                    outputs: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[
+                        <u32 as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
+                    ]),
+                },
+            );
         #[allow(non_snake_case)]
         /// Test u32 values.
         /// Returns the input unchanged.
-        pub const fn spec_xdr_test_u32() -> [u8; 96usize] {
-            *b"\0\0\0\0\0\0\0-Test u32 values.\nReturns the input unchanged.\0\0\0\0\0\0\x08test_u32\0\0\0\x01\0\0\0\0\0\0\0\x01v\0\0\0\0\0\0\x04\0\0\0\x01\0\0\0\x04"
+        pub const fn spec_xdr_test_u32() -> [u8; Contract::__SPEC_XDR_ENTRY_test_u32.const_xdr_len()]
+        {
+            const { Contract::__SPEC_XDR_ENTRY_test_u32.const_to_xdr() }
         }
     }
     #[doc(hidden)]
@@ -4706,13 +4305,38 @@ mod test {
         #[allow(non_upper_case_globals)]
         #[allow(dead_code)]
         /// Test i32 values.
-        static __SPEC_XDR_FN_TEST_I32: [u8; 64usize] = super::Contract::spec_xdr_test_i32();
+        static __SPEC_XDR_FN_TEST_I32: [u8; super::Contract::spec_xdr_test_i32().len()] =
+            super::Contract::spec_xdr_test_i32();
     }
     impl Contract {
+        #[allow(non_upper_case_globals)]
+        /// Test i32 values.
+        const __SPEC_XDR_ENTRY_test_i32: soroban_sdk::xdr::r#const::ScSpecEntry =
+            soroban_sdk::xdr::r#const::ScSpecEntry::FunctionV0(
+                soroban_sdk::xdr::r#const::ScSpecFunctionV0 {
+                    doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(
+                        b"Test i32 values.",
+                    ),
+                    name: soroban_sdk::xdr::r#const::ScSymbol(
+                        soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b"test_i32"),
+                    ),
+                    inputs: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[
+                        soroban_sdk::xdr::r#const::ScSpecFunctionInputV0 {
+                            doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
+                            name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b"v"),
+                            type_: <i32 as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
+                        },
+                    ]),
+                    outputs: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[
+                        <i32 as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
+                    ]),
+                },
+            );
         #[allow(non_snake_case)]
         /// Test i32 values.
-        pub const fn spec_xdr_test_i32() -> [u8; 64usize] {
-            *b"\0\0\0\0\0\0\0\x10Test i32 values.\0\0\0\x08test_i32\0\0\0\x01\0\0\0\0\0\0\0\x01v\0\0\0\0\0\0\x05\0\0\0\x01\0\0\0\x05"
+        pub const fn spec_xdr_test_i32() -> [u8; Contract::__SPEC_XDR_ENTRY_test_i32.const_xdr_len()]
+        {
+            const { Contract::__SPEC_XDR_ENTRY_test_i32.const_to_xdr() }
         }
     }
     #[doc(hidden)]
@@ -4723,12 +4347,34 @@ mod test {
         #[allow(non_snake_case)]
         #[allow(non_upper_case_globals)]
         #[allow(dead_code)]
-        static __SPEC_XDR_FN_TEST_U64: [u8; 48usize] = super::Contract::spec_xdr_test_u64();
+        static __SPEC_XDR_FN_TEST_U64: [u8; super::Contract::spec_xdr_test_u64().len()] =
+            super::Contract::spec_xdr_test_u64();
     }
     impl Contract {
+        #[allow(non_upper_case_globals)]
+        const __SPEC_XDR_ENTRY_test_u64: soroban_sdk::xdr::r#const::ScSpecEntry =
+            soroban_sdk::xdr::r#const::ScSpecEntry::FunctionV0(
+                soroban_sdk::xdr::r#const::ScSpecFunctionV0 {
+                    doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
+                    name: soroban_sdk::xdr::r#const::ScSymbol(
+                        soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b"test_u64"),
+                    ),
+                    inputs: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[
+                        soroban_sdk::xdr::r#const::ScSpecFunctionInputV0 {
+                            doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
+                            name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b"v"),
+                            type_: <u64 as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
+                        },
+                    ]),
+                    outputs: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[
+                        <u64 as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
+                    ]),
+                },
+            );
         #[allow(non_snake_case)]
-        pub const fn spec_xdr_test_u64() -> [u8; 48usize] {
-            *b"\0\0\0\0\0\0\0\0\0\0\0\x08test_u64\0\0\0\x01\0\0\0\0\0\0\0\x01v\0\0\0\0\0\0\x06\0\0\0\x01\0\0\0\x06"
+        pub const fn spec_xdr_test_u64() -> [u8; Contract::__SPEC_XDR_ENTRY_test_u64.const_xdr_len()]
+        {
+            const { Contract::__SPEC_XDR_ENTRY_test_u64.const_to_xdr() }
         }
     }
     #[doc(hidden)]
@@ -4739,12 +4385,34 @@ mod test {
         #[allow(non_snake_case)]
         #[allow(non_upper_case_globals)]
         #[allow(dead_code)]
-        static __SPEC_XDR_FN_TEST_I64: [u8; 48usize] = super::Contract::spec_xdr_test_i64();
+        static __SPEC_XDR_FN_TEST_I64: [u8; super::Contract::spec_xdr_test_i64().len()] =
+            super::Contract::spec_xdr_test_i64();
     }
     impl Contract {
+        #[allow(non_upper_case_globals)]
+        const __SPEC_XDR_ENTRY_test_i64: soroban_sdk::xdr::r#const::ScSpecEntry =
+            soroban_sdk::xdr::r#const::ScSpecEntry::FunctionV0(
+                soroban_sdk::xdr::r#const::ScSpecFunctionV0 {
+                    doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
+                    name: soroban_sdk::xdr::r#const::ScSymbol(
+                        soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b"test_i64"),
+                    ),
+                    inputs: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[
+                        soroban_sdk::xdr::r#const::ScSpecFunctionInputV0 {
+                            doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
+                            name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b"v"),
+                            type_: <i64 as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
+                        },
+                    ]),
+                    outputs: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[
+                        <i64 as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
+                    ]),
+                },
+            );
         #[allow(non_snake_case)]
-        pub const fn spec_xdr_test_i64() -> [u8; 48usize] {
-            *b"\0\0\0\0\0\0\0\0\0\0\0\x08test_i64\0\0\0\x01\0\0\0\0\0\0\0\x01v\0\0\0\0\0\0\x07\0\0\0\x01\0\0\0\x07"
+        pub const fn spec_xdr_test_i64() -> [u8; Contract::__SPEC_XDR_ENTRY_test_i64.const_xdr_len()]
+        {
+            const { Contract::__SPEC_XDR_ENTRY_test_i64.const_to_xdr() }
         }
     }
     #[doc(hidden)]
@@ -4755,12 +4423,34 @@ mod test {
         #[allow(non_snake_case)]
         #[allow(non_upper_case_globals)]
         #[allow(dead_code)]
-        static __SPEC_XDR_FN_TEST_U128: [u8; 52usize] = super::Contract::spec_xdr_test_u128();
+        static __SPEC_XDR_FN_TEST_U128: [u8; super::Contract::spec_xdr_test_u128().len()] =
+            super::Contract::spec_xdr_test_u128();
     }
     impl Contract {
+        #[allow(non_upper_case_globals)]
+        const __SPEC_XDR_ENTRY_test_u128: soroban_sdk::xdr::r#const::ScSpecEntry =
+            soroban_sdk::xdr::r#const::ScSpecEntry::FunctionV0(
+                soroban_sdk::xdr::r#const::ScSpecFunctionV0 {
+                    doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
+                    name: soroban_sdk::xdr::r#const::ScSymbol(
+                        soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b"test_u128"),
+                    ),
+                    inputs: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[
+                        soroban_sdk::xdr::r#const::ScSpecFunctionInputV0 {
+                            doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
+                            name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b"v"),
+                            type_: <u128 as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
+                        },
+                    ]),
+                    outputs: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[
+                        <u128 as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
+                    ]),
+                },
+            );
         #[allow(non_snake_case)]
-        pub const fn spec_xdr_test_u128() -> [u8; 52usize] {
-            *b"\0\0\0\0\0\0\0\0\0\0\0\ttest_u128\0\0\0\0\0\0\x01\0\0\0\0\0\0\0\x01v\0\0\0\0\0\0\n\0\0\0\x01\0\0\0\n"
+        pub const fn spec_xdr_test_u128(
+        ) -> [u8; Contract::__SPEC_XDR_ENTRY_test_u128.const_xdr_len()] {
+            const { Contract::__SPEC_XDR_ENTRY_test_u128.const_to_xdr() }
         }
     }
     #[doc(hidden)]
@@ -4771,12 +4461,34 @@ mod test {
         #[allow(non_snake_case)]
         #[allow(non_upper_case_globals)]
         #[allow(dead_code)]
-        static __SPEC_XDR_FN_TEST_I128: [u8; 52usize] = super::Contract::spec_xdr_test_i128();
+        static __SPEC_XDR_FN_TEST_I128: [u8; super::Contract::spec_xdr_test_i128().len()] =
+            super::Contract::spec_xdr_test_i128();
     }
     impl Contract {
+        #[allow(non_upper_case_globals)]
+        const __SPEC_XDR_ENTRY_test_i128: soroban_sdk::xdr::r#const::ScSpecEntry =
+            soroban_sdk::xdr::r#const::ScSpecEntry::FunctionV0(
+                soroban_sdk::xdr::r#const::ScSpecFunctionV0 {
+                    doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
+                    name: soroban_sdk::xdr::r#const::ScSymbol(
+                        soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b"test_i128"),
+                    ),
+                    inputs: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[
+                        soroban_sdk::xdr::r#const::ScSpecFunctionInputV0 {
+                            doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
+                            name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b"v"),
+                            type_: <i128 as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
+                        },
+                    ]),
+                    outputs: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[
+                        <i128 as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
+                    ]),
+                },
+            );
         #[allow(non_snake_case)]
-        pub const fn spec_xdr_test_i128() -> [u8; 52usize] {
-            *b"\0\0\0\0\0\0\0\0\0\0\0\ttest_i128\0\0\0\0\0\0\x01\0\0\0\0\0\0\0\x01v\0\0\0\0\0\0\x0b\0\0\0\x01\0\0\0\x0b"
+        pub const fn spec_xdr_test_i128(
+        ) -> [u8; Contract::__SPEC_XDR_ENTRY_test_i128.const_xdr_len()] {
+            const { Contract::__SPEC_XDR_ENTRY_test_i128.const_to_xdr() }
         }
     }
     #[doc(hidden)]
@@ -4787,12 +4499,34 @@ mod test {
         #[allow(non_snake_case)]
         #[allow(non_upper_case_globals)]
         #[allow(dead_code)]
-        static __SPEC_XDR_FN_TEST_BOOL: [u8; 52usize] = super::Contract::spec_xdr_test_bool();
+        static __SPEC_XDR_FN_TEST_BOOL: [u8; super::Contract::spec_xdr_test_bool().len()] =
+            super::Contract::spec_xdr_test_bool();
     }
     impl Contract {
+        #[allow(non_upper_case_globals)]
+        const __SPEC_XDR_ENTRY_test_bool: soroban_sdk::xdr::r#const::ScSpecEntry =
+            soroban_sdk::xdr::r#const::ScSpecEntry::FunctionV0(
+                soroban_sdk::xdr::r#const::ScSpecFunctionV0 {
+                    doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
+                    name: soroban_sdk::xdr::r#const::ScSymbol(
+                        soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b"test_bool"),
+                    ),
+                    inputs: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[
+                        soroban_sdk::xdr::r#const::ScSpecFunctionInputV0 {
+                            doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
+                            name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b"v"),
+                            type_: <bool as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
+                        },
+                    ]),
+                    outputs: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[
+                        <bool as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
+                    ]),
+                },
+            );
         #[allow(non_snake_case)]
-        pub const fn spec_xdr_test_bool() -> [u8; 52usize] {
-            *b"\0\0\0\0\0\0\0\0\0\0\0\ttest_bool\0\0\0\0\0\0\x01\0\0\0\0\0\0\0\x01v\0\0\0\0\0\0\x01\0\0\0\x01\0\0\0\x01"
+        pub const fn spec_xdr_test_bool(
+        ) -> [u8; Contract::__SPEC_XDR_ENTRY_test_bool.const_xdr_len()] {
+            const { Contract::__SPEC_XDR_ENTRY_test_bool.const_to_xdr() }
         }
     }
     #[doc(hidden)]
@@ -4803,12 +4537,36 @@ mod test {
         #[allow(non_snake_case)]
         #[allow(non_upper_case_globals)]
         #[allow(dead_code)]
-        static __SPEC_XDR_FN_TEST_ADDRESS: [u8; 52usize] = super::Contract::spec_xdr_test_address();
+        static __SPEC_XDR_FN_TEST_ADDRESS: [u8; super::Contract::spec_xdr_test_address().len()] =
+            super::Contract::spec_xdr_test_address();
     }
     impl Contract {
+        #[allow(non_upper_case_globals)]
+        const __SPEC_XDR_ENTRY_test_address: soroban_sdk::xdr::r#const::ScSpecEntry =
+            soroban_sdk::xdr::r#const::ScSpecEntry::FunctionV0(
+                soroban_sdk::xdr::r#const::ScSpecFunctionV0 {
+                    doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
+                    name: soroban_sdk::xdr::r#const::ScSymbol(
+                        soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(
+                            b"test_address",
+                        ),
+                    ),
+                    inputs: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[
+                        soroban_sdk::xdr::r#const::ScSpecFunctionInputV0 {
+                            doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
+                            name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b"v"),
+                            type_: <Address as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
+                        },
+                    ]),
+                    outputs: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[
+                        <Address as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
+                    ]),
+                },
+            );
         #[allow(non_snake_case)]
-        pub const fn spec_xdr_test_address() -> [u8; 52usize] {
-            *b"\0\0\0\0\0\0\0\0\0\0\0\x0ctest_address\0\0\0\x01\0\0\0\0\0\0\0\x01v\0\0\0\0\0\0\x13\0\0\0\x01\0\0\0\x13"
+        pub const fn spec_xdr_test_address(
+        ) -> [u8; Contract::__SPEC_XDR_ENTRY_test_address.const_xdr_len()] {
+            const { Contract::__SPEC_XDR_ENTRY_test_address.const_to_xdr() }
         }
     }
     #[doc(hidden)]
@@ -4819,12 +4577,34 @@ mod test {
         #[allow(non_snake_case)]
         #[allow(non_upper_case_globals)]
         #[allow(dead_code)]
-        static __SPEC_XDR_FN_TEST_BYTES: [u8; 52usize] = super::Contract::spec_xdr_test_bytes();
+        static __SPEC_XDR_FN_TEST_BYTES: [u8; super::Contract::spec_xdr_test_bytes().len()] =
+            super::Contract::spec_xdr_test_bytes();
     }
     impl Contract {
+        #[allow(non_upper_case_globals)]
+        const __SPEC_XDR_ENTRY_test_bytes: soroban_sdk::xdr::r#const::ScSpecEntry =
+            soroban_sdk::xdr::r#const::ScSpecEntry::FunctionV0(
+                soroban_sdk::xdr::r#const::ScSpecFunctionV0 {
+                    doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
+                    name: soroban_sdk::xdr::r#const::ScSymbol(
+                        soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b"test_bytes"),
+                    ),
+                    inputs: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[
+                        soroban_sdk::xdr::r#const::ScSpecFunctionInputV0 {
+                            doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
+                            name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b"v"),
+                            type_: <Bytes as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
+                        },
+                    ]),
+                    outputs: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[
+                        <Bytes as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
+                    ]),
+                },
+            );
         #[allow(non_snake_case)]
-        pub const fn spec_xdr_test_bytes() -> [u8; 52usize] {
-            *b"\0\0\0\0\0\0\0\0\0\0\0\ntest_bytes\0\0\0\0\0\x01\0\0\0\0\0\0\0\x01v\0\0\0\0\0\0\x0e\0\0\0\x01\0\0\0\x0e"
+        pub const fn spec_xdr_test_bytes(
+        ) -> [u8; Contract::__SPEC_XDR_ENTRY_test_bytes.const_xdr_len()] {
+            const { Contract::__SPEC_XDR_ENTRY_test_bytes.const_to_xdr() }
         }
     }
     #[doc(hidden)]
@@ -4835,12 +4615,36 @@ mod test {
         #[allow(non_snake_case)]
         #[allow(non_upper_case_globals)]
         #[allow(dead_code)]
-        static __SPEC_XDR_FN_TEST_BYTES_N: [u8; 60usize] = super::Contract::spec_xdr_test_bytes_n();
+        static __SPEC_XDR_FN_TEST_BYTES_N: [u8; super::Contract::spec_xdr_test_bytes_n().len()] =
+            super::Contract::spec_xdr_test_bytes_n();
     }
     impl Contract {
+        #[allow(non_upper_case_globals)]
+        const __SPEC_XDR_ENTRY_test_bytes_n: soroban_sdk::xdr::r#const::ScSpecEntry =
+            soroban_sdk::xdr::r#const::ScSpecEntry::FunctionV0(
+                soroban_sdk::xdr::r#const::ScSpecFunctionV0 {
+                    doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
+                    name: soroban_sdk::xdr::r#const::ScSymbol(
+                        soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(
+                            b"test_bytes_n",
+                        ),
+                    ),
+                    inputs: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[
+                        soroban_sdk::xdr::r#const::ScSpecFunctionInputV0 {
+                            doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
+                            name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b"v"),
+                            type_: <BytesN<32> as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
+                        },
+                    ]),
+                    outputs: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[
+                        <BytesN<32> as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
+                    ]),
+                },
+            );
         #[allow(non_snake_case)]
-        pub const fn spec_xdr_test_bytes_n() -> [u8; 60usize] {
-            *b"\0\0\0\0\0\0\0\0\0\0\0\x0ctest_bytes_n\0\0\0\x01\0\0\0\0\0\0\0\x01v\0\0\0\0\0\x03\xee\0\0\0 \0\0\0\x01\0\0\x03\xee\0\0\0 "
+        pub const fn spec_xdr_test_bytes_n(
+        ) -> [u8; Contract::__SPEC_XDR_ENTRY_test_bytes_n.const_xdr_len()] {
+            const { Contract::__SPEC_XDR_ENTRY_test_bytes_n.const_to_xdr() }
         }
     }
     #[doc(hidden)]
@@ -4851,12 +4655,34 @@ mod test {
         #[allow(non_snake_case)]
         #[allow(non_upper_case_globals)]
         #[allow(dead_code)]
-        static __SPEC_XDR_FN_TEST_STRING: [u8; 52usize] = super::Contract::spec_xdr_test_string();
+        static __SPEC_XDR_FN_TEST_STRING: [u8; super::Contract::spec_xdr_test_string().len()] =
+            super::Contract::spec_xdr_test_string();
     }
     impl Contract {
+        #[allow(non_upper_case_globals)]
+        const __SPEC_XDR_ENTRY_test_string: soroban_sdk::xdr::r#const::ScSpecEntry =
+            soroban_sdk::xdr::r#const::ScSpecEntry::FunctionV0(
+                soroban_sdk::xdr::r#const::ScSpecFunctionV0 {
+                    doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
+                    name: soroban_sdk::xdr::r#const::ScSymbol(
+                        soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b"test_string"),
+                    ),
+                    inputs: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[
+                        soroban_sdk::xdr::r#const::ScSpecFunctionInputV0 {
+                            doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
+                            name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b"v"),
+                            type_: <String as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
+                        },
+                    ]),
+                    outputs: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[
+                        <String as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
+                    ]),
+                },
+            );
         #[allow(non_snake_case)]
-        pub const fn spec_xdr_test_string() -> [u8; 52usize] {
-            *b"\0\0\0\0\0\0\0\0\0\0\0\x0btest_string\0\0\0\0\x01\0\0\0\0\0\0\0\x01v\0\0\0\0\0\0\x10\0\0\0\x01\0\0\0\x10"
+        pub const fn spec_xdr_test_string(
+        ) -> [u8; Contract::__SPEC_XDR_ENTRY_test_string.const_xdr_len()] {
+            const { Contract::__SPEC_XDR_ENTRY_test_string.const_to_xdr() }
         }
     }
     #[doc(hidden)]
@@ -4867,12 +4693,34 @@ mod test {
         #[allow(non_snake_case)]
         #[allow(non_upper_case_globals)]
         #[allow(dead_code)]
-        static __SPEC_XDR_FN_TEST_SYMBOL: [u8; 52usize] = super::Contract::spec_xdr_test_symbol();
+        static __SPEC_XDR_FN_TEST_SYMBOL: [u8; super::Contract::spec_xdr_test_symbol().len()] =
+            super::Contract::spec_xdr_test_symbol();
     }
     impl Contract {
+        #[allow(non_upper_case_globals)]
+        const __SPEC_XDR_ENTRY_test_symbol: soroban_sdk::xdr::r#const::ScSpecEntry =
+            soroban_sdk::xdr::r#const::ScSpecEntry::FunctionV0(
+                soroban_sdk::xdr::r#const::ScSpecFunctionV0 {
+                    doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
+                    name: soroban_sdk::xdr::r#const::ScSymbol(
+                        soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b"test_symbol"),
+                    ),
+                    inputs: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[
+                        soroban_sdk::xdr::r#const::ScSpecFunctionInputV0 {
+                            doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
+                            name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b"v"),
+                            type_: <Symbol as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
+                        },
+                    ]),
+                    outputs: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[
+                        <Symbol as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
+                    ]),
+                },
+            );
         #[allow(non_snake_case)]
-        pub const fn spec_xdr_test_symbol() -> [u8; 52usize] {
-            *b"\0\0\0\0\0\0\0\0\0\0\0\x0btest_symbol\0\0\0\0\x01\0\0\0\0\0\0\0\x01v\0\0\0\0\0\0\x11\0\0\0\x01\0\0\0\x11"
+        pub const fn spec_xdr_test_symbol(
+        ) -> [u8; Contract::__SPEC_XDR_ENTRY_test_symbol.const_xdr_len()] {
+            const { Contract::__SPEC_XDR_ENTRY_test_symbol.const_to_xdr() }
         }
     }
     #[doc(hidden)]
@@ -4883,12 +4731,34 @@ mod test {
         #[allow(non_snake_case)]
         #[allow(non_upper_case_globals)]
         #[allow(dead_code)]
-        static __SPEC_XDR_FN_TEST_VEC: [u8; 56usize] = super::Contract::spec_xdr_test_vec();
+        static __SPEC_XDR_FN_TEST_VEC: [u8; super::Contract::spec_xdr_test_vec().len()] =
+            super::Contract::spec_xdr_test_vec();
     }
     impl Contract {
+        #[allow(non_upper_case_globals)]
+        const __SPEC_XDR_ENTRY_test_vec: soroban_sdk::xdr::r#const::ScSpecEntry =
+            soroban_sdk::xdr::r#const::ScSpecEntry::FunctionV0(
+                soroban_sdk::xdr::r#const::ScSpecFunctionV0 {
+                    doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
+                    name: soroban_sdk::xdr::r#const::ScSymbol(
+                        soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b"test_vec"),
+                    ),
+                    inputs: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[
+                        soroban_sdk::xdr::r#const::ScSpecFunctionInputV0 {
+                            doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
+                            name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b"v"),
+                            type_: <Vec<u32> as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
+                        },
+                    ]),
+                    outputs: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[
+                        <Vec<u32> as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
+                    ]),
+                },
+            );
         #[allow(non_snake_case)]
-        pub const fn spec_xdr_test_vec() -> [u8; 56usize] {
-            *b"\0\0\0\0\0\0\0\0\0\0\0\x08test_vec\0\0\0\x01\0\0\0\0\0\0\0\x01v\0\0\0\0\0\x03\xea\0\0\0\x04\0\0\0\x01\0\0\x03\xea\0\0\0\x04"
+        pub const fn spec_xdr_test_vec() -> [u8; Contract::__SPEC_XDR_ENTRY_test_vec.const_xdr_len()]
+        {
+            const { Contract::__SPEC_XDR_ENTRY_test_vec.const_to_xdr() }
         }
     }
     #[doc(hidden)]
@@ -4899,12 +4769,34 @@ mod test {
         #[allow(non_snake_case)]
         #[allow(non_upper_case_globals)]
         #[allow(dead_code)]
-        static __SPEC_XDR_FN_TEST_MAP: [u8; 64usize] = super::Contract::spec_xdr_test_map();
+        static __SPEC_XDR_FN_TEST_MAP: [u8; super::Contract::spec_xdr_test_map().len()] =
+            super::Contract::spec_xdr_test_map();
     }
     impl Contract {
+        #[allow(non_upper_case_globals)]
+        const __SPEC_XDR_ENTRY_test_map: soroban_sdk::xdr::r#const::ScSpecEntry =
+            soroban_sdk::xdr::r#const::ScSpecEntry::FunctionV0(
+                soroban_sdk::xdr::r#const::ScSpecFunctionV0 {
+                    doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
+                    name: soroban_sdk::xdr::r#const::ScSymbol(
+                        soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b"test_map"),
+                    ),
+                    inputs: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[
+                        soroban_sdk::xdr::r#const::ScSpecFunctionInputV0 {
+                            doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
+                            name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b"v"),
+                            type_: <Map<u32, u32> as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
+                        },
+                    ]),
+                    outputs: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[
+                        <Map<u32, u32> as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
+                    ]),
+                },
+            );
         #[allow(non_snake_case)]
-        pub const fn spec_xdr_test_map() -> [u8; 64usize] {
-            *b"\0\0\0\0\0\0\0\0\0\0\0\x08test_map\0\0\0\x01\0\0\0\0\0\0\0\x01v\0\0\0\0\0\x03\xec\0\0\0\x04\0\0\0\x04\0\0\0\x01\0\0\x03\xec\0\0\0\x04\0\0\0\x04"
+        pub const fn spec_xdr_test_map() -> [u8; Contract::__SPEC_XDR_ENTRY_test_map.const_xdr_len()]
+        {
+            const { Contract::__SPEC_XDR_ENTRY_test_map.const_to_xdr() }
         }
     }
     #[doc(hidden)]
@@ -4915,13 +4807,36 @@ mod test {
         #[allow(non_snake_case)]
         #[allow(non_upper_case_globals)]
         #[allow(dead_code)]
-        static __SPEC_XDR_FN_TEST_DURATION: [u8; 56usize] =
+        static __SPEC_XDR_FN_TEST_DURATION: [u8; super::Contract::spec_xdr_test_duration().len()] =
             super::Contract::spec_xdr_test_duration();
     }
     impl Contract {
+        #[allow(non_upper_case_globals)]
+        const __SPEC_XDR_ENTRY_test_duration: soroban_sdk::xdr::r#const::ScSpecEntry =
+            soroban_sdk::xdr::r#const::ScSpecEntry::FunctionV0(
+                soroban_sdk::xdr::r#const::ScSpecFunctionV0 {
+                    doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
+                    name: soroban_sdk::xdr::r#const::ScSymbol(
+                        soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(
+                            b"test_duration",
+                        ),
+                    ),
+                    inputs: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[
+                        soroban_sdk::xdr::r#const::ScSpecFunctionInputV0 {
+                            doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
+                            name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b"v"),
+                            type_: <Duration as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
+                        },
+                    ]),
+                    outputs: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[
+                        <Duration as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
+                    ]),
+                },
+            );
         #[allow(non_snake_case)]
-        pub const fn spec_xdr_test_duration() -> [u8; 56usize] {
-            *b"\0\0\0\0\0\0\0\0\0\0\0\rtest_duration\0\0\0\0\0\0\x01\0\0\0\0\0\0\0\x01v\0\0\0\0\0\0\t\0\0\0\x01\0\0\0\t"
+        pub const fn spec_xdr_test_duration(
+        ) -> [u8; Contract::__SPEC_XDR_ENTRY_test_duration.const_xdr_len()] {
+            const { Contract::__SPEC_XDR_ENTRY_test_duration.const_to_xdr() }
         }
     }
     #[doc(hidden)]
@@ -4932,13 +4847,36 @@ mod test {
         #[allow(non_snake_case)]
         #[allow(non_upper_case_globals)]
         #[allow(dead_code)]
-        static __SPEC_XDR_FN_TEST_TIMEPOINT: [u8; 56usize] =
-            super::Contract::spec_xdr_test_timepoint();
+        static __SPEC_XDR_FN_TEST_TIMEPOINT: [u8; super::Contract::spec_xdr_test_timepoint()
+            .len()] = super::Contract::spec_xdr_test_timepoint();
     }
     impl Contract {
+        #[allow(non_upper_case_globals)]
+        const __SPEC_XDR_ENTRY_test_timepoint: soroban_sdk::xdr::r#const::ScSpecEntry =
+            soroban_sdk::xdr::r#const::ScSpecEntry::FunctionV0(
+                soroban_sdk::xdr::r#const::ScSpecFunctionV0 {
+                    doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
+                    name: soroban_sdk::xdr::r#const::ScSymbol(
+                        soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(
+                            b"test_timepoint",
+                        ),
+                    ),
+                    inputs: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[
+                        soroban_sdk::xdr::r#const::ScSpecFunctionInputV0 {
+                            doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
+                            name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b"v"),
+                            type_: <Timepoint as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
+                        },
+                    ]),
+                    outputs: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[
+                        <Timepoint as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
+                    ]),
+                },
+            );
         #[allow(non_snake_case)]
-        pub const fn spec_xdr_test_timepoint() -> [u8; 56usize] {
-            *b"\0\0\0\0\0\0\0\0\0\0\0\x0etest_timepoint\0\0\0\0\0\x01\0\0\0\0\0\0\0\x01v\0\0\0\0\0\0\x08\0\0\0\x01\0\0\0\x08"
+        pub const fn spec_xdr_test_timepoint(
+        ) -> [u8; Contract::__SPEC_XDR_ENTRY_test_timepoint.const_xdr_len()] {
+            const { Contract::__SPEC_XDR_ENTRY_test_timepoint.const_to_xdr() }
         }
     }
     #[doc(hidden)]
@@ -4949,12 +4887,34 @@ mod test {
         #[allow(non_snake_case)]
         #[allow(non_upper_case_globals)]
         #[allow(dead_code)]
-        static __SPEC_XDR_FN_TEST_I256: [u8; 52usize] = super::Contract::spec_xdr_test_i256();
+        static __SPEC_XDR_FN_TEST_I256: [u8; super::Contract::spec_xdr_test_i256().len()] =
+            super::Contract::spec_xdr_test_i256();
     }
     impl Contract {
+        #[allow(non_upper_case_globals)]
+        const __SPEC_XDR_ENTRY_test_i256: soroban_sdk::xdr::r#const::ScSpecEntry =
+            soroban_sdk::xdr::r#const::ScSpecEntry::FunctionV0(
+                soroban_sdk::xdr::r#const::ScSpecFunctionV0 {
+                    doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
+                    name: soroban_sdk::xdr::r#const::ScSymbol(
+                        soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b"test_i256"),
+                    ),
+                    inputs: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[
+                        soroban_sdk::xdr::r#const::ScSpecFunctionInputV0 {
+                            doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
+                            name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b"v"),
+                            type_: <I256 as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
+                        },
+                    ]),
+                    outputs: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[
+                        <I256 as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
+                    ]),
+                },
+            );
         #[allow(non_snake_case)]
-        pub const fn spec_xdr_test_i256() -> [u8; 52usize] {
-            *b"\0\0\0\0\0\0\0\0\0\0\0\ttest_i256\0\0\0\0\0\0\x01\0\0\0\0\0\0\0\x01v\0\0\0\0\0\0\r\0\0\0\x01\0\0\0\r"
+        pub const fn spec_xdr_test_i256(
+        ) -> [u8; Contract::__SPEC_XDR_ENTRY_test_i256.const_xdr_len()] {
+            const { Contract::__SPEC_XDR_ENTRY_test_i256.const_to_xdr() }
         }
     }
     #[doc(hidden)]
@@ -4965,12 +4925,34 @@ mod test {
         #[allow(non_snake_case)]
         #[allow(non_upper_case_globals)]
         #[allow(dead_code)]
-        static __SPEC_XDR_FN_TEST_U256: [u8; 52usize] = super::Contract::spec_xdr_test_u256();
+        static __SPEC_XDR_FN_TEST_U256: [u8; super::Contract::spec_xdr_test_u256().len()] =
+            super::Contract::spec_xdr_test_u256();
     }
     impl Contract {
+        #[allow(non_upper_case_globals)]
+        const __SPEC_XDR_ENTRY_test_u256: soroban_sdk::xdr::r#const::ScSpecEntry =
+            soroban_sdk::xdr::r#const::ScSpecEntry::FunctionV0(
+                soroban_sdk::xdr::r#const::ScSpecFunctionV0 {
+                    doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
+                    name: soroban_sdk::xdr::r#const::ScSymbol(
+                        soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b"test_u256"),
+                    ),
+                    inputs: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[
+                        soroban_sdk::xdr::r#const::ScSpecFunctionInputV0 {
+                            doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
+                            name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b"v"),
+                            type_: <U256 as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
+                        },
+                    ]),
+                    outputs: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[
+                        <U256 as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
+                    ]),
+                },
+            );
         #[allow(non_snake_case)]
-        pub const fn spec_xdr_test_u256() -> [u8; 52usize] {
-            *b"\0\0\0\0\0\0\0\0\0\0\0\ttest_u256\0\0\0\0\0\0\x01\0\0\0\0\0\0\0\x01v\0\0\0\0\0\0\x0c\0\0\0\x01\0\0\0\x0c"
+        pub const fn spec_xdr_test_u256(
+        ) -> [u8; Contract::__SPEC_XDR_ENTRY_test_u256.const_xdr_len()] {
+            const { Contract::__SPEC_XDR_ENTRY_test_u256.const_to_xdr() }
         }
     }
     #[doc(hidden)]
@@ -4981,13 +4963,30 @@ mod test {
         #[allow(non_snake_case)]
         #[allow(non_upper_case_globals)]
         #[allow(dead_code)]
-        static __SPEC_XDR_FN_TEST_ENV_PARAM: [u8; 40usize] =
-            super::Contract::spec_xdr_test_env_param();
+        static __SPEC_XDR_FN_TEST_ENV_PARAM: [u8; super::Contract::spec_xdr_test_env_param()
+            .len()] = super::Contract::spec_xdr_test_env_param();
     }
     impl Contract {
+        #[allow(non_upper_case_globals)]
+        const __SPEC_XDR_ENTRY_test_env_param: soroban_sdk::xdr::r#const::ScSpecEntry =
+            soroban_sdk::xdr::r#const::ScSpecEntry::FunctionV0(
+                soroban_sdk::xdr::r#const::ScSpecFunctionV0 {
+                    doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
+                    name: soroban_sdk::xdr::r#const::ScSymbol(
+                        soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(
+                            b"test_env_param",
+                        ),
+                    ),
+                    inputs: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[]),
+                    outputs: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[
+                        <u32 as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
+                    ]),
+                },
+            );
         #[allow(non_snake_case)]
-        pub const fn spec_xdr_test_env_param() -> [u8; 40usize] {
-            *b"\0\0\0\0\0\0\0\0\0\0\0\x0etest_env_param\0\0\0\0\0\0\0\0\0\x01\0\0\0\x04"
+        pub const fn spec_xdr_test_env_param(
+        ) -> [u8; Contract::__SPEC_XDR_ENTRY_test_env_param.const_xdr_len()] {
+            const { Contract::__SPEC_XDR_ENTRY_test_env_param.const_to_xdr() }
         }
     }
     #[doc(hidden)]
@@ -4998,12 +4997,34 @@ mod test {
         #[allow(non_snake_case)]
         #[allow(non_upper_case_globals)]
         #[allow(dead_code)]
-        static __SPEC_XDR_FN_TEST_STRUCT: [u8; 76usize] = super::Contract::spec_xdr_test_struct();
+        static __SPEC_XDR_FN_TEST_STRUCT: [u8; super::Contract::spec_xdr_test_struct().len()] =
+            super::Contract::spec_xdr_test_struct();
     }
     impl Contract {
+        #[allow(non_upper_case_globals)]
+        const __SPEC_XDR_ENTRY_test_struct: soroban_sdk::xdr::r#const::ScSpecEntry =
+            soroban_sdk::xdr::r#const::ScSpecEntry::FunctionV0(
+                soroban_sdk::xdr::r#const::ScSpecFunctionV0 {
+                    doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
+                    name: soroban_sdk::xdr::r#const::ScSymbol(
+                        soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b"test_struct"),
+                    ),
+                    inputs: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[
+                        soroban_sdk::xdr::r#const::ScSpecFunctionInputV0 {
+                            doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
+                            name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b"v"),
+                            type_: <MyStruct as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
+                        },
+                    ]),
+                    outputs: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[
+                        <MyStruct as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
+                    ]),
+                },
+            );
         #[allow(non_snake_case)]
-        pub const fn spec_xdr_test_struct() -> [u8; 76usize] {
-            *b"\0\0\0\0\0\0\0\0\0\0\0\x0btest_struct\0\0\0\0\x01\0\0\0\0\0\0\0\x01v\0\0\0\0\0\x07\xd0\0\0\0\x08MyStruct\0\0\0\x01\0\0\x07\xd0\0\0\0\x08MyStruct"
+        pub const fn spec_xdr_test_struct(
+        ) -> [u8; Contract::__SPEC_XDR_ENTRY_test_struct.const_xdr_len()] {
+            const { Contract::__SPEC_XDR_ENTRY_test_struct.const_to_xdr() }
         }
     }
     #[doc(hidden)]
@@ -5014,13 +5035,36 @@ mod test {
         #[allow(non_snake_case)]
         #[allow(non_upper_case_globals)]
         #[allow(dead_code)]
-        static __SPEC_XDR_FN_TEST_ENUM_UNIT: [u8; 88usize] =
-            super::Contract::spec_xdr_test_enum_unit();
+        static __SPEC_XDR_FN_TEST_ENUM_UNIT: [u8; super::Contract::spec_xdr_test_enum_unit()
+            .len()] = super::Contract::spec_xdr_test_enum_unit();
     }
     impl Contract {
+        #[allow(non_upper_case_globals)]
+        const __SPEC_XDR_ENTRY_test_enum_unit: soroban_sdk::xdr::r#const::ScSpecEntry =
+            soroban_sdk::xdr::r#const::ScSpecEntry::FunctionV0(
+                soroban_sdk::xdr::r#const::ScSpecFunctionV0 {
+                    doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
+                    name: soroban_sdk::xdr::r#const::ScSymbol(
+                        soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(
+                            b"test_enum_unit",
+                        ),
+                    ),
+                    inputs: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[
+                        soroban_sdk::xdr::r#const::ScSpecFunctionInputV0 {
+                            doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
+                            name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b"v"),
+                            type_: <MyEnumUnit as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
+                        },
+                    ]),
+                    outputs: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[
+                        <MyEnumUnit as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
+                    ]),
+                },
+            );
         #[allow(non_snake_case)]
-        pub const fn spec_xdr_test_enum_unit() -> [u8; 88usize] {
-            *b"\0\0\0\0\0\0\0\0\0\0\0\x0etest_enum_unit\0\0\0\0\0\x01\0\0\0\0\0\0\0\x01v\0\0\0\0\0\x07\xd0\0\0\0\nMyEnumUnit\0\0\0\0\0\x01\0\0\x07\xd0\0\0\0\nMyEnumUnit\0\0"
+        pub const fn spec_xdr_test_enum_unit(
+        ) -> [u8; Contract::__SPEC_XDR_ENTRY_test_enum_unit.const_xdr_len()] {
+            const { Contract::__SPEC_XDR_ENTRY_test_enum_unit.const_to_xdr() }
         }
     }
     #[doc(hidden)]
@@ -5031,40 +5075,45 @@ mod test {
         #[allow(non_snake_case)]
         #[allow(non_upper_case_globals)]
         #[allow(dead_code)]
-        static __SPEC_XDR_FN_TEST_ENUM_VARIANTS: [u8; 100usize] =
+        static __SPEC_XDR_FN_TEST_ENUM_VARIANTS: [u8;
+            super::Contract::spec_xdr_test_enum_variants().len()] =
             super::Contract::spec_xdr_test_enum_variants();
     }
     impl Contract {
+        #[allow(non_upper_case_globals)]
+        const __SPEC_XDR_ENTRY_test_enum_variants: soroban_sdk::xdr::r#const::ScSpecEntry =
+            soroban_sdk::xdr::r#const::ScSpecEntry::FunctionV0(
+                soroban_sdk::xdr::r#const::ScSpecFunctionV0 {
+                    doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
+                    name: soroban_sdk::xdr::r#const::ScSymbol(
+                        soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(
+                            b"test_enum_variants",
+                        ),
+                    ),
+                    inputs: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[
+                        soroban_sdk::xdr::r#const::ScSpecFunctionInputV0 {
+                            doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
+                            name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b"v"),
+                            type_: <MyEnumVariants as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
+                        },
+                    ]),
+                    outputs: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[
+                        <MyEnumVariants as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
+                    ]),
+                },
+            );
         #[allow(non_snake_case)]
-        pub const fn spec_xdr_test_enum_variants() -> [u8; 100usize] {
-            *b"\0\0\0\0\0\0\0\0\0\0\0\x12test_enum_variants\0\0\0\0\0\x01\0\0\0\0\0\0\0\x01v\0\0\0\0\0\x07\xd0\0\0\0\x0eMyEnumVariants\0\0\0\0\0\x01\0\0\x07\xd0\0\0\0\x0eMyEnumVariants\0\0"
+        pub const fn spec_xdr_test_enum_variants(
+        ) -> [u8; Contract::__SPEC_XDR_ENTRY_test_enum_variants.const_xdr_len()] {
+            const { Contract::__SPEC_XDR_ENTRY_test_enum_variants.const_to_xdr() }
         }
     }
     impl<'a> ContractClient<'a> {
         /// Test u32 values.
         /// Returns the input unchanged.
         pub fn test_u32(&self, v: &u32) -> u32 {
-            use core::ops::Not;
-            let old_auth_manager = self
-                .env
-                .in_contract()
-                .not()
-                .then(|| self.env.host().snapshot_auth_manager().unwrap());
-            {
-                if let Some(set_auths) = self.set_auths {
-                    self.env.set_auths(set_auths);
-                }
-                if let Some(mock_auths) = self.mock_auths {
-                    self.env.mock_auths(mock_auths);
-                }
-                if self.mock_all_auths {
-                    if self.allow_non_root_auth {
-                        self.env.mock_all_auths_allowing_non_root_auth();
-                    } else {
-                        self.env.mock_all_auths();
-                    }
-                }
-            }
+            let _call_scope =
+                soroban_sdk::testutils::ClientCallScope::enter(&self.env, self.config);
             use soroban_sdk::{FromVal, IntoVal};
             let res = self.env.invoke_contract(
                 &self.address,
@@ -5075,9 +5124,6 @@ mod test {
                 },
                 ::soroban_sdk::Vec::from_array(&self.env, [v.into_val(&self.env)]),
             );
-            if let Some(old_auth_manager) = old_auth_manager {
-                self.env.host().set_auth_manager(old_auth_manager).unwrap();
-            }
             res
         }
         /// Test u32 values.
@@ -5092,27 +5138,8 @@ mod test {
             >,
             Result<soroban_sdk::Error, soroban_sdk::InvokeError>,
         > {
-            use core::ops::Not;
-            let old_auth_manager = self
-                .env
-                .in_contract()
-                .not()
-                .then(|| self.env.host().snapshot_auth_manager().unwrap());
-            {
-                if let Some(set_auths) = self.set_auths {
-                    self.env.set_auths(set_auths);
-                }
-                if let Some(mock_auths) = self.mock_auths {
-                    self.env.mock_auths(mock_auths);
-                }
-                if self.mock_all_auths {
-                    if self.allow_non_root_auth {
-                        self.env.mock_all_auths_allowing_non_root_auth();
-                    } else {
-                        self.env.mock_all_auths();
-                    }
-                }
-            }
+            let _call_scope =
+                soroban_sdk::testutils::ClientCallScope::enter(&self.env, self.config);
             use soroban_sdk::{FromVal, IntoVal};
             let res = self.env.try_invoke_contract(
                 &self.address,
@@ -5123,34 +5150,12 @@ mod test {
                 },
                 ::soroban_sdk::Vec::from_array(&self.env, [v.into_val(&self.env)]),
             );
-            if let Some(old_auth_manager) = old_auth_manager {
-                self.env.host().set_auth_manager(old_auth_manager).unwrap();
-            }
             res
         }
         /// Test i32 values.
         pub fn test_i32(&self, v: &i32) -> i32 {
-            use core::ops::Not;
-            let old_auth_manager = self
-                .env
-                .in_contract()
-                .not()
-                .then(|| self.env.host().snapshot_auth_manager().unwrap());
-            {
-                if let Some(set_auths) = self.set_auths {
-                    self.env.set_auths(set_auths);
-                }
-                if let Some(mock_auths) = self.mock_auths {
-                    self.env.mock_auths(mock_auths);
-                }
-                if self.mock_all_auths {
-                    if self.allow_non_root_auth {
-                        self.env.mock_all_auths_allowing_non_root_auth();
-                    } else {
-                        self.env.mock_all_auths();
-                    }
-                }
-            }
+            let _call_scope =
+                soroban_sdk::testutils::ClientCallScope::enter(&self.env, self.config);
             use soroban_sdk::{FromVal, IntoVal};
             let res = self.env.invoke_contract(
                 &self.address,
@@ -5161,9 +5166,6 @@ mod test {
                 },
                 ::soroban_sdk::Vec::from_array(&self.env, [v.into_val(&self.env)]),
             );
-            if let Some(old_auth_manager) = old_auth_manager {
-                self.env.host().set_auth_manager(old_auth_manager).unwrap();
-            }
             res
         }
         /// Test i32 values.
@@ -5177,27 +5179,8 @@ mod test {
             >,
             Result<soroban_sdk::Error, soroban_sdk::InvokeError>,
         > {
-            use core::ops::Not;
-            let old_auth_manager = self
-                .env
-                .in_contract()
-                .not()
-                .then(|| self.env.host().snapshot_auth_manager().unwrap());
-            {
-                if let Some(set_auths) = self.set_auths {
-                    self.env.set_auths(set_auths);
-                }
-                if let Some(mock_auths) = self.mock_auths {
-                    self.env.mock_auths(mock_auths);
-                }
-                if self.mock_all_auths {
-                    if self.allow_non_root_auth {
-                        self.env.mock_all_auths_allowing_non_root_auth();
-                    } else {
-                        self.env.mock_all_auths();
-                    }
-                }
-            }
+            let _call_scope =
+                soroban_sdk::testutils::ClientCallScope::enter(&self.env, self.config);
             use soroban_sdk::{FromVal, IntoVal};
             let res = self.env.try_invoke_contract(
                 &self.address,
@@ -5208,33 +5191,11 @@ mod test {
                 },
                 ::soroban_sdk::Vec::from_array(&self.env, [v.into_val(&self.env)]),
             );
-            if let Some(old_auth_manager) = old_auth_manager {
-                self.env.host().set_auth_manager(old_auth_manager).unwrap();
-            }
             res
         }
         pub fn test_u64(&self, v: &u64) -> u64 {
-            use core::ops::Not;
-            let old_auth_manager = self
-                .env
-                .in_contract()
-                .not()
-                .then(|| self.env.host().snapshot_auth_manager().unwrap());
-            {
-                if let Some(set_auths) = self.set_auths {
-                    self.env.set_auths(set_auths);
-                }
-                if let Some(mock_auths) = self.mock_auths {
-                    self.env.mock_auths(mock_auths);
-                }
-                if self.mock_all_auths {
-                    if self.allow_non_root_auth {
-                        self.env.mock_all_auths_allowing_non_root_auth();
-                    } else {
-                        self.env.mock_all_auths();
-                    }
-                }
-            }
+            let _call_scope =
+                soroban_sdk::testutils::ClientCallScope::enter(&self.env, self.config);
             use soroban_sdk::{FromVal, IntoVal};
             let res = self.env.invoke_contract(
                 &self.address,
@@ -5245,9 +5206,6 @@ mod test {
                 },
                 ::soroban_sdk::Vec::from_array(&self.env, [v.into_val(&self.env)]),
             );
-            if let Some(old_auth_manager) = old_auth_manager {
-                self.env.host().set_auth_manager(old_auth_manager).unwrap();
-            }
             res
         }
         pub fn try_test_u64(
@@ -5260,27 +5218,8 @@ mod test {
             >,
             Result<soroban_sdk::Error, soroban_sdk::InvokeError>,
         > {
-            use core::ops::Not;
-            let old_auth_manager = self
-                .env
-                .in_contract()
-                .not()
-                .then(|| self.env.host().snapshot_auth_manager().unwrap());
-            {
-                if let Some(set_auths) = self.set_auths {
-                    self.env.set_auths(set_auths);
-                }
-                if let Some(mock_auths) = self.mock_auths {
-                    self.env.mock_auths(mock_auths);
-                }
-                if self.mock_all_auths {
-                    if self.allow_non_root_auth {
-                        self.env.mock_all_auths_allowing_non_root_auth();
-                    } else {
-                        self.env.mock_all_auths();
-                    }
-                }
-            }
+            let _call_scope =
+                soroban_sdk::testutils::ClientCallScope::enter(&self.env, self.config);
             use soroban_sdk::{FromVal, IntoVal};
             let res = self.env.try_invoke_contract(
                 &self.address,
@@ -5291,33 +5230,11 @@ mod test {
                 },
                 ::soroban_sdk::Vec::from_array(&self.env, [v.into_val(&self.env)]),
             );
-            if let Some(old_auth_manager) = old_auth_manager {
-                self.env.host().set_auth_manager(old_auth_manager).unwrap();
-            }
             res
         }
         pub fn test_i64(&self, v: &i64) -> i64 {
-            use core::ops::Not;
-            let old_auth_manager = self
-                .env
-                .in_contract()
-                .not()
-                .then(|| self.env.host().snapshot_auth_manager().unwrap());
-            {
-                if let Some(set_auths) = self.set_auths {
-                    self.env.set_auths(set_auths);
-                }
-                if let Some(mock_auths) = self.mock_auths {
-                    self.env.mock_auths(mock_auths);
-                }
-                if self.mock_all_auths {
-                    if self.allow_non_root_auth {
-                        self.env.mock_all_auths_allowing_non_root_auth();
-                    } else {
-                        self.env.mock_all_auths();
-                    }
-                }
-            }
+            let _call_scope =
+                soroban_sdk::testutils::ClientCallScope::enter(&self.env, self.config);
             use soroban_sdk::{FromVal, IntoVal};
             let res = self.env.invoke_contract(
                 &self.address,
@@ -5328,9 +5245,6 @@ mod test {
                 },
                 ::soroban_sdk::Vec::from_array(&self.env, [v.into_val(&self.env)]),
             );
-            if let Some(old_auth_manager) = old_auth_manager {
-                self.env.host().set_auth_manager(old_auth_manager).unwrap();
-            }
             res
         }
         pub fn try_test_i64(
@@ -5343,27 +5257,8 @@ mod test {
             >,
             Result<soroban_sdk::Error, soroban_sdk::InvokeError>,
         > {
-            use core::ops::Not;
-            let old_auth_manager = self
-                .env
-                .in_contract()
-                .not()
-                .then(|| self.env.host().snapshot_auth_manager().unwrap());
-            {
-                if let Some(set_auths) = self.set_auths {
-                    self.env.set_auths(set_auths);
-                }
-                if let Some(mock_auths) = self.mock_auths {
-                    self.env.mock_auths(mock_auths);
-                }
-                if self.mock_all_auths {
-                    if self.allow_non_root_auth {
-                        self.env.mock_all_auths_allowing_non_root_auth();
-                    } else {
-                        self.env.mock_all_auths();
-                    }
-                }
-            }
+            let _call_scope =
+                soroban_sdk::testutils::ClientCallScope::enter(&self.env, self.config);
             use soroban_sdk::{FromVal, IntoVal};
             let res = self.env.try_invoke_contract(
                 &self.address,
@@ -5374,33 +5269,11 @@ mod test {
                 },
                 ::soroban_sdk::Vec::from_array(&self.env, [v.into_val(&self.env)]),
             );
-            if let Some(old_auth_manager) = old_auth_manager {
-                self.env.host().set_auth_manager(old_auth_manager).unwrap();
-            }
             res
         }
         pub fn test_u128(&self, v: &u128) -> u128 {
-            use core::ops::Not;
-            let old_auth_manager = self
-                .env
-                .in_contract()
-                .not()
-                .then(|| self.env.host().snapshot_auth_manager().unwrap());
-            {
-                if let Some(set_auths) = self.set_auths {
-                    self.env.set_auths(set_auths);
-                }
-                if let Some(mock_auths) = self.mock_auths {
-                    self.env.mock_auths(mock_auths);
-                }
-                if self.mock_all_auths {
-                    if self.allow_non_root_auth {
-                        self.env.mock_all_auths_allowing_non_root_auth();
-                    } else {
-                        self.env.mock_all_auths();
-                    }
-                }
-            }
+            let _call_scope =
+                soroban_sdk::testutils::ClientCallScope::enter(&self.env, self.config);
             use soroban_sdk::{FromVal, IntoVal};
             let res = self.env.invoke_contract(
                 &self.address,
@@ -5411,9 +5284,6 @@ mod test {
                 },
                 ::soroban_sdk::Vec::from_array(&self.env, [v.into_val(&self.env)]),
             );
-            if let Some(old_auth_manager) = old_auth_manager {
-                self.env.host().set_auth_manager(old_auth_manager).unwrap();
-            }
             res
         }
         pub fn try_test_u128(
@@ -5426,27 +5296,8 @@ mod test {
             >,
             Result<soroban_sdk::Error, soroban_sdk::InvokeError>,
         > {
-            use core::ops::Not;
-            let old_auth_manager = self
-                .env
-                .in_contract()
-                .not()
-                .then(|| self.env.host().snapshot_auth_manager().unwrap());
-            {
-                if let Some(set_auths) = self.set_auths {
-                    self.env.set_auths(set_auths);
-                }
-                if let Some(mock_auths) = self.mock_auths {
-                    self.env.mock_auths(mock_auths);
-                }
-                if self.mock_all_auths {
-                    if self.allow_non_root_auth {
-                        self.env.mock_all_auths_allowing_non_root_auth();
-                    } else {
-                        self.env.mock_all_auths();
-                    }
-                }
-            }
+            let _call_scope =
+                soroban_sdk::testutils::ClientCallScope::enter(&self.env, self.config);
             use soroban_sdk::{FromVal, IntoVal};
             let res = self.env.try_invoke_contract(
                 &self.address,
@@ -5457,33 +5308,11 @@ mod test {
                 },
                 ::soroban_sdk::Vec::from_array(&self.env, [v.into_val(&self.env)]),
             );
-            if let Some(old_auth_manager) = old_auth_manager {
-                self.env.host().set_auth_manager(old_auth_manager).unwrap();
-            }
             res
         }
         pub fn test_i128(&self, v: &i128) -> i128 {
-            use core::ops::Not;
-            let old_auth_manager = self
-                .env
-                .in_contract()
-                .not()
-                .then(|| self.env.host().snapshot_auth_manager().unwrap());
-            {
-                if let Some(set_auths) = self.set_auths {
-                    self.env.set_auths(set_auths);
-                }
-                if let Some(mock_auths) = self.mock_auths {
-                    self.env.mock_auths(mock_auths);
-                }
-                if self.mock_all_auths {
-                    if self.allow_non_root_auth {
-                        self.env.mock_all_auths_allowing_non_root_auth();
-                    } else {
-                        self.env.mock_all_auths();
-                    }
-                }
-            }
+            let _call_scope =
+                soroban_sdk::testutils::ClientCallScope::enter(&self.env, self.config);
             use soroban_sdk::{FromVal, IntoVal};
             let res = self.env.invoke_contract(
                 &self.address,
@@ -5494,9 +5323,6 @@ mod test {
                 },
                 ::soroban_sdk::Vec::from_array(&self.env, [v.into_val(&self.env)]),
             );
-            if let Some(old_auth_manager) = old_auth_manager {
-                self.env.host().set_auth_manager(old_auth_manager).unwrap();
-            }
             res
         }
         pub fn try_test_i128(
@@ -5509,27 +5335,8 @@ mod test {
             >,
             Result<soroban_sdk::Error, soroban_sdk::InvokeError>,
         > {
-            use core::ops::Not;
-            let old_auth_manager = self
-                .env
-                .in_contract()
-                .not()
-                .then(|| self.env.host().snapshot_auth_manager().unwrap());
-            {
-                if let Some(set_auths) = self.set_auths {
-                    self.env.set_auths(set_auths);
-                }
-                if let Some(mock_auths) = self.mock_auths {
-                    self.env.mock_auths(mock_auths);
-                }
-                if self.mock_all_auths {
-                    if self.allow_non_root_auth {
-                        self.env.mock_all_auths_allowing_non_root_auth();
-                    } else {
-                        self.env.mock_all_auths();
-                    }
-                }
-            }
+            let _call_scope =
+                soroban_sdk::testutils::ClientCallScope::enter(&self.env, self.config);
             use soroban_sdk::{FromVal, IntoVal};
             let res = self.env.try_invoke_contract(
                 &self.address,
@@ -5540,33 +5347,11 @@ mod test {
                 },
                 ::soroban_sdk::Vec::from_array(&self.env, [v.into_val(&self.env)]),
             );
-            if let Some(old_auth_manager) = old_auth_manager {
-                self.env.host().set_auth_manager(old_auth_manager).unwrap();
-            }
             res
         }
         pub fn test_bool(&self, v: &bool) -> bool {
-            use core::ops::Not;
-            let old_auth_manager = self
-                .env
-                .in_contract()
-                .not()
-                .then(|| self.env.host().snapshot_auth_manager().unwrap());
-            {
-                if let Some(set_auths) = self.set_auths {
-                    self.env.set_auths(set_auths);
-                }
-                if let Some(mock_auths) = self.mock_auths {
-                    self.env.mock_auths(mock_auths);
-                }
-                if self.mock_all_auths {
-                    if self.allow_non_root_auth {
-                        self.env.mock_all_auths_allowing_non_root_auth();
-                    } else {
-                        self.env.mock_all_auths();
-                    }
-                }
-            }
+            let _call_scope =
+                soroban_sdk::testutils::ClientCallScope::enter(&self.env, self.config);
             use soroban_sdk::{FromVal, IntoVal};
             let res = self.env.invoke_contract(
                 &self.address,
@@ -5577,9 +5362,6 @@ mod test {
                 },
                 ::soroban_sdk::Vec::from_array(&self.env, [v.into_val(&self.env)]),
             );
-            if let Some(old_auth_manager) = old_auth_manager {
-                self.env.host().set_auth_manager(old_auth_manager).unwrap();
-            }
             res
         }
         pub fn try_test_bool(
@@ -5592,27 +5374,8 @@ mod test {
             >,
             Result<soroban_sdk::Error, soroban_sdk::InvokeError>,
         > {
-            use core::ops::Not;
-            let old_auth_manager = self
-                .env
-                .in_contract()
-                .not()
-                .then(|| self.env.host().snapshot_auth_manager().unwrap());
-            {
-                if let Some(set_auths) = self.set_auths {
-                    self.env.set_auths(set_auths);
-                }
-                if let Some(mock_auths) = self.mock_auths {
-                    self.env.mock_auths(mock_auths);
-                }
-                if self.mock_all_auths {
-                    if self.allow_non_root_auth {
-                        self.env.mock_all_auths_allowing_non_root_auth();
-                    } else {
-                        self.env.mock_all_auths();
-                    }
-                }
-            }
+            let _call_scope =
+                soroban_sdk::testutils::ClientCallScope::enter(&self.env, self.config);
             use soroban_sdk::{FromVal, IntoVal};
             let res = self.env.try_invoke_contract(
                 &self.address,
@@ -5623,42 +5386,17 @@ mod test {
                 },
                 ::soroban_sdk::Vec::from_array(&self.env, [v.into_val(&self.env)]),
             );
-            if let Some(old_auth_manager) = old_auth_manager {
-                self.env.host().set_auth_manager(old_auth_manager).unwrap();
-            }
             res
         }
         pub fn test_address(&self, v: &Address) -> Address {
-            use core::ops::Not;
-            let old_auth_manager = self
-                .env
-                .in_contract()
-                .not()
-                .then(|| self.env.host().snapshot_auth_manager().unwrap());
-            {
-                if let Some(set_auths) = self.set_auths {
-                    self.env.set_auths(set_auths);
-                }
-                if let Some(mock_auths) = self.mock_auths {
-                    self.env.mock_auths(mock_auths);
-                }
-                if self.mock_all_auths {
-                    if self.allow_non_root_auth {
-                        self.env.mock_all_auths_allowing_non_root_auth();
-                    } else {
-                        self.env.mock_all_auths();
-                    }
-                }
-            }
+            let _call_scope =
+                soroban_sdk::testutils::ClientCallScope::enter(&self.env, self.config);
             use soroban_sdk::{FromVal, IntoVal};
             let res = self.env.invoke_contract(
                 &self.address,
                 &{ soroban_sdk::Symbol::new(&self.env, "test_address") },
                 ::soroban_sdk::Vec::from_array(&self.env, [v.into_val(&self.env)]),
             );
-            if let Some(old_auth_manager) = old_auth_manager {
-                self.env.host().set_auth_manager(old_auth_manager).unwrap();
-            }
             res
         }
         pub fn try_test_address(
@@ -5671,69 +5409,25 @@ mod test {
             >,
             Result<soroban_sdk::Error, soroban_sdk::InvokeError>,
         > {
-            use core::ops::Not;
-            let old_auth_manager = self
-                .env
-                .in_contract()
-                .not()
-                .then(|| self.env.host().snapshot_auth_manager().unwrap());
-            {
-                if let Some(set_auths) = self.set_auths {
-                    self.env.set_auths(set_auths);
-                }
-                if let Some(mock_auths) = self.mock_auths {
-                    self.env.mock_auths(mock_auths);
-                }
-                if self.mock_all_auths {
-                    if self.allow_non_root_auth {
-                        self.env.mock_all_auths_allowing_non_root_auth();
-                    } else {
-                        self.env.mock_all_auths();
-                    }
-                }
-            }
+            let _call_scope =
+                soroban_sdk::testutils::ClientCallScope::enter(&self.env, self.config);
             use soroban_sdk::{FromVal, IntoVal};
             let res = self.env.try_invoke_contract(
                 &self.address,
                 &{ soroban_sdk::Symbol::new(&self.env, "test_address") },
                 ::soroban_sdk::Vec::from_array(&self.env, [v.into_val(&self.env)]),
             );
-            if let Some(old_auth_manager) = old_auth_manager {
-                self.env.host().set_auth_manager(old_auth_manager).unwrap();
-            }
             res
         }
         pub fn test_bytes(&self, v: &Bytes) -> Bytes {
-            use core::ops::Not;
-            let old_auth_manager = self
-                .env
-                .in_contract()
-                .not()
-                .then(|| self.env.host().snapshot_auth_manager().unwrap());
-            {
-                if let Some(set_auths) = self.set_auths {
-                    self.env.set_auths(set_auths);
-                }
-                if let Some(mock_auths) = self.mock_auths {
-                    self.env.mock_auths(mock_auths);
-                }
-                if self.mock_all_auths {
-                    if self.allow_non_root_auth {
-                        self.env.mock_all_auths_allowing_non_root_auth();
-                    } else {
-                        self.env.mock_all_auths();
-                    }
-                }
-            }
+            let _call_scope =
+                soroban_sdk::testutils::ClientCallScope::enter(&self.env, self.config);
             use soroban_sdk::{FromVal, IntoVal};
             let res = self.env.invoke_contract(
                 &self.address,
                 &{ soroban_sdk::Symbol::new(&self.env, "test_bytes") },
                 ::soroban_sdk::Vec::from_array(&self.env, [v.into_val(&self.env)]),
             );
-            if let Some(old_auth_manager) = old_auth_manager {
-                self.env.host().set_auth_manager(old_auth_manager).unwrap();
-            }
             res
         }
         pub fn try_test_bytes(
@@ -5746,69 +5440,25 @@ mod test {
             >,
             Result<soroban_sdk::Error, soroban_sdk::InvokeError>,
         > {
-            use core::ops::Not;
-            let old_auth_manager = self
-                .env
-                .in_contract()
-                .not()
-                .then(|| self.env.host().snapshot_auth_manager().unwrap());
-            {
-                if let Some(set_auths) = self.set_auths {
-                    self.env.set_auths(set_auths);
-                }
-                if let Some(mock_auths) = self.mock_auths {
-                    self.env.mock_auths(mock_auths);
-                }
-                if self.mock_all_auths {
-                    if self.allow_non_root_auth {
-                        self.env.mock_all_auths_allowing_non_root_auth();
-                    } else {
-                        self.env.mock_all_auths();
-                    }
-                }
-            }
+            let _call_scope =
+                soroban_sdk::testutils::ClientCallScope::enter(&self.env, self.config);
             use soroban_sdk::{FromVal, IntoVal};
             let res = self.env.try_invoke_contract(
                 &self.address,
                 &{ soroban_sdk::Symbol::new(&self.env, "test_bytes") },
                 ::soroban_sdk::Vec::from_array(&self.env, [v.into_val(&self.env)]),
             );
-            if let Some(old_auth_manager) = old_auth_manager {
-                self.env.host().set_auth_manager(old_auth_manager).unwrap();
-            }
             res
         }
         pub fn test_bytes_n(&self, v: &BytesN<32>) -> BytesN<32> {
-            use core::ops::Not;
-            let old_auth_manager = self
-                .env
-                .in_contract()
-                .not()
-                .then(|| self.env.host().snapshot_auth_manager().unwrap());
-            {
-                if let Some(set_auths) = self.set_auths {
-                    self.env.set_auths(set_auths);
-                }
-                if let Some(mock_auths) = self.mock_auths {
-                    self.env.mock_auths(mock_auths);
-                }
-                if self.mock_all_auths {
-                    if self.allow_non_root_auth {
-                        self.env.mock_all_auths_allowing_non_root_auth();
-                    } else {
-                        self.env.mock_all_auths();
-                    }
-                }
-            }
+            let _call_scope =
+                soroban_sdk::testutils::ClientCallScope::enter(&self.env, self.config);
             use soroban_sdk::{FromVal, IntoVal};
             let res = self.env.invoke_contract(
                 &self.address,
                 &{ soroban_sdk::Symbol::new(&self.env, "test_bytes_n") },
                 ::soroban_sdk::Vec::from_array(&self.env, [v.into_val(&self.env)]),
             );
-            if let Some(old_auth_manager) = old_auth_manager {
-                self.env.host().set_auth_manager(old_auth_manager).unwrap();
-            }
             res
         }
         pub fn try_test_bytes_n(
@@ -5821,69 +5471,25 @@ mod test {
             >,
             Result<soroban_sdk::Error, soroban_sdk::InvokeError>,
         > {
-            use core::ops::Not;
-            let old_auth_manager = self
-                .env
-                .in_contract()
-                .not()
-                .then(|| self.env.host().snapshot_auth_manager().unwrap());
-            {
-                if let Some(set_auths) = self.set_auths {
-                    self.env.set_auths(set_auths);
-                }
-                if let Some(mock_auths) = self.mock_auths {
-                    self.env.mock_auths(mock_auths);
-                }
-                if self.mock_all_auths {
-                    if self.allow_non_root_auth {
-                        self.env.mock_all_auths_allowing_non_root_auth();
-                    } else {
-                        self.env.mock_all_auths();
-                    }
-                }
-            }
+            let _call_scope =
+                soroban_sdk::testutils::ClientCallScope::enter(&self.env, self.config);
             use soroban_sdk::{FromVal, IntoVal};
             let res = self.env.try_invoke_contract(
                 &self.address,
                 &{ soroban_sdk::Symbol::new(&self.env, "test_bytes_n") },
                 ::soroban_sdk::Vec::from_array(&self.env, [v.into_val(&self.env)]),
             );
-            if let Some(old_auth_manager) = old_auth_manager {
-                self.env.host().set_auth_manager(old_auth_manager).unwrap();
-            }
             res
         }
         pub fn test_string(&self, v: &String) -> String {
-            use core::ops::Not;
-            let old_auth_manager = self
-                .env
-                .in_contract()
-                .not()
-                .then(|| self.env.host().snapshot_auth_manager().unwrap());
-            {
-                if let Some(set_auths) = self.set_auths {
-                    self.env.set_auths(set_auths);
-                }
-                if let Some(mock_auths) = self.mock_auths {
-                    self.env.mock_auths(mock_auths);
-                }
-                if self.mock_all_auths {
-                    if self.allow_non_root_auth {
-                        self.env.mock_all_auths_allowing_non_root_auth();
-                    } else {
-                        self.env.mock_all_auths();
-                    }
-                }
-            }
+            let _call_scope =
+                soroban_sdk::testutils::ClientCallScope::enter(&self.env, self.config);
             use soroban_sdk::{FromVal, IntoVal};
             let res = self.env.invoke_contract(
                 &self.address,
                 &{ soroban_sdk::Symbol::new(&self.env, "test_string") },
                 ::soroban_sdk::Vec::from_array(&self.env, [v.into_val(&self.env)]),
             );
-            if let Some(old_auth_manager) = old_auth_manager {
-                self.env.host().set_auth_manager(old_auth_manager).unwrap();
-            }
             res
         }
         pub fn try_test_string(
@@ -5896,69 +5502,25 @@ mod test {
             >,
             Result<soroban_sdk::Error, soroban_sdk::InvokeError>,
         > {
-            use core::ops::Not;
-            let old_auth_manager = self
-                .env
-                .in_contract()
-                .not()
-                .then(|| self.env.host().snapshot_auth_manager().unwrap());
-            {
-                if let Some(set_auths) = self.set_auths {
-                    self.env.set_auths(set_auths);
-                }
-                if let Some(mock_auths) = self.mock_auths {
-                    self.env.mock_auths(mock_auths);
-                }
-                if self.mock_all_auths {
-                    if self.allow_non_root_auth {
-                        self.env.mock_all_auths_allowing_non_root_auth();
-                    } else {
-                        self.env.mock_all_auths();
-                    }
-                }
-            }
+            let _call_scope =
+                soroban_sdk::testutils::ClientCallScope::enter(&self.env, self.config);
             use soroban_sdk::{FromVal, IntoVal};
             let res = self.env.try_invoke_contract(
                 &self.address,
                 &{ soroban_sdk::Symbol::new(&self.env, "test_string") },
                 ::soroban_sdk::Vec::from_array(&self.env, [v.into_val(&self.env)]),
             );
-            if let Some(old_auth_manager) = old_auth_manager {
-                self.env.host().set_auth_manager(old_auth_manager).unwrap();
-            }
             res
         }
         pub fn test_symbol(&self, v: &Symbol) -> Symbol {
-            use core::ops::Not;
-            let old_auth_manager = self
-                .env
-                .in_contract()
-                .not()
-                .then(|| self.env.host().snapshot_auth_manager().unwrap());
-            {
-                if let Some(set_auths) = self.set_auths {
-                    self.env.set_auths(set_auths);
-                }
-                if let Some(mock_auths) = self.mock_auths {
-                    self.env.mock_auths(mock_auths);
-                }
-                if self.mock_all_auths {
-                    if self.allow_non_root_auth {
-                        self.env.mock_all_auths_allowing_non_root_auth();
-                    } else {
-                        self.env.mock_all_auths();
-                    }
-                }
-            }
+            let _call_scope =
+                soroban_sdk::testutils::ClientCallScope::enter(&self.env, self.config);
             use soroban_sdk::{FromVal, IntoVal};
             let res = self.env.invoke_contract(
                 &self.address,
                 &{ soroban_sdk::Symbol::new(&self.env, "test_symbol") },
                 ::soroban_sdk::Vec::from_array(&self.env, [v.into_val(&self.env)]),
             );
-            if let Some(old_auth_manager) = old_auth_manager {
-                self.env.host().set_auth_manager(old_auth_manager).unwrap();
-            }
             res
         }
         pub fn try_test_symbol(
@@ -5971,60 +5533,19 @@ mod test {
             >,
             Result<soroban_sdk::Error, soroban_sdk::InvokeError>,
         > {
-            use core::ops::Not;
-            let old_auth_manager = self
-                .env
-                .in_contract()
-                .not()
-                .then(|| self.env.host().snapshot_auth_manager().unwrap());
-            {
-                if let Some(set_auths) = self.set_auths {
-                    self.env.set_auths(set_auths);
-                }
-                if let Some(mock_auths) = self.mock_auths {
-                    self.env.mock_auths(mock_auths);
-                }
-                if self.mock_all_auths {
-                    if self.allow_non_root_auth {
-                        self.env.mock_all_auths_allowing_non_root_auth();
-                    } else {
-                        self.env.mock_all_auths();
-                    }
-                }
-            }
+            let _call_scope =
+                soroban_sdk::testutils::ClientCallScope::enter(&self.env, self.config);
             use soroban_sdk::{FromVal, IntoVal};
             let res = self.env.try_invoke_contract(
                 &self.address,
                 &{ soroban_sdk::Symbol::new(&self.env, "test_symbol") },
                 ::soroban_sdk::Vec::from_array(&self.env, [v.into_val(&self.env)]),
             );
-            if let Some(old_auth_manager) = old_auth_manager {
-                self.env.host().set_auth_manager(old_auth_manager).unwrap();
-            }
             res
         }
         pub fn test_vec(&self, v: &Vec<u32>) -> Vec<u32> {
-            use core::ops::Not;
-            let old_auth_manager = self
-                .env
-                .in_contract()
-                .not()
-                .then(|| self.env.host().snapshot_auth_manager().unwrap());
-            {
-                if let Some(set_auths) = self.set_auths {
-                    self.env.set_auths(set_auths);
-                }
-                if let Some(mock_auths) = self.mock_auths {
-                    self.env.mock_auths(mock_auths);
-                }
-                if self.mock_all_auths {
-                    if self.allow_non_root_auth {
-                        self.env.mock_all_auths_allowing_non_root_auth();
-                    } else {
-                        self.env.mock_all_auths();
-                    }
-                }
-            }
+            let _call_scope =
+                soroban_sdk::testutils::ClientCallScope::enter(&self.env, self.config);
             use soroban_sdk::{FromVal, IntoVal};
             let res = self.env.invoke_contract(
                 &self.address,
@@ -6035,9 +5556,6 @@ mod test {
                 },
                 ::soroban_sdk::Vec::from_array(&self.env, [v.into_val(&self.env)]),
             );
-            if let Some(old_auth_manager) = old_auth_manager {
-                self.env.host().set_auth_manager(old_auth_manager).unwrap();
-            }
             res
         }
         pub fn try_test_vec(
@@ -6050,27 +5568,8 @@ mod test {
             >,
             Result<soroban_sdk::Error, soroban_sdk::InvokeError>,
         > {
-            use core::ops::Not;
-            let old_auth_manager = self
-                .env
-                .in_contract()
-                .not()
-                .then(|| self.env.host().snapshot_auth_manager().unwrap());
-            {
-                if let Some(set_auths) = self.set_auths {
-                    self.env.set_auths(set_auths);
-                }
-                if let Some(mock_auths) = self.mock_auths {
-                    self.env.mock_auths(mock_auths);
-                }
-                if self.mock_all_auths {
-                    if self.allow_non_root_auth {
-                        self.env.mock_all_auths_allowing_non_root_auth();
-                    } else {
-                        self.env.mock_all_auths();
-                    }
-                }
-            }
+            let _call_scope =
+                soroban_sdk::testutils::ClientCallScope::enter(&self.env, self.config);
             use soroban_sdk::{FromVal, IntoVal};
             let res = self.env.try_invoke_contract(
                 &self.address,
@@ -6081,33 +5580,11 @@ mod test {
                 },
                 ::soroban_sdk::Vec::from_array(&self.env, [v.into_val(&self.env)]),
             );
-            if let Some(old_auth_manager) = old_auth_manager {
-                self.env.host().set_auth_manager(old_auth_manager).unwrap();
-            }
             res
         }
         pub fn test_map(&self, v: &Map<u32, u32>) -> Map<u32, u32> {
-            use core::ops::Not;
-            let old_auth_manager = self
-                .env
-                .in_contract()
-                .not()
-                .then(|| self.env.host().snapshot_auth_manager().unwrap());
-            {
-                if let Some(set_auths) = self.set_auths {
-                    self.env.set_auths(set_auths);
-                }
-                if let Some(mock_auths) = self.mock_auths {
-                    self.env.mock_auths(mock_auths);
-                }
-                if self.mock_all_auths {
-                    if self.allow_non_root_auth {
-                        self.env.mock_all_auths_allowing_non_root_auth();
-                    } else {
-                        self.env.mock_all_auths();
-                    }
-                }
-            }
+            let _call_scope =
+                soroban_sdk::testutils::ClientCallScope::enter(&self.env, self.config);
             use soroban_sdk::{FromVal, IntoVal};
             let res = self.env.invoke_contract(
                 &self.address,
@@ -6118,9 +5595,6 @@ mod test {
                 },
                 ::soroban_sdk::Vec::from_array(&self.env, [v.into_val(&self.env)]),
             );
-            if let Some(old_auth_manager) = old_auth_manager {
-                self.env.host().set_auth_manager(old_auth_manager).unwrap();
-            }
             res
         }
         pub fn try_test_map(
@@ -6136,27 +5610,8 @@ mod test {
             >,
             Result<soroban_sdk::Error, soroban_sdk::InvokeError>,
         >{
-            use core::ops::Not;
-            let old_auth_manager = self
-                .env
-                .in_contract()
-                .not()
-                .then(|| self.env.host().snapshot_auth_manager().unwrap());
-            {
-                if let Some(set_auths) = self.set_auths {
-                    self.env.set_auths(set_auths);
-                }
-                if let Some(mock_auths) = self.mock_auths {
-                    self.env.mock_auths(mock_auths);
-                }
-                if self.mock_all_auths {
-                    if self.allow_non_root_auth {
-                        self.env.mock_all_auths_allowing_non_root_auth();
-                    } else {
-                        self.env.mock_all_auths();
-                    }
-                }
-            }
+            let _call_scope =
+                soroban_sdk::testutils::ClientCallScope::enter(&self.env, self.config);
             use soroban_sdk::{FromVal, IntoVal};
             let res = self.env.try_invoke_contract(
                 &self.address,
@@ -6167,42 +5622,17 @@ mod test {
                 },
                 ::soroban_sdk::Vec::from_array(&self.env, [v.into_val(&self.env)]),
             );
-            if let Some(old_auth_manager) = old_auth_manager {
-                self.env.host().set_auth_manager(old_auth_manager).unwrap();
-            }
             res
         }
         pub fn test_duration(&self, v: &Duration) -> Duration {
-            use core::ops::Not;
-            let old_auth_manager = self
-                .env
-                .in_contract()
-                .not()
-                .then(|| self.env.host().snapshot_auth_manager().unwrap());
-            {
-                if let Some(set_auths) = self.set_auths {
-                    self.env.set_auths(set_auths);
-                }
-                if let Some(mock_auths) = self.mock_auths {
-                    self.env.mock_auths(mock_auths);
-                }
-                if self.mock_all_auths {
-                    if self.allow_non_root_auth {
-                        self.env.mock_all_auths_allowing_non_root_auth();
-                    } else {
-                        self.env.mock_all_auths();
-                    }
-                }
-            }
+            let _call_scope =
+                soroban_sdk::testutils::ClientCallScope::enter(&self.env, self.config);
             use soroban_sdk::{FromVal, IntoVal};
             let res = self.env.invoke_contract(
                 &self.address,
                 &{ soroban_sdk::Symbol::new(&self.env, "test_duration") },
                 ::soroban_sdk::Vec::from_array(&self.env, [v.into_val(&self.env)]),
             );
-            if let Some(old_auth_manager) = old_auth_manager {
-                self.env.host().set_auth_manager(old_auth_manager).unwrap();
-            }
             res
         }
         pub fn try_test_duration(
@@ -6215,69 +5645,25 @@ mod test {
             >,
             Result<soroban_sdk::Error, soroban_sdk::InvokeError>,
         > {
-            use core::ops::Not;
-            let old_auth_manager = self
-                .env
-                .in_contract()
-                .not()
-                .then(|| self.env.host().snapshot_auth_manager().unwrap());
-            {
-                if let Some(set_auths) = self.set_auths {
-                    self.env.set_auths(set_auths);
-                }
-                if let Some(mock_auths) = self.mock_auths {
-                    self.env.mock_auths(mock_auths);
-                }
-                if self.mock_all_auths {
-                    if self.allow_non_root_auth {
-                        self.env.mock_all_auths_allowing_non_root_auth();
-                    } else {
-                        self.env.mock_all_auths();
-                    }
-                }
-            }
+            let _call_scope =
+                soroban_sdk::testutils::ClientCallScope::enter(&self.env, self.config);
             use soroban_sdk::{FromVal, IntoVal};
             let res = self.env.try_invoke_contract(
                 &self.address,
                 &{ soroban_sdk::Symbol::new(&self.env, "test_duration") },
                 ::soroban_sdk::Vec::from_array(&self.env, [v.into_val(&self.env)]),
             );
-            if let Some(old_auth_manager) = old_auth_manager {
-                self.env.host().set_auth_manager(old_auth_manager).unwrap();
-            }
             res
         }
         pub fn test_timepoint(&self, v: &Timepoint) -> Timepoint {
-            use core::ops::Not;
-            let old_auth_manager = self
-                .env
-                .in_contract()
-                .not()
-                .then(|| self.env.host().snapshot_auth_manager().unwrap());
-            {
-                if let Some(set_auths) = self.set_auths {
-                    self.env.set_auths(set_auths);
-                }
-                if let Some(mock_auths) = self.mock_auths {
-                    self.env.mock_auths(mock_auths);
-                }
-                if self.mock_all_auths {
-                    if self.allow_non_root_auth {
-                        self.env.mock_all_auths_allowing_non_root_auth();
-                    } else {
-                        self.env.mock_all_auths();
-                    }
-                }
-            }
+            let _call_scope =
+                soroban_sdk::testutils::ClientCallScope::enter(&self.env, self.config);
             use soroban_sdk::{FromVal, IntoVal};
             let res = self.env.invoke_contract(
                 &self.address,
                 &{ soroban_sdk::Symbol::new(&self.env, "test_timepoint") },
                 ::soroban_sdk::Vec::from_array(&self.env, [v.into_val(&self.env)]),
             );
-            if let Some(old_auth_manager) = old_auth_manager {
-                self.env.host().set_auth_manager(old_auth_manager).unwrap();
-            }
             res
         }
         pub fn try_test_timepoint(
@@ -6290,60 +5676,19 @@ mod test {
             >,
             Result<soroban_sdk::Error, soroban_sdk::InvokeError>,
         > {
-            use core::ops::Not;
-            let old_auth_manager = self
-                .env
-                .in_contract()
-                .not()
-                .then(|| self.env.host().snapshot_auth_manager().unwrap());
-            {
-                if let Some(set_auths) = self.set_auths {
-                    self.env.set_auths(set_auths);
-                }
-                if let Some(mock_auths) = self.mock_auths {
-                    self.env.mock_auths(mock_auths);
-                }
-                if self.mock_all_auths {
-                    if self.allow_non_root_auth {
-                        self.env.mock_all_auths_allowing_non_root_auth();
-                    } else {
-                        self.env.mock_all_auths();
-                    }
-                }
-            }
+            let _call_scope =
+                soroban_sdk::testutils::ClientCallScope::enter(&self.env, self.config);
             use soroban_sdk::{FromVal, IntoVal};
             let res = self.env.try_invoke_contract(
                 &self.address,
                 &{ soroban_sdk::Symbol::new(&self.env, "test_timepoint") },
                 ::soroban_sdk::Vec::from_array(&self.env, [v.into_val(&self.env)]),
             );
-            if let Some(old_auth_manager) = old_auth_manager {
-                self.env.host().set_auth_manager(old_auth_manager).unwrap();
-            }
             res
         }
         pub fn test_i256(&self, v: &I256) -> I256 {
-            use core::ops::Not;
-            let old_auth_manager = self
-                .env
-                .in_contract()
-                .not()
-                .then(|| self.env.host().snapshot_auth_manager().unwrap());
-            {
-                if let Some(set_auths) = self.set_auths {
-                    self.env.set_auths(set_auths);
-                }
-                if let Some(mock_auths) = self.mock_auths {
-                    self.env.mock_auths(mock_auths);
-                }
-                if self.mock_all_auths {
-                    if self.allow_non_root_auth {
-                        self.env.mock_all_auths_allowing_non_root_auth();
-                    } else {
-                        self.env.mock_all_auths();
-                    }
-                }
-            }
+            let _call_scope =
+                soroban_sdk::testutils::ClientCallScope::enter(&self.env, self.config);
             use soroban_sdk::{FromVal, IntoVal};
             let res = self.env.invoke_contract(
                 &self.address,
@@ -6354,9 +5699,6 @@ mod test {
                 },
                 ::soroban_sdk::Vec::from_array(&self.env, [v.into_val(&self.env)]),
             );
-            if let Some(old_auth_manager) = old_auth_manager {
-                self.env.host().set_auth_manager(old_auth_manager).unwrap();
-            }
             res
         }
         pub fn try_test_i256(
@@ -6369,27 +5711,8 @@ mod test {
             >,
             Result<soroban_sdk::Error, soroban_sdk::InvokeError>,
         > {
-            use core::ops::Not;
-            let old_auth_manager = self
-                .env
-                .in_contract()
-                .not()
-                .then(|| self.env.host().snapshot_auth_manager().unwrap());
-            {
-                if let Some(set_auths) = self.set_auths {
-                    self.env.set_auths(set_auths);
-                }
-                if let Some(mock_auths) = self.mock_auths {
-                    self.env.mock_auths(mock_auths);
-                }
-                if self.mock_all_auths {
-                    if self.allow_non_root_auth {
-                        self.env.mock_all_auths_allowing_non_root_auth();
-                    } else {
-                        self.env.mock_all_auths();
-                    }
-                }
-            }
+            let _call_scope =
+                soroban_sdk::testutils::ClientCallScope::enter(&self.env, self.config);
             use soroban_sdk::{FromVal, IntoVal};
             let res = self.env.try_invoke_contract(
                 &self.address,
@@ -6400,33 +5723,11 @@ mod test {
                 },
                 ::soroban_sdk::Vec::from_array(&self.env, [v.into_val(&self.env)]),
             );
-            if let Some(old_auth_manager) = old_auth_manager {
-                self.env.host().set_auth_manager(old_auth_manager).unwrap();
-            }
             res
         }
         pub fn test_u256(&self, v: &U256) -> U256 {
-            use core::ops::Not;
-            let old_auth_manager = self
-                .env
-                .in_contract()
-                .not()
-                .then(|| self.env.host().snapshot_auth_manager().unwrap());
-            {
-                if let Some(set_auths) = self.set_auths {
-                    self.env.set_auths(set_auths);
-                }
-                if let Some(mock_auths) = self.mock_auths {
-                    self.env.mock_auths(mock_auths);
-                }
-                if self.mock_all_auths {
-                    if self.allow_non_root_auth {
-                        self.env.mock_all_auths_allowing_non_root_auth();
-                    } else {
-                        self.env.mock_all_auths();
-                    }
-                }
-            }
+            let _call_scope =
+                soroban_sdk::testutils::ClientCallScope::enter(&self.env, self.config);
             use soroban_sdk::{FromVal, IntoVal};
             let res = self.env.invoke_contract(
                 &self.address,
@@ -6437,9 +5738,6 @@ mod test {
                 },
                 ::soroban_sdk::Vec::from_array(&self.env, [v.into_val(&self.env)]),
             );
-            if let Some(old_auth_manager) = old_auth_manager {
-                self.env.host().set_auth_manager(old_auth_manager).unwrap();
-            }
             res
         }
         pub fn try_test_u256(
@@ -6452,27 +5750,8 @@ mod test {
             >,
             Result<soroban_sdk::Error, soroban_sdk::InvokeError>,
         > {
-            use core::ops::Not;
-            let old_auth_manager = self
-                .env
-                .in_contract()
-                .not()
-                .then(|| self.env.host().snapshot_auth_manager().unwrap());
-            {
-                if let Some(set_auths) = self.set_auths {
-                    self.env.set_auths(set_auths);
-                }
-                if let Some(mock_auths) = self.mock_auths {
-                    self.env.mock_auths(mock_auths);
-                }
-                if self.mock_all_auths {
-                    if self.allow_non_root_auth {
-                        self.env.mock_all_auths_allowing_non_root_auth();
-                    } else {
-                        self.env.mock_all_auths();
-                    }
-                }
-            }
+            let _call_scope =
+                soroban_sdk::testutils::ClientCallScope::enter(&self.env, self.config);
             use soroban_sdk::{FromVal, IntoVal};
             let res = self.env.try_invoke_contract(
                 &self.address,
@@ -6483,42 +5762,17 @@ mod test {
                 },
                 ::soroban_sdk::Vec::from_array(&self.env, [v.into_val(&self.env)]),
             );
-            if let Some(old_auth_manager) = old_auth_manager {
-                self.env.host().set_auth_manager(old_auth_manager).unwrap();
-            }
             res
         }
         pub fn test_env_param(&self) -> u32 {
-            use core::ops::Not;
-            let old_auth_manager = self
-                .env
-                .in_contract()
-                .not()
-                .then(|| self.env.host().snapshot_auth_manager().unwrap());
-            {
-                if let Some(set_auths) = self.set_auths {
-                    self.env.set_auths(set_auths);
-                }
-                if let Some(mock_auths) = self.mock_auths {
-                    self.env.mock_auths(mock_auths);
-                }
-                if self.mock_all_auths {
-                    if self.allow_non_root_auth {
-                        self.env.mock_all_auths_allowing_non_root_auth();
-                    } else {
-                        self.env.mock_all_auths();
-                    }
-                }
-            }
+            let _call_scope =
+                soroban_sdk::testutils::ClientCallScope::enter(&self.env, self.config);
             use soroban_sdk::{FromVal, IntoVal};
             let res = self.env.invoke_contract(
                 &self.address,
                 &{ soroban_sdk::Symbol::new(&self.env, "test_env_param") },
                 ::soroban_sdk::Vec::new(&self.env),
             );
-            if let Some(old_auth_manager) = old_auth_manager {
-                self.env.host().set_auth_manager(old_auth_manager).unwrap();
-            }
             res
         }
         pub fn try_test_env_param(
@@ -6530,69 +5784,25 @@ mod test {
             >,
             Result<soroban_sdk::Error, soroban_sdk::InvokeError>,
         > {
-            use core::ops::Not;
-            let old_auth_manager = self
-                .env
-                .in_contract()
-                .not()
-                .then(|| self.env.host().snapshot_auth_manager().unwrap());
-            {
-                if let Some(set_auths) = self.set_auths {
-                    self.env.set_auths(set_auths);
-                }
-                if let Some(mock_auths) = self.mock_auths {
-                    self.env.mock_auths(mock_auths);
-                }
-                if self.mock_all_auths {
-                    if self.allow_non_root_auth {
-                        self.env.mock_all_auths_allowing_non_root_auth();
-                    } else {
-                        self.env.mock_all_auths();
-                    }
-                }
-            }
+            let _call_scope =
+                soroban_sdk::testutils::ClientCallScope::enter(&self.env, self.config);
             use soroban_sdk::{FromVal, IntoVal};
             let res = self.env.try_invoke_contract(
                 &self.address,
                 &{ soroban_sdk::Symbol::new(&self.env, "test_env_param") },
                 ::soroban_sdk::Vec::new(&self.env),
             );
-            if let Some(old_auth_manager) = old_auth_manager {
-                self.env.host().set_auth_manager(old_auth_manager).unwrap();
-            }
             res
         }
         pub fn test_struct(&self, v: &MyStruct) -> MyStruct {
-            use core::ops::Not;
-            let old_auth_manager = self
-                .env
-                .in_contract()
-                .not()
-                .then(|| self.env.host().snapshot_auth_manager().unwrap());
-            {
-                if let Some(set_auths) = self.set_auths {
-                    self.env.set_auths(set_auths);
-                }
-                if let Some(mock_auths) = self.mock_auths {
-                    self.env.mock_auths(mock_auths);
-                }
-                if self.mock_all_auths {
-                    if self.allow_non_root_auth {
-                        self.env.mock_all_auths_allowing_non_root_auth();
-                    } else {
-                        self.env.mock_all_auths();
-                    }
-                }
-            }
+            let _call_scope =
+                soroban_sdk::testutils::ClientCallScope::enter(&self.env, self.config);
             use soroban_sdk::{FromVal, IntoVal};
             let res = self.env.invoke_contract(
                 &self.address,
                 &{ soroban_sdk::Symbol::new(&self.env, "test_struct") },
                 ::soroban_sdk::Vec::from_array(&self.env, [v.into_val(&self.env)]),
             );
-            if let Some(old_auth_manager) = old_auth_manager {
-                self.env.host().set_auth_manager(old_auth_manager).unwrap();
-            }
             res
         }
         pub fn try_test_struct(
@@ -6605,69 +5815,25 @@ mod test {
             >,
             Result<soroban_sdk::Error, soroban_sdk::InvokeError>,
         > {
-            use core::ops::Not;
-            let old_auth_manager = self
-                .env
-                .in_contract()
-                .not()
-                .then(|| self.env.host().snapshot_auth_manager().unwrap());
-            {
-                if let Some(set_auths) = self.set_auths {
-                    self.env.set_auths(set_auths);
-                }
-                if let Some(mock_auths) = self.mock_auths {
-                    self.env.mock_auths(mock_auths);
-                }
-                if self.mock_all_auths {
-                    if self.allow_non_root_auth {
-                        self.env.mock_all_auths_allowing_non_root_auth();
-                    } else {
-                        self.env.mock_all_auths();
-                    }
-                }
-            }
+            let _call_scope =
+                soroban_sdk::testutils::ClientCallScope::enter(&self.env, self.config);
             use soroban_sdk::{FromVal, IntoVal};
             let res = self.env.try_invoke_contract(
                 &self.address,
                 &{ soroban_sdk::Symbol::new(&self.env, "test_struct") },
                 ::soroban_sdk::Vec::from_array(&self.env, [v.into_val(&self.env)]),
             );
-            if let Some(old_auth_manager) = old_auth_manager {
-                self.env.host().set_auth_manager(old_auth_manager).unwrap();
-            }
             res
         }
         pub fn test_enum_unit(&self, v: &MyEnumUnit) -> MyEnumUnit {
-            use core::ops::Not;
-            let old_auth_manager = self
-                .env
-                .in_contract()
-                .not()
-                .then(|| self.env.host().snapshot_auth_manager().unwrap());
-            {
-                if let Some(set_auths) = self.set_auths {
-                    self.env.set_auths(set_auths);
-                }
-                if let Some(mock_auths) = self.mock_auths {
-                    self.env.mock_auths(mock_auths);
-                }
-                if self.mock_all_auths {
-                    if self.allow_non_root_auth {
-                        self.env.mock_all_auths_allowing_non_root_auth();
-                    } else {
-                        self.env.mock_all_auths();
-                    }
-                }
-            }
+            let _call_scope =
+                soroban_sdk::testutils::ClientCallScope::enter(&self.env, self.config);
             use soroban_sdk::{FromVal, IntoVal};
             let res = self.env.invoke_contract(
                 &self.address,
                 &{ soroban_sdk::Symbol::new(&self.env, "test_enum_unit") },
                 ::soroban_sdk::Vec::from_array(&self.env, [v.into_val(&self.env)]),
             );
-            if let Some(old_auth_manager) = old_auth_manager {
-                self.env.host().set_auth_manager(old_auth_manager).unwrap();
-            }
             res
         }
         pub fn try_test_enum_unit(
@@ -6680,69 +5846,25 @@ mod test {
             >,
             Result<soroban_sdk::Error, soroban_sdk::InvokeError>,
         > {
-            use core::ops::Not;
-            let old_auth_manager = self
-                .env
-                .in_contract()
-                .not()
-                .then(|| self.env.host().snapshot_auth_manager().unwrap());
-            {
-                if let Some(set_auths) = self.set_auths {
-                    self.env.set_auths(set_auths);
-                }
-                if let Some(mock_auths) = self.mock_auths {
-                    self.env.mock_auths(mock_auths);
-                }
-                if self.mock_all_auths {
-                    if self.allow_non_root_auth {
-                        self.env.mock_all_auths_allowing_non_root_auth();
-                    } else {
-                        self.env.mock_all_auths();
-                    }
-                }
-            }
+            let _call_scope =
+                soroban_sdk::testutils::ClientCallScope::enter(&self.env, self.config);
             use soroban_sdk::{FromVal, IntoVal};
             let res = self.env.try_invoke_contract(
                 &self.address,
                 &{ soroban_sdk::Symbol::new(&self.env, "test_enum_unit") },
                 ::soroban_sdk::Vec::from_array(&self.env, [v.into_val(&self.env)]),
             );
-            if let Some(old_auth_manager) = old_auth_manager {
-                self.env.host().set_auth_manager(old_auth_manager).unwrap();
-            }
             res
         }
         pub fn test_enum_variants(&self, v: &MyEnumVariants) -> MyEnumVariants {
-            use core::ops::Not;
-            let old_auth_manager = self
-                .env
-                .in_contract()
-                .not()
-                .then(|| self.env.host().snapshot_auth_manager().unwrap());
-            {
-                if let Some(set_auths) = self.set_auths {
-                    self.env.set_auths(set_auths);
-                }
-                if let Some(mock_auths) = self.mock_auths {
-                    self.env.mock_auths(mock_auths);
-                }
-                if self.mock_all_auths {
-                    if self.allow_non_root_auth {
-                        self.env.mock_all_auths_allowing_non_root_auth();
-                    } else {
-                        self.env.mock_all_auths();
-                    }
-                }
-            }
+            let _call_scope =
+                soroban_sdk::testutils::ClientCallScope::enter(&self.env, self.config);
             use soroban_sdk::{FromVal, IntoVal};
             let res = self.env.invoke_contract(
                 &self.address,
                 &{ soroban_sdk::Symbol::new(&self.env, "test_enum_variants") },
                 ::soroban_sdk::Vec::from_array(&self.env, [v.into_val(&self.env)]),
             );
-            if let Some(old_auth_manager) = old_auth_manager {
-                self.env.host().set_auth_manager(old_auth_manager).unwrap();
-            }
             res
         }
         pub fn try_test_enum_variants(
@@ -6758,36 +5880,14 @@ mod test {
             >,
             Result<soroban_sdk::Error, soroban_sdk::InvokeError>,
         >{
-            use core::ops::Not;
-            let old_auth_manager = self
-                .env
-                .in_contract()
-                .not()
-                .then(|| self.env.host().snapshot_auth_manager().unwrap());
-            {
-                if let Some(set_auths) = self.set_auths {
-                    self.env.set_auths(set_auths);
-                }
-                if let Some(mock_auths) = self.mock_auths {
-                    self.env.mock_auths(mock_auths);
-                }
-                if self.mock_all_auths {
-                    if self.allow_non_root_auth {
-                        self.env.mock_all_auths_allowing_non_root_auth();
-                    } else {
-                        self.env.mock_all_auths();
-                    }
-                }
-            }
+            let _call_scope =
+                soroban_sdk::testutils::ClientCallScope::enter(&self.env, self.config);
             use soroban_sdk::{FromVal, IntoVal};
             let res = self.env.try_invoke_contract(
                 &self.address,
                 &{ soroban_sdk::Symbol::new(&self.env, "test_enum_variants") },
                 ::soroban_sdk::Vec::from_array(&self.env, [v.into_val(&self.env)]),
             );
-            if let Some(old_auth_manager) = old_auth_manager {
-                self.env.host().set_auth_manager(old_auth_manager).unwrap();
-            }
             res
         }
     }
