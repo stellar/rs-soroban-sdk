@@ -7,7 +7,6 @@ use test_data_tuple_lib::Tuple;
 use test_data_wrapped_lib::Wrapped;
 
 #[contracttype]
-#[derive(Clone, Copy, Debug, Eq, PartialEq)]
 pub struct Wrapper(pub Wrapped);
 
 impl Wrapper {

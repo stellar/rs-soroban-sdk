@@ -85,9 +85,13 @@ expand-tests: build-test-wasms
 			continue; \
 		fi; \
 		echo "Expanding $$package for linux target including tests"; \
+		targets=--tests; \
+		if [ -z "$$(cargo metadata --no-deps --format-version 1 | jq -r --arg p $$package '.packages[] | select(.name == $$p) | .targets[] | select(.test) | .name')" ]; then \
+			targets=--lib; \
+		fi; \
     RUSTUP_TOOLCHAIN=$(TEST_CRATES_RUSTUP_TOOLCHAIN) \
       RUSTFLAGS='--cfg soroban_sdk_internal_no_rssdkver_meta' \
-      cargo expand --package $$package --tests --target x86_64-unknown-linux-gnu | rustfmt > tests-expanded/$${package}_tests.rs; \
+      cargo expand --package $$package $$targets --target x86_64-unknown-linux-gnu | rustfmt > tests-expanded/$${package}_tests.rs; \
 		echo "Expanding $$package for wasm32v1-none target without tests"; \
     STELLAR_CLI_VERSION=$(VERSION_MAJOR).0.0 \
     SOROBAN_SDK_BUILD_SYSTEM_SUPPORTS_SPEC_SHAKING_V2=1 \

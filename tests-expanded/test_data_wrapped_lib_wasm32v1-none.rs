@@ -9,41 +9,6 @@ extern crate core;
 use core::prelude::rust_2021::*;
 use soroban_sdk::contracttype;
 pub struct Wrapped(pub u32);
-#[automatically_derived]
-impl ::core::clone::Clone for Wrapped {
-    #[inline]
-    fn clone(&self) -> Wrapped {
-        let _: ::core::clone::AssertParamIsClone<u32>;
-        *self
-    }
-}
-#[automatically_derived]
-impl ::core::marker::Copy for Wrapped {}
-#[automatically_derived]
-impl ::core::fmt::Debug for Wrapped {
-    #[inline]
-    fn fmt(&self, f: &mut ::core::fmt::Formatter) -> ::core::fmt::Result {
-        ::core::fmt::Formatter::debug_tuple_field1_finish(f, "Wrapped", &&self.0)
-    }
-}
-#[automatically_derived]
-impl ::core::cmp::Eq for Wrapped {
-    #[inline]
-    #[doc(hidden)]
-    #[coverage(off)]
-    fn assert_receiver_is_total_eq(&self) -> () {
-        let _: ::core::cmp::AssertParamIsEq<u32>;
-    }
-}
-#[automatically_derived]
-impl ::core::marker::StructuralPartialEq for Wrapped {}
-#[automatically_derived]
-impl ::core::cmp::PartialEq for Wrapped {
-    #[inline]
-    fn eq(&self, other: &Wrapped) -> bool {
-        self.0 == other.0
-    }
-}
 impl soroban_sdk::SpecName for Wrapped {
     const SPEC_NAME: &'static str = {
         const NAME: &str = "::test_data_wrapped_lib::Wrapped";

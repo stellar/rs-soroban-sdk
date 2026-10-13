@@ -5,5 +5,4 @@
 use soroban_sdk::contracttype;
 
 #[contracttype]
-#[derive(Clone, Copy, Debug, Eq, PartialEq)]
 pub struct Wrapped(pub u32);

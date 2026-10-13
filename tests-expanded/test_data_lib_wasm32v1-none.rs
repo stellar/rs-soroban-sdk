@@ -22,52 +22,6 @@ use soroban_sdk::{contracterror, contractevent};
 pub enum Error {
     A = 1,
 }
-#[automatically_derived]
-impl ::core::clone::Clone for Error {
-    #[inline]
-    fn clone(&self) -> Error {
-        *self
-    }
-}
-#[automatically_derived]
-impl ::core::marker::Copy for Error {}
-#[automatically_derived]
-impl ::core::fmt::Debug for Error {
-    #[inline]
-    fn fmt(&self, f: &mut ::core::fmt::Formatter) -> ::core::fmt::Result {
-        ::core::fmt::Formatter::write_str(f, "A")
-    }
-}
-#[automatically_derived]
-impl ::core::cmp::Eq for Error {
-    #[inline]
-    #[doc(hidden)]
-    #[coverage(off)]
-    fn assert_receiver_is_total_eq(&self) -> () {}
-}
-#[automatically_derived]
-impl ::core::marker::StructuralPartialEq for Error {}
-#[automatically_derived]
-impl ::core::cmp::PartialEq for Error {
-    #[inline]
-    fn eq(&self, other: &Error) -> bool {
-        true
-    }
-}
-#[automatically_derived]
-impl ::core::cmp::PartialOrd for Error {
-    #[inline]
-    fn partial_cmp(&self, other: &Error) -> ::core::option::Option<::core::cmp::Ordering> {
-        ::core::option::Option::Some(::core::cmp::Ordering::Equal)
-    }
-}
-#[automatically_derived]
-impl ::core::cmp::Ord for Error {
-    #[inline]
-    fn cmp(&self, other: &Error) -> ::core::cmp::Ordering {
-        ::core::cmp::Ordering::Equal
-    }
-}
 impl soroban_sdk::SpecName for Error {
     const SPEC_NAME: &'static str = {
         const NAME: &str = "::test_data_lib::Error";
@@ -247,40 +201,6 @@ impl soroban_sdk::TryFromVal<soroban_sdk::Env, &Error> for soroban_sdk::Val {
 pub struct Event {
     pub v: u32,
 }
-#[automatically_derived]
-impl ::core::clone::Clone for Event {
-    #[inline]
-    fn clone(&self) -> Event {
-        Event {
-            v: ::core::clone::Clone::clone(&self.v),
-        }
-    }
-}
-#[automatically_derived]
-impl ::core::fmt::Debug for Event {
-    #[inline]
-    fn fmt(&self, f: &mut ::core::fmt::Formatter) -> ::core::fmt::Result {
-        ::core::fmt::Formatter::debug_struct_field1_finish(f, "Event", "v", &&self.v)
-    }
-}
-#[automatically_derived]
-impl ::core::cmp::Eq for Event {
-    #[inline]
-    #[doc(hidden)]
-    #[coverage(off)]
-    fn assert_receiver_is_total_eq(&self) -> () {
-        let _: ::core::cmp::AssertParamIsEq<u32>;
-    }
-}
-#[automatically_derived]
-impl ::core::marker::StructuralPartialEq for Event {}
-#[automatically_derived]
-impl ::core::cmp::PartialEq for Event {
-    #[inline]
-    fn eq(&self, other: &Event) -> bool {
-        self.v == other.v
-    }
-}
 impl soroban_sdk::SpecName for Event {
     const SPEC_NAME: &'static str = {
         const NAME: &str = "::test_data_lib::Event";
@@ -383,40 +303,6 @@ impl Event {
 }
 pub struct RefEvent<'a> {
     pub v: &'a u32,
-}
-#[automatically_derived]
-impl<'a> ::core::clone::Clone for RefEvent<'a> {
-    #[inline]
-    fn clone(&self) -> RefEvent<'a> {
-        RefEvent {
-            v: ::core::clone::Clone::clone(&self.v),
-        }
-    }
-}
-#[automatically_derived]
-impl<'a> ::core::fmt::Debug for RefEvent<'a> {
-    #[inline]
-    fn fmt(&self, f: &mut ::core::fmt::Formatter) -> ::core::fmt::Result {
-        ::core::fmt::Formatter::debug_struct_field1_finish(f, "RefEvent", "v", &&self.v)
-    }
-}
-#[automatically_derived]
-impl<'a> ::core::cmp::Eq for RefEvent<'a> {
-    #[inline]
-    #[doc(hidden)]
-    #[coverage(off)]
-    fn assert_receiver_is_total_eq(&self) -> () {
-        let _: ::core::cmp::AssertParamIsEq<&'a u32>;
-    }
-}
-#[automatically_derived]
-impl<'a> ::core::marker::StructuralPartialEq for RefEvent<'a> {}
-#[automatically_derived]
-impl<'a> ::core::cmp::PartialEq for RefEvent<'a> {
-    #[inline]
-    fn eq(&self, other: &RefEvent<'a>) -> bool {
-        self.v == other.v
-    }
 }
 impl<'a> soroban_sdk::SpecName for RefEvent<'a> {
     const SPEC_NAME: &'static str = {

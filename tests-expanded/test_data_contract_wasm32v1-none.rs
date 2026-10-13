@@ -11,41 +11,6 @@ use test_data_nested_lib::Outer;
 use test_data_tuple_lib::Tuple;
 use test_data_wrapped_lib::Wrapped;
 pub struct Wrapper(pub Wrapped);
-#[automatically_derived]
-impl ::core::clone::Clone for Wrapper {
-    #[inline]
-    fn clone(&self) -> Wrapper {
-        let _: ::core::clone::AssertParamIsClone<Wrapped>;
-        *self
-    }
-}
-#[automatically_derived]
-impl ::core::marker::Copy for Wrapper {}
-#[automatically_derived]
-impl ::core::fmt::Debug for Wrapper {
-    #[inline]
-    fn fmt(&self, f: &mut ::core::fmt::Formatter) -> ::core::fmt::Result {
-        ::core::fmt::Formatter::debug_tuple_field1_finish(f, "Wrapper", &&self.0)
-    }
-}
-#[automatically_derived]
-impl ::core::cmp::Eq for Wrapper {
-    #[inline]
-    #[doc(hidden)]
-    #[coverage(off)]
-    fn assert_receiver_is_total_eq(&self) -> () {
-        let _: ::core::cmp::AssertParamIsEq<Wrapped>;
-    }
-}
-#[automatically_derived]
-impl ::core::marker::StructuralPartialEq for Wrapper {}
-#[automatically_derived]
-impl ::core::cmp::PartialEq for Wrapper {
-    #[inline]
-    fn eq(&self, other: &Wrapper) -> bool {
-        self.0 == other.0
-    }
-}
 impl soroban_sdk::SpecName for Wrapper {
     const SPEC_NAME: &'static str = {
         const NAME: &str = "::test_data_contract::Wrapper";

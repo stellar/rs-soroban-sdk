@@ -15,14 +15,12 @@
 use soroban_sdk::{contracterror, contractevent};
 
 #[contracterror]
-#[derive(Clone, Copy, Debug, Eq, PartialEq, PartialOrd, Ord)]
 #[repr(u32)]
 pub enum Error {
     A = 1,
 }
 
 #[contractevent]
-#[derive(Clone, Debug, Eq, PartialEq)]
 pub struct Event {
     pub v: u32,
 }
@@ -30,7 +28,6 @@ pub struct Event {
 // An event with a lifetime, so that its conversions and its spec anchor are
 // generic over the lifetime.
 #[contractevent]
-#[derive(Clone, Debug, Eq, PartialEq)]
 pub struct RefEvent<'a> {
     pub v: &'a u32,
 }

@@ -9,41 +9,6 @@ extern crate core;
 use core::prelude::rust_2021::*;
 use soroban_sdk::contracttype;
 pub struct Inner(pub u32);
-#[automatically_derived]
-impl ::core::clone::Clone for Inner {
-    #[inline]
-    fn clone(&self) -> Inner {
-        let _: ::core::clone::AssertParamIsClone<u32>;
-        *self
-    }
-}
-#[automatically_derived]
-impl ::core::marker::Copy for Inner {}
-#[automatically_derived]
-impl ::core::fmt::Debug for Inner {
-    #[inline]
-    fn fmt(&self, f: &mut ::core::fmt::Formatter) -> ::core::fmt::Result {
-        ::core::fmt::Formatter::debug_tuple_field1_finish(f, "Inner", &&self.0)
-    }
-}
-#[automatically_derived]
-impl ::core::cmp::Eq for Inner {
-    #[inline]
-    #[doc(hidden)]
-    #[coverage(off)]
-    fn assert_receiver_is_total_eq(&self) -> () {
-        let _: ::core::cmp::AssertParamIsEq<u32>;
-    }
-}
-#[automatically_derived]
-impl ::core::marker::StructuralPartialEq for Inner {}
-#[automatically_derived]
-impl ::core::cmp::PartialEq for Inner {
-    #[inline]
-    fn eq(&self, other: &Inner) -> bool {
-        self.0 == other.0
-    }
-}
 impl soroban_sdk::SpecName for Inner {
     const SPEC_NAME: &'static str = {
         const NAME: &str = "::test_data_nested_lib::Inner";
@@ -144,41 +109,6 @@ impl soroban_sdk::TryFromVal<soroban_sdk::Env, &Inner> for soroban_sdk::Val {
     }
 }
 pub struct Outer(pub Inner);
-#[automatically_derived]
-impl ::core::clone::Clone for Outer {
-    #[inline]
-    fn clone(&self) -> Outer {
-        let _: ::core::clone::AssertParamIsClone<Inner>;
-        *self
-    }
-}
-#[automatically_derived]
-impl ::core::marker::Copy for Outer {}
-#[automatically_derived]
-impl ::core::fmt::Debug for Outer {
-    #[inline]
-    fn fmt(&self, f: &mut ::core::fmt::Formatter) -> ::core::fmt::Result {
-        ::core::fmt::Formatter::debug_tuple_field1_finish(f, "Outer", &&self.0)
-    }
-}
-#[automatically_derived]
-impl ::core::cmp::Eq for Outer {
-    #[inline]
-    #[doc(hidden)]
-    #[coverage(off)]
-    fn assert_receiver_is_total_eq(&self) -> () {
-        let _: ::core::cmp::AssertParamIsEq<Inner>;
-    }
-}
-#[automatically_derived]
-impl ::core::marker::StructuralPartialEq for Outer {}
-#[automatically_derived]
-impl ::core::cmp::PartialEq for Outer {
-    #[inline]
-    fn eq(&self, other: &Outer) -> bool {
-        self.0 == other.0
-    }
-}
 impl soroban_sdk::SpecName for Outer {
     const SPEC_NAME: &'static str = {
         const NAME: &str = "::test_data_nested_lib::Outer";
@@ -277,11 +207,4 @@ impl soroban_sdk::TryFromVal<soroban_sdk::Env, &Outer> for soroban_sdk::Val {
     ) -> Result<Self, soroban_sdk::ConversionError> {
         <_ as soroban_sdk::TryFromVal<soroban_sdk::Env, Outer>>::try_from_val(env, *val)
     }
-}
-#[rustc_main]
-#[coverage(off)]
-#[doc(hidden)]
-pub fn main() -> () {
-    extern crate test;
-    test::test_main_static(&[])
 }

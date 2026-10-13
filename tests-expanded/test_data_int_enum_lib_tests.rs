@@ -11,46 +11,6 @@ pub enum IntEnum {
     A = 1,
     B = 2,
 }
-#[automatically_derived]
-impl ::core::clone::Clone for IntEnum {
-    #[inline]
-    fn clone(&self) -> IntEnum {
-        *self
-    }
-}
-#[automatically_derived]
-impl ::core::marker::Copy for IntEnum {}
-#[automatically_derived]
-impl ::core::fmt::Debug for IntEnum {
-    #[inline]
-    fn fmt(&self, f: &mut ::core::fmt::Formatter) -> ::core::fmt::Result {
-        ::core::fmt::Formatter::write_str(
-            f,
-            match self {
-                IntEnum::A => "A",
-                IntEnum::B => "B",
-            },
-        )
-    }
-}
-#[automatically_derived]
-impl ::core::cmp::Eq for IntEnum {
-    #[inline]
-    #[doc(hidden)]
-    #[coverage(off)]
-    fn assert_receiver_is_total_eq(&self) -> () {}
-}
-#[automatically_derived]
-impl ::core::marker::StructuralPartialEq for IntEnum {}
-#[automatically_derived]
-impl ::core::cmp::PartialEq for IntEnum {
-    #[inline]
-    fn eq(&self, other: &IntEnum) -> bool {
-        let __self_discr = ::core::intrinsics::discriminant_value(self);
-        let __arg1_discr = ::core::intrinsics::discriminant_value(other);
-        __self_discr == __arg1_discr
-    }
-}
 impl soroban_sdk::SpecName for IntEnum {
     const SPEC_NAME: &'static str = {
         const NAME: &str = "::test_data_int_enum_lib::IntEnum";
@@ -151,11 +111,4 @@ impl soroban_sdk::TryFromVal<soroban_sdk::Env, &IntEnum> for soroban_sdk::Val {
     ) -> Result<Self, soroban_sdk::ConversionError> {
         <_ as soroban_sdk::TryFromVal<soroban_sdk::Env, IntEnum>>::try_from_val(env, *val)
     }
-}
-#[rustc_main]
-#[coverage(off)]
-#[doc(hidden)]
-pub fn main() -> () {
-    extern crate test;
-    test::test_main_static(&[])
 }

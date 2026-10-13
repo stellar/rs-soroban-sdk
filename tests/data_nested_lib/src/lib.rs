@@ -5,9 +5,7 @@
 use soroban_sdk::contracttype;
 
 #[contracttype]
-#[derive(Clone, Copy, Debug, Eq, PartialEq)]
 pub struct Inner(pub u32);
 
 #[contracttype]
-#[derive(Clone, Copy, Debug, Eq, PartialEq)]
 pub struct Outer(pub Inner);

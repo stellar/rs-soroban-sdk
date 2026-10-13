@@ -8,41 +8,6 @@ extern crate core;
 use core::prelude::rust_2021::*;
 use soroban_sdk::contracttype;
 pub struct Tuple(pub u32, pub u32);
-#[automatically_derived]
-impl ::core::clone::Clone for Tuple {
-    #[inline]
-    fn clone(&self) -> Tuple {
-        let _: ::core::clone::AssertParamIsClone<u32>;
-        *self
-    }
-}
-#[automatically_derived]
-impl ::core::marker::Copy for Tuple {}
-#[automatically_derived]
-impl ::core::fmt::Debug for Tuple {
-    #[inline]
-    fn fmt(&self, f: &mut ::core::fmt::Formatter) -> ::core::fmt::Result {
-        ::core::fmt::Formatter::debug_tuple_field2_finish(f, "Tuple", &self.0, &&self.1)
-    }
-}
-#[automatically_derived]
-impl ::core::cmp::Eq for Tuple {
-    #[inline]
-    #[doc(hidden)]
-    #[coverage(off)]
-    fn assert_receiver_is_total_eq(&self) -> () {
-        let _: ::core::cmp::AssertParamIsEq<u32>;
-    }
-}
-#[automatically_derived]
-impl ::core::marker::StructuralPartialEq for Tuple {}
-#[automatically_derived]
-impl ::core::cmp::PartialEq for Tuple {
-    #[inline]
-    fn eq(&self, other: &Tuple) -> bool {
-        self.0 == other.0 && self.1 == other.1
-    }
-}
 impl soroban_sdk::SpecName for Tuple {
     const SPEC_NAME: &'static str = {
         const NAME: &str = "::test_data_tuple_lib::Tuple";

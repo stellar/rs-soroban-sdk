@@ -4,7 +4,6 @@
 use soroban_sdk::contracttype;
 
 #[contracttype]
-#[derive(Clone, Copy, Debug, Eq, PartialEq)]
 pub enum Enum {
     A(u32),
     B(u32),

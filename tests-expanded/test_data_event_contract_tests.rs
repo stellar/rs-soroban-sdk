@@ -137,10 +137,3 @@ pub extern "C" fn __Contract__event__invoke_raw_extern(
     #[allow(deprecated)]
     __Contract__event__invoke_raw(soroban_sdk::Env::default(), arg_0)
 }
-#[rustc_main]
-#[coverage(off)]
-#[doc(hidden)]
-pub fn main() -> () {
-    extern crate test;
-    test::test_main_static(&[])
-}

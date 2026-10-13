@@ -11,55 +11,6 @@ pub enum Enum {
     A(u32),
     B(u32),
 }
-#[automatically_derived]
-impl ::core::clone::Clone for Enum {
-    #[inline]
-    fn clone(&self) -> Enum {
-        let _: ::core::clone::AssertParamIsClone<u32>;
-        *self
-    }
-}
-#[automatically_derived]
-impl ::core::marker::Copy for Enum {}
-#[automatically_derived]
-impl ::core::fmt::Debug for Enum {
-    #[inline]
-    fn fmt(&self, f: &mut ::core::fmt::Formatter) -> ::core::fmt::Result {
-        match self {
-            Enum::A(__self_0) => {
-                ::core::fmt::Formatter::debug_tuple_field1_finish(f, "A", &__self_0)
-            }
-            Enum::B(__self_0) => {
-                ::core::fmt::Formatter::debug_tuple_field1_finish(f, "B", &__self_0)
-            }
-        }
-    }
-}
-#[automatically_derived]
-impl ::core::cmp::Eq for Enum {
-    #[inline]
-    #[doc(hidden)]
-    #[coverage(off)]
-    fn assert_receiver_is_total_eq(&self) -> () {
-        let _: ::core::cmp::AssertParamIsEq<u32>;
-    }
-}
-#[automatically_derived]
-impl ::core::marker::StructuralPartialEq for Enum {}
-#[automatically_derived]
-impl ::core::cmp::PartialEq for Enum {
-    #[inline]
-    fn eq(&self, other: &Enum) -> bool {
-        let __self_discr = ::core::intrinsics::discriminant_value(self);
-        let __arg1_discr = ::core::intrinsics::discriminant_value(other);
-        __self_discr == __arg1_discr
-            && match (self, other) {
-                (Enum::A(__self_0), Enum::A(__arg1_0)) => __self_0 == __arg1_0,
-                (Enum::B(__self_0), Enum::B(__arg1_0)) => __self_0 == __arg1_0,
-                _ => unsafe { ::core::intrinsics::unreachable() },
-            }
-    }
-}
 impl soroban_sdk::SpecName for Enum {
     const SPEC_NAME: &'static str = {
         const NAME: &str = "::test_data_enum_lib::Enum";
