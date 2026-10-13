@@ -2,7 +2,7 @@ use crate::{
     default_crate_path,
     derive_args::derive_args_impl,
     derive_client::derive_client_impl,
-    derive_contractimpl_trait_macro::replace_fn_types,
+    derive_contractimpl_trait_macro::fn_types,
     derive_fn::{derive_contract_function_registration_ctor, derive_pub_fns},
     derive_spec_fn::derive_fns_spec,
     syn_ext::{self, ident_to_type, ty_to_safe_ident_str},
@@ -110,11 +110,10 @@ fn derive(args: &Args) -> Result<TokenStream2, Error> {
     let fns: Vec<_> = fns
         .into_iter()
         .map(|mut f| {
-            let types = replace_fn_types(
-                &mut f,
-                |ident| parse_quote!(<#impl_ty as #types_ident>::#ident),
-            );
-            type_idents.extend(types.into_iter().map(|(ident, _)| ident));
+            for (ident, ty) in fn_types(&mut f) {
+                *ty = parse_quote!(<#impl_ty as #types_ident>::#ident);
+                type_idents.push(ident);
+            }
             f
         })
         .collect();

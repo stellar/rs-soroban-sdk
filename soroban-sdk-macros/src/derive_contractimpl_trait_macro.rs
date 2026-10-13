@@ -74,7 +74,10 @@ fn derive_fn_types(input: &mut ItemTrait) -> TokenStream2 {
                 inputs: sig.inputs.clone(),
                 output: sig.output.clone(),
             };
-            replace_fn_types(&mut f, |_| parse_quote!(_))
+            fn_types(&mut f)
+                .into_iter()
+                .map(|(ident, ty)| (ident, ty.clone()))
+                .collect::<Vec<_>>()
         })
         .collect();
     if types.is_empty() {
@@ -102,22 +105,14 @@ fn derive_fn_types(input: &mut ItemTrait) -> TokenStream2 {
     }
 }
 
-/// Replaces the types in the fn's signature that are captured as associated
-/// types of the trait's fn types supertrait with the type `project` gives for
-/// each associated type, and returns the associated types and the types they
-/// replaced. The `Env` input is left as is, as is a `MuxedAddress` input, since
-/// the client treats it specially by its name. References are kept, so that
-/// the code generated for the fn still sees inputs passed by reference.
-pub fn replace_fn_types(
-    f: &mut syn_ext::Fn,
-    project: impl std::ops::Fn(&Ident) -> Type,
-) -> Vec<(Ident, Type)> {
+/// The types in the fn's signature that are captured as associated types of
+/// the trait's fn types supertrait, with the associated type each is captured
+/// as. The `Env` input is not captured, nor is a `MuxedAddress` input, since
+/// the client treats it specially by its name. The types are those behind any
+/// references, so that replacing them keeps inputs passed by reference.
+pub fn fn_types(f: &mut syn_ext::Fn) -> Vec<(Ident, &mut Type)> {
     let fn_name = f.ident.unraw();
     let mut types = Vec::new();
-    let mut replace = |ty: &mut Type, ident: Ident| {
-        let ty = unref_mut(ty);
-        types.push((ident.clone(), std::mem::replace(ty, project(&ident))));
-    };
 
     for (i, input) in f.inputs.iter_mut().enumerate() {
         if let FnArg::Typed(pat_type) = input {
@@ -125,17 +120,18 @@ pub fn replace_fn_types(
             if (i == 0 && is_type_named(ty, "Env")) || is_type_named(ty, "MuxedAddress") {
                 continue;
             }
-            replace(ty, format_ident!("__{fn_name}__arg_{i}"));
+            types.push((format_ident!("__{fn_name}__arg_{i}"), unref_mut(ty)));
         }
     }
 
     if let ReturnType::Type(_, ty) = &mut f.output {
-        match result_types_mut(ty) {
-            Some((ok, err)) => {
-                replace(ok, format_ident!("__{fn_name}__ok"));
-                replace(err, format_ident!("__{fn_name}__err"));
-            }
-            None => replace(ty, format_ident!("__{fn_name}__ret")),
+        // Checked before borrowing the ok and error types, because the borrow
+        // checker would otherwise hold that borrow over the fallback too.
+        if result_types_mut(ty).is_none() {
+            types.push((format_ident!("__{fn_name}__ret"), unref_mut(ty)));
+        } else if let Some((ok, err)) = result_types_mut(ty) {
+            types.push((format_ident!("__{fn_name}__ok"), unref_mut(ok)));
+            types.push((format_ident!("__{fn_name}__err"), unref_mut(err)));
         }
     }
 
