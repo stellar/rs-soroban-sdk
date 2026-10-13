@@ -12,14 +12,14 @@
 //!
 //! ```
 //! #![no_std]
-//! use soroban_sdk::{contract, contractimpl, Env, MuxedAddress};
+//! use soroban_sdk::{contract, contractimpl, MuxedAddress};
 //!
 //! #[contract]
 //! pub struct Contract;
 //!
 //! #[contractimpl]
 //! impl Contract {
-//!     pub fn deposit(_env: Env, to: MuxedAddress) -> Option<u64> {
+//!     pub fn deposit(to: MuxedAddress) -> Option<u64> {
 //!         // The address is `G...` or `C...`, whether or not `to` is muxed.
 //!         let _address = to.address();
 //!         // The id is `Some` for a muxed account or muxed contract address.
