@@ -81,8 +81,6 @@ impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for MockProof {
         val: &soroban_sdk::Val,
     ) -> Result<Self, soroban_sdk::ConversionError> {
         <MockProof as soroban_sdk::SpecAnchor>::spec_anchor();
-        <Vec<Bn254G1Affine> as soroban_sdk::SpecAnchor>::spec_anchor();
-        <Vec<Bn254G2Affine> as soroban_sdk::SpecAnchor>::spec_anchor();
         use soroban_sdk::{ConversionError, EnvBase, MapObject, TryIntoVal, Val};
         const KEYS: [&'static str; 2usize] = ["g1", "g2"];
         let mut vals: [Val; 2usize] = [Val::VOID.to_val(); 2usize];
@@ -106,8 +104,6 @@ impl soroban_sdk::TryFromVal<soroban_sdk::Env, MockProof> for soroban_sdk::Val {
         val: &MockProof,
     ) -> Result<Self, soroban_sdk::ConversionError> {
         <MockProof as soroban_sdk::SpecAnchor>::spec_anchor();
-        <Vec<Bn254G1Affine> as soroban_sdk::SpecAnchor>::spec_anchor();
-        <Vec<Bn254G2Affine> as soroban_sdk::SpecAnchor>::spec_anchor();
         use soroban_sdk::{ConversionError, EnvBase, TryIntoVal, Val};
         const KEYS: [&'static str; 2usize] = ["g1", "g2"];
         let vals: [Val; 2usize] = [

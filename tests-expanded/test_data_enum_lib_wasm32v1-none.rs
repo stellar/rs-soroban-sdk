@@ -88,8 +88,6 @@ impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for Enum {
         val: &soroban_sdk::Val,
     ) -> Result<Self, soroban_sdk::ConversionError> {
         <Enum as soroban_sdk::SpecAnchor>::spec_anchor();
-        <u32 as soroban_sdk::SpecAnchor>::spec_anchor();
-        <u32 as soroban_sdk::SpecAnchor>::spec_anchor();
         use soroban_sdk::{EnvBase, TryFromVal, TryIntoVal};
         const CASES: &'static [&'static str] = &["A", "B"];
         let vec: soroban_sdk::Vec<soroban_sdk::Val> = val.try_into_val(env)?;
@@ -135,8 +133,6 @@ impl soroban_sdk::TryFromVal<soroban_sdk::Env, Enum> for soroban_sdk::Val {
         val: &Enum,
     ) -> Result<Self, soroban_sdk::ConversionError> {
         <Enum as soroban_sdk::SpecAnchor>::spec_anchor();
-        <u32 as soroban_sdk::SpecAnchor>::spec_anchor();
-        <u32 as soroban_sdk::SpecAnchor>::spec_anchor();
         use soroban_sdk::{TryFromVal, TryIntoVal};
         match val {
             Enum::A(ref value0) => {

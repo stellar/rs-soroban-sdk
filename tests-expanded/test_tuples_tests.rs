@@ -1002,8 +1002,6 @@ mod test {
                 val: &soroban_sdk::Val,
             ) -> Result<Self, soroban_sdk::ConversionError> {
                 <ContractExecutableRef as soroban_sdk::SpecAnchor>::spec_anchor();
-                <soroban_sdk::Address as soroban_sdk::SpecAnchor>::spec_anchor();
-                <soroban_sdk::String as soroban_sdk::SpecAnchor>::spec_anchor();
                 use soroban_sdk::{ConversionError, EnvBase, MapObject, TryIntoVal, Val};
                 const KEYS: [&'static str; 2usize] = ["owner", "tag"];
                 let mut vals: [Val; 2usize] = [Val::VOID.to_val(); 2usize];
@@ -1027,8 +1025,6 @@ mod test {
                 val: &ContractExecutableRef,
             ) -> Result<Self, soroban_sdk::ConversionError> {
                 <ContractExecutableRef as soroban_sdk::SpecAnchor>::spec_anchor();
-                <soroban_sdk::Address as soroban_sdk::SpecAnchor>::spec_anchor();
-                <soroban_sdk::String as soroban_sdk::SpecAnchor>::spec_anchor();
                 use soroban_sdk::{ConversionError, EnvBase, TryIntoVal, Val};
                 const KEYS: [&'static str; 2usize] = ["owner", "tag"];
                 let vals: [Val; 2usize] = [
@@ -1567,9 +1563,6 @@ mod test {
                 val: &soroban_sdk::Val,
             ) -> Result<Self, soroban_sdk::ConversionError> {
                 <ContractContext as soroban_sdk::SpecAnchor>::spec_anchor();
-                <soroban_sdk::Vec<soroban_sdk::Val> as soroban_sdk::SpecAnchor>::spec_anchor();
-                <soroban_sdk::Address as soroban_sdk::SpecAnchor>::spec_anchor();
-                <soroban_sdk::Symbol as soroban_sdk::SpecAnchor>::spec_anchor();
                 use soroban_sdk::{ConversionError, EnvBase, MapObject, TryIntoVal, Val};
                 const KEYS: [&'static str; 3usize] = ["args", "contract", "fn_name"];
                 let mut vals: [Val; 3usize] = [Val::VOID.to_val(); 3usize];
@@ -1596,9 +1589,6 @@ mod test {
                 val: &ContractContext,
             ) -> Result<Self, soroban_sdk::ConversionError> {
                 <ContractContext as soroban_sdk::SpecAnchor>::spec_anchor();
-                <soroban_sdk::Vec<soroban_sdk::Val> as soroban_sdk::SpecAnchor>::spec_anchor();
-                <soroban_sdk::Address as soroban_sdk::SpecAnchor>::spec_anchor();
-                <soroban_sdk::Symbol as soroban_sdk::SpecAnchor>::spec_anchor();
                 use soroban_sdk::{ConversionError, EnvBase, TryIntoVal, Val};
                 const KEYS: [&'static str; 3usize] = ["args", "contract", "fn_name"];
                 let vals: [Val; 3usize] = [
@@ -2179,10 +2169,6 @@ mod test {
                 val: &soroban_sdk::Val,
             ) -> Result<Self, soroban_sdk::ConversionError> {
                 <SubContractInvocation as soroban_sdk::SpecAnchor>::spec_anchor();
-                <ContractContext as soroban_sdk::SpecAnchor>::spec_anchor();
-                <soroban_sdk::Vec<
-                    InvokerContractAuthEntry,
-                > as soroban_sdk::SpecAnchor>::spec_anchor();
                 use soroban_sdk::{ConversionError, EnvBase, MapObject, TryIntoVal, Val};
                 const KEYS: [&'static str; 2usize] = ["context", "sub_invocations"];
                 let mut vals: [Val; 2usize] = [Val::VOID.to_val(); 2usize];
@@ -2206,10 +2192,6 @@ mod test {
                 val: &SubContractInvocation,
             ) -> Result<Self, soroban_sdk::ConversionError> {
                 <SubContractInvocation as soroban_sdk::SpecAnchor>::spec_anchor();
-                <ContractContext as soroban_sdk::SpecAnchor>::spec_anchor();
-                <soroban_sdk::Vec<
-                    InvokerContractAuthEntry,
-                > as soroban_sdk::SpecAnchor>::spec_anchor();
                 use soroban_sdk::{ConversionError, EnvBase, TryIntoVal, Val};
                 const KEYS: [&'static str; 2usize] = ["context", "sub_invocations"];
                 let vals: [Val; 2usize] = [
@@ -2732,8 +2714,6 @@ mod test {
                 val: &soroban_sdk::Val,
             ) -> Result<Self, soroban_sdk::ConversionError> {
                 <CreateContractHostFnContext as soroban_sdk::SpecAnchor>::spec_anchor();
-                <ContractExecutable as soroban_sdk::SpecAnchor>::spec_anchor();
-                <soroban_sdk::BytesN<32> as soroban_sdk::SpecAnchor>::spec_anchor();
                 use soroban_sdk::{ConversionError, EnvBase, MapObject, TryIntoVal, Val};
                 const KEYS: [&'static str; 2usize] = ["executable", "salt"];
                 let mut vals: [Val; 2usize] = [Val::VOID.to_val(); 2usize];
@@ -2757,8 +2737,6 @@ mod test {
                 val: &CreateContractHostFnContext,
             ) -> Result<Self, soroban_sdk::ConversionError> {
                 <CreateContractHostFnContext as soroban_sdk::SpecAnchor>::spec_anchor();
-                <ContractExecutable as soroban_sdk::SpecAnchor>::spec_anchor();
-                <soroban_sdk::BytesN<32> as soroban_sdk::SpecAnchor>::spec_anchor();
                 use soroban_sdk::{ConversionError, EnvBase, TryIntoVal, Val};
                 const KEYS: [&'static str; 2usize] = ["executable", "salt"];
                 let vals: [Val; 2usize] = [
@@ -3330,9 +3308,6 @@ mod test {
                 val: &soroban_sdk::Val,
             ) -> Result<Self, soroban_sdk::ConversionError> {
                 <CreateContractWithConstructorHostFnContext as soroban_sdk::SpecAnchor>::spec_anchor();
-                <soroban_sdk::Vec<soroban_sdk::Val> as soroban_sdk::SpecAnchor>::spec_anchor();
-                <ContractExecutable as soroban_sdk::SpecAnchor>::spec_anchor();
-                <soroban_sdk::BytesN<32> as soroban_sdk::SpecAnchor>::spec_anchor();
                 use soroban_sdk::{ConversionError, EnvBase, MapObject, TryIntoVal, Val};
                 const KEYS: [&'static str; 3usize] = ["constructor_args", "executable", "salt"];
                 let mut vals: [Val; 3usize] = [Val::VOID.to_val(); 3usize];
@@ -3361,9 +3336,6 @@ mod test {
                 val: &CreateContractWithConstructorHostFnContext,
             ) -> Result<Self, soroban_sdk::ConversionError> {
                 <CreateContractWithConstructorHostFnContext as soroban_sdk::SpecAnchor>::spec_anchor();
-                <soroban_sdk::Vec<soroban_sdk::Val> as soroban_sdk::SpecAnchor>::spec_anchor();
-                <ContractExecutable as soroban_sdk::SpecAnchor>::spec_anchor();
-                <soroban_sdk::BytesN<32> as soroban_sdk::SpecAnchor>::spec_anchor();
                 use soroban_sdk::{ConversionError, EnvBase, TryIntoVal, Val};
                 const KEYS: [&'static str; 3usize] = ["constructor_args", "executable", "salt"];
                 let vals: [Val; 3usize] = [
@@ -4022,8 +3994,6 @@ mod test {
                 val: &soroban_sdk::Val,
             ) -> Result<Self, soroban_sdk::ConversionError> {
                 <ContractExecutable as soroban_sdk::SpecAnchor>::spec_anchor();
-                <soroban_sdk::BytesN<32> as soroban_sdk::SpecAnchor>::spec_anchor();
-                <ContractExecutableRef as soroban_sdk::SpecAnchor>::spec_anchor();
                 use soroban_sdk::{EnvBase, TryFromVal, TryIntoVal};
                 const CASES: &'static [&'static str] = &["Wasm", "ExternalRef"];
                 let vec: soroban_sdk::Vec<soroban_sdk::Val> = val.try_into_val(env)?;
@@ -4070,8 +4040,6 @@ mod test {
                 val: &ContractExecutable,
             ) -> Result<Self, soroban_sdk::ConversionError> {
                 <ContractExecutable as soroban_sdk::SpecAnchor>::spec_anchor();
-                <soroban_sdk::BytesN<32> as soroban_sdk::SpecAnchor>::spec_anchor();
-                <ContractExecutableRef as soroban_sdk::SpecAnchor>::spec_anchor();
                 use soroban_sdk::{TryFromVal, TryIntoVal};
                 match val {
                     ContractExecutable::Wasm(ref value0) => {
@@ -4743,9 +4711,6 @@ mod test {
                 val: &soroban_sdk::Val,
             ) -> Result<Self, soroban_sdk::ConversionError> {
                 <Context as soroban_sdk::SpecAnchor>::spec_anchor();
-                <ContractContext as soroban_sdk::SpecAnchor>::spec_anchor();
-                <CreateContractHostFnContext as soroban_sdk::SpecAnchor>::spec_anchor();
-                <CreateContractWithConstructorHostFnContext as soroban_sdk::SpecAnchor>::spec_anchor();
                 use soroban_sdk::{EnvBase, TryFromVal, TryIntoVal};
                 const CASES: &'static [&'static str] = &[
                     "Contract",
@@ -4806,9 +4771,6 @@ mod test {
                 val: &Context,
             ) -> Result<Self, soroban_sdk::ConversionError> {
                 <Context as soroban_sdk::SpecAnchor>::spec_anchor();
-                <ContractContext as soroban_sdk::SpecAnchor>::spec_anchor();
-                <CreateContractHostFnContext as soroban_sdk::SpecAnchor>::spec_anchor();
-                <CreateContractWithConstructorHostFnContext as soroban_sdk::SpecAnchor>::spec_anchor();
                 use soroban_sdk::{TryFromVal, TryIntoVal};
                 match val {
                     Context::Contract(ref value0) => {
@@ -5568,9 +5530,6 @@ mod test {
                 val: &soroban_sdk::Val,
             ) -> Result<Self, soroban_sdk::ConversionError> {
                 <InvokerContractAuthEntry as soroban_sdk::SpecAnchor>::spec_anchor();
-                <SubContractInvocation as soroban_sdk::SpecAnchor>::spec_anchor();
-                <CreateContractHostFnContext as soroban_sdk::SpecAnchor>::spec_anchor();
-                <CreateContractWithConstructorHostFnContext as soroban_sdk::SpecAnchor>::spec_anchor();
                 use soroban_sdk::{EnvBase, TryFromVal, TryIntoVal};
                 const CASES: &'static [&'static str] = &[
                     "Contract",
@@ -5631,9 +5590,6 @@ mod test {
                 val: &InvokerContractAuthEntry,
             ) -> Result<Self, soroban_sdk::ConversionError> {
                 <InvokerContractAuthEntry as soroban_sdk::SpecAnchor>::spec_anchor();
-                <SubContractInvocation as soroban_sdk::SpecAnchor>::spec_anchor();
-                <CreateContractHostFnContext as soroban_sdk::SpecAnchor>::spec_anchor();
-                <CreateContractWithConstructorHostFnContext as soroban_sdk::SpecAnchor>::spec_anchor();
                 use soroban_sdk::{TryFromVal, TryIntoVal};
                 match val {
                     InvokerContractAuthEntry::Contract(ref value0) => {
@@ -6377,7 +6333,6 @@ mod test {
                 val: &soroban_sdk::Val,
             ) -> Result<Self, soroban_sdk::ConversionError> {
                 <Executable as soroban_sdk::SpecAnchor>::spec_anchor();
-                <soroban_sdk::BytesN<32> as soroban_sdk::SpecAnchor>::spec_anchor();
                 use soroban_sdk::{EnvBase, TryFromVal, TryIntoVal};
                 const CASES: &'static [&'static str] = &["Wasm", "StellarAsset", "Account"];
                 let vec: soroban_sdk::Vec<soroban_sdk::Val> = val.try_into_val(env)?;
@@ -6426,7 +6381,6 @@ mod test {
                 val: &Executable,
             ) -> Result<Self, soroban_sdk::ConversionError> {
                 <Executable as soroban_sdk::SpecAnchor>::spec_anchor();
-                <soroban_sdk::BytesN<32> as soroban_sdk::SpecAnchor>::spec_anchor();
                 use soroban_sdk::{TryFromVal, TryIntoVal};
                 match val {
                     Executable::Wasm(ref value0) => {

@@ -73,7 +73,6 @@ impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for Inner {
         val: &soroban_sdk::Val,
     ) -> Result<Self, soroban_sdk::ConversionError> {
         <Inner as soroban_sdk::SpecAnchor>::spec_anchor();
-        <u32 as soroban_sdk::SpecAnchor>::spec_anchor();
         use soroban_sdk::{ConversionError, EnvBase, TryIntoVal, Val, VecObject};
         let vec: VecObject = (*val).try_into().map_err(|_| ConversionError)?;
         let mut vals: [Val; 1usize] = [Val::VOID.to_val(); 1usize];
@@ -92,7 +91,6 @@ impl soroban_sdk::TryFromVal<soroban_sdk::Env, Inner> for soroban_sdk::Val {
         val: &Inner,
     ) -> Result<Self, soroban_sdk::ConversionError> {
         <Inner as soroban_sdk::SpecAnchor>::spec_anchor();
-        <u32 as soroban_sdk::SpecAnchor>::spec_anchor();
         use soroban_sdk::{ConversionError, EnvBase, TryIntoVal, Val};
         let vals: [Val; 1usize] = [(&val.0).try_into_val(env).map_err(|_| ConversionError)?];
         Ok(env
@@ -176,7 +174,6 @@ impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for Outer {
         val: &soroban_sdk::Val,
     ) -> Result<Self, soroban_sdk::ConversionError> {
         <Outer as soroban_sdk::SpecAnchor>::spec_anchor();
-        <Inner as soroban_sdk::SpecAnchor>::spec_anchor();
         use soroban_sdk::{ConversionError, EnvBase, TryIntoVal, Val, VecObject};
         let vec: VecObject = (*val).try_into().map_err(|_| ConversionError)?;
         let mut vals: [Val; 1usize] = [Val::VOID.to_val(); 1usize];
@@ -195,7 +192,6 @@ impl soroban_sdk::TryFromVal<soroban_sdk::Env, Outer> for soroban_sdk::Val {
         val: &Outer,
     ) -> Result<Self, soroban_sdk::ConversionError> {
         <Outer as soroban_sdk::SpecAnchor>::spec_anchor();
-        <Inner as soroban_sdk::SpecAnchor>::spec_anchor();
         use soroban_sdk::{ConversionError, EnvBase, TryIntoVal, Val};
         let vals: [Val; 1usize] = [(&val.0).try_into_val(env).map_err(|_| ConversionError)?];
         Ok(env

@@ -117,8 +117,6 @@ impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for MyStruct {
         val: &soroban_sdk::Val,
     ) -> Result<Self, soroban_sdk::ConversionError> {
         <MyStruct as soroban_sdk::SpecAnchor>::spec_anchor();
-        <i64 as soroban_sdk::SpecAnchor>::spec_anchor();
-        <i64 as soroban_sdk::SpecAnchor>::spec_anchor();
         use soroban_sdk::{ConversionError, EnvBase, MapObject, TryIntoVal, Val};
         const KEYS: [&'static str; 2usize] = ["a", "b"];
         let mut vals: [Val; 2usize] = [Val::VOID.to_val(); 2usize];
@@ -142,8 +140,6 @@ impl soroban_sdk::TryFromVal<soroban_sdk::Env, MyStruct> for soroban_sdk::Val {
         val: &MyStruct,
     ) -> Result<Self, soroban_sdk::ConversionError> {
         <MyStruct as soroban_sdk::SpecAnchor>::spec_anchor();
-        <i64 as soroban_sdk::SpecAnchor>::spec_anchor();
-        <i64 as soroban_sdk::SpecAnchor>::spec_anchor();
         use soroban_sdk::{ConversionError, EnvBase, TryIntoVal, Val};
         const KEYS: [&'static str; 2usize] = ["a", "b"];
         let vals: [Val; 2usize] = [
@@ -467,8 +463,6 @@ impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for MyEnumVaria
         val: &soroban_sdk::Val,
     ) -> Result<Self, soroban_sdk::ConversionError> {
         <MyEnumVariants as soroban_sdk::SpecAnchor>::spec_anchor();
-        <MyStruct as soroban_sdk::SpecAnchor>::spec_anchor();
-        <MyEnumUnit as soroban_sdk::SpecAnchor>::spec_anchor();
         use soroban_sdk::{EnvBase, TryFromVal, TryIntoVal};
         const CASES: &'static [&'static str] = &["VarA", "VarB", "VarC"];
         let vec: soroban_sdk::Vec<soroban_sdk::Val> = val.try_into_val(env)?;
@@ -520,8 +514,6 @@ impl soroban_sdk::TryFromVal<soroban_sdk::Env, MyEnumVariants> for soroban_sdk::
         val: &MyEnumVariants,
     ) -> Result<Self, soroban_sdk::ConversionError> {
         <MyEnumVariants as soroban_sdk::SpecAnchor>::spec_anchor();
-        <MyStruct as soroban_sdk::SpecAnchor>::spec_anchor();
-        <MyEnumUnit as soroban_sdk::SpecAnchor>::spec_anchor();
         use soroban_sdk::{TryFromVal, TryIntoVal};
         match val {
             MyEnumVariants::VarA => {

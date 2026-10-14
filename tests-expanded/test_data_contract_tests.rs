@@ -77,7 +77,6 @@ impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for Wrapper {
         val: &soroban_sdk::Val,
     ) -> Result<Self, soroban_sdk::ConversionError> {
         <Wrapper as soroban_sdk::SpecAnchor>::spec_anchor();
-        <Wrapped as soroban_sdk::SpecAnchor>::spec_anchor();
         use soroban_sdk::{ConversionError, EnvBase, TryIntoVal, Val, VecObject};
         let vec: VecObject = (*val).try_into().map_err(|_| ConversionError)?;
         let mut vals: [Val; 1usize] = [Val::VOID.to_val(); 1usize];
@@ -96,7 +95,6 @@ impl soroban_sdk::TryFromVal<soroban_sdk::Env, Wrapper> for soroban_sdk::Val {
         val: &Wrapper,
     ) -> Result<Self, soroban_sdk::ConversionError> {
         <Wrapper as soroban_sdk::SpecAnchor>::spec_anchor();
-        <Wrapped as soroban_sdk::SpecAnchor>::spec_anchor();
         use soroban_sdk::{ConversionError, EnvBase, TryIntoVal, Val};
         let vals: [Val; 1usize] = [(&val.0).try_into_val(env).map_err(|_| ConversionError)?];
         Ok(env
@@ -184,7 +182,6 @@ impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for HasVecField
         val: &soroban_sdk::Val,
     ) -> Result<Self, soroban_sdk::ConversionError> {
         <HasVecField as soroban_sdk::SpecAnchor>::spec_anchor();
-        <Vec<FieldElem> as soroban_sdk::SpecAnchor>::spec_anchor();
         use soroban_sdk::{ConversionError, EnvBase, TryIntoVal, Val, VecObject};
         let vec: VecObject = (*val).try_into().map_err(|_| ConversionError)?;
         let mut vals: [Val; 1usize] = [Val::VOID.to_val(); 1usize];
@@ -203,7 +200,6 @@ impl soroban_sdk::TryFromVal<soroban_sdk::Env, HasVecField> for soroban_sdk::Val
         val: &HasVecField,
     ) -> Result<Self, soroban_sdk::ConversionError> {
         <HasVecField as soroban_sdk::SpecAnchor>::spec_anchor();
-        <Vec<FieldElem> as soroban_sdk::SpecAnchor>::spec_anchor();
         use soroban_sdk::{ConversionError, EnvBase, TryIntoVal, Val};
         let vals: [Val; 1usize] = [(&val.0).try_into_val(env).map_err(|_| ConversionError)?];
         Ok(env
