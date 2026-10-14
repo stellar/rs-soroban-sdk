@@ -9,7 +9,7 @@ use crate::{
 
 use super::{
     env::internal::{Env as _, MapObject, U32Val},
-    ConversionError, Env, IntoVal, TryFromVal, TryIntoVal, Val, Vec,
+    ConversionError, Env, IntoVal, SpecAnchor, TryFromVal, TryIntoVal, Val, Vec,
 };
 
 #[cfg(not(target_family = "wasm"))]
@@ -175,13 +175,15 @@ where
 
 impl<K, V> TryFromVal<Env, MapObject> for Map<K, V>
 where
-    K: IntoVal<Env, Val> + TryFromVal<Env, Val>,
-    V: IntoVal<Env, Val> + TryFromVal<Env, Val>,
+    K: IntoVal<Env, Val> + TryFromVal<Env, Val> + SpecAnchor,
+    V: IntoVal<Env, Val> + TryFromVal<Env, Val> + SpecAnchor,
 {
     type Error = Infallible;
 
     #[inline(always)]
     fn try_from_val(env: &Env, obj: &MapObject) -> Result<Self, Self::Error> {
+        K::spec_anchor();
+        V::spec_anchor();
         Ok(Map {
             env: env.clone(),
             obj: *obj,
@@ -193,8 +195,8 @@ where
 
 impl<K, V> TryFromVal<Env, Val> for Map<K, V>
 where
-    K: IntoVal<Env, Val> + TryFromVal<Env, Val>,
-    V: IntoVal<Env, Val> + TryFromVal<Env, Val>,
+    K: IntoVal<Env, Val> + TryFromVal<Env, Val> + SpecAnchor,
+    V: IntoVal<Env, Val> + TryFromVal<Env, Val> + SpecAnchor,
 {
     type Error = ConversionError;
 
@@ -207,24 +209,28 @@ where
 
 impl<K, V> TryFromVal<Env, Map<K, V>> for Val
 where
-    K: IntoVal<Env, Val> + TryFromVal<Env, Val>,
-    V: IntoVal<Env, Val> + TryFromVal<Env, Val>,
+    K: IntoVal<Env, Val> + TryFromVal<Env, Val> + SpecAnchor,
+    V: IntoVal<Env, Val> + TryFromVal<Env, Val> + SpecAnchor,
 {
     type Error = Infallible;
 
     fn try_from_val(_env: &Env, v: &Map<K, V>) -> Result<Self, Self::Error> {
+        K::spec_anchor();
+        V::spec_anchor();
         Ok(v.to_val())
     }
 }
 
 impl<K, V> TryFromVal<Env, &Map<K, V>> for Val
 where
-    K: IntoVal<Env, Val> + TryFromVal<Env, Val>,
-    V: IntoVal<Env, Val> + TryFromVal<Env, Val>,
+    K: IntoVal<Env, Val> + TryFromVal<Env, Val> + SpecAnchor,
+    V: IntoVal<Env, Val> + TryFromVal<Env, Val> + SpecAnchor,
 {
     type Error = Infallible;
 
     fn try_from_val(_env: &Env, v: &&Map<K, V>) -> Result<Self, Self::Error> {
+        K::spec_anchor();
+        V::spec_anchor();
         Ok(v.to_val())
     }
 }
@@ -270,8 +276,8 @@ impl<K, V> TryFromVal<Env, Map<K, V>> for ScVal {
 #[cfg(not(target_family = "wasm"))]
 impl<K, V> TryFromVal<Env, ScVal> for Map<K, V>
 where
-    K: IntoVal<Env, Val> + TryFromVal<Env, Val>,
-    V: IntoVal<Env, Val> + TryFromVal<Env, Val>,
+    K: IntoVal<Env, Val> + TryFromVal<Env, Val> + SpecAnchor,
+    V: IntoVal<Env, Val> + TryFromVal<Env, Val> + SpecAnchor,
 {
     type Error = ConversionError;
     fn try_from_val(env: &Env, val: &ScVal) -> Result<Self, Self::Error> {
@@ -457,7 +463,7 @@ where
     pub fn keys(&self) -> Vec<K> {
         let env = self.env();
         let vec = env.map_keys(self.obj).unwrap_infallible();
-        Vec::<K>::try_from_val(env, &vec).unwrap()
+        unsafe { Vec::<K>::unchecked_new(env.clone(), vec) }
     }
 
     /// Returns a [Vec] of all values in the map, ordered in the map's key-sorted order.
@@ -469,7 +475,7 @@ where
     pub fn values(&self) -> Vec<V> {
         let env = self.env();
         let vec = env.map_values(self.obj).unwrap_infallible();
-        Vec::<V>::try_from_val(env, &vec).unwrap()
+        unsafe { Vec::<V>::unchecked_new(env.clone(), vec) }
     }
 }
 

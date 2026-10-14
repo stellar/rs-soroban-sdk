@@ -569,14 +569,14 @@ mod objects {
 
     impl<T> SorobanArbitrary for Vec<T>
     where
-        T: SorobanArbitrary,
+        T: SorobanArbitrary + crate::SpecAnchor,
     {
         type Prototype = ArbitraryVec<T::Prototype>;
     }
 
     impl<T, P> TryFromVal<Env, ArbitraryVec<P>> for Vec<T>
     where
-        T: SorobanArbitrary + TryFromVal<Env, P>,
+        T: SorobanArbitrary + TryFromVal<Env, P> + crate::SpecAnchor,
     {
         type Error = ConversionError;
         fn try_from_val(env: &Env, v: &ArbitraryVec<P>) -> Result<Self, Self::Error> {
@@ -632,16 +632,16 @@ mod objects {
 
     impl<K, V> SorobanArbitrary for Map<K, V>
     where
-        K: SorobanArbitrary,
-        V: SorobanArbitrary,
+        K: SorobanArbitrary + crate::SpecAnchor,
+        V: SorobanArbitrary + crate::SpecAnchor,
     {
         type Prototype = ArbitraryMap<K::Prototype, V::Prototype>;
     }
 
     impl<K, V, KP, VP> TryFromVal<Env, ArbitraryMap<KP, VP>> for Map<K, V>
     where
-        K: SorobanArbitrary + TryFromVal<Env, KP>,
-        V: SorobanArbitrary + TryFromVal<Env, VP>,
+        K: SorobanArbitrary + TryFromVal<Env, KP> + crate::SpecAnchor,
+        V: SorobanArbitrary + TryFromVal<Env, VP> + crate::SpecAnchor,
     {
         type Error = ConversionError;
         fn try_from_val(env: &Env, v: &ArbitraryMap<KP, VP>) -> Result<Self, Self::Error> {

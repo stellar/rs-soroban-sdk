@@ -19,10 +19,9 @@ pub trait IntoValForContractFn {
 #[allow(deprecated)]
 impl<T> IntoValForContractFn for T
 where
-    T: IntoVal<Env, Val> + crate::SpecAnchor,
+    T: IntoVal<Env, Val>,
 {
     fn into_val_for_contract_fn(self, env: &Env) -> Val {
-        T::spec_anchor();
         self.into_val(env)
     }
 }

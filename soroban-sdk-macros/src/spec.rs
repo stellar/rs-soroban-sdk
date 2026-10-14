@@ -205,23 +205,6 @@ pub fn spec_anchor_impl(
     }
 }
 
-/// Renders a call to the `SpecAnchor` of each of the field types of a type or
-/// event, for its generated conversions to call.
-///
-/// The conversions of a `Vec` or `Map` field do not convert its elements, so
-/// without these calls the spec entry of a type used only as an element of a
-/// field can be left out of a contract built without LTO. The anchor of a
-/// `Vec` or `Map` calls the anchors of its element types.
-pub fn spec_anchor_field_calls<'a>(
-    path: &Path,
-    field_types: impl IntoIterator<Item = &'a Type>,
-) -> TokenStream2 {
-    let field_types = field_types.into_iter();
-    quote! {
-        #(<#field_types as #path::SpecAnchor>::spec_anchor();)*
-    }
-}
-
 #[cfg(test)]
 mod test {
     use super::*;

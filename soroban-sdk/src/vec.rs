@@ -15,7 +15,7 @@ use crate::{
 
 use super::{
     env::internal::{Env as _, EnvBase as _, VecObject},
-    ConversionError, Env, IntoVal, TryFromVal, TryIntoVal, Val,
+    ConversionError, Env, IntoVal, SpecAnchor, TryFromVal, TryIntoVal, Val,
 };
 
 #[cfg(doc)]
@@ -178,19 +178,20 @@ impl<T> TryFromVal<Env, &Vec<Val>> for Vec<T> {
 
 impl<T> TryFromVal<Env, VecObject> for Vec<T>
 where
-    T: IntoVal<Env, Val> + TryFromVal<Env, Val>,
+    T: IntoVal<Env, Val> + TryFromVal<Env, Val> + SpecAnchor,
 {
     type Error = Infallible;
 
     #[inline(always)]
     fn try_from_val(env: &Env, obj: &VecObject) -> Result<Self, Self::Error> {
+        T::spec_anchor();
         Ok(unsafe { Vec::<T>::unchecked_new(env.clone(), *obj) })
     }
 }
 
 impl<T> TryFromVal<Env, Val> for Vec<T>
 where
-    T: IntoVal<Env, Val> + TryFromVal<Env, Val>,
+    T: IntoVal<Env, Val> + TryFromVal<Env, Val> + SpecAnchor,
 {
     type Error = ConversionError;
 
@@ -202,18 +203,20 @@ where
     }
 }
 
-impl<T> TryFromVal<Env, Vec<T>> for Val {
+impl<T: SpecAnchor> TryFromVal<Env, Vec<T>> for Val {
     type Error = ConversionError;
 
     fn try_from_val(_env: &Env, v: &Vec<T>) -> Result<Self, Self::Error> {
+        T::spec_anchor();
         Ok(v.to_val())
     }
 }
 
-impl<T> TryFromVal<Env, &Vec<T>> for Val {
+impl<T: SpecAnchor> TryFromVal<Env, &Vec<T>> for Val {
     type Error = ConversionError;
 
     fn try_from_val(_env: &Env, v: &&Vec<T>) -> Result<Self, Self::Error> {
+        T::spec_anchor();
         Ok(v.to_val())
     }
 }
@@ -288,7 +291,7 @@ impl<T> From<Vec<T>> for ScVec {
 #[cfg(not(target_family = "wasm"))]
 impl<T> TryFromVal<Env, ScVal> for Vec<T>
 where
-    T: IntoVal<Env, Val> + TryFromVal<Env, Val>,
+    T: IntoVal<Env, Val> + TryFromVal<Env, Val> + SpecAnchor,
 {
     type Error = ConversionError;
     fn try_from_val(env: &Env, val: &ScVal) -> Result<Self, ConversionError> {
@@ -301,7 +304,7 @@ where
 #[cfg(not(target_family = "wasm"))]
 impl<T> TryFromVal<Env, ScVec> for Vec<T>
 where
-    T: IntoVal<Env, Val> + TryFromVal<Env, Val>,
+    T: IntoVal<Env, Val> + TryFromVal<Env, Val> + SpecAnchor,
 {
     type Error = ConversionError;
     fn try_from_val(env: &Env, val: &ScVec) -> Result<Self, Self::Error> {
@@ -312,7 +315,7 @@ where
 #[cfg(not(target_family = "wasm"))]
 impl<T> TryFromVal<Env, VecM<ScVal>> for Vec<T>
 where
-    T: IntoVal<Env, Val> + TryFromVal<Env, Val>,
+    T: IntoVal<Env, Val> + TryFromVal<Env, Val> + SpecAnchor,
 {
     type Error = ConversionError;
     fn try_from_val(env: &Env, val: &VecM<ScVal>) -> Result<Self, Self::Error> {
@@ -911,7 +914,7 @@ where
 
 impl<T> Vec<Vec<T>>
 where
-    T: IntoVal<Env, Val> + TryFromVal<Env, Val>,
+    T: IntoVal<Env, Val> + TryFromVal<Env, Val> + SpecAnchor,
     T: Clone,
 {
     #[inline(always)]

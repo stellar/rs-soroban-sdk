@@ -18,12 +18,11 @@
 //! A type used only as the element of a [`Vec`] or the key or value of a
 //! [`Map`] has no conversion of its own called when the collection is
 //! converted, because the collection's conversions do not convert its elements.
-//! So the conversions generated for contract functions, and for the fields of
-//! types and events, also call the anchor of each type they convert, and the
-//! anchors of [`Vec`], [`Map`] and the other types that contain types call the
-//! anchors of the types they contain. The anchor of a user-defined type does not
-//! call the anchors of its fields' types, so a type that contains itself, such
-//! as through a `Vec` field, does not recurse.
+//! So the conversions of [`Vec`] and [`Map`] call the anchors of their element
+//! types, and the anchors of [`Vec`], [`Map`] and the other types generic over
+//! the types they contain call the anchors of those types. The anchor of a
+//! user-defined type calls nothing, so a type that contains itself, such as
+//! through a `Vec` field, does not recurse.
 //!
 //! The fn is on a trait, rather than an inherent fn, so that it cannot clash
 //! with an inherent fn of the same name on the type.
@@ -44,7 +43,8 @@ use crate::{
 /// This trait is used internally by the SDK, and types with
 /// `#[contracttype]`, `#[contracterror]` or `#[contractevent]` implement it.
 /// Every other type that can be used in a contract spec implements it too,
-/// either as a no-op or by calling the anchors of the types it contains.
+/// either as a no-op or by calling the anchors of the types it is generic
+/// over. [`Vec`] and [`Map`] require it of their element types.
 #[doc(hidden)]
 pub trait SpecAnchor {
     /// Reference a symbol in the crate that defines the type, error or event,
