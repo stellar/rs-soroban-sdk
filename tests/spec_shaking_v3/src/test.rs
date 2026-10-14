@@ -5,7 +5,7 @@ use std::vec::Vec;
 use stellar_xdr::ScSpecEntry;
 
 // This test and the contract are shared by test_spec_shaking_v2, built with
-// soroban-sdk 28.0.0, and test_spec_shaking_v3, built with the SDK in this repo.
+// soroban-sdk 29.0.1, and test_spec_shaking_v3, built with the SDK in this repo.
 const WASM: &[u8] = include_bytes!(concat!(
     "../../../target/wasm32v1-none/release/",
     env!("CARGO_PKG_NAME"),
@@ -21,12 +21,12 @@ fn test_spec_shaking() {
     let markers = soroban_spec::shaking::find_all(WASM);
 
     // The SDK that built the contract is what selects the shaking model, so
-    // read it rather than assuming one. Built by soroban-sdk 28.0.0 the contract
+    // read it rather than assuming one. Built by soroban-sdk 29.0.1 the contract
     // records spec shaking version 2, where every used entry carries a marker.
     // Built by the SDK in this repo it records its version, from which only its
     // events and panicked-with errors carry markers, and every other type is
     // settled by reachability. Either way the same entries survive, except
-    // events published with publish_event, which soroban-sdk 28.0.0 does not
+    // events published with publish_event, which soroban-sdk 29.0.1 does not
     // mark.
     let meta = soroban_meta::read::from_wasm(WASM).unwrap();
     let model = soroban_spec::shaking::model_for_meta(&meta);
@@ -176,7 +176,7 @@ fn test_spec_shaking() {
     }
 
     // Events published with Events::publish_event or the Event trait's publish
-    // fn, and the types they reference. soroban-sdk 28.0.0 does not mark events
+    // fn, and the types they reference. soroban-sdk 29.0.1 does not mark events
     // published this way, so they survive shaking only when the contract is
     // built by the SDK in this repo.
     let used_via_publish_event = [
@@ -191,7 +191,7 @@ fn test_spec_shaking() {
         match model {
             soroban_spec::shaking::Model::Markers => assert!(
                 !filtered_names.contains(name),
-                "type/event {name} published via publish_event should be absent from filtered entries of a soroban-sdk 28.0.0 wasm, but was found"
+                "type/event {name} published via publish_event should be absent from filtered entries of a soroban-sdk 29.0.1 wasm, but was found"
             ),
             _ => assert!(
                 filtered_names.contains(name),

@@ -2477,8 +2477,16 @@ impl Contract {
     }
 }
 impl<'a> ContractClient<'a> {
+    /// Call `test_u32` function on the contract.
+    ///
     /// Test u32 values.
     /// Returns the input unchanged.
+    ///
+    /// # Panics
+    ///
+    /// Panics if the invoked contract returns an error or panics.
+    ///
+    /// Use [`Self::try_test_u32`] to receive errors instead of panicking.
     pub fn test_u32(
         &self,
         v: &<Contract as __Contract__AllTypes__test_u32__arg_0>::u32,
@@ -2496,8 +2504,14 @@ impl<'a> ContractClient<'a> {
         );
         res
     }
+    /// Call `test_u32` function on the contract.
+    ///
     /// Test u32 values.
     /// Returns the input unchanged.
+    ///
+    /// # Errors
+    ///
+    /// Returns an error if the invoked contract returns an error or panics. A panic in the invoked contract is caught and returned as an error rather than panicking the caller.
     pub fn try_test_u32(
         &self,
         v: &<Contract as __Contract__AllTypes__test_u32__arg_0>::u32,
@@ -2524,7 +2538,15 @@ impl<'a> ContractClient<'a> {
         );
         res
     }
+    /// Call `test_i32` function on the contract.
+    ///
     /// Test i32 values.
+    ///
+    /// # Panics
+    ///
+    /// Panics if the invoked contract returns an error or panics.
+    ///
+    /// Use [`Self::try_test_i32`] to receive errors instead of panicking.
     pub fn test_i32(
         &self,
         v: &<Contract as __Contract__AllTypes__test_i32__arg_0>::i32,
@@ -2542,7 +2564,13 @@ impl<'a> ContractClient<'a> {
         );
         res
     }
+    /// Call `test_i32` function on the contract.
+    ///
     /// Test i32 values.
+    ///
+    /// # Errors
+    ///
+    /// Returns an error if the invoked contract returns an error or panics. A panic in the invoked contract is caught and returned as an error rather than panicking the caller.
     pub fn try_test_i32(
         &self,
         v: &<Contract as __Contract__AllTypes__test_i32__arg_0>::i32,
@@ -2569,6 +2597,13 @@ impl<'a> ContractClient<'a> {
         );
         res
     }
+    /// Call `test_u64` function on the contract.
+    ///
+    /// # Panics
+    ///
+    /// Panics if the invoked contract returns an error or panics.
+    ///
+    /// Use [`Self::try_test_u64`] to receive errors instead of panicking.
     pub fn test_u64(
         &self,
         v: &<Contract as __Contract__AllTypes__test_u64__arg_0>::u64,
@@ -2586,6 +2621,11 @@ impl<'a> ContractClient<'a> {
         );
         res
     }
+    /// Call `test_u64` function on the contract.
+    ///
+    /// # Errors
+    ///
+    /// Returns an error if the invoked contract returns an error or panics. A panic in the invoked contract is caught and returned as an error rather than panicking the caller.
     pub fn try_test_u64(
         &self,
         v: &<Contract as __Contract__AllTypes__test_u64__arg_0>::u64,
@@ -2612,6 +2652,13 @@ impl<'a> ContractClient<'a> {
         );
         res
     }
+    /// Call `test_i64` function on the contract.
+    ///
+    /// # Panics
+    ///
+    /// Panics if the invoked contract returns an error or panics.
+    ///
+    /// Use [`Self::try_test_i64`] to receive errors instead of panicking.
     pub fn test_i64(
         &self,
         v: &<Contract as __Contract__AllTypes__test_i64__arg_0>::i64,
@@ -2629,6 +2676,11 @@ impl<'a> ContractClient<'a> {
         );
         res
     }
+    /// Call `test_i64` function on the contract.
+    ///
+    /// # Errors
+    ///
+    /// Returns an error if the invoked contract returns an error or panics. A panic in the invoked contract is caught and returned as an error rather than panicking the caller.
     pub fn try_test_i64(
         &self,
         v: &<Contract as __Contract__AllTypes__test_i64__arg_0>::i64,
@@ -2655,6 +2707,13 @@ impl<'a> ContractClient<'a> {
         );
         res
     }
+    /// Call `test_u128` function on the contract.
+    ///
+    /// # Panics
+    ///
+    /// Panics if the invoked contract returns an error or panics.
+    ///
+    /// Use [`Self::try_test_u128`] to receive errors instead of panicking.
     pub fn test_u128(
         &self,
         v: &<Contract as __Contract__AllTypes__test_u128__arg_0>::u128,
@@ -2672,6 +2731,11 @@ impl<'a> ContractClient<'a> {
         );
         res
     }
+    /// Call `test_u128` function on the contract.
+    ///
+    /// # Errors
+    ///
+    /// Returns an error if the invoked contract returns an error or panics. A panic in the invoked contract is caught and returned as an error rather than panicking the caller.
     pub fn try_test_u128(
         &self,
         v: &<Contract as __Contract__AllTypes__test_u128__arg_0>::u128,
@@ -2698,6 +2762,13 @@ impl<'a> ContractClient<'a> {
         );
         res
     }
+    /// Call `test_i128` function on the contract.
+    ///
+    /// # Panics
+    ///
+    /// Panics if the invoked contract returns an error or panics.
+    ///
+    /// Use [`Self::try_test_i128`] to receive errors instead of panicking.
     pub fn test_i128(
         &self,
         v: &<Contract as __Contract__AllTypes__test_i128__arg_0>::i128,
@@ -2715,6 +2786,11 @@ impl<'a> ContractClient<'a> {
         );
         res
     }
+    /// Call `test_i128` function on the contract.
+    ///
+    /// # Errors
+    ///
+    /// Returns an error if the invoked contract returns an error or panics. A panic in the invoked contract is caught and returned as an error rather than panicking the caller.
     pub fn try_test_i128(
         &self,
         v: &<Contract as __Contract__AllTypes__test_i128__arg_0>::i128,
@@ -2741,6 +2817,13 @@ impl<'a> ContractClient<'a> {
         );
         res
     }
+    /// Call `test_bool` function on the contract.
+    ///
+    /// # Panics
+    ///
+    /// Panics if the invoked contract returns an error or panics.
+    ///
+    /// Use [`Self::try_test_bool`] to receive errors instead of panicking.
     pub fn test_bool(
         &self,
         v: &<Contract as __Contract__AllTypes__test_bool__arg_0>::bool,
@@ -2758,6 +2841,11 @@ impl<'a> ContractClient<'a> {
         );
         res
     }
+    /// Call `test_bool` function on the contract.
+    ///
+    /// # Errors
+    ///
+    /// Returns an error if the invoked contract returns an error or panics. A panic in the invoked contract is caught and returned as an error rather than panicking the caller.
     pub fn try_test_bool(
         &self,
         v: &<Contract as __Contract__AllTypes__test_bool__arg_0>::bool,
@@ -2784,6 +2872,13 @@ impl<'a> ContractClient<'a> {
         );
         res
     }
+    /// Call `test_address` function on the contract.
+    ///
+    /// # Panics
+    ///
+    /// Panics if the invoked contract returns an error or panics.
+    ///
+    /// Use [`Self::try_test_address`] to receive errors instead of panicking.
     pub fn test_address(
         &self,
         v: &<Contract as __Contract__AllTypes__test_address__arg_0>::Address,
@@ -2797,6 +2892,11 @@ impl<'a> ContractClient<'a> {
         );
         res
     }
+    /// Call `test_address` function on the contract.
+    ///
+    /// # Errors
+    ///
+    /// Returns an error if the invoked contract returns an error or panics. A panic in the invoked contract is caught and returned as an error rather than panicking the caller.
     pub fn try_test_address(
         &self,
         v: &<Contract as __Contract__AllTypes__test_address__arg_0>::Address,
@@ -2819,6 +2919,13 @@ impl<'a> ContractClient<'a> {
         );
         res
     }
+    /// Call `test_bytes` function on the contract.
+    ///
+    /// # Panics
+    ///
+    /// Panics if the invoked contract returns an error or panics.
+    ///
+    /// Use [`Self::try_test_bytes`] to receive errors instead of panicking.
     pub fn test_bytes(
         &self,
         v: &<Contract as __Contract__AllTypes__test_bytes__arg_0>::Bytes,
@@ -2832,6 +2939,11 @@ impl<'a> ContractClient<'a> {
         );
         res
     }
+    /// Call `test_bytes` function on the contract.
+    ///
+    /// # Errors
+    ///
+    /// Returns an error if the invoked contract returns an error or panics. A panic in the invoked contract is caught and returned as an error rather than panicking the caller.
     pub fn try_test_bytes(
         &self,
         v: &<Contract as __Contract__AllTypes__test_bytes__arg_0>::Bytes,
@@ -2854,6 +2966,13 @@ impl<'a> ContractClient<'a> {
         );
         res
     }
+    /// Call `test_bytes_n` function on the contract.
+    ///
+    /// # Panics
+    ///
+    /// Panics if the invoked contract returns an error or panics.
+    ///
+    /// Use [`Self::try_test_bytes_n`] to receive errors instead of panicking.
     pub fn test_bytes_n(
         &self,
         v: &<Contract as __Contract__AllTypes__test_bytes_n__arg_0>::BytesN,
@@ -2867,6 +2986,11 @@ impl<'a> ContractClient<'a> {
         );
         res
     }
+    /// Call `test_bytes_n` function on the contract.
+    ///
+    /// # Errors
+    ///
+    /// Returns an error if the invoked contract returns an error or panics. A panic in the invoked contract is caught and returned as an error rather than panicking the caller.
     pub fn try_test_bytes_n(
         &self,
         v: &<Contract as __Contract__AllTypes__test_bytes_n__arg_0>::BytesN,
@@ -2889,6 +3013,13 @@ impl<'a> ContractClient<'a> {
         );
         res
     }
+    /// Call `test_string` function on the contract.
+    ///
+    /// # Panics
+    ///
+    /// Panics if the invoked contract returns an error or panics.
+    ///
+    /// Use [`Self::try_test_string`] to receive errors instead of panicking.
     pub fn test_string(
         &self,
         v: &<Contract as __Contract__AllTypes__test_string__arg_0>::String,
@@ -2902,6 +3033,11 @@ impl<'a> ContractClient<'a> {
         );
         res
     }
+    /// Call `test_string` function on the contract.
+    ///
+    /// # Errors
+    ///
+    /// Returns an error if the invoked contract returns an error or panics. A panic in the invoked contract is caught and returned as an error rather than panicking the caller.
     pub fn try_test_string(
         &self,
         v: &<Contract as __Contract__AllTypes__test_string__arg_0>::String,
@@ -2924,6 +3060,13 @@ impl<'a> ContractClient<'a> {
         );
         res
     }
+    /// Call `test_symbol` function on the contract.
+    ///
+    /// # Panics
+    ///
+    /// Panics if the invoked contract returns an error or panics.
+    ///
+    /// Use [`Self::try_test_symbol`] to receive errors instead of panicking.
     pub fn test_symbol(
         &self,
         v: &<Contract as __Contract__AllTypes__test_symbol__arg_0>::Symbol,
@@ -2937,6 +3080,11 @@ impl<'a> ContractClient<'a> {
         );
         res
     }
+    /// Call `test_symbol` function on the contract.
+    ///
+    /// # Errors
+    ///
+    /// Returns an error if the invoked contract returns an error or panics. A panic in the invoked contract is caught and returned as an error rather than panicking the caller.
     pub fn try_test_symbol(
         &self,
         v: &<Contract as __Contract__AllTypes__test_symbol__arg_0>::Symbol,
@@ -2959,6 +3107,13 @@ impl<'a> ContractClient<'a> {
         );
         res
     }
+    /// Call `test_vec` function on the contract.
+    ///
+    /// # Panics
+    ///
+    /// Panics if the invoked contract returns an error or panics.
+    ///
+    /// Use [`Self::try_test_vec`] to receive errors instead of panicking.
     pub fn test_vec(
         &self,
         v: &<Contract as __Contract__AllTypes__test_vec__arg_0>::Vec,
@@ -2976,6 +3131,11 @@ impl<'a> ContractClient<'a> {
         );
         res
     }
+    /// Call `test_vec` function on the contract.
+    ///
+    /// # Errors
+    ///
+    /// Returns an error if the invoked contract returns an error or panics. A panic in the invoked contract is caught and returned as an error rather than panicking the caller.
     pub fn try_test_vec(
         &self,
         v: &<Contract as __Contract__AllTypes__test_vec__arg_0>::Vec,
@@ -3002,6 +3162,13 @@ impl<'a> ContractClient<'a> {
         );
         res
     }
+    /// Call `test_map` function on the contract.
+    ///
+    /// # Panics
+    ///
+    /// Panics if the invoked contract returns an error or panics.
+    ///
+    /// Use [`Self::try_test_map`] to receive errors instead of panicking.
     pub fn test_map(
         &self,
         v: &<Contract as __Contract__AllTypes__test_map__arg_0>::Map,
@@ -3019,6 +3186,11 @@ impl<'a> ContractClient<'a> {
         );
         res
     }
+    /// Call `test_map` function on the contract.
+    ///
+    /// # Errors
+    ///
+    /// Returns an error if the invoked contract returns an error or panics. A panic in the invoked contract is caught and returned as an error rather than panicking the caller.
     pub fn try_test_map(
         &self,
         v: &<Contract as __Contract__AllTypes__test_map__arg_0>::Map,
@@ -3045,6 +3217,13 @@ impl<'a> ContractClient<'a> {
         );
         res
     }
+    /// Call `test_duration` function on the contract.
+    ///
+    /// # Panics
+    ///
+    /// Panics if the invoked contract returns an error or panics.
+    ///
+    /// Use [`Self::try_test_duration`] to receive errors instead of panicking.
     pub fn test_duration(
         &self,
         v: &<Contract as __Contract__AllTypes__test_duration__arg_0>::Duration,
@@ -3058,6 +3237,11 @@ impl<'a> ContractClient<'a> {
         );
         res
     }
+    /// Call `test_duration` function on the contract.
+    ///
+    /// # Errors
+    ///
+    /// Returns an error if the invoked contract returns an error or panics. A panic in the invoked contract is caught and returned as an error rather than panicking the caller.
     pub fn try_test_duration(
         &self,
         v: &<Contract as __Contract__AllTypes__test_duration__arg_0>::Duration,
@@ -3080,6 +3264,13 @@ impl<'a> ContractClient<'a> {
         );
         res
     }
+    /// Call `test_timepoint` function on the contract.
+    ///
+    /// # Panics
+    ///
+    /// Panics if the invoked contract returns an error or panics.
+    ///
+    /// Use [`Self::try_test_timepoint`] to receive errors instead of panicking.
     pub fn test_timepoint(
         &self,
         v: &<Contract as __Contract__AllTypes__test_timepoint__arg_0>::Timepoint,
@@ -3093,6 +3284,11 @@ impl<'a> ContractClient<'a> {
         );
         res
     }
+    /// Call `test_timepoint` function on the contract.
+    ///
+    /// # Errors
+    ///
+    /// Returns an error if the invoked contract returns an error or panics. A panic in the invoked contract is caught and returned as an error rather than panicking the caller.
     pub fn try_test_timepoint(
         &self,
         v: &<Contract as __Contract__AllTypes__test_timepoint__arg_0>::Timepoint,
@@ -3115,6 +3311,13 @@ impl<'a> ContractClient<'a> {
         );
         res
     }
+    /// Call `test_i256` function on the contract.
+    ///
+    /// # Panics
+    ///
+    /// Panics if the invoked contract returns an error or panics.
+    ///
+    /// Use [`Self::try_test_i256`] to receive errors instead of panicking.
     pub fn test_i256(
         &self,
         v: &<Contract as __Contract__AllTypes__test_i256__arg_0>::I256,
@@ -3132,6 +3335,11 @@ impl<'a> ContractClient<'a> {
         );
         res
     }
+    /// Call `test_i256` function on the contract.
+    ///
+    /// # Errors
+    ///
+    /// Returns an error if the invoked contract returns an error or panics. A panic in the invoked contract is caught and returned as an error rather than panicking the caller.
     pub fn try_test_i256(
         &self,
         v: &<Contract as __Contract__AllTypes__test_i256__arg_0>::I256,
@@ -3158,6 +3366,13 @@ impl<'a> ContractClient<'a> {
         );
         res
     }
+    /// Call `test_u256` function on the contract.
+    ///
+    /// # Panics
+    ///
+    /// Panics if the invoked contract returns an error or panics.
+    ///
+    /// Use [`Self::try_test_u256`] to receive errors instead of panicking.
     pub fn test_u256(
         &self,
         v: &<Contract as __Contract__AllTypes__test_u256__arg_0>::U256,
@@ -3175,6 +3390,11 @@ impl<'a> ContractClient<'a> {
         );
         res
     }
+    /// Call `test_u256` function on the contract.
+    ///
+    /// # Errors
+    ///
+    /// Returns an error if the invoked contract returns an error or panics. A panic in the invoked contract is caught and returned as an error rather than panicking the caller.
     pub fn try_test_u256(
         &self,
         v: &<Contract as __Contract__AllTypes__test_u256__arg_0>::U256,
@@ -3201,6 +3421,13 @@ impl<'a> ContractClient<'a> {
         );
         res
     }
+    /// Call `test_env_param` function on the contract.
+    ///
+    /// # Panics
+    ///
+    /// Panics if the invoked contract returns an error or panics.
+    ///
+    /// Use [`Self::try_test_env_param`] to receive errors instead of panicking.
     pub fn test_env_param(&self) -> <Contract as __Contract__AllTypes__test_env_param__ret>::u32 {
         let _call_scope = soroban_sdk::testutils::ClientCallScope::enter(&self.env, self.config);
         use soroban_sdk::{FromVal, IntoVal};
@@ -3211,6 +3438,11 @@ impl<'a> ContractClient<'a> {
         );
         res
     }
+    /// Call `test_env_param` function on the contract.
+    ///
+    /// # Errors
+    ///
+    /// Returns an error if the invoked contract returns an error or panics. A panic in the invoked contract is caught and returned as an error rather than panicking the caller.
     pub fn try_test_env_param(
         &self,
     ) -> Result<
@@ -3232,6 +3464,13 @@ impl<'a> ContractClient<'a> {
         );
         res
     }
+    /// Call `test_struct` function on the contract.
+    ///
+    /// # Panics
+    ///
+    /// Panics if the invoked contract returns an error or panics.
+    ///
+    /// Use [`Self::try_test_struct`] to receive errors instead of panicking.
     pub fn test_struct(
         &self,
         v: &<Contract as __Contract__AllTypes__test_struct__arg_0>::MyStruct,
@@ -3245,6 +3484,11 @@ impl<'a> ContractClient<'a> {
         );
         res
     }
+    /// Call `test_struct` function on the contract.
+    ///
+    /// # Errors
+    ///
+    /// Returns an error if the invoked contract returns an error or panics. A panic in the invoked contract is caught and returned as an error rather than panicking the caller.
     pub fn try_test_struct(
         &self,
         v: &<Contract as __Contract__AllTypes__test_struct__arg_0>::MyStruct,
@@ -3267,6 +3511,13 @@ impl<'a> ContractClient<'a> {
         );
         res
     }
+    /// Call `test_enum_unit` function on the contract.
+    ///
+    /// # Panics
+    ///
+    /// Panics if the invoked contract returns an error or panics.
+    ///
+    /// Use [`Self::try_test_enum_unit`] to receive errors instead of panicking.
     pub fn test_enum_unit(
         &self,
         v: &<Contract as __Contract__AllTypes__test_enum_unit__arg_0>::MyEnumUnit,
@@ -3280,6 +3531,11 @@ impl<'a> ContractClient<'a> {
         );
         res
     }
+    /// Call `test_enum_unit` function on the contract.
+    ///
+    /// # Errors
+    ///
+    /// Returns an error if the invoked contract returns an error or panics. A panic in the invoked contract is caught and returned as an error rather than panicking the caller.
     pub fn try_test_enum_unit(
         &self,
         v: &<Contract as __Contract__AllTypes__test_enum_unit__arg_0>::MyEnumUnit,
@@ -3302,6 +3558,13 @@ impl<'a> ContractClient<'a> {
         );
         res
     }
+    /// Call `test_enum_variants` function on the contract.
+    ///
+    /// # Panics
+    ///
+    /// Panics if the invoked contract returns an error or panics.
+    ///
+    /// Use [`Self::try_test_enum_variants`] to receive errors instead of panicking.
     pub fn test_enum_variants(
         &self,
         v: &<Contract as __Contract__AllTypes__test_enum_variants__arg_0>::MyEnumVariants,
@@ -3315,6 +3578,11 @@ impl<'a> ContractClient<'a> {
         );
         res
     }
+    /// Call `test_enum_variants` function on the contract.
+    ///
+    /// # Errors
+    ///
+    /// Returns an error if the invoked contract returns an error or panics. A panic in the invoked contract is caught and returned as an error rather than panicking the caller.
     pub fn try_test_enum_variants(
         &self,
         v: &<Contract as __Contract__AllTypes__test_enum_variants__arg_0>::MyEnumVariants,

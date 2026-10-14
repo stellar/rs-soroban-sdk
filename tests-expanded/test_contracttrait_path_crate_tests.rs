@@ -99,6 +99,13 @@ pub mod traits {
         }
     }
     impl<'a> CratePathTraitClient<'a> {
+        /// Call `crate_path_method` function on the contract.
+        ///
+        /// # Panics
+        ///
+        /// Panics if the invoked contract returns an error or panics.
+        ///
+        /// Use [`Self::try_crate_path_method`] to receive errors instead of panicking.
         pub fn crate_path_method(&self) -> u32 {
             let _call_scope =
                 soroban_sdk::testutils::ClientCallScope::enter(&self.env, self.config);
@@ -110,6 +117,11 @@ pub mod traits {
             );
             res
         }
+        /// Call `crate_path_method` function on the contract.
+        ///
+        /// # Errors
+        ///
+        /// Returns an error if the invoked contract returns an error or panics. A panic in the invoked contract is caught and returned as an error rather than panicking the caller.
         pub fn try_crate_path_method(
             &self,
         ) -> Result<
@@ -375,6 +387,13 @@ impl ContractCratePath {
     }
 }
 impl<'a> ContractCratePathClient<'a> {
+    /// Call `crate_path_method` function on the contract.
+    ///
+    /// # Panics
+    ///
+    /// Panics if the invoked contract returns an error or panics.
+    ///
+    /// Use [`Self::try_crate_path_method`] to receive errors instead of panicking.
     pub fn crate_path_method(
         &self,
     ) -> <ContractCratePath as __ContractCratePath__crate_traits_CratePathTrait__crate_path_method__ret>::u32{
@@ -387,6 +406,11 @@ impl<'a> ContractCratePathClient<'a> {
         );
         res
     }
+    /// Call `crate_path_method` function on the contract.
+    ///
+    /// # Errors
+    ///
+    /// Returns an error if the invoked contract returns an error or panics. A panic in the invoked contract is caught and returned as an error rather than panicking the caller.
     pub fn try_crate_path_method(
         &self,
     ) -> Result<

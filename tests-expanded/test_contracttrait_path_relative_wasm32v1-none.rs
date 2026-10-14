@@ -43,6 +43,13 @@ pub mod traits {
         }
     }
     impl<'a> RelativePathTraitClient<'a> {
+        /// Call `relative_path_method` function on the contract.
+        ///
+        /// # Panics
+        ///
+        /// Panics if the invoked contract returns an error or panics.
+        ///
+        /// Use [`Self::try_relative_path_method`] to receive errors instead of panicking.
         pub fn relative_path_method(&self) -> u32 {
             use core::ops::Not;
             use soroban_sdk::{FromVal, IntoVal};
@@ -53,6 +60,11 @@ pub mod traits {
             );
             res
         }
+        /// Call `relative_path_method` function on the contract.
+        ///
+        /// # Errors
+        ///
+        /// Returns an error if the invoked contract returns an error or panics. A panic in the invoked contract is caught and returned as an error rather than panicking the caller.
         pub fn try_relative_path_method(
             &self,
         ) -> Result<
@@ -208,6 +220,13 @@ impl ContractRelativePath {
     }
 }
 impl<'a> ContractRelativePathClient<'a> {
+    /// Call `relative_path_method` function on the contract.
+    ///
+    /// # Panics
+    ///
+    /// Panics if the invoked contract returns an error or panics.
+    ///
+    /// Use [`Self::try_relative_path_method`] to receive errors instead of panicking.
     pub fn relative_path_method(
         &self,
     ) -> <ContractRelativePath as __ContractRelativePath__traits_RelativePathTrait__relative_path_method__ret>::u32{
@@ -220,6 +239,11 @@ impl<'a> ContractRelativePathClient<'a> {
         );
         res
     }
+    /// Call `relative_path_method` function on the contract.
+    ///
+    /// # Errors
+    ///
+    /// Returns an error if the invoked contract returns an error or panics. A panic in the invoked contract is caught and returned as an error rather than panicking the caller.
     pub fn try_relative_path_method(
         &self,
     ) -> Result<
