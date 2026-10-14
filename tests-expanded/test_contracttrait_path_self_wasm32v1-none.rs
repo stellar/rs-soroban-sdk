@@ -11,9 +11,11 @@ pub use __contractimpl_for_self_path_trait as SelfPathTrait;
 #[doc(hidden)]
 #[allow(non_camel_case_types)]
 pub trait __SelfPathTraitFnTypes {
+    type __self_path_method__arg_0;
     type __self_path_method__ret;
 }
 impl<T: SelfPathTrait + ?Sized> __SelfPathTraitFnTypes for T {
+    type __self_path_method__arg_0 = Env;
     type __self_path_method__ret = u32;
 }
 pub trait SelfPathTrait: __SelfPathTraitFnTypes {
@@ -120,11 +122,23 @@ impl<'a> ContractSelfPathClient<'a> {}
 impl ContractSelfPathArgs {}
 #[doc(hidden)]
 #[allow(non_camel_case_types)]
-pub trait __ContractSelfPath__self_SelfPathTrait__FnTypes {
-    type __self_path_method__ret;
+pub trait __ContractSelfPath__self_SelfPathTrait__self_path_method__arg_0 {
+    type Env;
 }
-impl<T: self::SelfPathTrait + ?Sized> __ContractSelfPath__self_SelfPathTrait__FnTypes for T {
-    type __self_path_method__ret = T::__self_path_method__ret;
+impl<T: self::SelfPathTrait + ?Sized>
+    __ContractSelfPath__self_SelfPathTrait__self_path_method__arg_0 for T
+{
+    type Env = T::__self_path_method__arg_0;
+}
+#[doc(hidden)]
+#[allow(non_camel_case_types)]
+pub trait __ContractSelfPath__self_SelfPathTrait__self_path_method__ret {
+    type u32;
+}
+impl<T: self::SelfPathTrait + ?Sized> __ContractSelfPath__self_SelfPathTrait__self_path_method__ret
+    for T
+{
+    type u32 = T::__self_path_method__ret;
 }
 #[doc(hidden)]
 #[allow(non_snake_case)]
@@ -173,7 +187,7 @@ impl ContractSelfPath {
         inputs: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[]),
         outputs: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(
             &[
-                <<ContractSelfPath as __ContractSelfPath__self_SelfPathTrait__FnTypes>::__self_path_method__ret as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
+                <<ContractSelfPath as __ContractSelfPath__self_SelfPathTrait__self_path_method__ret>::u32 as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
             ],
         ),
     });
@@ -186,7 +200,8 @@ impl ContractSelfPath {
 impl<'a> ContractSelfPathClient<'a> {
     pub fn self_path_method(
         &self,
-    ) -> <ContractSelfPath as __ContractSelfPath__self_SelfPathTrait__FnTypes>::__self_path_method__ret{
+    ) -> <ContractSelfPath as __ContractSelfPath__self_SelfPathTrait__self_path_method__ret>::u32
+    {
         use core::ops::Not;
         use soroban_sdk::{FromVal, IntoVal};
         let res = self.env.invoke_contract(
@@ -200,8 +215,8 @@ impl<'a> ContractSelfPathClient<'a> {
         &self,
     ) -> Result<
         Result<
-            <ContractSelfPath as __ContractSelfPath__self_SelfPathTrait__FnTypes>::__self_path_method__ret,
-            <<ContractSelfPath as __ContractSelfPath__self_SelfPathTrait__FnTypes>::__self_path_method__ret as soroban_sdk::TryFromVal<
+            <ContractSelfPath as __ContractSelfPath__self_SelfPathTrait__self_path_method__ret>::u32,
+            <<ContractSelfPath as __ContractSelfPath__self_SelfPathTrait__self_path_method__ret>::u32 as soroban_sdk::TryFromVal<
                 soroban_sdk::Env,
                 soroban_sdk::Val,
             >>::Error,

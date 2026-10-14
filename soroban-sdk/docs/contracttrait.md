@@ -150,32 +150,34 @@ The default function signatures are carried to the implementing crate as strings
 ```rust
 #[doc(hidden)]
 pub trait __PauseFnTypes {
+    type __f2__arg_0;
     type __f2__arg_1;
     type __f2__ret;
 }
 impl<T: Pause + ?Sized> __PauseFnTypes for T {
-    type __f2__arg_1 = Value; // resolved where the trait is defined
+    type __f2__arg_0 = Env;   // resolved where the trait is defined
+    type __f2__arg_1 = Value;
     type __f2__ret = u32;
 }
 pub trait Pause: __PauseFnTypes { ... }
 ```
 
-The `Env` input and a `MuxedAddress` input are not captured. A `Result` output has its ok and error types captured separately, as `__f2__ok` and `__f2__err`.
+A `Result` output has its ok and error types captured separately, as `__f2__ok` and `__f2__err`.
 
-The supertrait's associated types can only be named through the trait in a generic context, so Stage 5 generates a local trait implemented for every implementor of the trait that projects them, and rewrites the types in the signatures it uses for the specs, client methods, and args to name them through it:
+The supertrait's associated types can only be named through the trait in a generic context, so Stage 5 generates, for each type, a local trait implemented for every implementor of the trait that projects it, and rewrites the types in the signatures to name them through those traits. Each local trait's associated type keeps the name of the type it replaces, because the generated code recognizes some types by name, such as `Env` and `MuxedAddress`:
 
 ```rust
 #[doc(hidden)]
-pub trait __Contract__Pause__FnTypes {
-    type __f2__arg_1;
-    type __f2__ret;
+pub trait __Contract__Pause__f2__arg_1 {
+    type Value;
 }
-impl<T: Pause + ?Sized> __Contract__Pause__FnTypes for T {
-    type __f2__arg_1 = T::__f2__arg_1;
-    type __f2__ret = T::__f2__ret;
+impl<T: Pause + ?Sized> __Contract__Pause__f2__arg_1 for T {
+    type Value = T::__f2__arg_1;
 }
-// e.g. fn f2(env: Env, v: <Contract as __Contract__Pause__FnTypes>::__f2__arg_1) -> ...
+// e.g. fn f2(env: <Contract as __Contract__Pause__f2__arg_0>::Env, v: <Contract as __Contract__Pause__f2__arg_1>::Value) -> ...
 ```
+
+A type without a name, such as a tuple, is projected as `Type`.
 
 ## Why the `macro_rules!` Generated Helper Macro?
 

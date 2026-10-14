@@ -1,8 +1,9 @@
 use crate as soroban_sdk;
 use soroban_sdk::{
     contract, contracterror, contractimpl, contracttype,
+    testutils::Address as _,
     xdr::{Limits, ReadXdr, ScSpecEntry, ScSpecTypeDef},
-    Env,
+    Address, Env,
 };
 
 // The trait and the types its default fn names are defined in a module, and the
@@ -12,7 +13,7 @@ use soroban_sdk::{
 // implemented.
 mod inner {
     use crate as soroban_sdk;
-    use soroban_sdk::{contracterror, contracttrait, contracttype, Env};
+    use soroban_sdk::{contracterror, contracttrait, contracttype, Env, MuxedAddress};
 
     #[contracttype]
     #[derive(Copy, Clone, Debug, Eq, PartialEq)]
@@ -35,6 +36,12 @@ mod inner {
                 Value::A => Ok(Value::B),
                 Value::B => Err(Error::Failed),
             }
+        }
+
+        // MuxedAddress is not imported where the trait is implemented.
+        fn g(env: &Env, to: MuxedAddress) -> u64 {
+            let _ = env;
+            to.id().unwrap_or_default()
         }
     }
 }
@@ -70,6 +77,15 @@ fn test_client_uses_trait_types() {
         client.try_f(&inner::Value::B),
         Err(Ok(inner::Error::Failed))
     );
+}
+
+#[test]
+fn test_client_accepts_into_muxed_address() {
+    let e = Env::default();
+    let contract_id = e.register(Contract, ());
+    let client = ContractClient::new(&e, &contract_id);
+
+    assert_eq!(client.g(&Address::generate(&e)), 0);
 }
 
 #[test]

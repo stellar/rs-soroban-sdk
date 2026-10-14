@@ -10,7 +10,7 @@ use crate::{
 use darling::{ast::NestedMeta, Error, FromMeta};
 use proc_macro2::{Ident, TokenStream as TokenStream2};
 use quote::{format_ident, quote};
-use syn::{ext::IdentExt as _, parse_quote, Attribute, LitStr, Path, Type};
+use syn::{ext::IdentExt as _, parse_quote, Attribute, LitStr, Path, Type, TypePath};
 
 // See soroban-sdk/docs/contracttrait.md for documentation on how this works.
 
@@ -93,42 +93,42 @@ fn derive(args: &Args) -> Result<TokenStream2, Error> {
     // the trait is implemented. Name them instead through the associated types
     // of the trait's fn types supertrait, which carry the types as the trait
     // resolves them. The associated types are only reachable through the trait
-    // in a generic context, so they are projected through a local trait
-    // implemented for the impl type.
+    // in a generic context, so each is projected through a local trait
+    // implemented for the impl type. Each type gets its own local trait, so
+    // that its associated type can keep the name of the type it replaces, as
+    // the generated code recognizes some types, such as `Env` and
+    // `MuxedAddress`, by name.
     let trait_str = trait_ident
         .segments
         .iter()
         .map(|s| s.ident.unraw().to_string())
         .collect::<Vec<_>>()
         .join("_");
-    let types_ident = format_ident!(
-        "__{}__{}__FnTypes",
-        ty_to_safe_ident_str(&impl_ty),
-        trait_str
-    );
-    let mut type_idents = Vec::new();
+    let impl_ty_str = ty_to_safe_ident_str(&impl_ty);
+    let mut output = quote! {};
     let fns: Vec<_> = fns
         .into_iter()
         .map(|mut f| {
             for (ident, ty) in fn_types(&mut f) {
-                *ty = parse_quote!(<#impl_ty as #types_ident>::#ident);
-                type_idents.push(ident);
+                let types_ident = format_ident!("__{impl_ty_str}__{trait_str}{ident}");
+                let name = type_name(ty);
+                output.extend(quote! {
+                    #[doc(hidden)]
+                    #[allow(non_camel_case_types)]
+                    pub trait #types_ident {
+                        type #name;
+                    }
+
+                    impl<T: #trait_ident + ?Sized> #types_ident for T {
+                        type #name = T::#ident;
+                    }
+                });
+                *ty = parse_quote!(<#impl_ty as #types_ident>::#name);
             }
             f
         })
         .collect();
 
-    let mut output = quote! {
-        #[doc(hidden)]
-        #[allow(non_camel_case_types)]
-        pub trait #types_ident {
-            #(type #type_idents;)*
-        }
-
-        impl<T: #trait_ident + ?Sized> #types_ident for T {
-            #(type #type_idents = T::#type_idents;)*
-        }
-    };
     output.extend(derive_pub_fns(
         &args.crate_path,
         &impl_ty,
@@ -156,6 +156,21 @@ fn derive(args: &Args) -> Result<TokenStream2, Error> {
     ));
 
     Ok(output)
+}
+
+/// The name of the type, the last segment of its path, or `Type` for a type
+/// without one, such as a tuple, or whose name can't name an associated type,
+/// such as `Self`.
+fn type_name(ty: &Type) -> Ident {
+    match ty {
+        Type::Path(TypePath { path, .. }) => path
+            .segments
+            .last()
+            .map(|s| s.ident.clone())
+            .filter(|i| i != "Self")
+            .unwrap_or_else(|| format_ident!("Type")),
+        _ => format_ident!("Type"),
+    }
 }
 
 fn cfg_condition(attrs: &[Attribute]) -> Result<Option<TokenStream2>, Error> {

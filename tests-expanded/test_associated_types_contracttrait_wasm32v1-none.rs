@@ -31,9 +31,11 @@ pub use __contractimpl_for_trait as Trait;
 #[doc(hidden)]
 #[allow(non_camel_case_types)]
 pub trait __TraitFnTypes {
+    type __exec__arg_0;
     type __exec__ret;
 }
 impl<T: Trait + ?Sized> __TraitFnTypes for T {
+    type __exec__arg_0 = Env;
     type __exec__ret = String;
 }
 pub trait Trait: __TraitFnTypes {
@@ -137,11 +139,19 @@ impl<'a> ContractClient<'a> {}
 impl ContractArgs {}
 #[doc(hidden)]
 #[allow(non_camel_case_types)]
-pub trait __Contract__Trait__FnTypes {
-    type __exec__ret;
+pub trait __Contract__Trait__exec__arg_0 {
+    type Env;
 }
-impl<T: Trait + ?Sized> __Contract__Trait__FnTypes for T {
-    type __exec__ret = T::__exec__ret;
+impl<T: Trait + ?Sized> __Contract__Trait__exec__arg_0 for T {
+    type Env = T::__exec__arg_0;
+}
+#[doc(hidden)]
+#[allow(non_camel_case_types)]
+pub trait __Contract__Trait__exec__ret {
+    type String;
+}
+impl<T: Trait + ?Sized> __Contract__Trait__exec__ret for T {
+    type String = T::__exec__ret;
 }
 #[doc(hidden)]
 #[allow(non_snake_case)]
@@ -183,7 +193,7 @@ impl Contract {
         inputs: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[]),
         outputs: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(
             &[
-                <<Contract as __Contract__Trait__FnTypes>::__exec__ret as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
+                <<Contract as __Contract__Trait__exec__ret>::String as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
             ],
         ),
     });
@@ -193,7 +203,7 @@ impl Contract {
     }
 }
 impl<'a> ContractClient<'a> {
-    pub fn exec(&self) -> <Contract as __Contract__Trait__FnTypes>::__exec__ret {
+    pub fn exec(&self) -> <Contract as __Contract__Trait__exec__ret>::String {
         use core::ops::Not;
         use soroban_sdk::{FromVal, IntoVal};
         let res = self.env.invoke_contract(
@@ -211,8 +221,8 @@ impl<'a> ContractClient<'a> {
         &self,
     ) -> Result<
         Result<
-            <Contract as __Contract__Trait__FnTypes>::__exec__ret,
-            <<Contract as __Contract__Trait__FnTypes>::__exec__ret as soroban_sdk::TryFromVal<
+            <Contract as __Contract__Trait__exec__ret>::String,
+            <<Contract as __Contract__Trait__exec__ret>::String as soroban_sdk::TryFromVal<
                 soroban_sdk::Env,
                 soroban_sdk::Val,
             >>::Error,

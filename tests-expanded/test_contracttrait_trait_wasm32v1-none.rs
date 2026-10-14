@@ -590,6 +590,7 @@ pub trait __AllTypesFnTypes {
     type __test_i256__ret;
     type __test_u256__arg_0;
     type __test_u256__ret;
+    type __test_env_param__arg_0;
     type __test_env_param__ret;
     type __test_struct__arg_0;
     type __test_struct__ret;
@@ -635,6 +636,7 @@ impl<T: AllTypes + ?Sized> __AllTypesFnTypes for T {
     type __test_i256__ret = I256;
     type __test_u256__arg_0 = U256;
     type __test_u256__ret = U256;
+    type __test_env_param__arg_0 = Env;
     type __test_env_param__ret = u32;
     type __test_struct__arg_0 = MyStruct;
     type __test_struct__ret = MyStruct;

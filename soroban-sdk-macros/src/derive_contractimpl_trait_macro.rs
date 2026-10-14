@@ -1,7 +1,6 @@
 use crate::{
     attribute::{is_attr_cfg, is_attr_cfg_attr, is_attr_doc, reject_items},
-    default_crate_path,
-    syn_ext::{self, is_type_named},
+    default_crate_path, syn_ext,
 };
 use darling::{ast::NestedMeta, Error, FromMeta};
 use heck::ToSnakeCase;
@@ -107,20 +106,18 @@ fn derive_fn_types(input: &mut ItemTrait) -> TokenStream2 {
 
 /// The types in the fn's signature that are captured as associated types of
 /// the trait's fn types supertrait, with the associated type each is captured
-/// as. The `Env` input is not captured, nor is a `MuxedAddress` input, since
-/// the client treats it specially by its name. The types are those behind any
-/// references, so that replacing them keeps inputs passed by reference.
+/// as. The types are those behind any references, so that replacing them keeps
+/// inputs passed by reference.
 pub fn fn_types(f: &mut syn_ext::Fn) -> Vec<(Ident, &mut Type)> {
     let fn_name = f.ident.unraw();
     let mut types = Vec::new();
 
     for (i, input) in f.inputs.iter_mut().enumerate() {
         if let FnArg::Typed(pat_type) = input {
-            let ty = &mut *pat_type.ty;
-            if (i == 0 && is_type_named(ty, "Env")) || is_type_named(ty, "MuxedAddress") {
-                continue;
-            }
-            types.push((format_ident!("__{fn_name}__arg_{i}"), unref_mut(ty)));
+            types.push((
+                format_ident!("__{fn_name}__arg_{i}"),
+                unref_mut(&mut pat_type.ty),
+            ));
         }
     }
 

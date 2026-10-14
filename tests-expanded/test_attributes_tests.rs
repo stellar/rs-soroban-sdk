@@ -2017,23 +2017,59 @@ pub extern "C" fn __Contract__trait_override_dual_cfg__invoke_raw_extern() -> so
 }
 #[doc(hidden)]
 #[allow(non_camel_case_types)]
-pub trait __Contract__AttributeTrait__FnTypes {
-    type __trait_override__ret;
-    type __trait_default__ret;
-    type __trait_default_stacked_cfg__ret;
-    type __trait_override_stacked_cfg__ret;
-    type __trait_override_negated_cfg__ret;
-    type __trait_override_dual_cfg__ret;
-    type __trait_default_dual_cfg__ret;
+pub trait __Contract__AttributeTrait__trait_override__ret {
+    type u32;
 }
-impl<T: AttributeTrait + ?Sized> __Contract__AttributeTrait__FnTypes for T {
-    type __trait_override__ret = T::__trait_override__ret;
-    type __trait_default__ret = T::__trait_default__ret;
-    type __trait_default_stacked_cfg__ret = T::__trait_default_stacked_cfg__ret;
-    type __trait_override_stacked_cfg__ret = T::__trait_override_stacked_cfg__ret;
-    type __trait_override_negated_cfg__ret = T::__trait_override_negated_cfg__ret;
-    type __trait_override_dual_cfg__ret = T::__trait_override_dual_cfg__ret;
-    type __trait_default_dual_cfg__ret = T::__trait_default_dual_cfg__ret;
+impl<T: AttributeTrait + ?Sized> __Contract__AttributeTrait__trait_override__ret for T {
+    type u32 = T::__trait_override__ret;
+}
+#[doc(hidden)]
+#[allow(non_camel_case_types)]
+pub trait __Contract__AttributeTrait__trait_default__ret {
+    type u32;
+}
+impl<T: AttributeTrait + ?Sized> __Contract__AttributeTrait__trait_default__ret for T {
+    type u32 = T::__trait_default__ret;
+}
+#[doc(hidden)]
+#[allow(non_camel_case_types)]
+pub trait __Contract__AttributeTrait__trait_default_stacked_cfg__ret {
+    type u32;
+}
+impl<T: AttributeTrait + ?Sized> __Contract__AttributeTrait__trait_default_stacked_cfg__ret for T {
+    type u32 = T::__trait_default_stacked_cfg__ret;
+}
+#[doc(hidden)]
+#[allow(non_camel_case_types)]
+pub trait __Contract__AttributeTrait__trait_override_stacked_cfg__ret {
+    type u32;
+}
+impl<T: AttributeTrait + ?Sized> __Contract__AttributeTrait__trait_override_stacked_cfg__ret for T {
+    type u32 = T::__trait_override_stacked_cfg__ret;
+}
+#[doc(hidden)]
+#[allow(non_camel_case_types)]
+pub trait __Contract__AttributeTrait__trait_override_negated_cfg__ret {
+    type u32;
+}
+impl<T: AttributeTrait + ?Sized> __Contract__AttributeTrait__trait_override_negated_cfg__ret for T {
+    type u32 = T::__trait_override_negated_cfg__ret;
+}
+#[doc(hidden)]
+#[allow(non_camel_case_types)]
+pub trait __Contract__AttributeTrait__trait_override_dual_cfg__ret {
+    type u32;
+}
+impl<T: AttributeTrait + ?Sized> __Contract__AttributeTrait__trait_override_dual_cfg__ret for T {
+    type u32 = T::__trait_override_dual_cfg__ret;
+}
+#[doc(hidden)]
+#[allow(non_camel_case_types)]
+pub trait __Contract__AttributeTrait__trait_default_dual_cfg__ret {
+    type u32;
+}
+impl<T: AttributeTrait + ?Sized> __Contract__AttributeTrait__trait_default_dual_cfg__ret for T {
+    type u32 = T::__trait_default_dual_cfg__ret;
 }
 #[doc(hidden)]
 #[allow(non_snake_case)]
@@ -2173,7 +2209,7 @@ impl Contract {
         inputs: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[]),
         outputs: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(
             &[
-                <<Contract as __Contract__AttributeTrait__FnTypes>::__trait_default__ret as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
+                <<Contract as __Contract__AttributeTrait__trait_default__ret>::u32 as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
             ],
         ),
     });
@@ -2207,7 +2243,7 @@ impl Contract {
         inputs: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[]),
         outputs: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(
             &[
-                <<Contract as __Contract__AttributeTrait__FnTypes>::__trait_default_stacked_cfg__ret as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
+                <<Contract as __Contract__AttributeTrait__trait_default_stacked_cfg__ret>::u32 as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
             ],
         ),
     });
@@ -2244,7 +2280,7 @@ impl Contract {
         inputs: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[]),
         outputs: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(
             &[
-                <<Contract as __Contract__AttributeTrait__FnTypes>::__trait_default_dual_cfg__ret as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
+                <<Contract as __Contract__AttributeTrait__trait_default_dual_cfg__ret>::u32 as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
             ],
         ),
     });
@@ -2257,7 +2293,7 @@ impl Contract {
 impl<'a> ContractClient<'a> {
     pub fn trait_default(
         &self,
-    ) -> <Contract as __Contract__AttributeTrait__FnTypes>::__trait_default__ret {
+    ) -> <Contract as __Contract__AttributeTrait__trait_default__ret>::u32 {
         let _call_scope = soroban_sdk::testutils::ClientCallScope::enter(&self.env, self.config);
         use soroban_sdk::{FromVal, IntoVal};
         let res = self.env.invoke_contract(
@@ -2271,8 +2307,8 @@ impl<'a> ContractClient<'a> {
         &self,
     ) -> Result<
         Result<
-            <Contract as __Contract__AttributeTrait__FnTypes>::__trait_default__ret,
-            <<Contract as __Contract__AttributeTrait__FnTypes>::__trait_default__ret as soroban_sdk::TryFromVal<
+            <Contract as __Contract__AttributeTrait__trait_default__ret>::u32,
+            <<Contract as __Contract__AttributeTrait__trait_default__ret>::u32 as soroban_sdk::TryFromVal<
                 soroban_sdk::Env,
                 soroban_sdk::Val,
             >>::Error,
@@ -2290,7 +2326,7 @@ impl<'a> ContractClient<'a> {
     }
     pub fn trait_default_stacked_cfg(
         &self,
-    ) -> <Contract as __Contract__AttributeTrait__FnTypes>::__trait_default_stacked_cfg__ret {
+    ) -> <Contract as __Contract__AttributeTrait__trait_default_stacked_cfg__ret>::u32 {
         let _call_scope = soroban_sdk::testutils::ClientCallScope::enter(&self.env, self.config);
         use soroban_sdk::{FromVal, IntoVal};
         let res = self.env.invoke_contract(
@@ -2304,8 +2340,8 @@ impl<'a> ContractClient<'a> {
         &self,
     ) -> Result<
         Result<
-            <Contract as __Contract__AttributeTrait__FnTypes>::__trait_default_stacked_cfg__ret,
-            <<Contract as __Contract__AttributeTrait__FnTypes>::__trait_default_stacked_cfg__ret as soroban_sdk::TryFromVal<
+            <Contract as __Contract__AttributeTrait__trait_default_stacked_cfg__ret>::u32,
+            <<Contract as __Contract__AttributeTrait__trait_default_stacked_cfg__ret>::u32 as soroban_sdk::TryFromVal<
                 soroban_sdk::Env,
                 soroban_sdk::Val,
             >>::Error,
@@ -2323,7 +2359,7 @@ impl<'a> ContractClient<'a> {
     }
     pub fn trait_default_dual_cfg(
         &self,
-    ) -> <Contract as __Contract__AttributeTrait__FnTypes>::__trait_default_dual_cfg__ret {
+    ) -> <Contract as __Contract__AttributeTrait__trait_default_dual_cfg__ret>::u32 {
         let _call_scope = soroban_sdk::testutils::ClientCallScope::enter(&self.env, self.config);
         use soroban_sdk::{FromVal, IntoVal};
         let res = self.env.invoke_contract(
@@ -2337,8 +2373,8 @@ impl<'a> ContractClient<'a> {
         &self,
     ) -> Result<
         Result<
-            <Contract as __Contract__AttributeTrait__FnTypes>::__trait_default_dual_cfg__ret,
-            <<Contract as __Contract__AttributeTrait__FnTypes>::__trait_default_dual_cfg__ret as soroban_sdk::TryFromVal<
+            <Contract as __Contract__AttributeTrait__trait_default_dual_cfg__ret>::u32,
+            <<Contract as __Contract__AttributeTrait__trait_default_dual_cfg__ret>::u32 as soroban_sdk::TryFromVal<
                 soroban_sdk::Env,
                 soroban_sdk::Val,
             >>::Error,

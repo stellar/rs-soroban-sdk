@@ -120,97 +120,443 @@ impl<'a> ContractGlobalPathClient<'a> {}
 impl ContractGlobalPathArgs {}
 #[doc(hidden)]
 #[allow(non_camel_case_types)]
-pub trait __ContractGlobalPath__test_contracttrait_trait_AllTypes__FnTypes {
-    type __test_u32__arg_0;
-    type __test_u32__ret;
-    type __test_i32__arg_0;
-    type __test_i32__ret;
-    type __test_u64__arg_0;
-    type __test_u64__ret;
-    type __test_i64__arg_0;
-    type __test_i64__ret;
-    type __test_u128__arg_0;
-    type __test_u128__ret;
-    type __test_i128__arg_0;
-    type __test_i128__ret;
-    type __test_bool__arg_0;
-    type __test_bool__ret;
-    type __test_address__arg_0;
-    type __test_address__ret;
-    type __test_bytes__arg_0;
-    type __test_bytes__ret;
-    type __test_bytes_n__arg_0;
-    type __test_bytes_n__ret;
-    type __test_string__arg_0;
-    type __test_string__ret;
-    type __test_symbol__arg_0;
-    type __test_symbol__ret;
-    type __test_vec__arg_0;
-    type __test_vec__ret;
-    type __test_map__arg_0;
-    type __test_map__ret;
-    type __test_duration__arg_0;
-    type __test_duration__ret;
-    type __test_timepoint__arg_0;
-    type __test_timepoint__ret;
-    type __test_i256__arg_0;
-    type __test_i256__ret;
-    type __test_u256__arg_0;
-    type __test_u256__ret;
-    type __test_env_param__ret;
-    type __test_struct__arg_0;
-    type __test_struct__ret;
-    type __test_enum_unit__arg_0;
-    type __test_enum_unit__ret;
-    type __test_enum_variants__arg_0;
-    type __test_enum_variants__ret;
+pub trait __ContractGlobalPath__test_contracttrait_trait_AllTypes__test_u32__arg_0 {
+    type u32;
 }
 impl<T: ::test_contracttrait_trait::AllTypes + ?Sized>
-    __ContractGlobalPath__test_contracttrait_trait_AllTypes__FnTypes for T
+    __ContractGlobalPath__test_contracttrait_trait_AllTypes__test_u32__arg_0 for T
 {
-    type __test_u32__arg_0 = T::__test_u32__arg_0;
-    type __test_u32__ret = T::__test_u32__ret;
-    type __test_i32__arg_0 = T::__test_i32__arg_0;
-    type __test_i32__ret = T::__test_i32__ret;
-    type __test_u64__arg_0 = T::__test_u64__arg_0;
-    type __test_u64__ret = T::__test_u64__ret;
-    type __test_i64__arg_0 = T::__test_i64__arg_0;
-    type __test_i64__ret = T::__test_i64__ret;
-    type __test_u128__arg_0 = T::__test_u128__arg_0;
-    type __test_u128__ret = T::__test_u128__ret;
-    type __test_i128__arg_0 = T::__test_i128__arg_0;
-    type __test_i128__ret = T::__test_i128__ret;
-    type __test_bool__arg_0 = T::__test_bool__arg_0;
-    type __test_bool__ret = T::__test_bool__ret;
-    type __test_address__arg_0 = T::__test_address__arg_0;
-    type __test_address__ret = T::__test_address__ret;
-    type __test_bytes__arg_0 = T::__test_bytes__arg_0;
-    type __test_bytes__ret = T::__test_bytes__ret;
-    type __test_bytes_n__arg_0 = T::__test_bytes_n__arg_0;
-    type __test_bytes_n__ret = T::__test_bytes_n__ret;
-    type __test_string__arg_0 = T::__test_string__arg_0;
-    type __test_string__ret = T::__test_string__ret;
-    type __test_symbol__arg_0 = T::__test_symbol__arg_0;
-    type __test_symbol__ret = T::__test_symbol__ret;
-    type __test_vec__arg_0 = T::__test_vec__arg_0;
-    type __test_vec__ret = T::__test_vec__ret;
-    type __test_map__arg_0 = T::__test_map__arg_0;
-    type __test_map__ret = T::__test_map__ret;
-    type __test_duration__arg_0 = T::__test_duration__arg_0;
-    type __test_duration__ret = T::__test_duration__ret;
-    type __test_timepoint__arg_0 = T::__test_timepoint__arg_0;
-    type __test_timepoint__ret = T::__test_timepoint__ret;
-    type __test_i256__arg_0 = T::__test_i256__arg_0;
-    type __test_i256__ret = T::__test_i256__ret;
-    type __test_u256__arg_0 = T::__test_u256__arg_0;
-    type __test_u256__ret = T::__test_u256__ret;
-    type __test_env_param__ret = T::__test_env_param__ret;
-    type __test_struct__arg_0 = T::__test_struct__arg_0;
-    type __test_struct__ret = T::__test_struct__ret;
-    type __test_enum_unit__arg_0 = T::__test_enum_unit__arg_0;
-    type __test_enum_unit__ret = T::__test_enum_unit__ret;
-    type __test_enum_variants__arg_0 = T::__test_enum_variants__arg_0;
-    type __test_enum_variants__ret = T::__test_enum_variants__ret;
+    type u32 = T::__test_u32__arg_0;
+}
+#[doc(hidden)]
+#[allow(non_camel_case_types)]
+pub trait __ContractGlobalPath__test_contracttrait_trait_AllTypes__test_u32__ret {
+    type u32;
+}
+impl<T: ::test_contracttrait_trait::AllTypes + ?Sized>
+    __ContractGlobalPath__test_contracttrait_trait_AllTypes__test_u32__ret for T
+{
+    type u32 = T::__test_u32__ret;
+}
+#[doc(hidden)]
+#[allow(non_camel_case_types)]
+pub trait __ContractGlobalPath__test_contracttrait_trait_AllTypes__test_i32__arg_0 {
+    type i32;
+}
+impl<T: ::test_contracttrait_trait::AllTypes + ?Sized>
+    __ContractGlobalPath__test_contracttrait_trait_AllTypes__test_i32__arg_0 for T
+{
+    type i32 = T::__test_i32__arg_0;
+}
+#[doc(hidden)]
+#[allow(non_camel_case_types)]
+pub trait __ContractGlobalPath__test_contracttrait_trait_AllTypes__test_i32__ret {
+    type i32;
+}
+impl<T: ::test_contracttrait_trait::AllTypes + ?Sized>
+    __ContractGlobalPath__test_contracttrait_trait_AllTypes__test_i32__ret for T
+{
+    type i32 = T::__test_i32__ret;
+}
+#[doc(hidden)]
+#[allow(non_camel_case_types)]
+pub trait __ContractGlobalPath__test_contracttrait_trait_AllTypes__test_u64__arg_0 {
+    type u64;
+}
+impl<T: ::test_contracttrait_trait::AllTypes + ?Sized>
+    __ContractGlobalPath__test_contracttrait_trait_AllTypes__test_u64__arg_0 for T
+{
+    type u64 = T::__test_u64__arg_0;
+}
+#[doc(hidden)]
+#[allow(non_camel_case_types)]
+pub trait __ContractGlobalPath__test_contracttrait_trait_AllTypes__test_u64__ret {
+    type u64;
+}
+impl<T: ::test_contracttrait_trait::AllTypes + ?Sized>
+    __ContractGlobalPath__test_contracttrait_trait_AllTypes__test_u64__ret for T
+{
+    type u64 = T::__test_u64__ret;
+}
+#[doc(hidden)]
+#[allow(non_camel_case_types)]
+pub trait __ContractGlobalPath__test_contracttrait_trait_AllTypes__test_i64__arg_0 {
+    type i64;
+}
+impl<T: ::test_contracttrait_trait::AllTypes + ?Sized>
+    __ContractGlobalPath__test_contracttrait_trait_AllTypes__test_i64__arg_0 for T
+{
+    type i64 = T::__test_i64__arg_0;
+}
+#[doc(hidden)]
+#[allow(non_camel_case_types)]
+pub trait __ContractGlobalPath__test_contracttrait_trait_AllTypes__test_i64__ret {
+    type i64;
+}
+impl<T: ::test_contracttrait_trait::AllTypes + ?Sized>
+    __ContractGlobalPath__test_contracttrait_trait_AllTypes__test_i64__ret for T
+{
+    type i64 = T::__test_i64__ret;
+}
+#[doc(hidden)]
+#[allow(non_camel_case_types)]
+pub trait __ContractGlobalPath__test_contracttrait_trait_AllTypes__test_u128__arg_0 {
+    type u128;
+}
+impl<T: ::test_contracttrait_trait::AllTypes + ?Sized>
+    __ContractGlobalPath__test_contracttrait_trait_AllTypes__test_u128__arg_0 for T
+{
+    type u128 = T::__test_u128__arg_0;
+}
+#[doc(hidden)]
+#[allow(non_camel_case_types)]
+pub trait __ContractGlobalPath__test_contracttrait_trait_AllTypes__test_u128__ret {
+    type u128;
+}
+impl<T: ::test_contracttrait_trait::AllTypes + ?Sized>
+    __ContractGlobalPath__test_contracttrait_trait_AllTypes__test_u128__ret for T
+{
+    type u128 = T::__test_u128__ret;
+}
+#[doc(hidden)]
+#[allow(non_camel_case_types)]
+pub trait __ContractGlobalPath__test_contracttrait_trait_AllTypes__test_i128__arg_0 {
+    type i128;
+}
+impl<T: ::test_contracttrait_trait::AllTypes + ?Sized>
+    __ContractGlobalPath__test_contracttrait_trait_AllTypes__test_i128__arg_0 for T
+{
+    type i128 = T::__test_i128__arg_0;
+}
+#[doc(hidden)]
+#[allow(non_camel_case_types)]
+pub trait __ContractGlobalPath__test_contracttrait_trait_AllTypes__test_i128__ret {
+    type i128;
+}
+impl<T: ::test_contracttrait_trait::AllTypes + ?Sized>
+    __ContractGlobalPath__test_contracttrait_trait_AllTypes__test_i128__ret for T
+{
+    type i128 = T::__test_i128__ret;
+}
+#[doc(hidden)]
+#[allow(non_camel_case_types)]
+pub trait __ContractGlobalPath__test_contracttrait_trait_AllTypes__test_bool__arg_0 {
+    type bool;
+}
+impl<T: ::test_contracttrait_trait::AllTypes + ?Sized>
+    __ContractGlobalPath__test_contracttrait_trait_AllTypes__test_bool__arg_0 for T
+{
+    type bool = T::__test_bool__arg_0;
+}
+#[doc(hidden)]
+#[allow(non_camel_case_types)]
+pub trait __ContractGlobalPath__test_contracttrait_trait_AllTypes__test_bool__ret {
+    type bool;
+}
+impl<T: ::test_contracttrait_trait::AllTypes + ?Sized>
+    __ContractGlobalPath__test_contracttrait_trait_AllTypes__test_bool__ret for T
+{
+    type bool = T::__test_bool__ret;
+}
+#[doc(hidden)]
+#[allow(non_camel_case_types)]
+pub trait __ContractGlobalPath__test_contracttrait_trait_AllTypes__test_address__arg_0 {
+    type Address;
+}
+impl<T: ::test_contracttrait_trait::AllTypes + ?Sized>
+    __ContractGlobalPath__test_contracttrait_trait_AllTypes__test_address__arg_0 for T
+{
+    type Address = T::__test_address__arg_0;
+}
+#[doc(hidden)]
+#[allow(non_camel_case_types)]
+pub trait __ContractGlobalPath__test_contracttrait_trait_AllTypes__test_address__ret {
+    type Address;
+}
+impl<T: ::test_contracttrait_trait::AllTypes + ?Sized>
+    __ContractGlobalPath__test_contracttrait_trait_AllTypes__test_address__ret for T
+{
+    type Address = T::__test_address__ret;
+}
+#[doc(hidden)]
+#[allow(non_camel_case_types)]
+pub trait __ContractGlobalPath__test_contracttrait_trait_AllTypes__test_bytes__arg_0 {
+    type Bytes;
+}
+impl<T: ::test_contracttrait_trait::AllTypes + ?Sized>
+    __ContractGlobalPath__test_contracttrait_trait_AllTypes__test_bytes__arg_0 for T
+{
+    type Bytes = T::__test_bytes__arg_0;
+}
+#[doc(hidden)]
+#[allow(non_camel_case_types)]
+pub trait __ContractGlobalPath__test_contracttrait_trait_AllTypes__test_bytes__ret {
+    type Bytes;
+}
+impl<T: ::test_contracttrait_trait::AllTypes + ?Sized>
+    __ContractGlobalPath__test_contracttrait_trait_AllTypes__test_bytes__ret for T
+{
+    type Bytes = T::__test_bytes__ret;
+}
+#[doc(hidden)]
+#[allow(non_camel_case_types)]
+pub trait __ContractGlobalPath__test_contracttrait_trait_AllTypes__test_bytes_n__arg_0 {
+    type BytesN;
+}
+impl<T: ::test_contracttrait_trait::AllTypes + ?Sized>
+    __ContractGlobalPath__test_contracttrait_trait_AllTypes__test_bytes_n__arg_0 for T
+{
+    type BytesN = T::__test_bytes_n__arg_0;
+}
+#[doc(hidden)]
+#[allow(non_camel_case_types)]
+pub trait __ContractGlobalPath__test_contracttrait_trait_AllTypes__test_bytes_n__ret {
+    type BytesN;
+}
+impl<T: ::test_contracttrait_trait::AllTypes + ?Sized>
+    __ContractGlobalPath__test_contracttrait_trait_AllTypes__test_bytes_n__ret for T
+{
+    type BytesN = T::__test_bytes_n__ret;
+}
+#[doc(hidden)]
+#[allow(non_camel_case_types)]
+pub trait __ContractGlobalPath__test_contracttrait_trait_AllTypes__test_string__arg_0 {
+    type String;
+}
+impl<T: ::test_contracttrait_trait::AllTypes + ?Sized>
+    __ContractGlobalPath__test_contracttrait_trait_AllTypes__test_string__arg_0 for T
+{
+    type String = T::__test_string__arg_0;
+}
+#[doc(hidden)]
+#[allow(non_camel_case_types)]
+pub trait __ContractGlobalPath__test_contracttrait_trait_AllTypes__test_string__ret {
+    type String;
+}
+impl<T: ::test_contracttrait_trait::AllTypes + ?Sized>
+    __ContractGlobalPath__test_contracttrait_trait_AllTypes__test_string__ret for T
+{
+    type String = T::__test_string__ret;
+}
+#[doc(hidden)]
+#[allow(non_camel_case_types)]
+pub trait __ContractGlobalPath__test_contracttrait_trait_AllTypes__test_symbol__arg_0 {
+    type Symbol;
+}
+impl<T: ::test_contracttrait_trait::AllTypes + ?Sized>
+    __ContractGlobalPath__test_contracttrait_trait_AllTypes__test_symbol__arg_0 for T
+{
+    type Symbol = T::__test_symbol__arg_0;
+}
+#[doc(hidden)]
+#[allow(non_camel_case_types)]
+pub trait __ContractGlobalPath__test_contracttrait_trait_AllTypes__test_symbol__ret {
+    type Symbol;
+}
+impl<T: ::test_contracttrait_trait::AllTypes + ?Sized>
+    __ContractGlobalPath__test_contracttrait_trait_AllTypes__test_symbol__ret for T
+{
+    type Symbol = T::__test_symbol__ret;
+}
+#[doc(hidden)]
+#[allow(non_camel_case_types)]
+pub trait __ContractGlobalPath__test_contracttrait_trait_AllTypes__test_vec__arg_0 {
+    type Vec;
+}
+impl<T: ::test_contracttrait_trait::AllTypes + ?Sized>
+    __ContractGlobalPath__test_contracttrait_trait_AllTypes__test_vec__arg_0 for T
+{
+    type Vec = T::__test_vec__arg_0;
+}
+#[doc(hidden)]
+#[allow(non_camel_case_types)]
+pub trait __ContractGlobalPath__test_contracttrait_trait_AllTypes__test_vec__ret {
+    type Vec;
+}
+impl<T: ::test_contracttrait_trait::AllTypes + ?Sized>
+    __ContractGlobalPath__test_contracttrait_trait_AllTypes__test_vec__ret for T
+{
+    type Vec = T::__test_vec__ret;
+}
+#[doc(hidden)]
+#[allow(non_camel_case_types)]
+pub trait __ContractGlobalPath__test_contracttrait_trait_AllTypes__test_map__arg_0 {
+    type Map;
+}
+impl<T: ::test_contracttrait_trait::AllTypes + ?Sized>
+    __ContractGlobalPath__test_contracttrait_trait_AllTypes__test_map__arg_0 for T
+{
+    type Map = T::__test_map__arg_0;
+}
+#[doc(hidden)]
+#[allow(non_camel_case_types)]
+pub trait __ContractGlobalPath__test_contracttrait_trait_AllTypes__test_map__ret {
+    type Map;
+}
+impl<T: ::test_contracttrait_trait::AllTypes + ?Sized>
+    __ContractGlobalPath__test_contracttrait_trait_AllTypes__test_map__ret for T
+{
+    type Map = T::__test_map__ret;
+}
+#[doc(hidden)]
+#[allow(non_camel_case_types)]
+pub trait __ContractGlobalPath__test_contracttrait_trait_AllTypes__test_duration__arg_0 {
+    type Duration;
+}
+impl<T: ::test_contracttrait_trait::AllTypes + ?Sized>
+    __ContractGlobalPath__test_contracttrait_trait_AllTypes__test_duration__arg_0 for T
+{
+    type Duration = T::__test_duration__arg_0;
+}
+#[doc(hidden)]
+#[allow(non_camel_case_types)]
+pub trait __ContractGlobalPath__test_contracttrait_trait_AllTypes__test_duration__ret {
+    type Duration;
+}
+impl<T: ::test_contracttrait_trait::AllTypes + ?Sized>
+    __ContractGlobalPath__test_contracttrait_trait_AllTypes__test_duration__ret for T
+{
+    type Duration = T::__test_duration__ret;
+}
+#[doc(hidden)]
+#[allow(non_camel_case_types)]
+pub trait __ContractGlobalPath__test_contracttrait_trait_AllTypes__test_timepoint__arg_0 {
+    type Timepoint;
+}
+impl<T: ::test_contracttrait_trait::AllTypes + ?Sized>
+    __ContractGlobalPath__test_contracttrait_trait_AllTypes__test_timepoint__arg_0 for T
+{
+    type Timepoint = T::__test_timepoint__arg_0;
+}
+#[doc(hidden)]
+#[allow(non_camel_case_types)]
+pub trait __ContractGlobalPath__test_contracttrait_trait_AllTypes__test_timepoint__ret {
+    type Timepoint;
+}
+impl<T: ::test_contracttrait_trait::AllTypes + ?Sized>
+    __ContractGlobalPath__test_contracttrait_trait_AllTypes__test_timepoint__ret for T
+{
+    type Timepoint = T::__test_timepoint__ret;
+}
+#[doc(hidden)]
+#[allow(non_camel_case_types)]
+pub trait __ContractGlobalPath__test_contracttrait_trait_AllTypes__test_i256__arg_0 {
+    type I256;
+}
+impl<T: ::test_contracttrait_trait::AllTypes + ?Sized>
+    __ContractGlobalPath__test_contracttrait_trait_AllTypes__test_i256__arg_0 for T
+{
+    type I256 = T::__test_i256__arg_0;
+}
+#[doc(hidden)]
+#[allow(non_camel_case_types)]
+pub trait __ContractGlobalPath__test_contracttrait_trait_AllTypes__test_i256__ret {
+    type I256;
+}
+impl<T: ::test_contracttrait_trait::AllTypes + ?Sized>
+    __ContractGlobalPath__test_contracttrait_trait_AllTypes__test_i256__ret for T
+{
+    type I256 = T::__test_i256__ret;
+}
+#[doc(hidden)]
+#[allow(non_camel_case_types)]
+pub trait __ContractGlobalPath__test_contracttrait_trait_AllTypes__test_u256__arg_0 {
+    type U256;
+}
+impl<T: ::test_contracttrait_trait::AllTypes + ?Sized>
+    __ContractGlobalPath__test_contracttrait_trait_AllTypes__test_u256__arg_0 for T
+{
+    type U256 = T::__test_u256__arg_0;
+}
+#[doc(hidden)]
+#[allow(non_camel_case_types)]
+pub trait __ContractGlobalPath__test_contracttrait_trait_AllTypes__test_u256__ret {
+    type U256;
+}
+impl<T: ::test_contracttrait_trait::AllTypes + ?Sized>
+    __ContractGlobalPath__test_contracttrait_trait_AllTypes__test_u256__ret for T
+{
+    type U256 = T::__test_u256__ret;
+}
+#[doc(hidden)]
+#[allow(non_camel_case_types)]
+pub trait __ContractGlobalPath__test_contracttrait_trait_AllTypes__test_env_param__arg_0 {
+    type Env;
+}
+impl<T: ::test_contracttrait_trait::AllTypes + ?Sized>
+    __ContractGlobalPath__test_contracttrait_trait_AllTypes__test_env_param__arg_0 for T
+{
+    type Env = T::__test_env_param__arg_0;
+}
+#[doc(hidden)]
+#[allow(non_camel_case_types)]
+pub trait __ContractGlobalPath__test_contracttrait_trait_AllTypes__test_env_param__ret {
+    type u32;
+}
+impl<T: ::test_contracttrait_trait::AllTypes + ?Sized>
+    __ContractGlobalPath__test_contracttrait_trait_AllTypes__test_env_param__ret for T
+{
+    type u32 = T::__test_env_param__ret;
+}
+#[doc(hidden)]
+#[allow(non_camel_case_types)]
+pub trait __ContractGlobalPath__test_contracttrait_trait_AllTypes__test_struct__arg_0 {
+    type MyStruct;
+}
+impl<T: ::test_contracttrait_trait::AllTypes + ?Sized>
+    __ContractGlobalPath__test_contracttrait_trait_AllTypes__test_struct__arg_0 for T
+{
+    type MyStruct = T::__test_struct__arg_0;
+}
+#[doc(hidden)]
+#[allow(non_camel_case_types)]
+pub trait __ContractGlobalPath__test_contracttrait_trait_AllTypes__test_struct__ret {
+    type MyStruct;
+}
+impl<T: ::test_contracttrait_trait::AllTypes + ?Sized>
+    __ContractGlobalPath__test_contracttrait_trait_AllTypes__test_struct__ret for T
+{
+    type MyStruct = T::__test_struct__ret;
+}
+#[doc(hidden)]
+#[allow(non_camel_case_types)]
+pub trait __ContractGlobalPath__test_contracttrait_trait_AllTypes__test_enum_unit__arg_0 {
+    type MyEnumUnit;
+}
+impl<T: ::test_contracttrait_trait::AllTypes + ?Sized>
+    __ContractGlobalPath__test_contracttrait_trait_AllTypes__test_enum_unit__arg_0 for T
+{
+    type MyEnumUnit = T::__test_enum_unit__arg_0;
+}
+#[doc(hidden)]
+#[allow(non_camel_case_types)]
+pub trait __ContractGlobalPath__test_contracttrait_trait_AllTypes__test_enum_unit__ret {
+    type MyEnumUnit;
+}
+impl<T: ::test_contracttrait_trait::AllTypes + ?Sized>
+    __ContractGlobalPath__test_contracttrait_trait_AllTypes__test_enum_unit__ret for T
+{
+    type MyEnumUnit = T::__test_enum_unit__ret;
+}
+#[doc(hidden)]
+#[allow(non_camel_case_types)]
+pub trait __ContractGlobalPath__test_contracttrait_trait_AllTypes__test_enum_variants__arg_0 {
+    type MyEnumVariants;
+}
+impl<T: ::test_contracttrait_trait::AllTypes + ?Sized>
+    __ContractGlobalPath__test_contracttrait_trait_AllTypes__test_enum_variants__arg_0 for T
+{
+    type MyEnumVariants = T::__test_enum_variants__arg_0;
+}
+#[doc(hidden)]
+#[allow(non_camel_case_types)]
+pub trait __ContractGlobalPath__test_contracttrait_trait_AllTypes__test_enum_variants__ret {
+    type MyEnumVariants;
+}
+impl<T: ::test_contracttrait_trait::AllTypes + ?Sized>
+    __ContractGlobalPath__test_contracttrait_trait_AllTypes__test_enum_variants__ret for T
+{
+    type MyEnumVariants = T::__test_enum_variants__ret;
 }
 #[doc(hidden)]
 /// Test u32 values.
@@ -1330,13 +1676,13 @@ impl ContractGlobalPath {
                     name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(
                         b"v",
                     ),
-                    type_: <<ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__FnTypes>::__test_u32__arg_0 as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
+                    type_: <<ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__test_u32__arg_0>::u32 as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
                 },
             ],
         ),
         outputs: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(
             &[
-                <<ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__FnTypes>::__test_u32__ret as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
+                <<ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__test_u32__ret>::u32 as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
             ],
         ),
     });
@@ -1380,13 +1726,13 @@ impl ContractGlobalPath {
                     name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(
                         b"v",
                     ),
-                    type_: <<ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__FnTypes>::__test_i32__arg_0 as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
+                    type_: <<ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__test_i32__arg_0>::i32 as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
                 },
             ],
         ),
         outputs: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(
             &[
-                <<ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__FnTypes>::__test_i32__ret as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
+                <<ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__test_i32__ret>::i32 as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
             ],
         ),
     });
@@ -1424,13 +1770,13 @@ impl ContractGlobalPath {
                     name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(
                         b"v",
                     ),
-                    type_: <<ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__FnTypes>::__test_u64__arg_0 as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
+                    type_: <<ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__test_u64__arg_0>::u64 as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
                 },
             ],
         ),
         outputs: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(
             &[
-                <<ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__FnTypes>::__test_u64__ret as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
+                <<ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__test_u64__ret>::u64 as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
             ],
         ),
     });
@@ -1467,13 +1813,13 @@ impl ContractGlobalPath {
                     name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(
                         b"v",
                     ),
-                    type_: <<ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__FnTypes>::__test_i64__arg_0 as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
+                    type_: <<ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__test_i64__arg_0>::i64 as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
                 },
             ],
         ),
         outputs: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(
             &[
-                <<ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__FnTypes>::__test_i64__ret as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
+                <<ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__test_i64__ret>::i64 as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
             ],
         ),
     });
@@ -1510,13 +1856,13 @@ impl ContractGlobalPath {
                     name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(
                         b"v",
                     ),
-                    type_: <<ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__FnTypes>::__test_u128__arg_0 as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
+                    type_: <<ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__test_u128__arg_0>::u128 as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
                 },
             ],
         ),
         outputs: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(
             &[
-                <<ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__FnTypes>::__test_u128__ret as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
+                <<ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__test_u128__ret>::u128 as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
             ],
         ),
     });
@@ -1553,13 +1899,13 @@ impl ContractGlobalPath {
                     name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(
                         b"v",
                     ),
-                    type_: <<ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__FnTypes>::__test_i128__arg_0 as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
+                    type_: <<ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__test_i128__arg_0>::i128 as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
                 },
             ],
         ),
         outputs: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(
             &[
-                <<ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__FnTypes>::__test_i128__ret as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
+                <<ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__test_i128__ret>::i128 as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
             ],
         ),
     });
@@ -1596,13 +1942,13 @@ impl ContractGlobalPath {
                     name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(
                         b"v",
                     ),
-                    type_: <<ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__FnTypes>::__test_bool__arg_0 as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
+                    type_: <<ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__test_bool__arg_0>::bool as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
                 },
             ],
         ),
         outputs: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(
             &[
-                <<ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__FnTypes>::__test_bool__ret as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
+                <<ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__test_bool__ret>::bool as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
             ],
         ),
     });
@@ -1639,13 +1985,13 @@ impl ContractGlobalPath {
                     name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(
                         b"v",
                     ),
-                    type_: <<ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__FnTypes>::__test_address__arg_0 as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
+                    type_: <<ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__test_address__arg_0>::Address as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
                 },
             ],
         ),
         outputs: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(
             &[
-                <<ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__FnTypes>::__test_address__ret as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
+                <<ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__test_address__ret>::Address as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
             ],
         ),
     });
@@ -1682,13 +2028,13 @@ impl ContractGlobalPath {
                     name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(
                         b"v",
                     ),
-                    type_: <<ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__FnTypes>::__test_bytes__arg_0 as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
+                    type_: <<ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__test_bytes__arg_0>::Bytes as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
                 },
             ],
         ),
         outputs: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(
             &[
-                <<ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__FnTypes>::__test_bytes__ret as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
+                <<ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__test_bytes__ret>::Bytes as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
             ],
         ),
     });
@@ -1725,13 +2071,13 @@ impl ContractGlobalPath {
                     name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(
                         b"v",
                     ),
-                    type_: <<ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__FnTypes>::__test_bytes_n__arg_0 as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
+                    type_: <<ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__test_bytes_n__arg_0>::BytesN as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
                 },
             ],
         ),
         outputs: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(
             &[
-                <<ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__FnTypes>::__test_bytes_n__ret as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
+                <<ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__test_bytes_n__ret>::BytesN as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
             ],
         ),
     });
@@ -1768,13 +2114,13 @@ impl ContractGlobalPath {
                     name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(
                         b"v",
                     ),
-                    type_: <<ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__FnTypes>::__test_string__arg_0 as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
+                    type_: <<ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__test_string__arg_0>::String as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
                 },
             ],
         ),
         outputs: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(
             &[
-                <<ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__FnTypes>::__test_string__ret as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
+                <<ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__test_string__ret>::String as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
             ],
         ),
     });
@@ -1811,13 +2157,13 @@ impl ContractGlobalPath {
                     name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(
                         b"v",
                     ),
-                    type_: <<ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__FnTypes>::__test_symbol__arg_0 as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
+                    type_: <<ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__test_symbol__arg_0>::Symbol as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
                 },
             ],
         ),
         outputs: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(
             &[
-                <<ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__FnTypes>::__test_symbol__ret as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
+                <<ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__test_symbol__ret>::Symbol as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
             ],
         ),
     });
@@ -1854,13 +2200,13 @@ impl ContractGlobalPath {
                     name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(
                         b"v",
                     ),
-                    type_: <<ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__FnTypes>::__test_vec__arg_0 as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
+                    type_: <<ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__test_vec__arg_0>::Vec as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
                 },
             ],
         ),
         outputs: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(
             &[
-                <<ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__FnTypes>::__test_vec__ret as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
+                <<ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__test_vec__ret>::Vec as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
             ],
         ),
     });
@@ -1897,13 +2243,13 @@ impl ContractGlobalPath {
                     name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(
                         b"v",
                     ),
-                    type_: <<ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__FnTypes>::__test_map__arg_0 as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
+                    type_: <<ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__test_map__arg_0>::Map as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
                 },
             ],
         ),
         outputs: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(
             &[
-                <<ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__FnTypes>::__test_map__ret as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
+                <<ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__test_map__ret>::Map as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
             ],
         ),
     });
@@ -1940,13 +2286,13 @@ impl ContractGlobalPath {
                     name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(
                         b"v",
                     ),
-                    type_: <<ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__FnTypes>::__test_duration__arg_0 as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
+                    type_: <<ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__test_duration__arg_0>::Duration as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
                 },
             ],
         ),
         outputs: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(
             &[
-                <<ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__FnTypes>::__test_duration__ret as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
+                <<ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__test_duration__ret>::Duration as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
             ],
         ),
     });
@@ -1986,13 +2332,13 @@ impl ContractGlobalPath {
                     name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(
                         b"v",
                     ),
-                    type_: <<ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__FnTypes>::__test_timepoint__arg_0 as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
+                    type_: <<ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__test_timepoint__arg_0>::Timepoint as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
                 },
             ],
         ),
         outputs: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(
             &[
-                <<ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__FnTypes>::__test_timepoint__ret as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
+                <<ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__test_timepoint__ret>::Timepoint as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
             ],
         ),
     });
@@ -2029,13 +2375,13 @@ impl ContractGlobalPath {
                     name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(
                         b"v",
                     ),
-                    type_: <<ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__FnTypes>::__test_i256__arg_0 as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
+                    type_: <<ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__test_i256__arg_0>::I256 as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
                 },
             ],
         ),
         outputs: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(
             &[
-                <<ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__FnTypes>::__test_i256__ret as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
+                <<ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__test_i256__ret>::I256 as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
             ],
         ),
     });
@@ -2072,13 +2418,13 @@ impl ContractGlobalPath {
                     name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(
                         b"v",
                     ),
-                    type_: <<ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__FnTypes>::__test_u256__arg_0 as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
+                    type_: <<ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__test_u256__arg_0>::U256 as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
                 },
             ],
         ),
         outputs: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(
             &[
-                <<ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__FnTypes>::__test_u256__ret as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
+                <<ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__test_u256__ret>::U256 as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
             ],
         ),
     });
@@ -2112,7 +2458,7 @@ impl ContractGlobalPath {
         inputs: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[]),
         outputs: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(
             &[
-                <<ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__FnTypes>::__test_env_param__ret as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
+                <<ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__test_env_param__ret>::u32 as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
             ],
         ),
     });
@@ -2149,13 +2495,13 @@ impl ContractGlobalPath {
                     name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(
                         b"v",
                     ),
-                    type_: <<ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__FnTypes>::__test_struct__arg_0 as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
+                    type_: <<ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__test_struct__arg_0>::MyStruct as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
                 },
             ],
         ),
         outputs: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(
             &[
-                <<ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__FnTypes>::__test_struct__ret as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
+                <<ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__test_struct__ret>::MyStruct as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
             ],
         ),
     });
@@ -2195,13 +2541,13 @@ impl ContractGlobalPath {
                     name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(
                         b"v",
                     ),
-                    type_: <<ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__FnTypes>::__test_enum_unit__arg_0 as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
+                    type_: <<ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__test_enum_unit__arg_0>::MyEnumUnit as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
                 },
             ],
         ),
         outputs: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(
             &[
-                <<ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__FnTypes>::__test_enum_unit__ret as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
+                <<ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__test_enum_unit__ret>::MyEnumUnit as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
             ],
         ),
     });
@@ -2241,13 +2587,13 @@ impl ContractGlobalPath {
                     name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(
                         b"v",
                     ),
-                    type_: <<ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__FnTypes>::__test_enum_variants__arg_0 as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
+                    type_: <<ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__test_enum_variants__arg_0>::MyEnumVariants as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
                 },
             ],
         ),
         outputs: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(
             &[
-                <<ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__FnTypes>::__test_enum_variants__ret as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
+                <<ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__test_enum_variants__ret>::MyEnumVariants as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
             ],
         ),
     });
@@ -2262,8 +2608,8 @@ impl<'a> ContractGlobalPathClient<'a> {
     /// Returns the input unchanged.
     pub fn test_u32(
         &self,
-        v: &<ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__FnTypes>::__test_u32__arg_0,
-    ) -> <ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__FnTypes>::__test_u32__ret{
+        v: &<ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__test_u32__arg_0>::u32,
+    ) -> <ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__test_u32__ret>::u32{
         let _call_scope = soroban_sdk::testutils::ClientCallScope::enter(&self.env, self.config);
         use soroban_sdk::{FromVal, IntoVal};
         let res = self.env.invoke_contract(
@@ -2281,11 +2627,11 @@ impl<'a> ContractGlobalPathClient<'a> {
     /// Returns the input unchanged.
     pub fn try_test_u32(
         &self,
-        v: &<ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__FnTypes>::__test_u32__arg_0,
+        v: &<ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__test_u32__arg_0>::u32,
     ) -> Result<
         Result<
-            <ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__FnTypes>::__test_u32__ret,
-            <<ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__FnTypes>::__test_u32__ret as soroban_sdk::TryFromVal<
+            <ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__test_u32__ret>::u32,
+            <<ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__test_u32__ret>::u32 as soroban_sdk::TryFromVal<
                 soroban_sdk::Env,
                 soroban_sdk::Val,
             >>::Error,
@@ -2308,8 +2654,8 @@ impl<'a> ContractGlobalPathClient<'a> {
     /// Test i32 values.
     pub fn test_i32(
         &self,
-        v: &<ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__FnTypes>::__test_i32__arg_0,
-    ) -> <ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__FnTypes>::__test_i32__ret{
+        v: &<ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__test_i32__arg_0>::i32,
+    ) -> <ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__test_i32__ret>::i32{
         let _call_scope = soroban_sdk::testutils::ClientCallScope::enter(&self.env, self.config);
         use soroban_sdk::{FromVal, IntoVal};
         let res = self.env.invoke_contract(
@@ -2326,11 +2672,11 @@ impl<'a> ContractGlobalPathClient<'a> {
     /// Test i32 values.
     pub fn try_test_i32(
         &self,
-        v: &<ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__FnTypes>::__test_i32__arg_0,
+        v: &<ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__test_i32__arg_0>::i32,
     ) -> Result<
         Result<
-            <ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__FnTypes>::__test_i32__ret,
-            <<ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__FnTypes>::__test_i32__ret as soroban_sdk::TryFromVal<
+            <ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__test_i32__ret>::i32,
+            <<ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__test_i32__ret>::i32 as soroban_sdk::TryFromVal<
                 soroban_sdk::Env,
                 soroban_sdk::Val,
             >>::Error,
@@ -2352,8 +2698,8 @@ impl<'a> ContractGlobalPathClient<'a> {
     }
     pub fn test_u64(
         &self,
-        v: &<ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__FnTypes>::__test_u64__arg_0,
-    ) -> <ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__FnTypes>::__test_u64__ret{
+        v: &<ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__test_u64__arg_0>::u64,
+    ) -> <ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__test_u64__ret>::u64{
         let _call_scope = soroban_sdk::testutils::ClientCallScope::enter(&self.env, self.config);
         use soroban_sdk::{FromVal, IntoVal};
         let res = self.env.invoke_contract(
@@ -2369,11 +2715,11 @@ impl<'a> ContractGlobalPathClient<'a> {
     }
     pub fn try_test_u64(
         &self,
-        v: &<ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__FnTypes>::__test_u64__arg_0,
+        v: &<ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__test_u64__arg_0>::u64,
     ) -> Result<
         Result<
-            <ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__FnTypes>::__test_u64__ret,
-            <<ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__FnTypes>::__test_u64__ret as soroban_sdk::TryFromVal<
+            <ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__test_u64__ret>::u64,
+            <<ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__test_u64__ret>::u64 as soroban_sdk::TryFromVal<
                 soroban_sdk::Env,
                 soroban_sdk::Val,
             >>::Error,
@@ -2395,8 +2741,8 @@ impl<'a> ContractGlobalPathClient<'a> {
     }
     pub fn test_i64(
         &self,
-        v: &<ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__FnTypes>::__test_i64__arg_0,
-    ) -> <ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__FnTypes>::__test_i64__ret{
+        v: &<ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__test_i64__arg_0>::i64,
+    ) -> <ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__test_i64__ret>::i64{
         let _call_scope = soroban_sdk::testutils::ClientCallScope::enter(&self.env, self.config);
         use soroban_sdk::{FromVal, IntoVal};
         let res = self.env.invoke_contract(
@@ -2412,11 +2758,11 @@ impl<'a> ContractGlobalPathClient<'a> {
     }
     pub fn try_test_i64(
         &self,
-        v: &<ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__FnTypes>::__test_i64__arg_0,
+        v: &<ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__test_i64__arg_0>::i64,
     ) -> Result<
         Result<
-            <ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__FnTypes>::__test_i64__ret,
-            <<ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__FnTypes>::__test_i64__ret as soroban_sdk::TryFromVal<
+            <ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__test_i64__ret>::i64,
+            <<ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__test_i64__ret>::i64 as soroban_sdk::TryFromVal<
                 soroban_sdk::Env,
                 soroban_sdk::Val,
             >>::Error,
@@ -2438,8 +2784,8 @@ impl<'a> ContractGlobalPathClient<'a> {
     }
     pub fn test_u128(
         &self,
-        v: &<ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__FnTypes>::__test_u128__arg_0,
-    ) -> <ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__FnTypes>::__test_u128__ret{
+        v: &<ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__test_u128__arg_0>::u128,
+    ) -> <ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__test_u128__ret>::u128{
         let _call_scope = soroban_sdk::testutils::ClientCallScope::enter(&self.env, self.config);
         use soroban_sdk::{FromVal, IntoVal};
         let res = self.env.invoke_contract(
@@ -2455,11 +2801,11 @@ impl<'a> ContractGlobalPathClient<'a> {
     }
     pub fn try_test_u128(
         &self,
-        v: &<ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__FnTypes>::__test_u128__arg_0,
+        v: &<ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__test_u128__arg_0>::u128,
     ) -> Result<
         Result<
-            <ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__FnTypes>::__test_u128__ret,
-            <<ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__FnTypes>::__test_u128__ret as soroban_sdk::TryFromVal<
+            <ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__test_u128__ret>::u128,
+            <<ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__test_u128__ret>::u128 as soroban_sdk::TryFromVal<
                 soroban_sdk::Env,
                 soroban_sdk::Val,
             >>::Error,
@@ -2481,8 +2827,8 @@ impl<'a> ContractGlobalPathClient<'a> {
     }
     pub fn test_i128(
         &self,
-        v: &<ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__FnTypes>::__test_i128__arg_0,
-    ) -> <ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__FnTypes>::__test_i128__ret{
+        v: &<ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__test_i128__arg_0>::i128,
+    ) -> <ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__test_i128__ret>::i128{
         let _call_scope = soroban_sdk::testutils::ClientCallScope::enter(&self.env, self.config);
         use soroban_sdk::{FromVal, IntoVal};
         let res = self.env.invoke_contract(
@@ -2498,11 +2844,11 @@ impl<'a> ContractGlobalPathClient<'a> {
     }
     pub fn try_test_i128(
         &self,
-        v: &<ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__FnTypes>::__test_i128__arg_0,
+        v: &<ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__test_i128__arg_0>::i128,
     ) -> Result<
         Result<
-            <ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__FnTypes>::__test_i128__ret,
-            <<ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__FnTypes>::__test_i128__ret as soroban_sdk::TryFromVal<
+            <ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__test_i128__ret>::i128,
+            <<ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__test_i128__ret>::i128 as soroban_sdk::TryFromVal<
                 soroban_sdk::Env,
                 soroban_sdk::Val,
             >>::Error,
@@ -2524,8 +2870,8 @@ impl<'a> ContractGlobalPathClient<'a> {
     }
     pub fn test_bool(
         &self,
-        v: &<ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__FnTypes>::__test_bool__arg_0,
-    ) -> <ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__FnTypes>::__test_bool__ret{
+        v: &<ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__test_bool__arg_0>::bool,
+    ) -> <ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__test_bool__ret>::bool{
         let _call_scope = soroban_sdk::testutils::ClientCallScope::enter(&self.env, self.config);
         use soroban_sdk::{FromVal, IntoVal};
         let res = self.env.invoke_contract(
@@ -2541,11 +2887,11 @@ impl<'a> ContractGlobalPathClient<'a> {
     }
     pub fn try_test_bool(
         &self,
-        v: &<ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__FnTypes>::__test_bool__arg_0,
+        v: &<ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__test_bool__arg_0>::bool,
     ) -> Result<
         Result<
-            <ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__FnTypes>::__test_bool__ret,
-            <<ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__FnTypes>::__test_bool__ret as soroban_sdk::TryFromVal<
+            <ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__test_bool__ret>::bool,
+            <<ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__test_bool__ret>::bool as soroban_sdk::TryFromVal<
                 soroban_sdk::Env,
                 soroban_sdk::Val,
             >>::Error,
@@ -2567,8 +2913,8 @@ impl<'a> ContractGlobalPathClient<'a> {
     }
     pub fn test_address(
         &self,
-        v: &<ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__FnTypes>::__test_address__arg_0,
-    ) -> <ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__FnTypes>::__test_address__ret{
+        v: &<ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__test_address__arg_0>::Address,
+    ) -> <ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__test_address__ret>::Address{
         let _call_scope = soroban_sdk::testutils::ClientCallScope::enter(&self.env, self.config);
         use soroban_sdk::{FromVal, IntoVal};
         let res = self.env.invoke_contract(
@@ -2580,11 +2926,11 @@ impl<'a> ContractGlobalPathClient<'a> {
     }
     pub fn try_test_address(
         &self,
-        v: &<ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__FnTypes>::__test_address__arg_0,
+        v: &<ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__test_address__arg_0>::Address,
     ) -> Result<
         Result<
-            <ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__FnTypes>::__test_address__ret,
-            <<ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__FnTypes>::__test_address__ret as soroban_sdk::TryFromVal<
+            <ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__test_address__ret>::Address,
+            <<ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__test_address__ret>::Address as soroban_sdk::TryFromVal<
                 soroban_sdk::Env,
                 soroban_sdk::Val,
             >>::Error,
@@ -2602,8 +2948,8 @@ impl<'a> ContractGlobalPathClient<'a> {
     }
     pub fn test_bytes(
         &self,
-        v: &<ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__FnTypes>::__test_bytes__arg_0,
-    ) -> <ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__FnTypes>::__test_bytes__ret{
+        v: &<ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__test_bytes__arg_0>::Bytes,
+    ) -> <ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__test_bytes__ret>::Bytes{
         let _call_scope = soroban_sdk::testutils::ClientCallScope::enter(&self.env, self.config);
         use soroban_sdk::{FromVal, IntoVal};
         let res = self.env.invoke_contract(
@@ -2615,11 +2961,11 @@ impl<'a> ContractGlobalPathClient<'a> {
     }
     pub fn try_test_bytes(
         &self,
-        v: &<ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__FnTypes>::__test_bytes__arg_0,
+        v: &<ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__test_bytes__arg_0>::Bytes,
     ) -> Result<
         Result<
-            <ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__FnTypes>::__test_bytes__ret,
-            <<ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__FnTypes>::__test_bytes__ret as soroban_sdk::TryFromVal<
+            <ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__test_bytes__ret>::Bytes,
+            <<ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__test_bytes__ret>::Bytes as soroban_sdk::TryFromVal<
                 soroban_sdk::Env,
                 soroban_sdk::Val,
             >>::Error,
@@ -2637,8 +2983,8 @@ impl<'a> ContractGlobalPathClient<'a> {
     }
     pub fn test_bytes_n(
         &self,
-        v: &<ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__FnTypes>::__test_bytes_n__arg_0,
-    ) -> <ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__FnTypes>::__test_bytes_n__ret{
+        v: &<ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__test_bytes_n__arg_0>::BytesN,
+    ) -> <ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__test_bytes_n__ret>::BytesN{
         let _call_scope = soroban_sdk::testutils::ClientCallScope::enter(&self.env, self.config);
         use soroban_sdk::{FromVal, IntoVal};
         let res = self.env.invoke_contract(
@@ -2650,11 +2996,11 @@ impl<'a> ContractGlobalPathClient<'a> {
     }
     pub fn try_test_bytes_n(
         &self,
-        v: &<ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__FnTypes>::__test_bytes_n__arg_0,
+        v: &<ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__test_bytes_n__arg_0>::BytesN,
     ) -> Result<
         Result<
-            <ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__FnTypes>::__test_bytes_n__ret,
-            <<ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__FnTypes>::__test_bytes_n__ret as soroban_sdk::TryFromVal<
+            <ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__test_bytes_n__ret>::BytesN,
+            <<ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__test_bytes_n__ret>::BytesN as soroban_sdk::TryFromVal<
                 soroban_sdk::Env,
                 soroban_sdk::Val,
             >>::Error,
@@ -2672,8 +3018,8 @@ impl<'a> ContractGlobalPathClient<'a> {
     }
     pub fn test_string(
         &self,
-        v: &<ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__FnTypes>::__test_string__arg_0,
-    ) -> <ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__FnTypes>::__test_string__ret{
+        v: &<ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__test_string__arg_0>::String,
+    ) -> <ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__test_string__ret>::String{
         let _call_scope = soroban_sdk::testutils::ClientCallScope::enter(&self.env, self.config);
         use soroban_sdk::{FromVal, IntoVal};
         let res = self.env.invoke_contract(
@@ -2685,11 +3031,11 @@ impl<'a> ContractGlobalPathClient<'a> {
     }
     pub fn try_test_string(
         &self,
-        v: &<ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__FnTypes>::__test_string__arg_0,
+        v: &<ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__test_string__arg_0>::String,
     ) -> Result<
         Result<
-            <ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__FnTypes>::__test_string__ret,
-            <<ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__FnTypes>::__test_string__ret as soroban_sdk::TryFromVal<
+            <ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__test_string__ret>::String,
+            <<ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__test_string__ret>::String as soroban_sdk::TryFromVal<
                 soroban_sdk::Env,
                 soroban_sdk::Val,
             >>::Error,
@@ -2707,8 +3053,8 @@ impl<'a> ContractGlobalPathClient<'a> {
     }
     pub fn test_symbol(
         &self,
-        v: &<ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__FnTypes>::__test_symbol__arg_0,
-    ) -> <ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__FnTypes>::__test_symbol__ret{
+        v: &<ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__test_symbol__arg_0>::Symbol,
+    ) -> <ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__test_symbol__ret>::Symbol{
         let _call_scope = soroban_sdk::testutils::ClientCallScope::enter(&self.env, self.config);
         use soroban_sdk::{FromVal, IntoVal};
         let res = self.env.invoke_contract(
@@ -2720,11 +3066,11 @@ impl<'a> ContractGlobalPathClient<'a> {
     }
     pub fn try_test_symbol(
         &self,
-        v: &<ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__FnTypes>::__test_symbol__arg_0,
+        v: &<ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__test_symbol__arg_0>::Symbol,
     ) -> Result<
         Result<
-            <ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__FnTypes>::__test_symbol__ret,
-            <<ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__FnTypes>::__test_symbol__ret as soroban_sdk::TryFromVal<
+            <ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__test_symbol__ret>::Symbol,
+            <<ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__test_symbol__ret>::Symbol as soroban_sdk::TryFromVal<
                 soroban_sdk::Env,
                 soroban_sdk::Val,
             >>::Error,
@@ -2742,8 +3088,8 @@ impl<'a> ContractGlobalPathClient<'a> {
     }
     pub fn test_vec(
         &self,
-        v: &<ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__FnTypes>::__test_vec__arg_0,
-    ) -> <ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__FnTypes>::__test_vec__ret{
+        v: &<ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__test_vec__arg_0>::Vec,
+    ) -> <ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__test_vec__ret>::Vec{
         let _call_scope = soroban_sdk::testutils::ClientCallScope::enter(&self.env, self.config);
         use soroban_sdk::{FromVal, IntoVal};
         let res = self.env.invoke_contract(
@@ -2759,11 +3105,11 @@ impl<'a> ContractGlobalPathClient<'a> {
     }
     pub fn try_test_vec(
         &self,
-        v: &<ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__FnTypes>::__test_vec__arg_0,
+        v: &<ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__test_vec__arg_0>::Vec,
     ) -> Result<
         Result<
-            <ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__FnTypes>::__test_vec__ret,
-            <<ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__FnTypes>::__test_vec__ret as soroban_sdk::TryFromVal<
+            <ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__test_vec__ret>::Vec,
+            <<ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__test_vec__ret>::Vec as soroban_sdk::TryFromVal<
                 soroban_sdk::Env,
                 soroban_sdk::Val,
             >>::Error,
@@ -2785,8 +3131,8 @@ impl<'a> ContractGlobalPathClient<'a> {
     }
     pub fn test_map(
         &self,
-        v: &<ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__FnTypes>::__test_map__arg_0,
-    ) -> <ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__FnTypes>::__test_map__ret{
+        v: &<ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__test_map__arg_0>::Map,
+    ) -> <ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__test_map__ret>::Map{
         let _call_scope = soroban_sdk::testutils::ClientCallScope::enter(&self.env, self.config);
         use soroban_sdk::{FromVal, IntoVal};
         let res = self.env.invoke_contract(
@@ -2802,11 +3148,11 @@ impl<'a> ContractGlobalPathClient<'a> {
     }
     pub fn try_test_map(
         &self,
-        v: &<ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__FnTypes>::__test_map__arg_0,
+        v: &<ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__test_map__arg_0>::Map,
     ) -> Result<
         Result<
-            <ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__FnTypes>::__test_map__ret,
-            <<ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__FnTypes>::__test_map__ret as soroban_sdk::TryFromVal<
+            <ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__test_map__ret>::Map,
+            <<ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__test_map__ret>::Map as soroban_sdk::TryFromVal<
                 soroban_sdk::Env,
                 soroban_sdk::Val,
             >>::Error,
@@ -2828,8 +3174,8 @@ impl<'a> ContractGlobalPathClient<'a> {
     }
     pub fn test_duration(
         &self,
-        v: &<ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__FnTypes>::__test_duration__arg_0,
-    ) -> <ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__FnTypes>::__test_duration__ret{
+        v: &<ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__test_duration__arg_0>::Duration,
+    ) -> <ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__test_duration__ret>::Duration{
         let _call_scope = soroban_sdk::testutils::ClientCallScope::enter(&self.env, self.config);
         use soroban_sdk::{FromVal, IntoVal};
         let res = self.env.invoke_contract(
@@ -2841,11 +3187,11 @@ impl<'a> ContractGlobalPathClient<'a> {
     }
     pub fn try_test_duration(
         &self,
-        v: &<ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__FnTypes>::__test_duration__arg_0,
+        v: &<ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__test_duration__arg_0>::Duration,
     ) -> Result<
         Result<
-            <ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__FnTypes>::__test_duration__ret,
-            <<ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__FnTypes>::__test_duration__ret as soroban_sdk::TryFromVal<
+            <ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__test_duration__ret>::Duration,
+            <<ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__test_duration__ret>::Duration as soroban_sdk::TryFromVal<
                 soroban_sdk::Env,
                 soroban_sdk::Val,
             >>::Error,
@@ -2863,8 +3209,8 @@ impl<'a> ContractGlobalPathClient<'a> {
     }
     pub fn test_timepoint(
         &self,
-        v: &<ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__FnTypes>::__test_timepoint__arg_0,
-    ) -> <ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__FnTypes>::__test_timepoint__ret{
+        v: &<ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__test_timepoint__arg_0>::Timepoint,
+    ) -> <ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__test_timepoint__ret>::Timepoint{
         let _call_scope = soroban_sdk::testutils::ClientCallScope::enter(&self.env, self.config);
         use soroban_sdk::{FromVal, IntoVal};
         let res = self.env.invoke_contract(
@@ -2876,11 +3222,11 @@ impl<'a> ContractGlobalPathClient<'a> {
     }
     pub fn try_test_timepoint(
         &self,
-        v: &<ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__FnTypes>::__test_timepoint__arg_0,
+        v: &<ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__test_timepoint__arg_0>::Timepoint,
     ) -> Result<
         Result<
-            <ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__FnTypes>::__test_timepoint__ret,
-            <<ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__FnTypes>::__test_timepoint__ret as soroban_sdk::TryFromVal<
+            <ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__test_timepoint__ret>::Timepoint,
+            <<ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__test_timepoint__ret>::Timepoint as soroban_sdk::TryFromVal<
                 soroban_sdk::Env,
                 soroban_sdk::Val,
             >>::Error,
@@ -2898,8 +3244,8 @@ impl<'a> ContractGlobalPathClient<'a> {
     }
     pub fn test_i256(
         &self,
-        v: &<ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__FnTypes>::__test_i256__arg_0,
-    ) -> <ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__FnTypes>::__test_i256__ret{
+        v: &<ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__test_i256__arg_0>::I256,
+    ) -> <ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__test_i256__ret>::I256{
         let _call_scope = soroban_sdk::testutils::ClientCallScope::enter(&self.env, self.config);
         use soroban_sdk::{FromVal, IntoVal};
         let res = self.env.invoke_contract(
@@ -2915,11 +3261,11 @@ impl<'a> ContractGlobalPathClient<'a> {
     }
     pub fn try_test_i256(
         &self,
-        v: &<ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__FnTypes>::__test_i256__arg_0,
+        v: &<ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__test_i256__arg_0>::I256,
     ) -> Result<
         Result<
-            <ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__FnTypes>::__test_i256__ret,
-            <<ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__FnTypes>::__test_i256__ret as soroban_sdk::TryFromVal<
+            <ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__test_i256__ret>::I256,
+            <<ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__test_i256__ret>::I256 as soroban_sdk::TryFromVal<
                 soroban_sdk::Env,
                 soroban_sdk::Val,
             >>::Error,
@@ -2941,8 +3287,8 @@ impl<'a> ContractGlobalPathClient<'a> {
     }
     pub fn test_u256(
         &self,
-        v: &<ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__FnTypes>::__test_u256__arg_0,
-    ) -> <ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__FnTypes>::__test_u256__ret{
+        v: &<ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__test_u256__arg_0>::U256,
+    ) -> <ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__test_u256__ret>::U256{
         let _call_scope = soroban_sdk::testutils::ClientCallScope::enter(&self.env, self.config);
         use soroban_sdk::{FromVal, IntoVal};
         let res = self.env.invoke_contract(
@@ -2958,11 +3304,11 @@ impl<'a> ContractGlobalPathClient<'a> {
     }
     pub fn try_test_u256(
         &self,
-        v: &<ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__FnTypes>::__test_u256__arg_0,
+        v: &<ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__test_u256__arg_0>::U256,
     ) -> Result<
         Result<
-            <ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__FnTypes>::__test_u256__ret,
-            <<ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__FnTypes>::__test_u256__ret as soroban_sdk::TryFromVal<
+            <ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__test_u256__ret>::U256,
+            <<ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__test_u256__ret>::U256 as soroban_sdk::TryFromVal<
                 soroban_sdk::Env,
                 soroban_sdk::Val,
             >>::Error,
@@ -2984,7 +3330,7 @@ impl<'a> ContractGlobalPathClient<'a> {
     }
     pub fn test_env_param(
         &self,
-    ) -> <ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__FnTypes>::__test_env_param__ret{
+    ) -> <ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__test_env_param__ret>::u32{
         let _call_scope = soroban_sdk::testutils::ClientCallScope::enter(&self.env, self.config);
         use soroban_sdk::{FromVal, IntoVal};
         let res = self.env.invoke_contract(
@@ -2998,8 +3344,8 @@ impl<'a> ContractGlobalPathClient<'a> {
         &self,
     ) -> Result<
         Result<
-            <ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__FnTypes>::__test_env_param__ret,
-            <<ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__FnTypes>::__test_env_param__ret as soroban_sdk::TryFromVal<
+            <ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__test_env_param__ret>::u32,
+            <<ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__test_env_param__ret>::u32 as soroban_sdk::TryFromVal<
                 soroban_sdk::Env,
                 soroban_sdk::Val,
             >>::Error,
@@ -3017,8 +3363,8 @@ impl<'a> ContractGlobalPathClient<'a> {
     }
     pub fn test_struct(
         &self,
-        v: &<ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__FnTypes>::__test_struct__arg_0,
-    ) -> <ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__FnTypes>::__test_struct__ret{
+        v: &<ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__test_struct__arg_0>::MyStruct,
+    ) -> <ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__test_struct__ret>::MyStruct{
         let _call_scope = soroban_sdk::testutils::ClientCallScope::enter(&self.env, self.config);
         use soroban_sdk::{FromVal, IntoVal};
         let res = self.env.invoke_contract(
@@ -3030,11 +3376,11 @@ impl<'a> ContractGlobalPathClient<'a> {
     }
     pub fn try_test_struct(
         &self,
-        v: &<ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__FnTypes>::__test_struct__arg_0,
+        v: &<ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__test_struct__arg_0>::MyStruct,
     ) -> Result<
         Result<
-            <ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__FnTypes>::__test_struct__ret,
-            <<ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__FnTypes>::__test_struct__ret as soroban_sdk::TryFromVal<
+            <ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__test_struct__ret>::MyStruct,
+            <<ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__test_struct__ret>::MyStruct as soroban_sdk::TryFromVal<
                 soroban_sdk::Env,
                 soroban_sdk::Val,
             >>::Error,
@@ -3052,8 +3398,8 @@ impl<'a> ContractGlobalPathClient<'a> {
     }
     pub fn test_enum_unit(
         &self,
-        v: &<ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__FnTypes>::__test_enum_unit__arg_0,
-    ) -> <ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__FnTypes>::__test_enum_unit__ret{
+        v: &<ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__test_enum_unit__arg_0>::MyEnumUnit,
+    ) -> <ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__test_enum_unit__ret>::MyEnumUnit{
         let _call_scope = soroban_sdk::testutils::ClientCallScope::enter(&self.env, self.config);
         use soroban_sdk::{FromVal, IntoVal};
         let res = self.env.invoke_contract(
@@ -3065,11 +3411,11 @@ impl<'a> ContractGlobalPathClient<'a> {
     }
     pub fn try_test_enum_unit(
         &self,
-        v: &<ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__FnTypes>::__test_enum_unit__arg_0,
+        v: &<ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__test_enum_unit__arg_0>::MyEnumUnit,
     ) -> Result<
         Result<
-            <ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__FnTypes>::__test_enum_unit__ret,
-            <<ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__FnTypes>::__test_enum_unit__ret as soroban_sdk::TryFromVal<
+            <ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__test_enum_unit__ret>::MyEnumUnit,
+            <<ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__test_enum_unit__ret>::MyEnumUnit as soroban_sdk::TryFromVal<
                 soroban_sdk::Env,
                 soroban_sdk::Val,
             >>::Error,
@@ -3087,8 +3433,8 @@ impl<'a> ContractGlobalPathClient<'a> {
     }
     pub fn test_enum_variants(
         &self,
-        v: &<ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__FnTypes>::__test_enum_variants__arg_0,
-    ) -> <ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__FnTypes>::__test_enum_variants__ret{
+        v: &<ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__test_enum_variants__arg_0>::MyEnumVariants,
+    ) -> <ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__test_enum_variants__ret>::MyEnumVariants{
         let _call_scope = soroban_sdk::testutils::ClientCallScope::enter(&self.env, self.config);
         use soroban_sdk::{FromVal, IntoVal};
         let res = self.env.invoke_contract(
@@ -3100,11 +3446,11 @@ impl<'a> ContractGlobalPathClient<'a> {
     }
     pub fn try_test_enum_variants(
         &self,
-        v: &<ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__FnTypes>::__test_enum_variants__arg_0,
+        v: &<ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__test_enum_variants__arg_0>::MyEnumVariants,
     ) -> Result<
         Result<
-            <ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__FnTypes>::__test_enum_variants__ret,
-            <<ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__FnTypes>::__test_enum_variants__ret as soroban_sdk::TryFromVal<
+            <ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__test_enum_variants__ret>::MyEnumVariants,
+            <<ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__test_enum_variants__ret>::MyEnumVariants as soroban_sdk::TryFromVal<
                 soroban_sdk::Env,
                 soroban_sdk::Val,
             >>::Error,
@@ -3127,9 +3473,9 @@ impl ContractGlobalPathArgs {
     #[inline(always)]
     #[allow(clippy::unused_unit)]
     pub fn test_u32<'i>(
-        v: &'i <ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__FnTypes>::__test_u32__arg_0,
+        v: &'i <ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__test_u32__arg_0>::u32,
     ) -> (
-        &'i <ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__FnTypes>::__test_u32__arg_0,
+        &'i <ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__test_u32__arg_0>::u32,
     ){
         (v,)
     }
@@ -3137,153 +3483,153 @@ impl ContractGlobalPathArgs {
     #[inline(always)]
     #[allow(clippy::unused_unit)]
     pub fn test_i32<'i>(
-        v: &'i <ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__FnTypes>::__test_i32__arg_0,
+        v: &'i <ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__test_i32__arg_0>::i32,
     ) -> (
-        &'i <ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__FnTypes>::__test_i32__arg_0,
+        &'i <ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__test_i32__arg_0>::i32,
     ){
         (v,)
     }
     #[inline(always)]
     #[allow(clippy::unused_unit)]
     pub fn test_u64<'i>(
-        v: &'i <ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__FnTypes>::__test_u64__arg_0,
+        v: &'i <ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__test_u64__arg_0>::u64,
     ) -> (
-        &'i <ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__FnTypes>::__test_u64__arg_0,
+        &'i <ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__test_u64__arg_0>::u64,
     ){
         (v,)
     }
     #[inline(always)]
     #[allow(clippy::unused_unit)]
     pub fn test_i64<'i>(
-        v: &'i <ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__FnTypes>::__test_i64__arg_0,
+        v: &'i <ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__test_i64__arg_0>::i64,
     ) -> (
-        &'i <ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__FnTypes>::__test_i64__arg_0,
+        &'i <ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__test_i64__arg_0>::i64,
     ){
         (v,)
     }
     #[inline(always)]
     #[allow(clippy::unused_unit)]
     pub fn test_u128<'i>(
-        v: &'i <ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__FnTypes>::__test_u128__arg_0,
+        v: &'i <ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__test_u128__arg_0>::u128,
     ) -> (
-        &'i <ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__FnTypes>::__test_u128__arg_0,
+        &'i <ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__test_u128__arg_0>::u128,
     ){
         (v,)
     }
     #[inline(always)]
     #[allow(clippy::unused_unit)]
     pub fn test_i128<'i>(
-        v: &'i <ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__FnTypes>::__test_i128__arg_0,
+        v: &'i <ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__test_i128__arg_0>::i128,
     ) -> (
-        &'i <ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__FnTypes>::__test_i128__arg_0,
+        &'i <ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__test_i128__arg_0>::i128,
     ){
         (v,)
     }
     #[inline(always)]
     #[allow(clippy::unused_unit)]
     pub fn test_bool<'i>(
-        v: &'i <ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__FnTypes>::__test_bool__arg_0,
+        v: &'i <ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__test_bool__arg_0>::bool,
     ) -> (
-        &'i <ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__FnTypes>::__test_bool__arg_0,
+        &'i <ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__test_bool__arg_0>::bool,
     ){
         (v,)
     }
     #[inline(always)]
     #[allow(clippy::unused_unit)]
     pub fn test_address<'i>(
-        v: &'i <ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__FnTypes>::__test_address__arg_0,
+        v: &'i <ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__test_address__arg_0>::Address,
     ) -> (
-        &'i <ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__FnTypes>::__test_address__arg_0,
+        &'i <ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__test_address__arg_0>::Address,
     ){
         (v,)
     }
     #[inline(always)]
     #[allow(clippy::unused_unit)]
     pub fn test_bytes<'i>(
-        v: &'i <ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__FnTypes>::__test_bytes__arg_0,
+        v: &'i <ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__test_bytes__arg_0>::Bytes,
     ) -> (
-        &'i <ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__FnTypes>::__test_bytes__arg_0,
+        &'i <ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__test_bytes__arg_0>::Bytes,
     ){
         (v,)
     }
     #[inline(always)]
     #[allow(clippy::unused_unit)]
     pub fn test_bytes_n<'i>(
-        v: &'i <ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__FnTypes>::__test_bytes_n__arg_0,
+        v: &'i <ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__test_bytes_n__arg_0>::BytesN,
     ) -> (
-        &'i <ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__FnTypes>::__test_bytes_n__arg_0,
+        &'i <ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__test_bytes_n__arg_0>::BytesN,
     ){
         (v,)
     }
     #[inline(always)]
     #[allow(clippy::unused_unit)]
     pub fn test_string<'i>(
-        v: &'i <ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__FnTypes>::__test_string__arg_0,
+        v: &'i <ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__test_string__arg_0>::String,
     ) -> (
-        &'i <ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__FnTypes>::__test_string__arg_0,
+        &'i <ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__test_string__arg_0>::String,
     ){
         (v,)
     }
     #[inline(always)]
     #[allow(clippy::unused_unit)]
     pub fn test_symbol<'i>(
-        v: &'i <ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__FnTypes>::__test_symbol__arg_0,
+        v: &'i <ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__test_symbol__arg_0>::Symbol,
     ) -> (
-        &'i <ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__FnTypes>::__test_symbol__arg_0,
+        &'i <ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__test_symbol__arg_0>::Symbol,
     ){
         (v,)
     }
     #[inline(always)]
     #[allow(clippy::unused_unit)]
     pub fn test_vec<'i>(
-        v: &'i <ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__FnTypes>::__test_vec__arg_0,
+        v: &'i <ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__test_vec__arg_0>::Vec,
     ) -> (
-        &'i <ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__FnTypes>::__test_vec__arg_0,
+        &'i <ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__test_vec__arg_0>::Vec,
     ){
         (v,)
     }
     #[inline(always)]
     #[allow(clippy::unused_unit)]
     pub fn test_map<'i>(
-        v: &'i <ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__FnTypes>::__test_map__arg_0,
+        v: &'i <ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__test_map__arg_0>::Map,
     ) -> (
-        &'i <ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__FnTypes>::__test_map__arg_0,
+        &'i <ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__test_map__arg_0>::Map,
     ){
         (v,)
     }
     #[inline(always)]
     #[allow(clippy::unused_unit)]
     pub fn test_duration<'i>(
-        v: &'i <ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__FnTypes>::__test_duration__arg_0,
+        v: &'i <ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__test_duration__arg_0>::Duration,
     ) -> (
-        &'i <ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__FnTypes>::__test_duration__arg_0,
+        &'i <ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__test_duration__arg_0>::Duration,
     ){
         (v,)
     }
     #[inline(always)]
     #[allow(clippy::unused_unit)]
     pub fn test_timepoint<'i>(
-        v: &'i <ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__FnTypes>::__test_timepoint__arg_0,
+        v: &'i <ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__test_timepoint__arg_0>::Timepoint,
     ) -> (
-        &'i <ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__FnTypes>::__test_timepoint__arg_0,
+        &'i <ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__test_timepoint__arg_0>::Timepoint,
     ){
         (v,)
     }
     #[inline(always)]
     #[allow(clippy::unused_unit)]
     pub fn test_i256<'i>(
-        v: &'i <ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__FnTypes>::__test_i256__arg_0,
+        v: &'i <ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__test_i256__arg_0>::I256,
     ) -> (
-        &'i <ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__FnTypes>::__test_i256__arg_0,
+        &'i <ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__test_i256__arg_0>::I256,
     ){
         (v,)
     }
     #[inline(always)]
     #[allow(clippy::unused_unit)]
     pub fn test_u256<'i>(
-        v: &'i <ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__FnTypes>::__test_u256__arg_0,
+        v: &'i <ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__test_u256__arg_0>::U256,
     ) -> (
-        &'i <ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__FnTypes>::__test_u256__arg_0,
+        &'i <ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__test_u256__arg_0>::U256,
     ){
         (v,)
     }
@@ -3295,27 +3641,27 @@ impl ContractGlobalPathArgs {
     #[inline(always)]
     #[allow(clippy::unused_unit)]
     pub fn test_struct<'i>(
-        v: &'i <ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__FnTypes>::__test_struct__arg_0,
+        v: &'i <ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__test_struct__arg_0>::MyStruct,
     ) -> (
-        &'i <ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__FnTypes>::__test_struct__arg_0,
+        &'i <ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__test_struct__arg_0>::MyStruct,
     ){
         (v,)
     }
     #[inline(always)]
     #[allow(clippy::unused_unit)]
     pub fn test_enum_unit<'i>(
-        v: &'i <ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__FnTypes>::__test_enum_unit__arg_0,
+        v: &'i <ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__test_enum_unit__arg_0>::MyEnumUnit,
     ) -> (
-        &'i <ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__FnTypes>::__test_enum_unit__arg_0,
+        &'i <ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__test_enum_unit__arg_0>::MyEnumUnit,
     ){
         (v,)
     }
     #[inline(always)]
     #[allow(clippy::unused_unit)]
     pub fn test_enum_variants<'i>(
-        v: &'i <ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__FnTypes>::__test_enum_variants__arg_0,
+        v: &'i <ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__test_enum_variants__arg_0>::MyEnumVariants,
     ) -> (
-        &'i <ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__FnTypes>::__test_enum_variants__arg_0,
+        &'i <ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__test_enum_variants__arg_0>::MyEnumVariants,
     ){
         (v,)
     }

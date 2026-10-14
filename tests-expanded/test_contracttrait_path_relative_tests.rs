@@ -13,9 +13,11 @@ pub mod traits {
     #[doc(hidden)]
     #[allow(non_camel_case_types)]
     pub trait __RelativePathTraitFnTypes {
+        type __relative_path_method__arg_0;
         type __relative_path_method__ret;
     }
     impl<T: RelativePathTrait + ?Sized> __RelativePathTraitFnTypes for T {
+        type __relative_path_method__arg_0 = Env;
         type __relative_path_method__ret = u32;
     }
     pub trait RelativePathTrait: __RelativePathTraitFnTypes {
@@ -277,13 +279,23 @@ impl<'a> ContractRelativePathClient<'a> {}
 impl ContractRelativePathArgs {}
 #[doc(hidden)]
 #[allow(non_camel_case_types)]
-pub trait __ContractRelativePath__traits_RelativePathTrait__FnTypes {
-    type __relative_path_method__ret;
+pub trait __ContractRelativePath__traits_RelativePathTrait__relative_path_method__arg_0 {
+    type Env;
 }
 impl<T: traits::RelativePathTrait + ?Sized>
-    __ContractRelativePath__traits_RelativePathTrait__FnTypes for T
+    __ContractRelativePath__traits_RelativePathTrait__relative_path_method__arg_0 for T
 {
-    type __relative_path_method__ret = T::__relative_path_method__ret;
+    type Env = T::__relative_path_method__arg_0;
+}
+#[doc(hidden)]
+#[allow(non_camel_case_types)]
+pub trait __ContractRelativePath__traits_RelativePathTrait__relative_path_method__ret {
+    type u32;
+}
+impl<T: traits::RelativePathTrait + ?Sized>
+    __ContractRelativePath__traits_RelativePathTrait__relative_path_method__ret for T
+{
+    type u32 = T::__relative_path_method__ret;
 }
 #[doc(hidden)]
 #[allow(non_snake_case)]
@@ -354,7 +366,7 @@ impl ContractRelativePath {
         inputs: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[]),
         outputs: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(
             &[
-                <<ContractRelativePath as __ContractRelativePath__traits_RelativePathTrait__FnTypes>::__relative_path_method__ret as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
+                <<ContractRelativePath as __ContractRelativePath__traits_RelativePathTrait__relative_path_method__ret>::u32 as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
             ],
         ),
     });
@@ -367,7 +379,7 @@ impl ContractRelativePath {
 impl<'a> ContractRelativePathClient<'a> {
     pub fn relative_path_method(
         &self,
-    ) -> <ContractRelativePath as __ContractRelativePath__traits_RelativePathTrait__FnTypes>::__relative_path_method__ret{
+    ) -> <ContractRelativePath as __ContractRelativePath__traits_RelativePathTrait__relative_path_method__ret>::u32{
         let _call_scope = soroban_sdk::testutils::ClientCallScope::enter(&self.env, self.config);
         use soroban_sdk::{FromVal, IntoVal};
         let res = self.env.invoke_contract(
@@ -381,8 +393,8 @@ impl<'a> ContractRelativePathClient<'a> {
         &self,
     ) -> Result<
         Result<
-            <ContractRelativePath as __ContractRelativePath__traits_RelativePathTrait__FnTypes>::__relative_path_method__ret,
-            <<ContractRelativePath as __ContractRelativePath__traits_RelativePathTrait__FnTypes>::__relative_path_method__ret as soroban_sdk::TryFromVal<
+            <ContractRelativePath as __ContractRelativePath__traits_RelativePathTrait__relative_path_method__ret>::u32,
+            <<ContractRelativePath as __ContractRelativePath__traits_RelativePathTrait__relative_path_method__ret>::u32 as soroban_sdk::TryFromVal<
                 soroban_sdk::Env,
                 soroban_sdk::Val,
             >>::Error,
