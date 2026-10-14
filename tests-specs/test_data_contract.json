@@ -26,6 +26,26 @@
   {
     "function_v0": {
       "doc": "",
+      "name": "has_vec_field",
+      "inputs": [
+        {
+          "doc": "",
+          "name": "v",
+          "type": {
+            "udt": {
+              "name": "::test_data_contract::HasVecField"
+            }
+          }
+        }
+      ],
+      "outputs": [
+        "u32"
+      ]
+    }
+  },
+  {
+    "function_v0": {
+      "doc": "",
       "name": "int_enum",
       "inputs": [
         {
@@ -268,6 +288,42 @@
           "type": {
             "bytes_n": {
               "n": 32
+            }
+          }
+        }
+      ]
+    }
+  },
+  {
+    "udt_struct_v0": {
+      "doc": "",
+      "lib": "",
+      "name": "::test_data_field_elem_lib::FieldElem",
+      "fields": [
+        {
+          "doc": "",
+          "name": "0",
+          "type": "u32"
+        }
+      ]
+    }
+  },
+  {
+    "udt_struct_v0": {
+      "doc": "",
+      "lib": "",
+      "name": "::test_data_contract::HasVecField",
+      "fields": [
+        {
+          "doc": "",
+          "name": "0",
+          "type": {
+            "vec": {
+              "element_type": {
+                "udt": {
+                  "name": "::test_data_field_elem_lib::FieldElem"
+                }
+              }
             }
           }
         }

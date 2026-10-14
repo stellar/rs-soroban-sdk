@@ -6,6 +6,7 @@ extern crate core;
 use core::prelude::rust_2021::*;
 use soroban_sdk::{contract, contractimpl, contracttype, Map, Vec};
 use test_data_enum_lib::Enum;
+use test_data_field_elem_lib::FieldElem;
 use test_data_int_enum_lib::IntEnum;
 use test_data_map_elem_lib::{MapKey, MapVal};
 use test_data_nested_lib::Outer;
@@ -119,6 +120,108 @@ impl Wrapper {
         0
     }
 }
+pub struct HasVecField(pub Vec<FieldElem>);
+impl soroban_sdk::SpecName for HasVecField {
+    const SPEC_NAME: &'static str = {
+        const NAME: &str = "::test_data_contract::HasVecField";
+        const CHECKED_NAME: &str = {
+            if !(NAME.len() <= soroban_sdk::xdr::SC_SPEC_TYPE_NAME_LIMIT as usize) {
+                {
+                    ::core::panicking::panic_fmt(
+                        format_args!(
+                            "type `HasVecField` full name including its module path is longer than the contract spec\'s type name limit, shorten its module path or name: `::test_data_contract::HasVecField`",
+                        ),
+                    );
+                }
+            }
+            NAME
+        };
+        CHECKED_NAME
+    };
+}
+impl soroban_sdk::SpecTypeDef for HasVecField {
+    const SPEC_TYPE_DEF: soroban_sdk::xdr::r#const::ScSpecTypeDef =
+        soroban_sdk::xdr::r#const::ScSpecTypeDef::Udt(soroban_sdk::xdr::r#const::ScSpecTypeUdt {
+            name: soroban_sdk::xdr::r#const::StringM::try_from_str_or_panic(
+                <Self as soroban_sdk::SpecName>::SPEC_NAME,
+            ),
+        });
+}
+#[doc(hidden)]
+#[allow(dead_code)]
+static __SPEC_XDR_TYPE_HASVECFIELD: [u8; HasVecField::spec_xdr().len()] = HasVecField::spec_xdr();
+impl HasVecField {
+    const __SPEC_XDR_ENTRY: soroban_sdk::xdr::r#const::ScSpecEntry =
+        soroban_sdk::xdr::r#const::ScSpecEntry::UdtStructV0(
+            soroban_sdk::xdr::r#const::ScSpecUdtStructV0 {
+                doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
+                lib: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
+                name: soroban_sdk::xdr::r#const::StringM::try_from_str_or_panic(
+                    <HasVecField as soroban_sdk::SpecName>::SPEC_NAME,
+                ),
+                fields: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[
+                    soroban_sdk::xdr::r#const::ScSpecUdtStructFieldV0 {
+                        doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
+                        name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b"0"),
+                        type_: <Vec<FieldElem> as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
+                    },
+                ]),
+            },
+        );
+    pub const fn spec_xdr() -> [u8; HasVecField::__SPEC_XDR_ENTRY.const_xdr_len()] {
+        const { HasVecField::__SPEC_XDR_ENTRY.const_to_xdr() }
+    }
+}
+impl soroban_sdk::SpecAnchor for HasVecField {
+    #[inline(never)]
+    fn spec_anchor() {}
+}
+impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for HasVecField {
+    type Error = soroban_sdk::ConversionError;
+    #[inline(always)]
+    fn try_from_val(
+        env: &soroban_sdk::Env,
+        val: &soroban_sdk::Val,
+    ) -> Result<Self, soroban_sdk::ConversionError> {
+        <HasVecField as soroban_sdk::SpecAnchor>::spec_anchor();
+        <Vec<FieldElem> as soroban_sdk::SpecAnchor>::spec_anchor();
+        use soroban_sdk::{ConversionError, EnvBase, TryIntoVal, Val, VecObject};
+        let vec: VecObject = (*val).try_into().map_err(|_| ConversionError)?;
+        let mut vals: [Val; 1usize] = [Val::VOID.to_val(); 1usize];
+        env.vec_unpack_to_slice(vec, &mut vals)
+            .map_err(|_| ConversionError)?;
+        Ok(Self {
+            0: vals[0].try_into_val(env).map_err(|_| ConversionError)?,
+        })
+    }
+}
+impl soroban_sdk::TryFromVal<soroban_sdk::Env, HasVecField> for soroban_sdk::Val {
+    type Error = soroban_sdk::ConversionError;
+    #[inline(always)]
+    fn try_from_val(
+        env: &soroban_sdk::Env,
+        val: &HasVecField,
+    ) -> Result<Self, soroban_sdk::ConversionError> {
+        <HasVecField as soroban_sdk::SpecAnchor>::spec_anchor();
+        <Vec<FieldElem> as soroban_sdk::SpecAnchor>::spec_anchor();
+        use soroban_sdk::{ConversionError, EnvBase, TryIntoVal, Val};
+        let vals: [Val; 1usize] = [(&val.0).try_into_val(env).map_err(|_| ConversionError)?];
+        Ok(env
+            .vec_new_from_slice(&vals)
+            .map_err(|_| ConversionError)?
+            .into())
+    }
+}
+impl soroban_sdk::TryFromVal<soroban_sdk::Env, &HasVecField> for soroban_sdk::Val {
+    type Error = soroban_sdk::ConversionError;
+    #[inline(always)]
+    fn try_from_val(
+        env: &soroban_sdk::Env,
+        val: &&HasVecField,
+    ) -> Result<Self, soroban_sdk::ConversionError> {
+        <_ as soroban_sdk::TryFromVal<soroban_sdk::Env, HasVecField>>::try_from_val(env, *val)
+    }
+}
 pub struct Contract;
 ///ContractArgs is a type for building arg lists for functions defined in "Contract".
 pub struct ContractArgs;
@@ -159,6 +262,9 @@ impl Contract {
     }
     pub fn map_elem(v: Map<MapKey, MapVal>) -> u32 {
         v.len()
+    }
+    pub fn has_vec_field(v: HasVecField) -> u32 {
+        v.0.len()
     }
 }
 #[doc(hidden)]
@@ -418,6 +524,44 @@ impl Contract {
     #[allow(non_snake_case)]
     pub const fn spec_xdr_map_elem() -> [u8; Contract::__SPEC_XDR_ENTRY_map_elem.const_xdr_len()] {
         const { Contract::__SPEC_XDR_ENTRY_map_elem.const_to_xdr() }
+    }
+}
+#[doc(hidden)]
+#[allow(non_snake_case)]
+#[allow(dead_code)]
+mod __Contract__has_vec_field__spec {
+    #[doc(hidden)]
+    #[allow(non_snake_case)]
+    #[allow(non_upper_case_globals)]
+    #[allow(dead_code)]
+    static __SPEC_XDR_FN_HAS_VEC_FIELD: [u8; super::Contract::spec_xdr_has_vec_field().len()] =
+        super::Contract::spec_xdr_has_vec_field();
+}
+impl Contract {
+    #[allow(non_upper_case_globals)]
+    const __SPEC_XDR_ENTRY_has_vec_field: soroban_sdk::xdr::r#const::ScSpecEntry =
+        soroban_sdk::xdr::r#const::ScSpecEntry::FunctionV0(
+            soroban_sdk::xdr::r#const::ScSpecFunctionV0 {
+                doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
+                name: soroban_sdk::xdr::r#const::ScSymbol(
+                    soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b"has_vec_field"),
+                ),
+                inputs: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[
+                    soroban_sdk::xdr::r#const::ScSpecFunctionInputV0 {
+                        doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
+                        name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b"v"),
+                        type_: <HasVecField as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
+                    },
+                ]),
+                outputs: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[
+                    <u32 as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
+                ]),
+            },
+        );
+    #[allow(non_snake_case)]
+    pub const fn spec_xdr_has_vec_field(
+    ) -> [u8; Contract::__SPEC_XDR_ENTRY_has_vec_field.const_xdr_len()] {
+        const { Contract::__SPEC_XDR_ENTRY_has_vec_field.const_to_xdr() }
     }
 }
 impl<'a> ContractClient<'a> {
@@ -742,6 +886,43 @@ impl<'a> ContractClient<'a> {
         );
         res
     }
+    /// Call `has_vec_field` function on the contract.
+    ///
+    /// # Panics
+    ///
+    /// Panics if the invoked contract returns an error or panics.
+    ///
+    /// Use [`Self::try_has_vec_field`] to receive errors instead of panicking.
+    pub fn has_vec_field(&self, v: &HasVecField) -> u32 {
+        use core::ops::Not;
+        use soroban_sdk::{FromVal, IntoVal};
+        let res = self.env.invoke_contract(
+            &self.address,
+            &{ soroban_sdk::Symbol::new(&self.env, "has_vec_field") },
+            ::soroban_sdk::Vec::from_array(&self.env, [v.into_val(&self.env)]),
+        );
+        res
+    }
+    /// Call `has_vec_field` function on the contract.
+    ///
+    /// # Errors
+    ///
+    /// Returns an error if the invoked contract returns an error or panics. A panic in the invoked contract is caught and returned as an error rather than panicking the caller.
+    pub fn try_has_vec_field(
+        &self,
+        v: &HasVecField,
+    ) -> Result<
+        Result<u32, <u32 as soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val>>::Error>,
+        Result<soroban_sdk::Error, soroban_sdk::InvokeError>,
+    > {
+        use soroban_sdk::{FromVal, IntoVal};
+        let res = self.env.try_invoke_contract(
+            &self.address,
+            &{ soroban_sdk::Symbol::new(&self.env, "has_vec_field") },
+            ::soroban_sdk::Vec::from_array(&self.env, [v.into_val(&self.env)]),
+        );
+        res
+    }
 }
 impl ContractArgs {
     #[inline(always)]
@@ -777,6 +958,11 @@ impl ContractArgs {
     #[inline(always)]
     #[allow(clippy::unused_unit)]
     pub fn map_elem<'i>(v: &'i Map<MapKey, MapVal>) -> (&'i Map<MapKey, MapVal>,) {
+        (v,)
+    }
+    #[inline(always)]
+    #[allow(clippy::unused_unit)]
+    pub fn has_vec_field<'i>(v: &'i HasVecField) -> (&'i HasVecField,) {
         (v,)
     }
 }
@@ -982,4 +1168,33 @@ pub extern "C" fn __Contract__map_elem__invoke_raw_extern(
 ) -> soroban_sdk::Val {
     #[allow(deprecated)]
     __Contract__map_elem__invoke_raw(soroban_sdk::Env::default(), arg_0)
+}
+#[doc(hidden)]
+#[allow(non_snake_case)]
+#[deprecated(note = "use `ContractClient::new(&env, &contract_id).has_vec_field` instead")]
+#[allow(deprecated)]
+pub fn __Contract__has_vec_field__invoke_raw(
+    env: soroban_sdk::Env,
+    arg_0: soroban_sdk::Val,
+) -> soroban_sdk::Val {
+    soroban_sdk::IntoValForContractFn::into_val_for_contract_fn(
+        <Contract>::has_vec_field(
+            <_ as soroban_sdk::unwrap::UnwrapOptimized>::unwrap_optimized(
+                <_ as soroban_sdk::TryFromValForContractFn<
+                    soroban_sdk::Env,
+                    soroban_sdk::Val,
+                >>::try_from_val_for_contract_fn(&env, &arg_0),
+            ),
+        ),
+        &env,
+    )
+}
+#[doc(hidden)]
+#[allow(non_snake_case)]
+#[deprecated(note = "use `ContractClient::new(&env, &contract_id).has_vec_field` instead")]
+pub extern "C" fn __Contract__has_vec_field__invoke_raw_extern(
+    arg_0: soroban_sdk::Val,
+) -> soroban_sdk::Val {
+    #[allow(deprecated)]
+    __Contract__has_vec_field__invoke_raw(soroban_sdk::Env::default(), arg_0)
 }

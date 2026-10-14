@@ -1,6 +1,7 @@
 #![no_std]
 use soroban_sdk::{contract, contractimpl, contracttype, Map, Vec};
 use test_data_enum_lib::Enum;
+use test_data_field_elem_lib::FieldElem;
 use test_data_int_enum_lib::IntEnum;
 use test_data_map_elem_lib::{MapKey, MapVal};
 use test_data_nested_lib::Outer;
@@ -18,6 +19,11 @@ impl Wrapper {
         0
     }
 }
+
+// A type with a Vec field whose element type is used nowhere else, so that the
+// element type's spec is linked in only through the field.
+#[contracttype]
+pub struct HasVecField(pub Vec<FieldElem>);
 
 #[contract]
 pub struct Contract;
@@ -54,5 +60,9 @@ impl Contract {
 
     pub fn map_elem(v: Map<MapKey, MapVal>) -> u32 {
         v.len()
+    }
+
+    pub fn has_vec_field(v: HasVecField) -> u32 {
+        v.0.len()
     }
 }
