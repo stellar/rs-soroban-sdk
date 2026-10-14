@@ -1,0 +1,17 @@
+[package]
+name = "test_data_elem_outer_lib"
+version.workspace = true
+authors = ["Stellar Development Foundation <info@stellar.org>"]
+license = "Apache-2.0"
+edition = "2021"
+publish = false
+rust-version.workspace = true
+
+[lib]
+crate-type = ["rlib"]
+doctest = false
+test = false
+
+[dependencies]
+soroban-sdk = {path = "../../soroban-sdk"}
+test_data_elem_inner_lib = {path = "../data_elem_inner_lib"}

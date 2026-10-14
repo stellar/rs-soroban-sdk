@@ -2,6 +2,30 @@
   {
     "function_v0": {
       "doc": "",
+      "name": "elem_field",
+      "inputs": [
+        {
+          "doc": "",
+          "name": "v",
+          "type": {
+            "vec": {
+              "element_type": {
+                "udt": {
+                  "name": "::test_data_elem_outer_lib::ElemOuter"
+                }
+              }
+            }
+          }
+        }
+      ],
+      "outputs": [
+        "u32"
+      ]
+    }
+  },
+  {
+    "function_v0": {
+      "doc": "",
       "name": "enum_",
       "inputs": [
         {
@@ -288,6 +312,38 @@
           "type": {
             "bytes_n": {
               "n": 32
+            }
+          }
+        }
+      ]
+    }
+  },
+  {
+    "udt_struct_v0": {
+      "doc": "",
+      "lib": "",
+      "name": "::test_data_elem_inner_lib::ElemInner",
+      "fields": [
+        {
+          "doc": "",
+          "name": "0",
+          "type": "u32"
+        }
+      ]
+    }
+  },
+  {
+    "udt_struct_v0": {
+      "doc": "",
+      "lib": "",
+      "name": "::test_data_elem_outer_lib::ElemOuter",
+      "fields": [
+        {
+          "doc": "",
+          "name": "0",
+          "type": {
+            "udt": {
+              "name": "::test_data_elem_inner_lib::ElemInner"
             }
           }
         }

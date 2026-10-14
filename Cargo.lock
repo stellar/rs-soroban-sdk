@@ -2303,6 +2303,7 @@ name = "test_data_contract"
 version = "30.0.0"
 dependencies = [
  "soroban-sdk 30.0.0",
+ "test_data_elem_outer_lib",
  "test_data_enum_lib",
  "test_data_field_elem_lib",
  "test_data_int_enum_lib",
@@ -2311,6 +2312,21 @@ dependencies = [
  "test_data_tuple_lib",
  "test_data_vec_elem_lib",
  "test_data_wrapped_lib",
+]
+
+[[package]]
+name = "test_data_elem_inner_lib"
+version = "30.0.0"
+dependencies = [
+ "soroban-sdk 30.0.0",
+]
+
+[[package]]
+name = "test_data_elem_outer_lib"
+version = "30.0.0"
+dependencies = [
+ "soroban-sdk 30.0.0",
+ "test_data_elem_inner_lib",
 ]
 
 [[package]]

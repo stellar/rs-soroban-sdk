@@ -1,5 +1,6 @@
 #![no_std]
 use soroban_sdk::{contract, contractimpl, contracttype, Map, Vec};
+use test_data_elem_outer_lib::ElemOuter;
 use test_data_enum_lib::Enum;
 use test_data_field_elem_lib::FieldElem;
 use test_data_int_enum_lib::IntEnum;
@@ -64,5 +65,12 @@ impl Contract {
 
     pub fn has_vec_field(v: HasVecField) -> u32 {
         v.0.len()
+    }
+
+    // A type used only as the element type of a Vec, with no element converted,
+    // has its spec anchor called only through the anchor of the Vec, and so the
+    // types of its fields are linked in only through its anchor.
+    pub fn elem_field(v: Vec<ElemOuter>) -> u32 {
+        v.len()
     }
 }

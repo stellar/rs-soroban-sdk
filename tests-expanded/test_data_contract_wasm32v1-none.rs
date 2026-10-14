@@ -5,6 +5,7 @@ extern crate core;
 #[prelude_import]
 use core::prelude::rust_2021::*;
 use soroban_sdk::{contract, contractimpl, contracttype, Map, Vec};
+use test_data_elem_outer_lib::ElemOuter;
 use test_data_enum_lib::Enum;
 use test_data_field_elem_lib::FieldElem;
 use test_data_int_enum_lib::IntEnum;
@@ -263,6 +264,9 @@ impl Contract {
     }
     pub fn has_vec_field(v: HasVecField) -> u32 {
         v.0.len()
+    }
+    pub fn elem_field(v: Vec<ElemOuter>) -> u32 {
+        v.len()
     }
 }
 #[doc(hidden)]
@@ -568,6 +572,45 @@ impl Contract {
     pub const fn spec_xdr_has_vec_field(
     ) -> [u8; Contract::__SPEC_XDR_ENTRY_has_vec_field.const_xdr_len()] {
         const { Contract::__SPEC_XDR_ENTRY_has_vec_field.const_to_xdr() }
+    }
+}
+#[doc(hidden)]
+#[allow(non_snake_case)]
+#[allow(dead_code)]
+mod __Contract__elem_field__spec {
+    #[doc(hidden)]
+    #[allow(non_snake_case)]
+    #[allow(non_upper_case_globals)]
+    #[allow(dead_code)]
+    #[link_section = "contractspecv0"]
+    static __SPEC_XDR_FN_ELEM_FIELD: [u8; super::Contract::spec_xdr_elem_field().len()] =
+        super::Contract::spec_xdr_elem_field();
+}
+impl Contract {
+    #[allow(non_upper_case_globals)]
+    const __SPEC_XDR_ENTRY_elem_field: soroban_sdk::xdr::r#const::ScSpecEntry =
+        soroban_sdk::xdr::r#const::ScSpecEntry::FunctionV0(
+            soroban_sdk::xdr::r#const::ScSpecFunctionV0 {
+                doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
+                name: soroban_sdk::xdr::r#const::ScSymbol(
+                    soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b"elem_field"),
+                ),
+                inputs: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[
+                    soroban_sdk::xdr::r#const::ScSpecFunctionInputV0 {
+                        doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
+                        name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b"v"),
+                        type_: <Vec<ElemOuter> as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
+                    },
+                ]),
+                outputs: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[
+                    <u32 as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
+                ]),
+            },
+        );
+    #[allow(non_snake_case)]
+    pub const fn spec_xdr_elem_field() -> [u8; Contract::__SPEC_XDR_ENTRY_elem_field.const_xdr_len()]
+    {
+        const { Contract::__SPEC_XDR_ENTRY_elem_field.const_to_xdr() }
     }
 }
 impl<'a> ContractClient<'a> {
@@ -929,6 +972,43 @@ impl<'a> ContractClient<'a> {
         );
         res
     }
+    /// Call `elem_field` function on the contract.
+    ///
+    /// # Panics
+    ///
+    /// Panics if the invoked contract returns an error or panics.
+    ///
+    /// Use [`Self::try_elem_field`] to receive errors instead of panicking.
+    pub fn elem_field(&self, v: &Vec<ElemOuter>) -> u32 {
+        use core::ops::Not;
+        use soroban_sdk::{FromVal, IntoVal};
+        let res = self.env.invoke_contract(
+            &self.address,
+            &{ soroban_sdk::Symbol::new(&self.env, "elem_field") },
+            ::soroban_sdk::Vec::from_array(&self.env, [v.into_val(&self.env)]),
+        );
+        res
+    }
+    /// Call `elem_field` function on the contract.
+    ///
+    /// # Errors
+    ///
+    /// Returns an error if the invoked contract returns an error or panics. A panic in the invoked contract is caught and returned as an error rather than panicking the caller.
+    pub fn try_elem_field(
+        &self,
+        v: &Vec<ElemOuter>,
+    ) -> Result<
+        Result<u32, <u32 as soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val>>::Error>,
+        Result<soroban_sdk::Error, soroban_sdk::InvokeError>,
+    > {
+        use soroban_sdk::{FromVal, IntoVal};
+        let res = self.env.try_invoke_contract(
+            &self.address,
+            &{ soroban_sdk::Symbol::new(&self.env, "elem_field") },
+            ::soroban_sdk::Vec::from_array(&self.env, [v.into_val(&self.env)]),
+        );
+        res
+    }
 }
 impl ContractArgs {
     #[inline(always)]
@@ -969,6 +1049,11 @@ impl ContractArgs {
     #[inline(always)]
     #[allow(clippy::unused_unit)]
     pub fn has_vec_field<'i>(v: &'i HasVecField) -> (&'i HasVecField,) {
+        (v,)
+    }
+    #[inline(always)]
+    #[allow(clippy::unused_unit)]
+    pub fn elem_field<'i>(v: &'i Vec<ElemOuter>) -> (&'i Vec<ElemOuter>,) {
         (v,)
     }
 }
@@ -1211,4 +1296,34 @@ pub extern "C" fn __Contract__has_vec_field__invoke_raw_extern(
 ) -> soroban_sdk::Val {
     #[allow(deprecated)]
     __Contract__has_vec_field__invoke_raw(soroban_sdk::Env::default(), arg_0)
+}
+#[doc(hidden)]
+#[allow(non_snake_case)]
+#[deprecated(note = "use `ContractClient::new(&env, &contract_id).elem_field` instead")]
+#[allow(deprecated)]
+pub fn __Contract__elem_field__invoke_raw(
+    env: soroban_sdk::Env,
+    arg_0: soroban_sdk::Val,
+) -> soroban_sdk::Val {
+    soroban_sdk::IntoValForContractFn::into_val_for_contract_fn(
+        <Contract>::elem_field(
+            <_ as soroban_sdk::unwrap::UnwrapOptimized>::unwrap_optimized(
+                <_ as soroban_sdk::TryFromValForContractFn<
+                    soroban_sdk::Env,
+                    soroban_sdk::Val,
+                >>::try_from_val_for_contract_fn(&env, &arg_0),
+            ),
+        ),
+        &env,
+    )
+}
+#[doc(hidden)]
+#[allow(non_snake_case)]
+#[deprecated(note = "use `ContractClient::new(&env, &contract_id).elem_field` instead")]
+#[export_name = "elem_field"]
+pub extern "C" fn __Contract__elem_field__invoke_raw_extern(
+    arg_0: soroban_sdk::Val,
+) -> soroban_sdk::Val {
+    #[allow(deprecated)]
+    __Contract__elem_field__invoke_raw(soroban_sdk::Env::default(), arg_0)
 }

@@ -14,6 +14,7 @@ test = false
 
 [dependencies]
 soroban-sdk = {path = "../../soroban-sdk"}
+test_data_elem_outer_lib = {path = "../data_elem_outer_lib"}
 test_data_enum_lib = {path = "../data_enum_lib"}
 test_data_field_elem_lib = {path = "../data_field_elem_lib"}
 test_data_int_enum_lib = {path = "../data_int_enum_lib"}
