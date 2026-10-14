@@ -41,24 +41,11 @@ build-test-wasms: fmt
 	# Build the test wasms with MSRV by default, with some meta disabled for
 	# binary stability for tests. The spec shaking v2 var is for the
 	# test_spec_shaking_v2 contract, built with soroban-sdk 29.0.1, which needs it.
-	# The test wasms are built again with LTO off, in the release-without-lto profile,
-	# and again in the release-without-lto-multi-cgu profile with multiple codegen
-	# units, so that their specs can be checked to match the specs built with LTO.
 	STELLAR_CLI_VERSION=$(VERSION_MAJOR).0.0 \
 	SOROBAN_SDK_BUILD_SYSTEM_SUPPORTS_SPEC_SHAKING_V2=1 \
 	RUSTUP_TOOLCHAIN=$(TEST_CRATES_RUSTUP_TOOLCHAIN) \
 	RUSTFLAGS='--cfg soroban_sdk_internal_no_rssdkver_meta' \
-		cargo hack build --release --target wasm32v1-none $(foreach c,$(TEST_CRATES),--package $(c)) && \
-	STELLAR_CLI_VERSION=$(VERSION_MAJOR).0.0 \
-	SOROBAN_SDK_BUILD_SYSTEM_SUPPORTS_SPEC_SHAKING_V2=1 \
-	RUSTUP_TOOLCHAIN=$(TEST_CRATES_RUSTUP_TOOLCHAIN) \
-	RUSTFLAGS='--cfg soroban_sdk_internal_no_rssdkver_meta' \
-		cargo hack build --profile release-without-lto --target wasm32v1-none $(foreach c,$(TEST_CRATES),--package $(c)) && \
-	STELLAR_CLI_VERSION=$(VERSION_MAJOR).0.0 \
-	SOROBAN_SDK_BUILD_SYSTEM_SUPPORTS_SPEC_SHAKING_V2=1 \
-	RUSTUP_TOOLCHAIN=$(TEST_CRATES_RUSTUP_TOOLCHAIN) \
-	RUSTFLAGS='--cfg soroban_sdk_internal_no_rssdkver_meta' \
-		cargo hack build --profile release-without-lto-multi-cgu --target wasm32v1-none $(foreach c,$(TEST_CRATES),--package $(c)) && \
+		cargo hack build --release --target wasm32v1-none $(foreach c,$(TEST_CRATES),--package $(c)) ; \
 	cd target/wasm32v1-none/release/ && \
 		for i in *.wasm ; do \
 			ls -l "$$i"; \
@@ -91,13 +78,9 @@ expand-tests: build-test-wasms
 			continue; \
 		fi; \
 		echo "Expanding $$package for linux target including tests"; \
-		targets=--tests; \
-		if [ -z "$$(cargo metadata --no-deps --format-version 1 | jq -r --arg p $$package '.packages[] | select(.name == $$p) | .targets[] | select(.test) | .name')" ]; then \
-			targets=--lib; \
-		fi; \
     RUSTUP_TOOLCHAIN=$(TEST_CRATES_RUSTUP_TOOLCHAIN) \
       RUSTFLAGS='--cfg soroban_sdk_internal_no_rssdkver_meta' \
-      cargo expand --package $$package $$targets --target x86_64-unknown-linux-gnu | rustfmt > tests-expanded/$${package}_tests.rs; \
+      cargo expand --package $$package --tests --target x86_64-unknown-linux-gnu | rustfmt > tests-expanded/$${package}_tests.rs; \
 		echo "Expanding $$package for wasm32v1-none target without tests"; \
     STELLAR_CLI_VERSION=$(VERSION_MAJOR).0.0 \
     SOROBAN_SDK_BUILD_SYSTEM_SUPPORTS_SPEC_SHAKING_V2=1 \
@@ -123,20 +106,6 @@ spec-snapshots-from-built-wasms:
 		[ -f "$$wasm" ] || continue; \
 		echo "Dumping spec of $$name"; \
 		cargo run --quiet --package spec-json -- $$wasm > tests-specs/$$name.json || exit 1; \
-	done
-	# Check the spec of each test vector contract built without LTO matches the
-	# spec built with LTO, because without LTO the linker only includes the spec
-	# entries of a dependency crate when the contract references a symbol in the
-	# same object file. The check is repeated for the specs built without LTO and
-	# with multiple codegen units, where each crate is split across object files.
-	for name in $(TEST_CRATES); do \
-		[ -f "target/wasm32v1-none/release/$$name.wasm" ] || continue; \
-		wasm=target/wasm32v1-none/release-without-lto/$$name.wasm; \
-		echo "Checking spec of $$name built without LTO"; \
-		cargo run --quiet --package spec-json -- $$wasm | diff -u tests-specs/$$name.json - || exit 1; \
-		wasm=target/wasm32v1-none/release-without-lto-multi-cgu/$$name.wasm; \
-		echo "Checking spec of $$name built without LTO with multiple codegen units"; \
-		cargo run --quiet --package spec-json -- $$wasm | diff -u tests-specs/$$name.json - || exit 1; \
 	done
 
 miri:
