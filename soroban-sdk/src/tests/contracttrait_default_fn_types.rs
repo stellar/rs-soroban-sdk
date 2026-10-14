@@ -111,3 +111,63 @@ fn test_spec_uses_trait_types() {
     assert!(udt_name(&r.ok_type).ends_with("::inner::Value"));
     assert!(udt_name(&r.error_type).ends_with("::inner::Error"));
 }
+
+// The trait has an associated type with the same name as a type its module
+// defines and names in a default fn's signature, and the trait is implemented
+// in a scope with an unrelated type of the same name too.
+mod assoc {
+    use crate as soroban_sdk;
+    use soroban_sdk::{contracttrait, contracttype, Env};
+
+    #[contracttype]
+    #[derive(Copy, Clone, Debug, Eq, PartialEq)]
+    pub enum Value {
+        A = 1,
+        B = 2,
+    }
+
+    #[contracttrait]
+    pub trait AssocTrait {
+        type Value;
+
+        fn h(env: Env, v: Value) -> Value {
+            let _ = env;
+            match v {
+                Value::A => Value::B,
+                Value::B => Value::A,
+            }
+        }
+    }
+}
+use assoc::AssocTrait;
+
+#[contract]
+pub struct AssocContract;
+
+#[contractimpl(contracttrait)]
+impl AssocTrait for AssocContract {
+    type Value = Value;
+}
+
+#[test]
+fn test_client_uses_trait_types_with_same_named_associated_type() {
+    let e = Env::default();
+    let contract_id = e.register(AssocContract, ());
+    let client = AssocContractClient::new(&e, &contract_id);
+
+    assert_eq!(client.h(&assoc::Value::A), assoc::Value::B);
+}
+
+#[test]
+fn test_spec_uses_trait_types_with_same_named_associated_type() {
+    let entry = ScSpecEntry::from_xdr(AssocContract::spec_xdr_h(), Limits::none()).unwrap();
+    let ScSpecEntry::FunctionV0(f) = entry else {
+        panic!("expected function spec entry");
+    };
+    let udt_name = |t: &ScSpecTypeDef| match t {
+        ScSpecTypeDef::Udt(u) => u.name.to_utf8_string_lossy(),
+        t => panic!("expected udt, got {t:?}"),
+    };
+    assert!(udt_name(&f.inputs[0].type_).ends_with("::assoc::Value"));
+    assert!(udt_name(&f.outputs[0]).ends_with("::assoc::Value"));
+}
