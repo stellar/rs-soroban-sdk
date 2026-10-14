@@ -6864,6 +6864,13 @@ mod wasm_imported {
         }
     }
     impl<'a> Client<'a> {
+        /// Call `fn_enum_a` function on the contract.
+        ///
+        /// # Panics
+        ///
+        /// Panics if the invoked contract returns an error or panics.
+        ///
+        /// Use [`Self::try_fn_enum_a`] to receive errors instead of panicking.
         pub fn fn_enum_a(&self) -> EnumA {
             use core::ops::Not;
             use soroban_sdk::{FromVal, IntoVal};
@@ -6878,6 +6885,11 @@ mod wasm_imported {
             );
             res
         }
+        /// Call `fn_enum_a` function on the contract.
+        ///
+        /// # Errors
+        ///
+        /// Returns an error if the invoked contract returns an error or panics. A panic in the invoked contract is caught and returned as an error rather than panicking the caller.
         pub fn try_fn_enum_a(
             &self,
         ) -> Result<
@@ -6899,6 +6911,13 @@ mod wasm_imported {
             );
             res
         }
+        /// Call `fn_error_a` function on the contract.
+        ///
+        /// # Panics
+        ///
+        /// Panics if the invoked contract returns an error or panics.
+        ///
+        /// Use [`Self::try_fn_error_a`] to receive errors instead of panicking.
         pub fn fn_error_a(&self, input: &u32) -> u32 {
             use core::ops::Not;
             use soroban_sdk::{FromVal, IntoVal};
@@ -6909,6 +6928,11 @@ mod wasm_imported {
             );
             res
         }
+        /// Call `fn_error_a` function on the contract.
+        ///
+        /// # Errors
+        ///
+        /// Returns an error if the invoked contract returns an error or panics. A panic in the invoked contract is caught and returned as an error rather than panicking the caller.
         pub fn try_fn_error_a(
             &self,
             input: &u32,
@@ -6927,6 +6951,13 @@ mod wasm_imported {
             );
             res
         }
+        /// Call `fn_event_a` function on the contract.
+        ///
+        /// # Panics
+        ///
+        /// Panics if the invoked contract returns an error or panics.
+        ///
+        /// Use [`Self::try_fn_event_a`] to receive errors instead of panicking.
         pub fn fn_event_a(&self, f1: &soroban_sdk::Address, f2: &soroban_sdk::String) -> () {
             use core::ops::Not;
             use soroban_sdk::{FromVal, IntoVal};
@@ -6940,6 +6971,11 @@ mod wasm_imported {
             );
             res
         }
+        /// Call `fn_event_a` function on the contract.
+        ///
+        /// # Errors
+        ///
+        /// Returns an error if the invoked contract returns an error or panics. A panic in the invoked contract is caught and returned as an error rather than panicking the caller.
         pub fn try_fn_event_a(
             &self,
             f1: &soroban_sdk::Address,
@@ -6959,6 +6995,13 @@ mod wasm_imported {
             );
             res
         }
+        /// Call `fn_event_d` function on the contract.
+        ///
+        /// # Panics
+        ///
+        /// Panics if the invoked contract returns an error or panics.
+        ///
+        /// Use [`Self::try_fn_event_d`] to receive errors instead of panicking.
         pub fn fn_event_d(&self) -> () {
             use core::ops::Not;
             use soroban_sdk::{FromVal, IntoVal};
@@ -6969,6 +7012,11 @@ mod wasm_imported {
             );
             res
         }
+        /// Call `fn_event_d` function on the contract.
+        ///
+        /// # Errors
+        ///
+        /// Returns an error if the invoked contract returns an error or panics. A panic in the invoked contract is caught and returned as an error rather than panicking the caller.
         pub fn try_fn_event_d(
             &self,
         ) -> Result<
@@ -6983,6 +7031,13 @@ mod wasm_imported {
             );
             res
         }
+        /// Call `fn_struct_a` function on the contract.
+        ///
+        /// # Panics
+        ///
+        /// Panics if the invoked contract returns an error or panics.
+        ///
+        /// Use [`Self::try_fn_struct_a`] to receive errors instead of panicking.
         pub fn fn_struct_a(&self, f1: &u32, f2: &bool) -> StructA {
             use core::ops::Not;
             use soroban_sdk::{FromVal, IntoVal};
@@ -6996,6 +7051,11 @@ mod wasm_imported {
             );
             res
         }
+        /// Call `fn_struct_a` function on the contract.
+        ///
+        /// # Errors
+        ///
+        /// Returns an error if the invoked contract returns an error or panics. A panic in the invoked contract is caught and returned as an error rather than panicking the caller.
         pub fn try_fn_struct_a(
             &self,
             f1: &u32,
@@ -7018,6 +7078,13 @@ mod wasm_imported {
             );
             res
         }
+        /// Call `fn_enum_int_a` function on the contract.
+        ///
+        /// # Panics
+        ///
+        /// Panics if the invoked contract returns an error or panics.
+        ///
+        /// Use [`Self::try_fn_enum_int_a`] to receive errors instead of panicking.
         pub fn fn_enum_int_a(&self) -> EnumIntA {
             use core::ops::Not;
             use soroban_sdk::{FromVal, IntoVal};
@@ -7028,6 +7095,11 @@ mod wasm_imported {
             );
             res
         }
+        /// Call `fn_enum_int_a` function on the contract.
+        ///
+        /// # Errors
+        ///
+        /// Returns an error if the invoked contract returns an error or panics. A panic in the invoked contract is caught and returned as an error rather than panicking the caller.
         pub fn try_fn_enum_int_a(
             &self,
         ) -> Result<
@@ -7045,6 +7117,13 @@ mod wasm_imported {
             );
             res
         }
+        /// Call `fn_struct_tuple_a` function on the contract.
+        ///
+        /// # Panics
+        ///
+        /// Panics if the invoked contract returns an error or panics.
+        ///
+        /// Use [`Self::try_fn_struct_tuple_a`] to receive errors instead of panicking.
         pub fn fn_struct_tuple_a(&self, f1: &i64, f2: &i64) -> StructTupleA {
             use core::ops::Not;
             use soroban_sdk::{FromVal, IntoVal};
@@ -7058,6 +7137,11 @@ mod wasm_imported {
             );
             res
         }
+        /// Call `fn_struct_tuple_a` function on the contract.
+        ///
+        /// # Errors
+        ///
+        /// Returns an error if the invoked contract returns an error or panics. A panic in the invoked contract is caught and returned as an error rather than panicking the caller.
         pub fn try_fn_struct_tuple_a(
             &self,
             f1: &i64,
@@ -17075,6 +17159,13 @@ impl Contract {
     }
 }
 impl<'a> ContractClient<'a> {
+    /// Call `with_param` function on the contract.
+    ///
+    /// # Panics
+    ///
+    /// Panics if the invoked contract returns an error or panics.
+    ///
+    /// Use [`Self::try_with_param`] to receive errors instead of panicking.
     pub fn with_param(&self, _s: &UsedParamStruct, _ie: &UsedParamIntEnum) -> () {
         use core::ops::Not;
         use soroban_sdk::{FromVal, IntoVal};
@@ -17088,6 +17179,11 @@ impl<'a> ContractClient<'a> {
         );
         res
     }
+    /// Call `with_param` function on the contract.
+    ///
+    /// # Errors
+    ///
+    /// Returns an error if the invoked contract returns an error or panics. A panic in the invoked contract is caught and returned as an error rather than panicking the caller.
     pub fn try_with_param(
         &self,
         _s: &UsedParamStruct,
@@ -17107,6 +17203,13 @@ impl<'a> ContractClient<'a> {
         );
         res
     }
+    /// Call `with_return` function on the contract.
+    ///
+    /// # Panics
+    ///
+    /// Panics if the invoked contract returns an error or panics.
+    ///
+    /// Use [`Self::try_with_return`] to receive errors instead of panicking.
     pub fn with_return(&self) -> UsedReturnEnum {
         use core::ops::Not;
         use soroban_sdk::{FromVal, IntoVal};
@@ -17117,6 +17220,11 @@ impl<'a> ContractClient<'a> {
         );
         res
     }
+    /// Call `with_return` function on the contract.
+    ///
+    /// # Errors
+    ///
+    /// Returns an error if the invoked contract returns an error or panics. A panic in the invoked contract is caught and returned as an error rather than panicking the caller.
     pub fn try_with_return(
         &self,
     ) -> Result<
@@ -17134,6 +17242,13 @@ impl<'a> ContractClient<'a> {
         );
         res
     }
+    /// Call `with_error` function on the contract.
+    ///
+    /// # Panics
+    ///
+    /// Panics if the invoked contract returns an error or panics.
+    ///
+    /// Use [`Self::try_with_error`] to receive errors instead of panicking.
     pub fn with_error(&self) -> u32 {
         use core::ops::Not;
         use soroban_sdk::{FromVal, IntoVal};
@@ -17144,6 +17259,11 @@ impl<'a> ContractClient<'a> {
         );
         res
     }
+    /// Call `with_error` function on the contract.
+    ///
+    /// # Errors
+    ///
+    /// Returns an error if the invoked contract returns an error or panics. A panic in the invoked contract is caught and returned as an error rather than panicking the caller.
     pub fn try_with_error(
         &self,
     ) -> Result<
@@ -17158,6 +17278,13 @@ impl<'a> ContractClient<'a> {
         );
         res
     }
+    /// Call `with_panic_error` function on the contract.
+    ///
+    /// # Panics
+    ///
+    /// Panics if the invoked contract returns an error or panics.
+    ///
+    /// Use [`Self::try_with_panic_error`] to receive errors instead of panicking.
     pub fn with_panic_error(&self, fail: &bool) -> () {
         use core::ops::Not;
         use soroban_sdk::{FromVal, IntoVal};
@@ -17168,6 +17295,11 @@ impl<'a> ContractClient<'a> {
         );
         res
     }
+    /// Call `with_panic_error` function on the contract.
+    ///
+    /// # Errors
+    ///
+    /// Returns an error if the invoked contract returns an error or panics. A panic in the invoked contract is caught and returned as an error rather than panicking the caller.
     pub fn try_with_panic_error(
         &self,
         fail: &bool,
@@ -17183,6 +17315,13 @@ impl<'a> ContractClient<'a> {
         );
         res
     }
+    /// Call `with_assert_error` function on the contract.
+    ///
+    /// # Panics
+    ///
+    /// Panics if the invoked contract returns an error or panics.
+    ///
+    /// Use [`Self::try_with_assert_error`] to receive errors instead of panicking.
     pub fn with_assert_error(&self, ok: &bool) -> () {
         use core::ops::Not;
         use soroban_sdk::{FromVal, IntoVal};
@@ -17193,6 +17332,11 @@ impl<'a> ContractClient<'a> {
         );
         res
     }
+    /// Call `with_assert_error` function on the contract.
+    ///
+    /// # Errors
+    ///
+    /// Returns an error if the invoked contract returns an error or panics. A panic in the invoked contract is caught and returned as an error rather than panicking the caller.
     pub fn try_with_assert_error(
         &self,
         ok: &bool,
@@ -17208,6 +17352,13 @@ impl<'a> ContractClient<'a> {
         );
         res
     }
+    /// Call `with_panic_raw_error` function on the contract.
+    ///
+    /// # Panics
+    ///
+    /// Panics if the invoked contract returns an error or panics.
+    ///
+    /// Use [`Self::try_with_panic_raw_error`] to receive errors instead of panicking.
     pub fn with_panic_raw_error(&self, fail: &bool) -> () {
         use core::ops::Not;
         use soroban_sdk::{FromVal, IntoVal};
@@ -17218,6 +17369,11 @@ impl<'a> ContractClient<'a> {
         );
         res
     }
+    /// Call `with_panic_raw_error` function on the contract.
+    ///
+    /// # Errors
+    ///
+    /// Returns an error if the invoked contract returns an error or panics. A panic in the invoked contract is caught and returned as an error rather than panicking the caller.
     pub fn try_with_panic_raw_error(
         &self,
         fail: &bool,
@@ -17233,6 +17389,13 @@ impl<'a> ContractClient<'a> {
         );
         res
     }
+    /// Call `with_vec` function on the contract.
+    ///
+    /// # Panics
+    ///
+    /// Panics if the invoked contract returns an error or panics.
+    ///
+    /// Use [`Self::try_with_vec`] to receive errors instead of panicking.
     pub fn with_vec(&self, _v: &Vec<UsedVecElement>) -> () {
         use core::ops::Not;
         use soroban_sdk::{FromVal, IntoVal};
@@ -17247,6 +17410,11 @@ impl<'a> ContractClient<'a> {
         );
         res
     }
+    /// Call `with_vec` function on the contract.
+    ///
+    /// # Errors
+    ///
+    /// Returns an error if the invoked contract returns an error or panics. A panic in the invoked contract is caught and returned as an error rather than panicking the caller.
     pub fn try_with_vec(
         &self,
         _v: &Vec<UsedVecElement>,
@@ -17266,6 +17434,13 @@ impl<'a> ContractClient<'a> {
         );
         res
     }
+    /// Call `with_vec_nested` function on the contract.
+    ///
+    /// # Panics
+    ///
+    /// Panics if the invoked contract returns an error or panics.
+    ///
+    /// Use [`Self::try_with_vec_nested`] to receive errors instead of panicking.
     pub fn with_vec_nested(&self, _v: &Vec<UsedVecElementNested>) -> () {
         use core::ops::Not;
         use soroban_sdk::{FromVal, IntoVal};
@@ -17276,6 +17451,11 @@ impl<'a> ContractClient<'a> {
         );
         res
     }
+    /// Call `with_vec_nested` function on the contract.
+    ///
+    /// # Errors
+    ///
+    /// Returns an error if the invoked contract returns an error or panics. A panic in the invoked contract is caught and returned as an error rather than panicking the caller.
     pub fn try_with_vec_nested(
         &self,
         _v: &Vec<UsedVecElementNested>,
@@ -17291,6 +17471,13 @@ impl<'a> ContractClient<'a> {
         );
         res
     }
+    /// Call `with_map` function on the contract.
+    ///
+    /// # Panics
+    ///
+    /// Panics if the invoked contract returns an error or panics.
+    ///
+    /// Use [`Self::try_with_map`] to receive errors instead of panicking.
     pub fn with_map(&self, _m: &Map<UsedMapKey, UsedMapVal>) -> () {
         use core::ops::Not;
         use soroban_sdk::{FromVal, IntoVal};
@@ -17305,6 +17492,11 @@ impl<'a> ContractClient<'a> {
         );
         res
     }
+    /// Call `with_map` function on the contract.
+    ///
+    /// # Errors
+    ///
+    /// Returns an error if the invoked contract returns an error or panics. A panic in the invoked contract is caught and returned as an error rather than panicking the caller.
     pub fn try_with_map(
         &self,
         _m: &Map<UsedMapKey, UsedMapVal>,
@@ -17324,6 +17516,13 @@ impl<'a> ContractClient<'a> {
         );
         res
     }
+    /// Call `with_option` function on the contract.
+    ///
+    /// # Panics
+    ///
+    /// Panics if the invoked contract returns an error or panics.
+    ///
+    /// Use [`Self::try_with_option`] to receive errors instead of panicking.
     pub fn with_option(&self, _o: &Option<UsedOptionElement>) -> () {
         use core::ops::Not;
         use soroban_sdk::{FromVal, IntoVal};
@@ -17334,6 +17533,11 @@ impl<'a> ContractClient<'a> {
         );
         res
     }
+    /// Call `with_option` function on the contract.
+    ///
+    /// # Errors
+    ///
+    /// Returns an error if the invoked contract returns an error or panics. A panic in the invoked contract is caught and returned as an error rather than panicking the caller.
     pub fn try_with_option(
         &self,
         _o: &Option<UsedOptionElement>,
@@ -17349,6 +17553,13 @@ impl<'a> ContractClient<'a> {
         );
         res
     }
+    /// Call `with_result` function on the contract.
+    ///
+    /// # Panics
+    ///
+    /// Panics if the invoked contract returns an error or panics.
+    ///
+    /// Use [`Self::try_with_result`] to receive errors instead of panicking.
     pub fn with_result(&self) -> UsedResultOk {
         use core::ops::Not;
         use soroban_sdk::{FromVal, IntoVal};
@@ -17359,6 +17570,11 @@ impl<'a> ContractClient<'a> {
         );
         res
     }
+    /// Call `with_result` function on the contract.
+    ///
+    /// # Errors
+    ///
+    /// Returns an error if the invoked contract returns an error or panics. A panic in the invoked contract is caught and returned as an error rather than panicking the caller.
     pub fn try_with_result(
         &self,
     ) -> Result<
@@ -17376,6 +17592,13 @@ impl<'a> ContractClient<'a> {
         );
         res
     }
+    /// Call `with_recursion` function on the contract.
+    ///
+    /// # Panics
+    ///
+    /// Panics if the invoked contract returns an error or panics.
+    ///
+    /// Use [`Self::try_with_recursion`] to receive errors instead of panicking.
     pub fn with_recursion(&self, _r: &UsedRecursiveRoot) -> () {
         use core::ops::Not;
         use soroban_sdk::{FromVal, IntoVal};
@@ -17386,6 +17609,11 @@ impl<'a> ContractClient<'a> {
         );
         res
     }
+    /// Call `with_recursion` function on the contract.
+    ///
+    /// # Errors
+    ///
+    /// Returns an error if the invoked contract returns an error or panics. A panic in the invoked contract is caught and returned as an error rather than panicking the caller.
     pub fn try_with_recursion(
         &self,
         _r: &UsedRecursiveRoot,
@@ -17401,6 +17629,13 @@ impl<'a> ContractClient<'a> {
         );
         res
     }
+    /// Call `with_self_recursion` function on the contract.
+    ///
+    /// # Panics
+    ///
+    /// Panics if the invoked contract returns an error or panics.
+    ///
+    /// Use [`Self::try_with_self_recursion`] to receive errors instead of panicking.
     pub fn with_self_recursion(&self, _r: &UsedSelfRef) -> () {
         use core::ops::Not;
         use soroban_sdk::{FromVal, IntoVal};
@@ -17411,6 +17646,11 @@ impl<'a> ContractClient<'a> {
         );
         res
     }
+    /// Call `with_self_recursion` function on the contract.
+    ///
+    /// # Errors
+    ///
+    /// Returns an error if the invoked contract returns an error or panics. A panic in the invoked contract is caught and returned as an error rather than panicking the caller.
     pub fn try_with_self_recursion(
         &self,
         _r: &UsedSelfRef,
@@ -17426,6 +17666,13 @@ impl<'a> ContractClient<'a> {
         );
         res
     }
+    /// Call `with_auth_contexts` function on the contract.
+    ///
+    /// # Panics
+    ///
+    /// Panics if the invoked contract returns an error or panics.
+    ///
+    /// Use [`Self::try_with_auth_contexts`] to receive errors instead of panicking.
     pub fn with_auth_contexts(&self, _c: &Vec<soroban_sdk::auth::Context>) -> () {
         use core::ops::Not;
         use soroban_sdk::{FromVal, IntoVal};
@@ -17436,6 +17683,11 @@ impl<'a> ContractClient<'a> {
         );
         res
     }
+    /// Call `with_auth_contexts` function on the contract.
+    ///
+    /// # Errors
+    ///
+    /// Returns an error if the invoked contract returns an error or panics. A panic in the invoked contract is caught and returned as an error rather than panicking the caller.
     pub fn try_with_auth_contexts(
         &self,
         _c: &Vec<soroban_sdk::auth::Context>,
@@ -17451,6 +17703,13 @@ impl<'a> ContractClient<'a> {
         );
         res
     }
+    /// Call `with_invoker_auth` function on the contract.
+    ///
+    /// # Panics
+    ///
+    /// Panics if the invoked contract returns an error or panics.
+    ///
+    /// Use [`Self::try_with_invoker_auth`] to receive errors instead of panicking.
     pub fn with_invoker_auth(&self, _i: &soroban_sdk::auth::InvokerContractAuthEntry) -> () {
         use core::ops::Not;
         use soroban_sdk::{FromVal, IntoVal};
@@ -17461,6 +17720,11 @@ impl<'a> ContractClient<'a> {
         );
         res
     }
+    /// Call `with_invoker_auth` function on the contract.
+    ///
+    /// # Errors
+    ///
+    /// Returns an error if the invoked contract returns an error or panics. A panic in the invoked contract is caught and returned as an error rather than panicking the caller.
     pub fn try_with_invoker_auth(
         &self,
         _i: &soroban_sdk::auth::InvokerContractAuthEntry,
@@ -17476,6 +17740,13 @@ impl<'a> ContractClient<'a> {
         );
         res
     }
+    /// Call `with_executable` function on the contract.
+    ///
+    /// # Panics
+    ///
+    /// Panics if the invoked contract returns an error or panics.
+    ///
+    /// Use [`Self::try_with_executable`] to receive errors instead of panicking.
     pub fn with_executable(&self, _e: &soroban_sdk::Executable) -> () {
         use core::ops::Not;
         use soroban_sdk::{FromVal, IntoVal};
@@ -17486,6 +17757,11 @@ impl<'a> ContractClient<'a> {
         );
         res
     }
+    /// Call `with_executable` function on the contract.
+    ///
+    /// # Errors
+    ///
+    /// Returns an error if the invoked contract returns an error or panics. A panic in the invoked contract is caught and returned as an error rather than panicking the caller.
     pub fn try_with_executable(
         &self,
         _e: &soroban_sdk::Executable,
@@ -17501,6 +17777,13 @@ impl<'a> ContractClient<'a> {
         );
         res
     }
+    /// Call `publish_simple` function on the contract.
+    ///
+    /// # Panics
+    ///
+    /// Panics if the invoked contract returns an error or panics.
+    ///
+    /// Use [`Self::try_publish_simple`] to receive errors instead of panicking.
     pub fn publish_simple(&self) -> () {
         use core::ops::Not;
         use soroban_sdk::{FromVal, IntoVal};
@@ -17511,6 +17794,11 @@ impl<'a> ContractClient<'a> {
         );
         res
     }
+    /// Call `publish_simple` function on the contract.
+    ///
+    /// # Errors
+    ///
+    /// Returns an error if the invoked contract returns an error or panics. A panic in the invoked contract is caught and returned as an error rather than panicking the caller.
     pub fn try_publish_simple(
         &self,
     ) -> Result<
@@ -17525,6 +17813,13 @@ impl<'a> ContractClient<'a> {
         );
         res
     }
+    /// Call `publish_topic_type` function on the contract.
+    ///
+    /// # Panics
+    ///
+    /// Panics if the invoked contract returns an error or panics.
+    ///
+    /// Use [`Self::try_publish_topic_type`] to receive errors instead of panicking.
     pub fn publish_topic_type(&self) -> () {
         use core::ops::Not;
         use soroban_sdk::{FromVal, IntoVal};
@@ -17535,6 +17830,11 @@ impl<'a> ContractClient<'a> {
         );
         res
     }
+    /// Call `publish_topic_type` function on the contract.
+    ///
+    /// # Errors
+    ///
+    /// Returns an error if the invoked contract returns an error or panics. A panic in the invoked contract is caught and returned as an error rather than panicking the caller.
     pub fn try_publish_topic_type(
         &self,
     ) -> Result<
@@ -17549,6 +17849,13 @@ impl<'a> ContractClient<'a> {
         );
         res
     }
+    /// Call `publish_data_type` function on the contract.
+    ///
+    /// # Panics
+    ///
+    /// Panics if the invoked contract returns an error or panics.
+    ///
+    /// Use [`Self::try_publish_data_type`] to receive errors instead of panicking.
     pub fn publish_data_type(&self) -> () {
         use core::ops::Not;
         use soroban_sdk::{FromVal, IntoVal};
@@ -17559,6 +17866,11 @@ impl<'a> ContractClient<'a> {
         );
         res
     }
+    /// Call `publish_data_type` function on the contract.
+    ///
+    /// # Errors
+    ///
+    /// Returns an error if the invoked contract returns an error or panics. A panic in the invoked contract is caught and returned as an error rather than panicking the caller.
     pub fn try_publish_data_type(
         &self,
     ) -> Result<
@@ -17573,6 +17885,13 @@ impl<'a> ContractClient<'a> {
         );
         res
     }
+    /// Call `publish_nested_topic` function on the contract.
+    ///
+    /// # Panics
+    ///
+    /// Panics if the invoked contract returns an error or panics.
+    ///
+    /// Use [`Self::try_publish_nested_topic`] to receive errors instead of panicking.
     pub fn publish_nested_topic(&self) -> () {
         use core::ops::Not;
         use soroban_sdk::{FromVal, IntoVal};
@@ -17583,6 +17902,11 @@ impl<'a> ContractClient<'a> {
         );
         res
     }
+    /// Call `publish_nested_topic` function on the contract.
+    ///
+    /// # Errors
+    ///
+    /// Returns an error if the invoked contract returns an error or panics. A panic in the invoked contract is caught and returned as an error rather than panicking the caller.
     pub fn try_publish_nested_topic(
         &self,
     ) -> Result<
@@ -17597,6 +17921,13 @@ impl<'a> ContractClient<'a> {
         );
         res
     }
+    /// Call `publish_nested_data` function on the contract.
+    ///
+    /// # Panics
+    ///
+    /// Panics if the invoked contract returns an error or panics.
+    ///
+    /// Use [`Self::try_publish_nested_data`] to receive errors instead of panicking.
     pub fn publish_nested_data(&self) -> () {
         use core::ops::Not;
         use soroban_sdk::{FromVal, IntoVal};
@@ -17607,6 +17938,11 @@ impl<'a> ContractClient<'a> {
         );
         res
     }
+    /// Call `publish_nested_data` function on the contract.
+    ///
+    /// # Errors
+    ///
+    /// Returns an error if the invoked contract returns an error or panics. A panic in the invoked contract is caught and returned as an error rather than panicking the caller.
     pub fn try_publish_nested_data(
         &self,
     ) -> Result<
@@ -17621,6 +17957,13 @@ impl<'a> ContractClient<'a> {
         );
         res
     }
+    /// Call `with_lib_struct` function on the contract.
+    ///
+    /// # Panics
+    ///
+    /// Panics if the invoked contract returns an error or panics.
+    ///
+    /// Use [`Self::try_with_lib_struct`] to receive errors instead of panicking.
     pub fn with_lib_struct(&self, _s: &test_spec_lib::StructC) -> () {
         use core::ops::Not;
         use soroban_sdk::{FromVal, IntoVal};
@@ -17631,6 +17974,11 @@ impl<'a> ContractClient<'a> {
         );
         res
     }
+    /// Call `with_lib_struct` function on the contract.
+    ///
+    /// # Errors
+    ///
+    /// Returns an error if the invoked contract returns an error or panics. A panic in the invoked contract is caught and returned as an error rather than panicking the caller.
     pub fn try_with_lib_struct(
         &self,
         _s: &test_spec_lib::StructC,
@@ -17646,6 +17994,13 @@ impl<'a> ContractClient<'a> {
         );
         res
     }
+    /// Call `with_wasm_imported` function on the contract.
+    ///
+    /// # Panics
+    ///
+    /// Panics if the invoked contract returns an error or panics.
+    ///
+    /// Use [`Self::try_with_wasm_imported`] to receive errors instead of panicking.
     pub fn with_wasm_imported(&self, _s: &wasm_imported::StructA) -> () {
         use core::ops::Not;
         use soroban_sdk::{FromVal, IntoVal};
@@ -17656,6 +18011,11 @@ impl<'a> ContractClient<'a> {
         );
         res
     }
+    /// Call `with_wasm_imported` function on the contract.
+    ///
+    /// # Errors
+    ///
+    /// Returns an error if the invoked contract returns an error or panics. A panic in the invoked contract is caught and returned as an error rather than panicking the caller.
     pub fn try_with_wasm_imported(
         &self,
         _s: &wasm_imported::StructA,
@@ -17671,6 +18031,13 @@ impl<'a> ContractClient<'a> {
         );
         res
     }
+    /// Call `with_non_pub` function on the contract.
+    ///
+    /// # Panics
+    ///
+    /// Panics if the invoked contract returns an error or panics.
+    ///
+    /// Use [`Self::try_with_non_pub`] to receive errors instead of panicking.
     pub fn with_non_pub(&self, _s: &UsedNonPubStruct) -> () {
         use core::ops::Not;
         use soroban_sdk::{FromVal, IntoVal};
@@ -17681,6 +18048,11 @@ impl<'a> ContractClient<'a> {
         );
         res
     }
+    /// Call `with_non_pub` function on the contract.
+    ///
+    /// # Errors
+    ///
+    /// Returns an error if the invoked contract returns an error or panics. A panic in the invoked contract is caught and returned as an error rather than panicking the caller.
     pub fn try_with_non_pub(
         &self,
         _s: &UsedNonPubStruct,
@@ -17696,6 +18068,13 @@ impl<'a> ContractClient<'a> {
         );
         res
     }
+    /// Call `with_non_pub_error` function on the contract.
+    ///
+    /// # Panics
+    ///
+    /// Panics if the invoked contract returns an error or panics.
+    ///
+    /// Use [`Self::try_with_non_pub_error`] to receive errors instead of panicking.
     pub fn with_non_pub_error(&self) -> u32 {
         use core::ops::Not;
         use soroban_sdk::{FromVal, IntoVal};
@@ -17706,6 +18085,11 @@ impl<'a> ContractClient<'a> {
         );
         res
     }
+    /// Call `with_non_pub_error` function on the contract.
+    ///
+    /// # Errors
+    ///
+    /// Returns an error if the invoked contract returns an error or panics. A panic in the invoked contract is caught and returned as an error rather than panicking the caller.
     pub fn try_with_non_pub_error(
         &self,
     ) -> Result<
@@ -17720,6 +18104,13 @@ impl<'a> ContractClient<'a> {
         );
         res
     }
+    /// Call `with_tuple` function on the contract.
+    ///
+    /// # Panics
+    ///
+    /// Panics if the invoked contract returns an error or panics.
+    ///
+    /// Use [`Self::try_with_tuple`] to receive errors instead of panicking.
     pub fn with_tuple(&self, _t: &(UsedTupleElement, u32)) -> () {
         use core::ops::Not;
         use soroban_sdk::{FromVal, IntoVal};
@@ -17730,6 +18121,11 @@ impl<'a> ContractClient<'a> {
         );
         res
     }
+    /// Call `with_tuple` function on the contract.
+    ///
+    /// # Errors
+    ///
+    /// Returns an error if the invoked contract returns an error or panics. A panic in the invoked contract is caught and returned as an error rather than panicking the caller.
     pub fn try_with_tuple(
         &self,
         _t: &(UsedTupleElement, u32),
@@ -17745,6 +18141,13 @@ impl<'a> ContractClient<'a> {
         );
         res
     }
+    /// Call `with_tuple_return` function on the contract.
+    ///
+    /// # Panics
+    ///
+    /// Panics if the invoked contract returns an error or panics.
+    ///
+    /// Use [`Self::try_with_tuple_return`] to receive errors instead of panicking.
     pub fn with_tuple_return(&self) -> (UsedTupleReturnElement, u32) {
         use core::ops::Not;
         use soroban_sdk::{FromVal, IntoVal};
@@ -17755,6 +18158,11 @@ impl<'a> ContractClient<'a> {
         );
         res
     }
+    /// Call `with_tuple_return` function on the contract.
+    ///
+    /// # Errors
+    ///
+    /// Returns an error if the invoked contract returns an error or panics. A panic in the invoked contract is caught and returned as an error rather than panicking the caller.
     pub fn try_with_tuple_return(
         &self,
     ) -> Result<
@@ -17775,6 +18183,13 @@ impl<'a> ContractClient<'a> {
         );
         res
     }
+    /// Call `publish_ref_event` function on the contract.
+    ///
+    /// # Panics
+    ///
+    /// Panics if the invoked contract returns an error or panics.
+    ///
+    /// Use [`Self::try_publish_ref_event`] to receive errors instead of panicking.
     pub fn publish_ref_event(&self) -> () {
         use core::ops::Not;
         use soroban_sdk::{FromVal, IntoVal};
@@ -17785,6 +18200,11 @@ impl<'a> ContractClient<'a> {
         );
         res
     }
+    /// Call `publish_ref_event` function on the contract.
+    ///
+    /// # Errors
+    ///
+    /// Returns an error if the invoked contract returns an error or panics. A panic in the invoked contract is caught and returned as an error rather than panicking the caller.
     pub fn try_publish_ref_event(
         &self,
     ) -> Result<
@@ -17799,6 +18219,13 @@ impl<'a> ContractClient<'a> {
         );
         res
     }
+    /// Call `publish_via_publish_event` function on the contract.
+    ///
+    /// # Panics
+    ///
+    /// Panics if the invoked contract returns an error or panics.
+    ///
+    /// Use [`Self::try_publish_via_publish_event`] to receive errors instead of panicking.
     pub fn publish_via_publish_event(&self) -> () {
         use core::ops::Not;
         use soroban_sdk::{FromVal, IntoVal};
@@ -17809,6 +18236,11 @@ impl<'a> ContractClient<'a> {
         );
         res
     }
+    /// Call `publish_via_publish_event` function on the contract.
+    ///
+    /// # Errors
+    ///
+    /// Returns an error if the invoked contract returns an error or panics. A panic in the invoked contract is caught and returned as an error rather than panicking the caller.
     pub fn try_publish_via_publish_event(
         &self,
     ) -> Result<
@@ -17823,6 +18255,13 @@ impl<'a> ContractClient<'a> {
         );
         res
     }
+    /// Call `publish_via_trait_publish` function on the contract.
+    ///
+    /// # Panics
+    ///
+    /// Panics if the invoked contract returns an error or panics.
+    ///
+    /// Use [`Self::try_publish_via_trait_publish`] to receive errors instead of panicking.
     pub fn publish_via_trait_publish(&self) -> () {
         use core::ops::Not;
         use soroban_sdk::{FromVal, IntoVal};
@@ -17833,6 +18272,11 @@ impl<'a> ContractClient<'a> {
         );
         res
     }
+    /// Call `publish_via_trait_publish` function on the contract.
+    ///
+    /// # Errors
+    ///
+    /// Returns an error if the invoked contract returns an error or panics. A panic in the invoked contract is caught and returned as an error rather than panicking the caller.
     pub fn try_publish_via_trait_publish(
         &self,
     ) -> Result<
