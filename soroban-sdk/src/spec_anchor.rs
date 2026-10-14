@@ -15,17 +15,142 @@
 //! references a symbol in the defining crate. With LTO the calls to it are
 //! optimised away.
 //!
+//! A type used only as the element of a [`Vec`] or the key or value of a
+//! [`Map`] has no conversion of its own called when the collection is
+//! converted, because the collection's conversions do not convert its elements.
+//! So the conversions generated for contract functions, and for the fields of
+//! types and events, also call the anchor of each type they convert, and the
+//! anchors of [`Vec`], [`Map`] and the other types that contain types call the
+//! anchors of the types they contain. The anchor of a user-defined type does not
+//! call the anchors of its fields' types, so a type that contains itself, such
+//! as through a `Vec` field, does not recurse.
+//!
 //! The fn is on a trait, rather than an inherent fn, so that it cannot clash
 //! with an inherent fn of the same name on the type.
+
+use crate::{
+    crypto::{
+        bls12_381::{Bls12381Fp, Bls12381Fp2, Bls12381Fr, Bls12381G1Affine, Bls12381G2Affine},
+        bn254::{Bn254Fp, Bn254Fr, Bn254G1Affine, Bn254G2Affine},
+        Hash,
+    },
+    Address, Bytes, BytesN, Duration, Error, Map, MuxedAddress, String, Symbol, Timepoint, Val,
+    Vec, I256, U256,
+};
 
 /// Trait for types, errors and events whose spec must be linked into the
 /// contract.
 ///
 /// This trait is used internally by the SDK, and types with
 /// `#[contracttype]`, `#[contracterror]` or `#[contractevent]` implement it.
+/// Every other type that can be used in a contract spec implements it too,
+/// either as a no-op or by calling the anchors of the types it contains.
 #[doc(hidden)]
 pub trait SpecAnchor {
     /// Reference a symbol in the crate that defines the type, error or event,
     /// so that its spec entry is linked into the contract.
-    fn spec_anchor();
+    #[inline(always)]
+    fn spec_anchor() {}
 }
+
+macro_rules! impl_spec_anchor {
+    ($($t:ty),* $(,)?) => {
+        $(impl SpecAnchor for $t {})*
+    };
+}
+
+impl_spec_anchor! {
+    Val,
+    bool,
+    (),
+    Error,
+    u32,
+    i32,
+    u64,
+    i64,
+    Timepoint,
+    Duration,
+    u128,
+    i128,
+    U256,
+    I256,
+    Bytes,
+    String,
+    Symbol,
+    Address,
+    MuxedAddress,
+    Bls12381Fp,
+    Bls12381Fp2,
+    Bls12381G1Affine,
+    Bls12381G2Affine,
+    Bls12381Fr,
+    Bn254Fp,
+    Bn254G1Affine,
+    Bn254G2Affine,
+    Bn254Fr,
+}
+
+impl<const N: usize> SpecAnchor for Hash<N> {}
+
+impl<const N: usize> SpecAnchor for BytesN<N> {}
+
+impl<T: SpecAnchor + ?Sized> SpecAnchor for &T {
+    #[inline(always)]
+    fn spec_anchor() {
+        T::spec_anchor();
+    }
+}
+
+impl<T: SpecAnchor> SpecAnchor for Option<T> {
+    #[inline(always)]
+    fn spec_anchor() {
+        T::spec_anchor();
+    }
+}
+
+impl<T: SpecAnchor, E: SpecAnchor> SpecAnchor for Result<T, E> {
+    #[inline(always)]
+    fn spec_anchor() {
+        T::spec_anchor();
+        E::spec_anchor();
+    }
+}
+
+impl<T: SpecAnchor> SpecAnchor for Vec<T> {
+    #[inline(always)]
+    fn spec_anchor() {
+        T::spec_anchor();
+    }
+}
+
+impl<K: SpecAnchor, V: SpecAnchor> SpecAnchor for Map<K, V> {
+    #[inline(always)]
+    fn spec_anchor() {
+        K::spec_anchor();
+        V::spec_anchor();
+    }
+}
+
+macro_rules! impl_spec_anchor_for_tuple {
+    ($($t:ident),+) => {
+        impl<$($t: SpecAnchor),+> SpecAnchor for ($($t,)+) {
+            #[inline(always)]
+            fn spec_anchor() {
+                $($t::spec_anchor();)+
+            }
+        }
+    };
+}
+
+impl_spec_anchor_for_tuple!(T0);
+impl_spec_anchor_for_tuple!(T0, T1);
+impl_spec_anchor_for_tuple!(T0, T1, T2);
+impl_spec_anchor_for_tuple!(T0, T1, T2, T3);
+impl_spec_anchor_for_tuple!(T0, T1, T2, T3, T4);
+impl_spec_anchor_for_tuple!(T0, T1, T2, T3, T4, T5);
+impl_spec_anchor_for_tuple!(T0, T1, T2, T3, T4, T5, T6);
+impl_spec_anchor_for_tuple!(T0, T1, T2, T3, T4, T5, T6, T7);
+impl_spec_anchor_for_tuple!(T0, T1, T2, T3, T4, T5, T6, T7, T8);
+impl_spec_anchor_for_tuple!(T0, T1, T2, T3, T4, T5, T6, T7, T8, T9);
+impl_spec_anchor_for_tuple!(T0, T1, T2, T3, T4, T5, T6, T7, T8, T9, T10);
+impl_spec_anchor_for_tuple!(T0, T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11);

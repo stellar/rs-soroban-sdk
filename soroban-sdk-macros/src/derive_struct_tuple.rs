@@ -7,7 +7,10 @@ use stellar_xdr::StringM;
 
 use crate::{
     doc::docs_from_attrs,
-    spec::{const_view_string, const_view_type_def, spec_anchor_impl, spec_type_def_gen},
+    spec::{
+        const_view_string, const_view_type_def, spec_anchor_field_calls, spec_anchor_impl,
+        spec_type_def_gen,
+    },
 };
 
 pub fn derive_type_struct_tuple(
@@ -50,6 +53,7 @@ pub fn derive_type_struct_tuple(
     // const::ScSpecEntry, which the contract crate encodes to XDR at compile time.
     let spec_type_def = spec_type_def_gen(path, ident, None, None, None);
     let spec_anchor = spec_anchor_impl(path, ident, None, None, None);
+    let spec_anchor_field_calls = spec_anchor_field_calls(path, field_types.iter().copied());
     let spec_gen = {
         let doc = const_view_string(path, &docs_from_attrs(attrs));
         // Set to empty string always because the field is no longer used.
@@ -102,6 +106,7 @@ pub fn derive_type_struct_tuple(
             #[inline(always)]
             fn try_from_val(env: &#path::Env, val: &#path::Val) -> Result<Self, #path::ConversionError> {
                 <#ident as #path::SpecAnchor>::spec_anchor();
+                #spec_anchor_field_calls
                 use #path::{TryIntoVal,EnvBase,ConversionError,VecObject,Val};
                 let vec: VecObject = (*val).try_into().map_err(|_| ConversionError)?;
                 let mut vals: [Val; #field_count_usize] = [Val::VOID.to_val(); #field_count_usize];
@@ -117,6 +122,7 @@ pub fn derive_type_struct_tuple(
             #[inline(always)]
             fn try_from_val(env: &#path::Env, val: &#ident) -> Result<Self, #path::ConversionError> {
                 <#ident as #path::SpecAnchor>::spec_anchor();
+                #spec_anchor_field_calls
                 use #path::{TryIntoVal,EnvBase,ConversionError,Val};
                 let vals: [Val; #field_count_usize] = [
                     #((&val.#field_idx_lits).try_into_val(env).map_err(|_| ConversionError)?),*

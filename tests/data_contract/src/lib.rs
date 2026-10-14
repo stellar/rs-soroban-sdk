@@ -46,7 +46,8 @@ impl Contract {
 
     // The conversions of a Vec and a Map to and from Val do not convert their
     // elements, so a type used only as an element type, with no element read
-    // or written, never has its spec anchor called.
+    // or written, has its spec anchor called only through the anchor of the
+    // Vec or Map.
     pub fn vec_elem(v: Vec<VecElem>) -> u32 {
         v.len()
     }

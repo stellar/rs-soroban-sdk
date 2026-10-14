@@ -33,10 +33,11 @@ pub trait TryFromValForContractFn<E: Env, V: ?Sized>: Sized {
 #[diagnostic::do_not_recommend]
 impl<E: Env, T, U> TryFromValForContractFn<E, T> for U
 where
-    U: TryFromVal<E, T>,
+    U: TryFromVal<E, T> + crate::SpecAnchor,
 {
     type Error = U::Error;
     fn try_from_val_for_contract_fn(e: &E, v: &T) -> Result<Self, Self::Error> {
+        U::spec_anchor();
         U::try_from_val(e, v)
     }
 }

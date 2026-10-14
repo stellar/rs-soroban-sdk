@@ -99,6 +99,11 @@ impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for DummyProof 
         val: &soroban_sdk::Val,
     ) -> Result<Self, soroban_sdk::ConversionError> {
         <DummyProof as soroban_sdk::SpecAnchor>::spec_anchor();
+        <Bls12381Fp as soroban_sdk::SpecAnchor>::spec_anchor();
+        <Bls12381Fp2 as soroban_sdk::SpecAnchor>::spec_anchor();
+        <Bls12381Fr as soroban_sdk::SpecAnchor>::spec_anchor();
+        <Bls12381G1Affine as soroban_sdk::SpecAnchor>::spec_anchor();
+        <Bls12381G2Affine as soroban_sdk::SpecAnchor>::spec_anchor();
         use soroban_sdk::{ConversionError, EnvBase, MapObject, TryIntoVal, Val};
         const KEYS: [&'static str; 5usize] = ["fp", "fp2", "fr", "g1", "g2"];
         let mut vals: [Val; 5usize] = [Val::VOID.to_val(); 5usize];
@@ -131,6 +136,11 @@ impl soroban_sdk::TryFromVal<soroban_sdk::Env, DummyProof> for soroban_sdk::Val 
         val: &DummyProof,
     ) -> Result<Self, soroban_sdk::ConversionError> {
         <DummyProof as soroban_sdk::SpecAnchor>::spec_anchor();
+        <Bls12381Fp as soroban_sdk::SpecAnchor>::spec_anchor();
+        <Bls12381Fp2 as soroban_sdk::SpecAnchor>::spec_anchor();
+        <Bls12381Fr as soroban_sdk::SpecAnchor>::spec_anchor();
+        <Bls12381G1Affine as soroban_sdk::SpecAnchor>::spec_anchor();
+        <Bls12381G2Affine as soroban_sdk::SpecAnchor>::spec_anchor();
         use soroban_sdk::{ConversionError, EnvBase, TryIntoVal, Val};
         const KEYS: [&'static str; 5usize] = ["fp", "fp2", "fr", "g1", "g2"];
         let vals: [Val; 5usize] = [

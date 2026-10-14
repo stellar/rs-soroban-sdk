@@ -127,6 +127,10 @@ impl soroban_sdk::SpecAnchor for Transfer {
 impl soroban_sdk::Event for Transfer {
     fn topics(&self, env: &soroban_sdk::Env) -> soroban_sdk::Vec<soroban_sdk::Val> {
         <Self as soroban_sdk::SpecAnchor>::spec_anchor();
+        <Address as soroban_sdk::SpecAnchor>::spec_anchor();
+        <Address as soroban_sdk::SpecAnchor>::spec_anchor();
+        <i128 as soroban_sdk::SpecAnchor>::spec_anchor();
+        <Option<u64> as soroban_sdk::SpecAnchor>::spec_anchor();
         use soroban_sdk::IntoVal;
         (
             &{
@@ -147,6 +151,10 @@ impl soroban_sdk::Event for Transfer {
     }
     fn data(&self, env: &soroban_sdk::Env) -> soroban_sdk::Val {
         <Self as soroban_sdk::SpecAnchor>::spec_anchor();
+        <Address as soroban_sdk::SpecAnchor>::spec_anchor();
+        <Address as soroban_sdk::SpecAnchor>::spec_anchor();
+        <i128 as soroban_sdk::SpecAnchor>::spec_anchor();
+        <Option<u64> as soroban_sdk::SpecAnchor>::spec_anchor();
         use soroban_sdk::{unwrap::UnwrapInfallible, EnvBase, IntoVal};
         const KEYS: [&'static str; 2usize] = ["amount", "to_muxed_id"];
         let vals: [soroban_sdk::Val; 2usize] =
@@ -251,6 +259,8 @@ impl soroban_sdk::SpecAnchor for SingleValue {
 impl soroban_sdk::Event for SingleValue {
     fn topics(&self, env: &soroban_sdk::Env) -> soroban_sdk::Vec<soroban_sdk::Val> {
         <Self as soroban_sdk::SpecAnchor>::spec_anchor();
+        <Address as soroban_sdk::SpecAnchor>::spec_anchor();
+        <i128 as soroban_sdk::SpecAnchor>::spec_anchor();
         use soroban_sdk::IntoVal;
         (&{ soroban_sdk::Symbol::new(env, "single_value") }, {
             let v: soroban_sdk::Val = self.from.into_val(env);
@@ -260,6 +270,8 @@ impl soroban_sdk::Event for SingleValue {
     }
     fn data(&self, env: &soroban_sdk::Env) -> soroban_sdk::Val {
         <Self as soroban_sdk::SpecAnchor>::spec_anchor();
+        <Address as soroban_sdk::SpecAnchor>::spec_anchor();
+        <i128 as soroban_sdk::SpecAnchor>::spec_anchor();
         use soroban_sdk::IntoVal;
         self.amount.into_val(env)
     }
@@ -363,6 +375,7 @@ impl soroban_sdk::SpecAnchor for SingleValueVoid {
 impl soroban_sdk::Event for SingleValueVoid {
     fn topics(&self, env: &soroban_sdk::Env) -> soroban_sdk::Vec<soroban_sdk::Val> {
         <Self as soroban_sdk::SpecAnchor>::spec_anchor();
+        <Address as soroban_sdk::SpecAnchor>::spec_anchor();
         use soroban_sdk::IntoVal;
         (&{ soroban_sdk::Symbol::new(env, "single_value_void") }, {
             let v: soroban_sdk::Val = self.from.into_val(env);
@@ -372,6 +385,7 @@ impl soroban_sdk::Event for SingleValueVoid {
     }
     fn data(&self, env: &soroban_sdk::Env) -> soroban_sdk::Val {
         <Self as soroban_sdk::SpecAnchor>::spec_anchor();
+        <Address as soroban_sdk::SpecAnchor>::spec_anchor();
         soroban_sdk::Val::VOID.to_val()
     }
 }
@@ -477,6 +491,9 @@ impl soroban_sdk::SpecAnchor for VecValues {
 impl soroban_sdk::Event for VecValues {
     fn topics(&self, env: &soroban_sdk::Env) -> soroban_sdk::Vec<soroban_sdk::Val> {
         <Self as soroban_sdk::SpecAnchor>::spec_anchor();
+        <Address as soroban_sdk::SpecAnchor>::spec_anchor();
+        <u32 as soroban_sdk::SpecAnchor>::spec_anchor();
+        <u32 as soroban_sdk::SpecAnchor>::spec_anchor();
         use soroban_sdk::IntoVal;
         (&{ soroban_sdk::Symbol::new(env, "vec_values") }, {
             let v: soroban_sdk::Val = self.from.into_val(env);
@@ -486,6 +503,9 @@ impl soroban_sdk::Event for VecValues {
     }
     fn data(&self, env: &soroban_sdk::Env) -> soroban_sdk::Val {
         <Self as soroban_sdk::SpecAnchor>::spec_anchor();
+        <Address as soroban_sdk::SpecAnchor>::spec_anchor();
+        <u32 as soroban_sdk::SpecAnchor>::spec_anchor();
+        <u32 as soroban_sdk::SpecAnchor>::spec_anchor();
         use soroban_sdk::IntoVal;
         (
             {
@@ -602,6 +622,9 @@ impl soroban_sdk::SpecAnchor for MapValues {
 impl soroban_sdk::Event for MapValues {
     fn topics(&self, env: &soroban_sdk::Env) -> soroban_sdk::Vec<soroban_sdk::Val> {
         <Self as soroban_sdk::SpecAnchor>::spec_anchor();
+        <Address as soroban_sdk::SpecAnchor>::spec_anchor();
+        <u32 as soroban_sdk::SpecAnchor>::spec_anchor();
+        <u32 as soroban_sdk::SpecAnchor>::spec_anchor();
         use soroban_sdk::IntoVal;
         (&{ soroban_sdk::Symbol::new(env, "map_values") }, {
             let v: soroban_sdk::Val = self.from.into_val(env);
@@ -611,6 +634,9 @@ impl soroban_sdk::Event for MapValues {
     }
     fn data(&self, env: &soroban_sdk::Env) -> soroban_sdk::Val {
         <Self as soroban_sdk::SpecAnchor>::spec_anchor();
+        <Address as soroban_sdk::SpecAnchor>::spec_anchor();
+        <u32 as soroban_sdk::SpecAnchor>::spec_anchor();
+        <u32 as soroban_sdk::SpecAnchor>::spec_anchor();
         use soroban_sdk::{unwrap::UnwrapInfallible, EnvBase, IntoVal};
         const KEYS: [&'static str; 2usize] = ["a", "b"];
         let vals: [soroban_sdk::Val; 2usize] = [self.a.into_val(env), self.b.into_val(env)];

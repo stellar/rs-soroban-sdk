@@ -278,6 +278,7 @@ impl soroban_sdk::SpecAnchor for Event {
 impl soroban_sdk::Event for Event {
     fn topics(&self, env: &soroban_sdk::Env) -> soroban_sdk::Vec<soroban_sdk::Val> {
         <Self as soroban_sdk::SpecAnchor>::spec_anchor();
+        <u32 as soroban_sdk::SpecAnchor>::spec_anchor();
         use soroban_sdk::IntoVal;
         (&{
             #[allow(deprecated)]
@@ -288,6 +289,7 @@ impl soroban_sdk::Event for Event {
     }
     fn data(&self, env: &soroban_sdk::Env) -> soroban_sdk::Val {
         <Self as soroban_sdk::SpecAnchor>::spec_anchor();
+        <u32 as soroban_sdk::SpecAnchor>::spec_anchor();
         use soroban_sdk::{unwrap::UnwrapInfallible, EnvBase, IntoVal};
         const KEYS: [&'static str; 1usize] = ["v"];
         let vals: [soroban_sdk::Val; 1usize] = [self.v.into_val(env)];
@@ -381,6 +383,7 @@ impl<'a> soroban_sdk::SpecAnchor for RefEvent<'a> {
 impl<'a> soroban_sdk::Event for RefEvent<'a> {
     fn topics(&self, env: &soroban_sdk::Env) -> soroban_sdk::Vec<soroban_sdk::Val> {
         <Self as soroban_sdk::SpecAnchor>::spec_anchor();
+        <&'a u32 as soroban_sdk::SpecAnchor>::spec_anchor();
         use soroban_sdk::IntoVal;
         (&{
             #[allow(deprecated)]
@@ -391,6 +394,7 @@ impl<'a> soroban_sdk::Event for RefEvent<'a> {
     }
     fn data(&self, env: &soroban_sdk::Env) -> soroban_sdk::Val {
         <Self as soroban_sdk::SpecAnchor>::spec_anchor();
+        <&'a u32 as soroban_sdk::SpecAnchor>::spec_anchor();
         use soroban_sdk::{unwrap::UnwrapInfallible, EnvBase, IntoVal};
         const KEYS: [&'static str; 1usize] = ["v"];
         let vals: [soroban_sdk::Val; 1usize] = [self.v.into_val(env)];

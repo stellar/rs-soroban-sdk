@@ -1,7 +1,7 @@
 #![feature(prelude_import)]
 //! A data library providing only a tuple struct for a contract to use as the
 //! element type of a `Vec`, without converting any element, so that the
-//! contract never calls the tuple struct's spec anchor.
+//! contract links this crate in only through the `Vec`'s spec anchor.
 #![no_std]
 #[macro_use]
 extern crate core;
@@ -73,6 +73,7 @@ impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for VecElem {
         val: &soroban_sdk::Val,
     ) -> Result<Self, soroban_sdk::ConversionError> {
         <VecElem as soroban_sdk::SpecAnchor>::spec_anchor();
+        <u32 as soroban_sdk::SpecAnchor>::spec_anchor();
         use soroban_sdk::{ConversionError, EnvBase, TryIntoVal, Val, VecObject};
         let vec: VecObject = (*val).try_into().map_err(|_| ConversionError)?;
         let mut vals: [Val; 1usize] = [Val::VOID.to_val(); 1usize];
@@ -91,6 +92,7 @@ impl soroban_sdk::TryFromVal<soroban_sdk::Env, VecElem> for soroban_sdk::Val {
         val: &VecElem,
     ) -> Result<Self, soroban_sdk::ConversionError> {
         <VecElem as soroban_sdk::SpecAnchor>::spec_anchor();
+        <u32 as soroban_sdk::SpecAnchor>::spec_anchor();
         use soroban_sdk::{ConversionError, EnvBase, TryIntoVal, Val};
         let vals: [Val; 1usize] = [(&val.0).try_into_val(env).map_err(|_| ConversionError)?];
         Ok(env

@@ -1,7 +1,7 @@
 #![feature(prelude_import)]
 //! A data library providing only tuple structs for a contract to use as the key
 //! and value types of a `Map`, without converting any key or value, so that the
-//! contract never calls the tuple structs' spec anchors.
+//! contract links this crate in only through the `Map`'s spec anchor.
 #![no_std]
 #[macro_use]
 extern crate core;
@@ -73,6 +73,7 @@ impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for MapKey {
         val: &soroban_sdk::Val,
     ) -> Result<Self, soroban_sdk::ConversionError> {
         <MapKey as soroban_sdk::SpecAnchor>::spec_anchor();
+        <u32 as soroban_sdk::SpecAnchor>::spec_anchor();
         use soroban_sdk::{ConversionError, EnvBase, TryIntoVal, Val, VecObject};
         let vec: VecObject = (*val).try_into().map_err(|_| ConversionError)?;
         let mut vals: [Val; 1usize] = [Val::VOID.to_val(); 1usize];
@@ -91,6 +92,7 @@ impl soroban_sdk::TryFromVal<soroban_sdk::Env, MapKey> for soroban_sdk::Val {
         val: &MapKey,
     ) -> Result<Self, soroban_sdk::ConversionError> {
         <MapKey as soroban_sdk::SpecAnchor>::spec_anchor();
+        <u32 as soroban_sdk::SpecAnchor>::spec_anchor();
         use soroban_sdk::{ConversionError, EnvBase, TryIntoVal, Val};
         let vals: [Val; 1usize] = [(&val.0).try_into_val(env).map_err(|_| ConversionError)?];
         Ok(env
@@ -174,6 +176,7 @@ impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for MapVal {
         val: &soroban_sdk::Val,
     ) -> Result<Self, soroban_sdk::ConversionError> {
         <MapVal as soroban_sdk::SpecAnchor>::spec_anchor();
+        <u32 as soroban_sdk::SpecAnchor>::spec_anchor();
         use soroban_sdk::{ConversionError, EnvBase, TryIntoVal, Val, VecObject};
         let vec: VecObject = (*val).try_into().map_err(|_| ConversionError)?;
         let mut vals: [Val; 1usize] = [Val::VOID.to_val(); 1usize];
@@ -192,6 +195,7 @@ impl soroban_sdk::TryFromVal<soroban_sdk::Env, MapVal> for soroban_sdk::Val {
         val: &MapVal,
     ) -> Result<Self, soroban_sdk::ConversionError> {
         <MapVal as soroban_sdk::SpecAnchor>::spec_anchor();
+        <u32 as soroban_sdk::SpecAnchor>::spec_anchor();
         use soroban_sdk::{ConversionError, EnvBase, TryIntoVal, Val};
         let vals: [Val; 1usize] = [(&val.0).try_into_val(env).map_err(|_| ConversionError)?];
         Ok(env

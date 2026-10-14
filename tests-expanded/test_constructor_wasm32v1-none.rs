@@ -121,6 +121,9 @@ impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for DataKey {
         val: &soroban_sdk::Val,
     ) -> Result<Self, soroban_sdk::ConversionError> {
         <DataKey as soroban_sdk::SpecAnchor>::spec_anchor();
+        <u32 as soroban_sdk::SpecAnchor>::spec_anchor();
+        <u32 as soroban_sdk::SpecAnchor>::spec_anchor();
+        <u32 as soroban_sdk::SpecAnchor>::spec_anchor();
         use soroban_sdk::{EnvBase, TryFromVal, TryIntoVal};
         const CASES: &'static [&'static str] = &["Persistent", "Temp", "Instance"];
         let vec: soroban_sdk::Vec<soroban_sdk::Val> = val.try_into_val(env)?;
@@ -176,6 +179,9 @@ impl soroban_sdk::TryFromVal<soroban_sdk::Env, DataKey> for soroban_sdk::Val {
         val: &DataKey,
     ) -> Result<Self, soroban_sdk::ConversionError> {
         <DataKey as soroban_sdk::SpecAnchor>::spec_anchor();
+        <u32 as soroban_sdk::SpecAnchor>::spec_anchor();
+        <u32 as soroban_sdk::SpecAnchor>::spec_anchor();
+        <u32 as soroban_sdk::SpecAnchor>::spec_anchor();
         use soroban_sdk::{TryFromVal, TryIntoVal};
         match val {
             DataKey::Persistent(ref value0) => {

@@ -76,6 +76,7 @@ impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for Wrapper {
         val: &soroban_sdk::Val,
     ) -> Result<Self, soroban_sdk::ConversionError> {
         <Wrapper as soroban_sdk::SpecAnchor>::spec_anchor();
+        <Wrapped as soroban_sdk::SpecAnchor>::spec_anchor();
         use soroban_sdk::{ConversionError, EnvBase, TryIntoVal, Val, VecObject};
         let vec: VecObject = (*val).try_into().map_err(|_| ConversionError)?;
         let mut vals: [Val; 1usize] = [Val::VOID.to_val(); 1usize];
@@ -94,6 +95,7 @@ impl soroban_sdk::TryFromVal<soroban_sdk::Env, Wrapper> for soroban_sdk::Val {
         val: &Wrapper,
     ) -> Result<Self, soroban_sdk::ConversionError> {
         <Wrapper as soroban_sdk::SpecAnchor>::spec_anchor();
+        <Wrapped as soroban_sdk::SpecAnchor>::spec_anchor();
         use soroban_sdk::{ConversionError, EnvBase, TryIntoVal, Val};
         let vals: [Val; 1usize] = [(&val.0).try_into_val(env).map_err(|_| ConversionError)?];
         Ok(env
@@ -650,6 +652,13 @@ impl<'a> ContractClient<'a> {
         );
         res
     }
+    /// Call `vec_elem` function on the contract.
+    ///
+    /// # Panics
+    ///
+    /// Panics if the invoked contract returns an error or panics.
+    ///
+    /// Use [`Self::try_vec_elem`] to receive errors instead of panicking.
     pub fn vec_elem(&self, v: &Vec<VecElem>) -> u32 {
         use core::ops::Not;
         use soroban_sdk::{FromVal, IntoVal};
@@ -664,6 +673,11 @@ impl<'a> ContractClient<'a> {
         );
         res
     }
+    /// Call `vec_elem` function on the contract.
+    ///
+    /// # Errors
+    ///
+    /// Returns an error if the invoked contract returns an error or panics. A panic in the invoked contract is caught and returned as an error rather than panicking the caller.
     pub fn try_vec_elem(
         &self,
         v: &Vec<VecElem>,
@@ -683,6 +697,13 @@ impl<'a> ContractClient<'a> {
         );
         res
     }
+    /// Call `map_elem` function on the contract.
+    ///
+    /// # Panics
+    ///
+    /// Panics if the invoked contract returns an error or panics.
+    ///
+    /// Use [`Self::try_map_elem`] to receive errors instead of panicking.
     pub fn map_elem(&self, v: &Map<MapKey, MapVal>) -> u32 {
         use core::ops::Not;
         use soroban_sdk::{FromVal, IntoVal};
@@ -697,6 +718,11 @@ impl<'a> ContractClient<'a> {
         );
         res
     }
+    /// Call `map_elem` function on the contract.
+    ///
+    /// # Errors
+    ///
+    /// Returns an error if the invoked contract returns an error or panics. A panic in the invoked contract is caught and returned as an error rather than panicking the caller.
     pub fn try_map_elem(
         &self,
         v: &Map<MapKey, MapVal>,

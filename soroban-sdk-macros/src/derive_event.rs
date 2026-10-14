@@ -5,7 +5,7 @@ use crate::{
     export_arg_error, shaking,
     spec::{
         check_event_ident, const_view_string, const_view_symbol, const_view_type_def,
-        spec_anchor_impl, spec_type_def_gen,
+        spec_anchor_field_calls, spec_anchor_impl, spec_type_def_gen,
     },
     symbol,
 };
@@ -295,6 +295,7 @@ fn derive_impls(args: &ContractEventArgs, input: &DeriveInput) -> Result<TokenSt
     );
 
     // SpecAnchor impl.
+    let spec_anchor_field_calls = spec_anchor_field_calls(path, field_types.iter().copied());
     let spec_anchor = spec_anchor_impl(
         path,
         ident,
@@ -419,10 +420,12 @@ fn derive_impls(args: &ContractEventArgs, input: &DeriveInput) -> Result<TokenSt
         impl #gen_impl #path::Event for #ident #gen_types #gen_where {
             fn topics(&self, env: &#path::Env) -> #path::Vec<#path::Val> {
                 <Self as #path::SpecAnchor>::spec_anchor();
+                #spec_anchor_field_calls
                 #topics_to_vec_val
             }
             fn data(&self, env: &#path::Env) -> #path::Val {
                 <Self as #path::SpecAnchor>::spec_anchor();
+                #spec_anchor_field_calls
                 #data_to_val
             }
         }
