@@ -87,6 +87,13 @@ impl<'a> SuperPathTraitClient<'a> {
     }
 }
 impl<'a> SuperPathTraitClient<'a> {
+    /// Call `super_path_method` function on the contract.
+    ///
+    /// # Panics
+    ///
+    /// Panics if the invoked contract returns an error or panics.
+    ///
+    /// Use [`Self::try_super_path_method`] to receive errors instead of panicking.
     pub fn super_path_method(&self) -> u32 {
         let _call_scope = soroban_sdk::testutils::ClientCallScope::enter(&self.env, self.config);
         use soroban_sdk::{FromVal, IntoVal};
@@ -97,6 +104,11 @@ impl<'a> SuperPathTraitClient<'a> {
         );
         res
     }
+    /// Call `super_path_method` function on the contract.
+    ///
+    /// # Errors
+    ///
+    /// Returns an error if the invoked contract returns an error or panics. A panic in the invoked contract is caught and returned as an error rather than panicking the caller.
     pub fn try_super_path_method(
         &self,
     ) -> Result<
@@ -341,6 +353,13 @@ pub mod submodule {
         }
     }
     impl<'a> ContractSuperPathClient<'a> {
+        /// Call `super_path_method` function on the contract.
+        ///
+        /// # Panics
+        ///
+        /// Panics if the invoked contract returns an error or panics.
+        ///
+        /// Use [`Self::try_super_path_method`] to receive errors instead of panicking.
         pub fn super_path_method(&self) -> u32 {
             let _call_scope =
                 soroban_sdk::testutils::ClientCallScope::enter(&self.env, self.config);
@@ -352,6 +371,11 @@ pub mod submodule {
             );
             res
         }
+        /// Call `super_path_method` function on the contract.
+        ///
+        /// # Errors
+        ///
+        /// Returns an error if the invoked contract returns an error or panics. A panic in the invoked contract is caught and returned as an error rather than panicking the caller.
         pub fn try_super_path_method(
             &self,
         ) -> Result<

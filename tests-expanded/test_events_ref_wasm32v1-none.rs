@@ -282,6 +282,13 @@ impl Contract {
     }
 }
 impl<'a> ContractClient<'a> {
+    /// Call `transfer` function on the contract.
+    ///
+    /// # Panics
+    ///
+    /// Panics if the invoked contract returns an error or panics.
+    ///
+    /// Use [`Self::try_transfer`] to receive errors instead of panicking.
     pub fn transfer(&self, from: &Address, to: impl Into<MuxedAddress>, amount: &i128) -> () {
         use core::ops::Not;
         use soroban_sdk::{FromVal, IntoVal};
@@ -303,6 +310,11 @@ impl<'a> ContractClient<'a> {
         );
         res
     }
+    /// Call `transfer` function on the contract.
+    ///
+    /// # Errors
+    ///
+    /// Returns an error if the invoked contract returns an error or panics. A panic in the invoked contract is caught and returned as an error rather than panicking the caller.
     pub fn try_transfer(
         &self,
         from: &Address,
@@ -331,6 +343,13 @@ impl<'a> ContractClient<'a> {
         );
         res
     }
+    /// Call `failed_transfer` function on the contract.
+    ///
+    /// # Panics
+    ///
+    /// Panics if the invoked contract returns an error or panics.
+    ///
+    /// Use [`Self::try_failed_transfer`] to receive errors instead of panicking.
     pub fn failed_transfer(&self, from: &Address, to: &Address, amount: &i128) -> () {
         use core::ops::Not;
         use soroban_sdk::{FromVal, IntoVal};
@@ -348,6 +367,11 @@ impl<'a> ContractClient<'a> {
         );
         res
     }
+    /// Call `failed_transfer` function on the contract.
+    ///
+    /// # Errors
+    ///
+    /// Returns an error if the invoked contract returns an error or panics. A panic in the invoked contract is caught and returned as an error rather than panicking the caller.
     pub fn try_failed_transfer(
         &self,
         from: &Address,
