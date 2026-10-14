@@ -107,7 +107,10 @@ impl MyStruct {
 }
 impl soroban_sdk::SpecAnchor for MyStruct {
     #[inline(never)]
-    fn spec_anchor() {}
+    fn spec_anchor() {
+        soroban_sdk::spec_anchor_ref(<i64 as soroban_sdk::SpecAnchor>::spec_anchor);
+        soroban_sdk::spec_anchor_ref(<i64 as soroban_sdk::SpecAnchor>::spec_anchor);
+    }
 }
 impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for MyStruct {
     type Error = soroban_sdk::ConversionError;
@@ -1004,7 +1007,10 @@ impl MyEnumVariants {
 }
 impl soroban_sdk::SpecAnchor for MyEnumVariants {
     #[inline(never)]
-    fn spec_anchor() {}
+    fn spec_anchor() {
+        soroban_sdk::spec_anchor_ref(<MyStruct as soroban_sdk::SpecAnchor>::spec_anchor);
+        soroban_sdk::spec_anchor_ref(<MyEnumUnit as soroban_sdk::SpecAnchor>::spec_anchor);
+    }
 }
 impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for MyEnumVariants {
     type Error = soroban_sdk::ConversionError;

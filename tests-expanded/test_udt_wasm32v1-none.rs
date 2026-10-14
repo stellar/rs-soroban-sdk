@@ -305,7 +305,11 @@ impl UdtEnum {
 }
 impl soroban_sdk::SpecAnchor for UdtEnum {
     #[inline(never)]
-    fn spec_anchor() {}
+    fn spec_anchor() {
+        soroban_sdk::spec_anchor_ref(<UdtStruct as soroban_sdk::SpecAnchor>::spec_anchor);
+        soroban_sdk::spec_anchor_ref(<UdtEnum2 as soroban_sdk::SpecAnchor>::spec_anchor);
+        soroban_sdk::spec_anchor_ref(<UdtTuple as soroban_sdk::SpecAnchor>::spec_anchor);
+    }
 }
 impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for UdtEnum {
     type Error = soroban_sdk::ConversionError;
@@ -513,7 +517,10 @@ impl UdtTuple {
 }
 impl soroban_sdk::SpecAnchor for UdtTuple {
     #[inline(never)]
-    fn spec_anchor() {}
+    fn spec_anchor() {
+        soroban_sdk::spec_anchor_ref(<i64 as soroban_sdk::SpecAnchor>::spec_anchor);
+        soroban_sdk::spec_anchor_ref(<Vec<i64> as soroban_sdk::SpecAnchor>::spec_anchor);
+    }
 }
 impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for UdtTuple {
     type Error = soroban_sdk::ConversionError;
@@ -678,7 +685,11 @@ impl UdtStruct {
 }
 impl soroban_sdk::SpecAnchor for UdtStruct {
     #[inline(never)]
-    fn spec_anchor() {}
+    fn spec_anchor() {
+        soroban_sdk::spec_anchor_ref(<i64 as soroban_sdk::SpecAnchor>::spec_anchor);
+        soroban_sdk::spec_anchor_ref(<i64 as soroban_sdk::SpecAnchor>::spec_anchor);
+        soroban_sdk::spec_anchor_ref(<Vec<i64> as soroban_sdk::SpecAnchor>::spec_anchor);
+    }
 }
 impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for UdtStruct {
     type Error = soroban_sdk::ConversionError;
@@ -843,7 +854,10 @@ impl UdtRecursive {
 }
 impl soroban_sdk::SpecAnchor for UdtRecursive {
     #[inline(never)]
-    fn spec_anchor() {}
+    fn spec_anchor() {
+        soroban_sdk::spec_anchor_ref(<Symbol as soroban_sdk::SpecAnchor>::spec_anchor);
+        soroban_sdk::spec_anchor_ref(<Vec<UdtRecursive> as soroban_sdk::SpecAnchor>::spec_anchor);
+    }
 }
 impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for UdtRecursive {
     type Error = soroban_sdk::ConversionError;
@@ -1004,7 +1018,12 @@ impl RecursiveToEnum {
 }
 impl soroban_sdk::SpecAnchor for RecursiveToEnum {
     #[inline(never)]
-    fn spec_anchor() {}
+    fn spec_anchor() {
+        soroban_sdk::spec_anchor_ref(<Symbol as soroban_sdk::SpecAnchor>::spec_anchor);
+        soroban_sdk::spec_anchor_ref(
+            <Map<u32, RecursiveEnum> as soroban_sdk::SpecAnchor>::spec_anchor,
+        );
+    }
 }
 impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for RecursiveToEnum {
     type Error = soroban_sdk::ConversionError;
@@ -1181,7 +1200,9 @@ impl RecursiveEnum {
 }
 impl soroban_sdk::SpecAnchor for RecursiveEnum {
     #[inline(never)]
-    fn spec_anchor() {}
+    fn spec_anchor() {
+        soroban_sdk::spec_anchor_ref(<RecursiveToEnum as soroban_sdk::SpecAnchor>::spec_anchor);
+    }
 }
 impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for RecursiveEnum {
     type Error = soroban_sdk::ConversionError;

@@ -63,7 +63,9 @@ impl Inner {
 }
 impl soroban_sdk::SpecAnchor for Inner {
     #[inline(never)]
-    fn spec_anchor() {}
+    fn spec_anchor() {
+        soroban_sdk::spec_anchor_ref(<u32 as soroban_sdk::SpecAnchor>::spec_anchor);
+    }
 }
 impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for Inner {
     type Error = soroban_sdk::ConversionError;
@@ -164,7 +166,9 @@ impl Outer {
 }
 impl soroban_sdk::SpecAnchor for Outer {
     #[inline(never)]
-    fn spec_anchor() {}
+    fn spec_anchor() {
+        soroban_sdk::spec_anchor_ref(<Inner as soroban_sdk::SpecAnchor>::spec_anchor);
+    }
 }
 impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for Outer {
     type Error = soroban_sdk::ConversionError;

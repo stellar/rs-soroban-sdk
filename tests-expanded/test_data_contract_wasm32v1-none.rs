@@ -69,7 +69,9 @@ impl Wrapper {
 }
 impl soroban_sdk::SpecAnchor for Wrapper {
     #[inline(never)]
-    fn spec_anchor() {}
+    fn spec_anchor() {
+        soroban_sdk::spec_anchor_ref(<Wrapped as soroban_sdk::SpecAnchor>::spec_anchor);
+    }
 }
 impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for Wrapper {
     type Error = soroban_sdk::ConversionError;
@@ -175,7 +177,9 @@ impl HasVecField {
 }
 impl soroban_sdk::SpecAnchor for HasVecField {
     #[inline(never)]
-    fn spec_anchor() {}
+    fn spec_anchor() {
+        soroban_sdk::spec_anchor_ref(<Vec<FieldElem> as soroban_sdk::SpecAnchor>::spec_anchor);
+    }
 }
 impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for HasVecField {
     type Error = soroban_sdk::ConversionError;

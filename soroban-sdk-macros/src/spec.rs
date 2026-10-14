@@ -190,17 +190,28 @@ pub fn const_view_symbol(path: &Path, s: &ScSymbol) -> TokenStream2 {
 /// defining crate the object file, and the spec entry, can be left out. The fn
 /// is never inlined so that calling it references a symbol in the defining
 /// crate. It is empty, and with LTO the calls to it are optimised away.
-pub fn spec_anchor_impl(
+///
+/// The fn also references the anchors of the given field types, without calling
+/// them, so that the spec entries of the types a type refers to are linked in
+/// with the type's own, even when the type is never converted, such as when it
+/// is only the element type of a `Vec`. The anchors are referenced rather than
+/// called so that a type that contains itself, such as through a `Vec` field,
+/// does not recurse. With LTO the references are optimised away.
+pub fn spec_anchor_impl<'a>(
     path: &Path,
     ident: &Ident,
     gen_impl: Option<TokenStream2>,
     gen_types: Option<TokenStream2>,
     gen_where: Option<TokenStream2>,
+    field_types: impl IntoIterator<Item = &'a Type>,
 ) -> TokenStream2 {
+    let field_types = field_types.into_iter();
     quote! {
         impl #gen_impl #path::SpecAnchor for #ident #gen_types #gen_where {
             #[inline(never)]
-            fn spec_anchor() {}
+            fn spec_anchor() {
+                #(#path::spec_anchor_ref(<#field_types as #path::SpecAnchor>::spec_anchor);)*
+            }
         }
     }
 }

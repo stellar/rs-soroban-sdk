@@ -1229,7 +1229,7 @@ pub use spec_shaking::SpecShakingMarker;
 
 mod spec_anchor;
 #[doc(hidden)]
-pub use spec_anchor::SpecAnchor;
+pub use spec_anchor::{spec_anchor_ref, SpecAnchor};
 
 mod spec_type_def;
 #[doc(hidden)]

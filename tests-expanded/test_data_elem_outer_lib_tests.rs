@@ -64,7 +64,9 @@ impl ElemOuter {
 }
 impl soroban_sdk::SpecAnchor for ElemOuter {
     #[inline(never)]
-    fn spec_anchor() {}
+    fn spec_anchor() {
+        soroban_sdk::spec_anchor_ref(<ElemInner as soroban_sdk::SpecAnchor>::spec_anchor);
+    }
 }
 impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for ElemOuter {
     type Error = soroban_sdk::ConversionError;

@@ -20,9 +20,13 @@
 //! converted, because the collection's conversions do not convert its elements.
 //! So the conversions of [`Vec`] and [`Map`] call the anchors of their element
 //! types, and the anchors of [`Vec`], [`Map`] and the other types generic over
-//! the types they contain call the anchors of those types. The anchor of a
-//! user-defined type calls nothing, so a type that contains itself, such as
-//! through a `Vec` field, does not recurse.
+//! the types they contain call the anchors of those types.
+//!
+//! A type used only as an element is never converted either, so neither are
+//! its fields. So the anchor of a user-defined type references the anchors of
+//! its fields' types, through [`spec_anchor_ref`], without calling them. That
+//! links in the spec entries of every type it refers to, however deeply, and a
+//! type that contains itself, such as through a `Vec` field, does not recurse.
 //!
 //! The fn is on a trait, rather than an inherent fn, so that it cannot clash
 //! with an inherent fn of the same name on the type.
@@ -52,6 +56,17 @@ pub trait SpecAnchor {
     #[inline(always)]
     fn spec_anchor() {}
 }
+
+/// References `_f` without calling it, so that the code calling this fn refers
+/// to the symbol of `_f`, and the object file that defines it is linked into the
+/// contract. Used by the anchors of user-defined types to reference the anchors
+/// of the types of their fields.
+///
+/// The fn is never inlined so that, without LTO, the reference is kept. It is
+/// empty, and with LTO the calls to it and the references are optimised away.
+#[doc(hidden)]
+#[inline(never)]
+pub fn spec_anchor_ref(_f: fn()) {}
 
 macro_rules! impl_spec_anchor {
     ($($t:ty),* $(,)?) => {

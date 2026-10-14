@@ -63,7 +63,9 @@ impl MapKey {
 }
 impl soroban_sdk::SpecAnchor for MapKey {
     #[inline(never)]
-    fn spec_anchor() {}
+    fn spec_anchor() {
+        soroban_sdk::spec_anchor_ref(<u32 as soroban_sdk::SpecAnchor>::spec_anchor);
+    }
 }
 impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for MapKey {
     type Error = soroban_sdk::ConversionError;
@@ -164,7 +166,9 @@ impl MapVal {
 }
 impl soroban_sdk::SpecAnchor for MapVal {
     #[inline(never)]
-    fn spec_anchor() {}
+    fn spec_anchor() {
+        soroban_sdk::spec_anchor_ref(<u32 as soroban_sdk::SpecAnchor>::spec_anchor);
+    }
 }
 impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for MapVal {
     type Error = soroban_sdk::ConversionError;

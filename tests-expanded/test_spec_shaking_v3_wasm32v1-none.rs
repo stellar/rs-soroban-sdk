@@ -136,7 +136,10 @@ impl UsedParamStruct {
 }
 impl soroban_sdk::SpecAnchor for UsedParamStruct {
     #[inline(never)]
-    fn spec_anchor() {}
+    fn spec_anchor() {
+        soroban_sdk::spec_anchor_ref(<u32 as soroban_sdk::SpecAnchor>::spec_anchor);
+        soroban_sdk::spec_anchor_ref(<UsedNestedInStruct as soroban_sdk::SpecAnchor>::spec_anchor);
+    }
 }
 impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for UsedParamStruct {
     type Error = soroban_sdk::ConversionError;
@@ -314,7 +317,10 @@ impl UsedReturnEnum {
 }
 impl soroban_sdk::SpecAnchor for UsedReturnEnum {
     #[inline(never)]
-    fn spec_anchor() {}
+    fn spec_anchor() {
+        soroban_sdk::spec_anchor_ref(<u32 as soroban_sdk::SpecAnchor>::spec_anchor);
+        soroban_sdk::spec_anchor_ref(<i64 as soroban_sdk::SpecAnchor>::spec_anchor);
+    }
 }
 impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for UsedReturnEnum {
     type Error = soroban_sdk::ConversionError;
@@ -1304,7 +1310,9 @@ impl UsedNestedInStruct {
 }
 impl soroban_sdk::SpecAnchor for UsedNestedInStruct {
     #[inline(never)]
-    fn spec_anchor() {}
+    fn spec_anchor() {
+        soroban_sdk::spec_anchor_ref(<i64 as soroban_sdk::SpecAnchor>::spec_anchor);
+    }
 }
 impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for UsedNestedInStruct {
     type Error = soroban_sdk::ConversionError;
@@ -1446,7 +1454,9 @@ impl UsedVecElement {
 }
 impl soroban_sdk::SpecAnchor for UsedVecElement {
     #[inline(never)]
-    fn spec_anchor() {}
+    fn spec_anchor() {
+        soroban_sdk::spec_anchor_ref(<u32 as soroban_sdk::SpecAnchor>::spec_anchor);
+    }
 }
 impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for UsedVecElement {
     type Error = soroban_sdk::ConversionError;
@@ -1731,7 +1741,9 @@ impl UsedMapVal {
 }
 impl soroban_sdk::SpecAnchor for UsedMapVal {
     #[inline(never)]
-    fn spec_anchor() {}
+    fn spec_anchor() {
+        soroban_sdk::spec_anchor_ref(<u32 as soroban_sdk::SpecAnchor>::spec_anchor);
+    }
 }
 impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for UsedMapVal {
     type Error = soroban_sdk::ConversionError;
@@ -1876,7 +1888,9 @@ impl UsedOptionElement {
 }
 impl soroban_sdk::SpecAnchor for UsedOptionElement {
     #[inline(never)]
-    fn spec_anchor() {}
+    fn spec_anchor() {
+        soroban_sdk::spec_anchor_ref(<u32 as soroban_sdk::SpecAnchor>::spec_anchor);
+    }
 }
 impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for UsedOptionElement {
     type Error = soroban_sdk::ConversionError;
@@ -2016,7 +2030,9 @@ impl UsedResultOk {
 }
 impl soroban_sdk::SpecAnchor for UsedResultOk {
     #[inline(never)]
-    fn spec_anchor() {}
+    fn spec_anchor() {
+        soroban_sdk::spec_anchor_ref(<u32 as soroban_sdk::SpecAnchor>::spec_anchor);
+    }
 }
 impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for UsedResultOk {
     type Error = soroban_sdk::ConversionError;
@@ -2634,7 +2650,10 @@ impl UsedEventDataType {
 }
 impl soroban_sdk::SpecAnchor for UsedEventDataType {
     #[inline(never)]
-    fn spec_anchor() {}
+    fn spec_anchor() {
+        soroban_sdk::spec_anchor_ref(<u32 as soroban_sdk::SpecAnchor>::spec_anchor);
+        soroban_sdk::spec_anchor_ref(<u32 as soroban_sdk::SpecAnchor>::spec_anchor);
+    }
 }
 impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for UsedEventDataType {
     type Error = soroban_sdk::ConversionError;
@@ -2943,7 +2962,9 @@ impl UsedEventTopicOuter {
 }
 impl soroban_sdk::SpecAnchor for UsedEventTopicOuter {
     #[inline(never)]
-    fn spec_anchor() {}
+    fn spec_anchor() {
+        soroban_sdk::spec_anchor_ref(<UsedEventTopicInner as soroban_sdk::SpecAnchor>::spec_anchor);
+    }
 }
 impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for UsedEventTopicOuter {
     type Error = soroban_sdk::ConversionError;
@@ -3092,7 +3113,9 @@ impl UsedEventTopicInner {
 }
 impl soroban_sdk::SpecAnchor for UsedEventTopicInner {
     #[inline(never)]
-    fn spec_anchor() {}
+    fn spec_anchor() {
+        soroban_sdk::spec_anchor_ref(<u32 as soroban_sdk::SpecAnchor>::spec_anchor);
+    }
 }
 impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for UsedEventTopicInner {
     type Error = soroban_sdk::ConversionError;
@@ -3397,7 +3420,9 @@ impl UsedEventDataOuter {
 }
 impl soroban_sdk::SpecAnchor for UsedEventDataOuter {
     #[inline(never)]
-    fn spec_anchor() {}
+    fn spec_anchor() {
+        soroban_sdk::spec_anchor_ref(<UsedEventDataInner as soroban_sdk::SpecAnchor>::spec_anchor);
+    }
 }
 impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for UsedEventDataOuter {
     type Error = soroban_sdk::ConversionError;
@@ -3546,7 +3571,9 @@ impl UsedEventDataInner {
 }
 impl soroban_sdk::SpecAnchor for UsedEventDataInner {
     #[inline(never)]
-    fn spec_anchor() {}
+    fn spec_anchor() {
+        soroban_sdk::spec_anchor_ref(<u32 as soroban_sdk::SpecAnchor>::spec_anchor);
+    }
 }
 impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for UsedEventDataInner {
     type Error = soroban_sdk::ConversionError;
@@ -4000,7 +4027,9 @@ impl UsedRefDataType {
 }
 impl soroban_sdk::SpecAnchor for UsedRefDataType {
     #[inline(never)]
-    fn spec_anchor() {}
+    fn spec_anchor() {
+        soroban_sdk::spec_anchor_ref(<UsedRefDataInner as soroban_sdk::SpecAnchor>::spec_anchor);
+    }
 }
 impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for UsedRefDataType {
     type Error = soroban_sdk::ConversionError;
@@ -4142,7 +4171,9 @@ impl UsedRefDataInner {
 }
 impl soroban_sdk::SpecAnchor for UsedRefDataInner {
     #[inline(never)]
-    fn spec_anchor() {}
+    fn spec_anchor() {
+        soroban_sdk::spec_anchor_ref(<u32 as soroban_sdk::SpecAnchor>::spec_anchor);
+    }
 }
 impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for UsedRefDataInner {
     type Error = soroban_sdk::ConversionError;
@@ -4445,7 +4476,9 @@ impl UsedPublishEventDataType {
 }
 impl soroban_sdk::SpecAnchor for UsedPublishEventDataType {
     #[inline(never)]
-    fn spec_anchor() {}
+    fn spec_anchor() {
+        soroban_sdk::spec_anchor_ref(<u32 as soroban_sdk::SpecAnchor>::spec_anchor);
+    }
 }
 impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for UsedPublishEventDataType {
     type Error = soroban_sdk::ConversionError;
@@ -4732,7 +4765,9 @@ impl UsedTraitPublishDataType {
 }
 impl soroban_sdk::SpecAnchor for UsedTraitPublishDataType {
     #[inline(never)]
-    fn spec_anchor() {}
+    fn spec_anchor() {
+        soroban_sdk::spec_anchor_ref(<u32 as soroban_sdk::SpecAnchor>::spec_anchor);
+    }
 }
 impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for UsedTraitPublishDataType {
     type Error = soroban_sdk::ConversionError;
@@ -5014,7 +5049,9 @@ impl UsedTupleElement {
 }
 impl soroban_sdk::SpecAnchor for UsedTupleElement {
     #[inline(never)]
-    fn spec_anchor() {}
+    fn spec_anchor() {
+        soroban_sdk::spec_anchor_ref(<u32 as soroban_sdk::SpecAnchor>::spec_anchor);
+    }
 }
 impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for UsedTupleElement {
     type Error = soroban_sdk::ConversionError;
@@ -5159,7 +5196,9 @@ impl UsedTupleReturnElement {
 }
 impl soroban_sdk::SpecAnchor for UsedTupleReturnElement {
     #[inline(never)]
-    fn spec_anchor() {}
+    fn spec_anchor() {
+        soroban_sdk::spec_anchor_ref(<u32 as soroban_sdk::SpecAnchor>::spec_anchor);
+    }
 }
 impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for UsedTupleReturnElement {
     type Error = soroban_sdk::ConversionError;
@@ -5306,7 +5345,9 @@ impl UsedVecInnerVecElement {
 }
 impl soroban_sdk::SpecAnchor for UsedVecInnerVecElement {
     #[inline(never)]
-    fn spec_anchor() {}
+    fn spec_anchor() {
+        soroban_sdk::spec_anchor_ref(<u32 as soroban_sdk::SpecAnchor>::spec_anchor);
+    }
 }
 impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for UsedVecInnerVecElement {
     type Error = soroban_sdk::ConversionError;
@@ -5453,7 +5494,9 @@ impl UsedVecInnerElement {
 }
 impl soroban_sdk::SpecAnchor for UsedVecInnerElement {
     #[inline(never)]
-    fn spec_anchor() {}
+    fn spec_anchor() {
+        soroban_sdk::spec_anchor_ref(<u32 as soroban_sdk::SpecAnchor>::spec_anchor);
+    }
 }
 impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for UsedVecInnerElement {
     type Error = soroban_sdk::ConversionError;
@@ -5623,7 +5666,13 @@ impl UsedVecElementNested {
 }
 impl soroban_sdk::SpecAnchor for UsedVecElementNested {
     #[inline(never)]
-    fn spec_anchor() {}
+    fn spec_anchor() {
+        soroban_sdk::spec_anchor_ref(<UsedVecInnerElement as soroban_sdk::SpecAnchor>::spec_anchor);
+        soroban_sdk::spec_anchor_ref(<u32 as soroban_sdk::SpecAnchor>::spec_anchor);
+        soroban_sdk::spec_anchor_ref(
+            <Vec<UsedVecInnerVecElement> as soroban_sdk::SpecAnchor>::spec_anchor,
+        );
+    }
 }
 impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for UsedVecElementNested {
     type Error = soroban_sdk::ConversionError;
@@ -5779,7 +5828,9 @@ impl UsedNonPubStruct {
 }
 impl soroban_sdk::SpecAnchor for UsedNonPubStruct {
     #[inline(never)]
-    fn spec_anchor() {}
+    fn spec_anchor() {
+        soroban_sdk::spec_anchor_ref(<u32 as soroban_sdk::SpecAnchor>::spec_anchor);
+    }
 }
 impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for UsedNonPubStruct {
     type Error = soroban_sdk::ConversionError;
@@ -6136,7 +6187,9 @@ impl UsedRecursiveRoot {
 }
 impl soroban_sdk::SpecAnchor for UsedRecursiveRoot {
     #[inline(never)]
-    fn spec_anchor() {}
+    fn spec_anchor() {
+        soroban_sdk::spec_anchor_ref(<UsedRecursiveNode as soroban_sdk::SpecAnchor>::spec_anchor);
+    }
 }
 impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for UsedRecursiveRoot {
     type Error = soroban_sdk::ConversionError;
@@ -6320,7 +6373,10 @@ impl UsedRecursiveNode {
 }
 impl soroban_sdk::SpecAnchor for UsedRecursiveNode {
     #[inline(never)]
-    fn spec_anchor() {}
+    fn spec_anchor() {
+        soroban_sdk::spec_anchor_ref(<UsedLeaf as soroban_sdk::SpecAnchor>::spec_anchor);
+        soroban_sdk::spec_anchor_ref(<UsedRecursiveLeaf as soroban_sdk::SpecAnchor>::spec_anchor);
+    }
 }
 impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for UsedRecursiveNode {
     type Error = soroban_sdk::ConversionError;
@@ -6501,7 +6557,11 @@ impl UsedRecursiveLeaf {
 }
 impl soroban_sdk::SpecAnchor for UsedRecursiveLeaf {
     #[inline(never)]
-    fn spec_anchor() {}
+    fn spec_anchor() {
+        soroban_sdk::spec_anchor_ref(
+            <Vec<UsedRecursiveRoot> as soroban_sdk::SpecAnchor>::spec_anchor,
+        );
+    }
 }
 impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for UsedRecursiveLeaf {
     type Error = soroban_sdk::ConversionError;
@@ -6640,7 +6700,9 @@ impl UsedLeaf {
 }
 impl soroban_sdk::SpecAnchor for UsedLeaf {
     #[inline(never)]
-    fn spec_anchor() {}
+    fn spec_anchor() {
+        soroban_sdk::spec_anchor_ref(<u32 as soroban_sdk::SpecAnchor>::spec_anchor);
+    }
 }
 impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for UsedLeaf {
     type Error = soroban_sdk::ConversionError;
@@ -6786,7 +6848,9 @@ impl UsedSelfRef {
 }
 impl soroban_sdk::SpecAnchor for UsedSelfRef {
     #[inline(never)]
-    fn spec_anchor() {}
+    fn spec_anchor() {
+        soroban_sdk::spec_anchor_ref(<Vec<UsedSelfRef> as soroban_sdk::SpecAnchor>::spec_anchor);
+    }
 }
 impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for UsedSelfRef {
     type Error = soroban_sdk::ConversionError;
@@ -7349,7 +7413,14 @@ mod wasm_imported {
     }
     impl soroban_sdk::SpecAnchor for ContractExecutableRef {
         #[inline(never)]
-        fn spec_anchor() {}
+        fn spec_anchor() {
+            soroban_sdk::spec_anchor_ref(
+                <soroban_sdk::Address as soroban_sdk::SpecAnchor>::spec_anchor,
+            );
+            soroban_sdk::spec_anchor_ref(
+                <soroban_sdk::String as soroban_sdk::SpecAnchor>::spec_anchor,
+            );
+        }
     }
     impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for ContractExecutableRef {
         type Error = soroban_sdk::ConversionError;
@@ -7578,7 +7649,17 @@ mod wasm_imported {
     }
     impl soroban_sdk::SpecAnchor for ContractContext {
         #[inline(never)]
-        fn spec_anchor() {}
+        fn spec_anchor() {
+            soroban_sdk::spec_anchor_ref(
+                <soroban_sdk::Vec<soroban_sdk::Val> as soroban_sdk::SpecAnchor>::spec_anchor,
+            );
+            soroban_sdk::spec_anchor_ref(
+                <soroban_sdk::Address as soroban_sdk::SpecAnchor>::spec_anchor,
+            );
+            soroban_sdk::spec_anchor_ref(
+                <soroban_sdk::Symbol as soroban_sdk::SpecAnchor>::spec_anchor,
+            );
+        }
     }
     impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for ContractContext {
         type Error = soroban_sdk::ConversionError;
@@ -7790,7 +7871,14 @@ mod wasm_imported {
     }
     impl soroban_sdk::SpecAnchor for SubContractInvocation {
         #[inline(never)]
-        fn spec_anchor() {}
+        fn spec_anchor() {
+            soroban_sdk::spec_anchor_ref(<ContractContext as soroban_sdk::SpecAnchor>::spec_anchor);
+            soroban_sdk::spec_anchor_ref(
+                <soroban_sdk::Vec<
+                    InvokerContractAuthEntry,
+                > as soroban_sdk::SpecAnchor>::spec_anchor,
+            );
+        }
     }
     impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for SubContractInvocation {
         type Error = soroban_sdk::ConversionError;
@@ -7990,7 +8078,14 @@ mod wasm_imported {
     }
     impl soroban_sdk::SpecAnchor for CreateContractHostFnContext {
         #[inline(never)]
-        fn spec_anchor() {}
+        fn spec_anchor() {
+            soroban_sdk::spec_anchor_ref(
+                <ContractExecutable as soroban_sdk::SpecAnchor>::spec_anchor,
+            );
+            soroban_sdk::spec_anchor_ref(
+                <soroban_sdk::BytesN<32> as soroban_sdk::SpecAnchor>::spec_anchor,
+            );
+        }
     }
     impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for CreateContractHostFnContext {
         type Error = soroban_sdk::ConversionError;
@@ -8230,7 +8325,17 @@ mod wasm_imported {
     }
     impl soroban_sdk::SpecAnchor for CreateContractWithConstructorHostFnContext {
         #[inline(never)]
-        fn spec_anchor() {}
+        fn spec_anchor() {
+            soroban_sdk::spec_anchor_ref(
+                <soroban_sdk::Vec<soroban_sdk::Val> as soroban_sdk::SpecAnchor>::spec_anchor,
+            );
+            soroban_sdk::spec_anchor_ref(
+                <ContractExecutable as soroban_sdk::SpecAnchor>::spec_anchor,
+            );
+            soroban_sdk::spec_anchor_ref(
+                <soroban_sdk::BytesN<32> as soroban_sdk::SpecAnchor>::spec_anchor,
+            );
+        }
     }
     impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val>
         for CreateContractWithConstructorHostFnContext
@@ -8430,7 +8535,10 @@ mod wasm_imported {
     }
     impl soroban_sdk::SpecAnchor for StructA {
         #[inline(never)]
-        fn spec_anchor() {}
+        fn spec_anchor() {
+            soroban_sdk::spec_anchor_ref(<u32 as soroban_sdk::SpecAnchor>::spec_anchor);
+            soroban_sdk::spec_anchor_ref(<bool as soroban_sdk::SpecAnchor>::spec_anchor);
+        }
     }
     impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for StructA {
         type Error = soroban_sdk::ConversionError;
@@ -8613,7 +8721,12 @@ mod wasm_imported {
     }
     impl soroban_sdk::SpecAnchor for StructB {
         #[inline(never)]
-        fn spec_anchor() {}
+        fn spec_anchor() {
+            soroban_sdk::spec_anchor_ref(<i64 as soroban_sdk::SpecAnchor>::spec_anchor);
+            soroban_sdk::spec_anchor_ref(
+                <soroban_sdk::String as soroban_sdk::SpecAnchor>::spec_anchor,
+            );
+        }
     }
     impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for StructB {
         type Error = soroban_sdk::ConversionError;
@@ -8798,7 +8911,14 @@ mod wasm_imported {
     }
     impl soroban_sdk::SpecAnchor for StructC {
         #[inline(never)]
-        fn spec_anchor() {}
+        fn spec_anchor() {
+            soroban_sdk::spec_anchor_ref(
+                <soroban_sdk::Vec<u32> as soroban_sdk::SpecAnchor>::spec_anchor,
+            );
+            soroban_sdk::spec_anchor_ref(
+                <soroban_sdk::Address as soroban_sdk::SpecAnchor>::spec_anchor,
+            );
+        }
     }
     impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for StructC {
         type Error = soroban_sdk::ConversionError;
@@ -8975,7 +9095,10 @@ mod wasm_imported {
     }
     impl soroban_sdk::SpecAnchor for StructTupleA {
         #[inline(never)]
-        fn spec_anchor() {}
+        fn spec_anchor() {
+            soroban_sdk::spec_anchor_ref(<i64 as soroban_sdk::SpecAnchor>::spec_anchor);
+            soroban_sdk::spec_anchor_ref(<i64 as soroban_sdk::SpecAnchor>::spec_anchor);
+        }
     }
     impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for StructTupleA {
         type Error = soroban_sdk::ConversionError;
@@ -9148,7 +9271,10 @@ mod wasm_imported {
     }
     impl soroban_sdk::SpecAnchor for StructTupleB {
         #[inline(never)]
-        fn spec_anchor() {}
+        fn spec_anchor() {
+            soroban_sdk::spec_anchor_ref(<u128 as soroban_sdk::SpecAnchor>::spec_anchor);
+            soroban_sdk::spec_anchor_ref(<u128 as soroban_sdk::SpecAnchor>::spec_anchor);
+        }
     }
     impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for StructTupleB {
         type Error = soroban_sdk::ConversionError;
@@ -9323,7 +9449,12 @@ mod wasm_imported {
     }
     impl soroban_sdk::SpecAnchor for StructTupleC {
         #[inline(never)]
-        fn spec_anchor() {}
+        fn spec_anchor() {
+            soroban_sdk::spec_anchor_ref(
+                <soroban_sdk::Address as soroban_sdk::SpecAnchor>::spec_anchor,
+            );
+            soroban_sdk::spec_anchor_ref(<i128 as soroban_sdk::SpecAnchor>::spec_anchor);
+        }
     }
     impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for StructTupleC {
         type Error = soroban_sdk::ConversionError;
@@ -9557,7 +9688,14 @@ mod wasm_imported {
     }
     impl soroban_sdk::SpecAnchor for ContractExecutable {
         #[inline(never)]
-        fn spec_anchor() {}
+        fn spec_anchor() {
+            soroban_sdk::spec_anchor_ref(
+                <soroban_sdk::BytesN<32> as soroban_sdk::SpecAnchor>::spec_anchor,
+            );
+            soroban_sdk::spec_anchor_ref(
+                <ContractExecutableRef as soroban_sdk::SpecAnchor>::spec_anchor,
+            );
+        }
     }
     impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for ContractExecutable {
         type Error = soroban_sdk::ConversionError;
@@ -9863,7 +10001,15 @@ mod wasm_imported {
     }
     impl soroban_sdk::SpecAnchor for Context {
         #[inline(never)]
-        fn spec_anchor() {}
+        fn spec_anchor() {
+            soroban_sdk::spec_anchor_ref(<ContractContext as soroban_sdk::SpecAnchor>::spec_anchor);
+            soroban_sdk::spec_anchor_ref(
+                <CreateContractHostFnContext as soroban_sdk::SpecAnchor>::spec_anchor,
+            );
+            soroban_sdk::spec_anchor_ref(
+                <CreateContractWithConstructorHostFnContext as soroban_sdk::SpecAnchor>::spec_anchor,
+            );
+        }
     }
     impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for Context {
         type Error = soroban_sdk::ConversionError;
@@ -10201,7 +10347,17 @@ mod wasm_imported {
     }
     impl soroban_sdk::SpecAnchor for InvokerContractAuthEntry {
         #[inline(never)]
-        fn spec_anchor() {}
+        fn spec_anchor() {
+            soroban_sdk::spec_anchor_ref(
+                <SubContractInvocation as soroban_sdk::SpecAnchor>::spec_anchor,
+            );
+            soroban_sdk::spec_anchor_ref(
+                <CreateContractHostFnContext as soroban_sdk::SpecAnchor>::spec_anchor,
+            );
+            soroban_sdk::spec_anchor_ref(
+                <CreateContractWithConstructorHostFnContext as soroban_sdk::SpecAnchor>::spec_anchor,
+            );
+        }
     }
     impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for InvokerContractAuthEntry {
         type Error = soroban_sdk::ConversionError;
@@ -10479,7 +10635,11 @@ mod wasm_imported {
     }
     impl soroban_sdk::SpecAnchor for Executable {
         #[inline(never)]
-        fn spec_anchor() {}
+        fn spec_anchor() {
+            soroban_sdk::spec_anchor_ref(
+                <soroban_sdk::BytesN<32> as soroban_sdk::SpecAnchor>::spec_anchor,
+            );
+        }
     }
     impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for Executable {
         type Error = soroban_sdk::ConversionError;
@@ -10996,7 +11156,11 @@ mod wasm_imported {
     }
     impl soroban_sdk::SpecAnchor for EnumB {
         #[inline(never)]
-        fn spec_anchor() {}
+        fn spec_anchor() {
+            soroban_sdk::spec_anchor_ref(<i64 as soroban_sdk::SpecAnchor>::spec_anchor);
+            soroban_sdk::spec_anchor_ref(<i64 as soroban_sdk::SpecAnchor>::spec_anchor);
+            soroban_sdk::spec_anchor_ref(<i64 as soroban_sdk::SpecAnchor>::spec_anchor);
+        }
     }
     impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for EnumB {
         type Error = soroban_sdk::ConversionError;
@@ -11277,7 +11441,10 @@ mod wasm_imported {
     }
     impl soroban_sdk::SpecAnchor for EnumC {
         #[inline(never)]
-        fn spec_anchor() {}
+        fn spec_anchor() {
+            soroban_sdk::spec_anchor_ref(<StructA as soroban_sdk::SpecAnchor>::spec_anchor);
+            soroban_sdk::spec_anchor_ref(<StructTupleA as soroban_sdk::SpecAnchor>::spec_anchor);
+        }
     }
     impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for EnumC {
         type Error = soroban_sdk::ConversionError;
@@ -13538,7 +13705,9 @@ impl UnusedStruct {
 }
 impl soroban_sdk::SpecAnchor for UnusedStruct {
     #[inline(never)]
-    fn spec_anchor() {}
+    fn spec_anchor() {
+        soroban_sdk::spec_anchor_ref(<u32 as soroban_sdk::SpecAnchor>::spec_anchor);
+    }
 }
 impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for UnusedStruct {
     type Error = soroban_sdk::ConversionError;
@@ -13700,7 +13869,9 @@ impl UnusedEnum {
 }
 impl soroban_sdk::SpecAnchor for UnusedEnum {
     #[inline(never)]
-    fn spec_anchor() {}
+    fn spec_anchor() {
+        soroban_sdk::spec_anchor_ref(<i64 as soroban_sdk::SpecAnchor>::spec_anchor);
+    }
 }
 impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for UnusedEnum {
     type Error = soroban_sdk::ConversionError;
@@ -14169,7 +14340,9 @@ impl UnusedEventDataType {
 }
 impl soroban_sdk::SpecAnchor for UnusedEventDataType {
     #[inline(never)]
-    fn spec_anchor() {}
+    fn spec_anchor() {
+        soroban_sdk::spec_anchor_ref(<u32 as soroban_sdk::SpecAnchor>::spec_anchor);
+    }
 }
 impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for UnusedEventDataType {
     type Error = soroban_sdk::ConversionError;
@@ -14468,7 +14641,9 @@ impl UnusedOuter {
 }
 impl soroban_sdk::SpecAnchor for UnusedOuter {
     #[inline(never)]
-    fn spec_anchor() {}
+    fn spec_anchor() {
+        soroban_sdk::spec_anchor_ref(<UnusedInner as soroban_sdk::SpecAnchor>::spec_anchor);
+    }
 }
 impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for UnusedOuter {
     type Error = soroban_sdk::ConversionError;
@@ -14609,7 +14784,9 @@ impl UnusedInner {
 }
 impl soroban_sdk::SpecAnchor for UnusedInner {
     #[inline(never)]
-    fn spec_anchor() {}
+    fn spec_anchor() {
+        soroban_sdk::spec_anchor_ref(<u32 as soroban_sdk::SpecAnchor>::spec_anchor);
+    }
 }
 impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for UnusedInner {
     type Error = soroban_sdk::ConversionError;
@@ -14749,7 +14926,9 @@ impl UnusedCycleA {
 }
 impl soroban_sdk::SpecAnchor for UnusedCycleA {
     #[inline(never)]
-    fn spec_anchor() {}
+    fn spec_anchor() {
+        soroban_sdk::spec_anchor_ref(<UnusedCycleB as soroban_sdk::SpecAnchor>::spec_anchor);
+    }
 }
 impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for UnusedCycleA {
     type Error = soroban_sdk::ConversionError;
@@ -14889,7 +15068,9 @@ impl UnusedCycleB {
 }
 impl soroban_sdk::SpecAnchor for UnusedCycleB {
     #[inline(never)]
-    fn spec_anchor() {}
+    fn spec_anchor() {
+        soroban_sdk::spec_anchor_ref(<Vec<UnusedCycleA> as soroban_sdk::SpecAnchor>::spec_anchor);
+    }
 }
 impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for UnusedCycleB {
     type Error = soroban_sdk::ConversionError;
@@ -15036,7 +15217,9 @@ impl UnusedSelfRef {
 }
 impl soroban_sdk::SpecAnchor for UnusedSelfRef {
     #[inline(never)]
-    fn spec_anchor() {}
+    fn spec_anchor() {
+        soroban_sdk::spec_anchor_ref(<Vec<UnusedSelfRef> as soroban_sdk::SpecAnchor>::spec_anchor);
+    }
 }
 impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for UnusedSelfRef {
     type Error = soroban_sdk::ConversionError;
@@ -15395,7 +15578,9 @@ impl UnusedNonContractFnParam {
 }
 impl soroban_sdk::SpecAnchor for UnusedNonContractFnParam {
     #[inline(never)]
-    fn spec_anchor() {}
+    fn spec_anchor() {
+        soroban_sdk::spec_anchor_ref(<u32 as soroban_sdk::SpecAnchor>::spec_anchor);
+    }
 }
 impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for UnusedNonContractFnParam {
     type Error = soroban_sdk::ConversionError;
@@ -15542,7 +15727,9 @@ impl UnusedNonContractFnReturn {
 }
 impl soroban_sdk::SpecAnchor for UnusedNonContractFnReturn {
     #[inline(never)]
-    fn spec_anchor() {}
+    fn spec_anchor() {
+        soroban_sdk::spec_anchor_ref(<u32 as soroban_sdk::SpecAnchor>::spec_anchor);
+    }
 }
 impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for UnusedNonContractFnReturn {
     type Error = soroban_sdk::ConversionError;
@@ -15684,7 +15871,9 @@ impl UnusedNonPubStruct {
 }
 impl soroban_sdk::SpecAnchor for UnusedNonPubStruct {
     #[inline(never)]
-    fn spec_anchor() {}
+    fn spec_anchor() {
+        soroban_sdk::spec_anchor_ref(<u32 as soroban_sdk::SpecAnchor>::spec_anchor);
+    }
 }
 impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for UnusedNonPubStruct {
     type Error = soroban_sdk::ConversionError;

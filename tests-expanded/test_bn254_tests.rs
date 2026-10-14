@@ -71,7 +71,10 @@ impl MockProof {
 }
 impl soroban_sdk::SpecAnchor for MockProof {
     #[inline(never)]
-    fn spec_anchor() {}
+    fn spec_anchor() {
+        soroban_sdk::spec_anchor_ref(<Vec<Bn254G1Affine> as soroban_sdk::SpecAnchor>::spec_anchor);
+        soroban_sdk::spec_anchor_ref(<Vec<Bn254G2Affine> as soroban_sdk::SpecAnchor>::spec_anchor);
+    }
 }
 impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for MockProof {
     type Error = soroban_sdk::ConversionError;

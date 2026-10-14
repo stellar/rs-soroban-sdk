@@ -106,7 +106,10 @@ impl StructA {
 }
 impl soroban_sdk::SpecAnchor for StructA {
     #[inline(never)]
-    fn spec_anchor() {}
+    fn spec_anchor() {
+        soroban_sdk::spec_anchor_ref(<u32 as soroban_sdk::SpecAnchor>::spec_anchor);
+        soroban_sdk::spec_anchor_ref(<bool as soroban_sdk::SpecAnchor>::spec_anchor);
+    }
 }
 impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for StructA {
     type Error = soroban_sdk::ConversionError;
@@ -261,7 +264,10 @@ impl StructB {
 }
 impl soroban_sdk::SpecAnchor for StructB {
     #[inline(never)]
-    fn spec_anchor() {}
+    fn spec_anchor() {
+        soroban_sdk::spec_anchor_ref(<i64 as soroban_sdk::SpecAnchor>::spec_anchor);
+        soroban_sdk::spec_anchor_ref(<soroban_sdk::String as soroban_sdk::SpecAnchor>::spec_anchor);
+    }
 }
 impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for StructB {
     type Error = soroban_sdk::ConversionError;
@@ -416,7 +422,10 @@ impl StructC {
 }
 impl soroban_sdk::SpecAnchor for StructC {
     #[inline(never)]
-    fn spec_anchor() {}
+    fn spec_anchor() {
+        soroban_sdk::spec_anchor_ref(<Vec<u32> as soroban_sdk::SpecAnchor>::spec_anchor);
+        soroban_sdk::spec_anchor_ref(<Address as soroban_sdk::SpecAnchor>::spec_anchor);
+    }
 }
 impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for StructC {
     type Error = soroban_sdk::ConversionError;
@@ -566,7 +575,10 @@ impl StructTupleA {
 }
 impl soroban_sdk::SpecAnchor for StructTupleA {
     #[inline(never)]
-    fn spec_anchor() {}
+    fn spec_anchor() {
+        soroban_sdk::spec_anchor_ref(<i64 as soroban_sdk::SpecAnchor>::spec_anchor);
+        soroban_sdk::spec_anchor_ref(<i64 as soroban_sdk::SpecAnchor>::spec_anchor);
+    }
 }
 impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for StructTupleA {
     type Error = soroban_sdk::ConversionError;
@@ -712,7 +724,10 @@ impl StructTupleB {
 }
 impl soroban_sdk::SpecAnchor for StructTupleB {
     #[inline(never)]
-    fn spec_anchor() {}
+    fn spec_anchor() {
+        soroban_sdk::spec_anchor_ref(<u128 as soroban_sdk::SpecAnchor>::spec_anchor);
+        soroban_sdk::spec_anchor_ref(<u128 as soroban_sdk::SpecAnchor>::spec_anchor);
+    }
 }
 impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for StructTupleB {
     type Error = soroban_sdk::ConversionError;
@@ -859,7 +874,10 @@ impl StructTupleC {
 }
 impl soroban_sdk::SpecAnchor for StructTupleC {
     #[inline(never)]
-    fn spec_anchor() {}
+    fn spec_anchor() {
+        soroban_sdk::spec_anchor_ref(<Address as soroban_sdk::SpecAnchor>::spec_anchor);
+        soroban_sdk::spec_anchor_ref(<i128 as soroban_sdk::SpecAnchor>::spec_anchor);
+    }
 }
 impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for StructTupleC {
     type Error = soroban_sdk::ConversionError;
@@ -1254,7 +1272,11 @@ impl EnumB {
 }
 impl soroban_sdk::SpecAnchor for EnumB {
     #[inline(never)]
-    fn spec_anchor() {}
+    fn spec_anchor() {
+        soroban_sdk::spec_anchor_ref(<i64 as soroban_sdk::SpecAnchor>::spec_anchor);
+        soroban_sdk::spec_anchor_ref(<i64 as soroban_sdk::SpecAnchor>::spec_anchor);
+        soroban_sdk::spec_anchor_ref(<i64 as soroban_sdk::SpecAnchor>::spec_anchor);
+    }
 }
 impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for EnumB {
     type Error = soroban_sdk::ConversionError;
@@ -1489,7 +1511,10 @@ impl EnumC {
 }
 impl soroban_sdk::SpecAnchor for EnumC {
     #[inline(never)]
-    fn spec_anchor() {}
+    fn spec_anchor() {
+        soroban_sdk::spec_anchor_ref(<StructA as soroban_sdk::SpecAnchor>::spec_anchor);
+        soroban_sdk::spec_anchor_ref(<StructTupleA as soroban_sdk::SpecAnchor>::spec_anchor);
+    }
 }
 impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for EnumC {
     type Error = soroban_sdk::ConversionError;

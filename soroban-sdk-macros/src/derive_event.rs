@@ -301,6 +301,7 @@ fn derive_impls(args: &ContractEventArgs, input: &DeriveInput) -> Result<TokenSt
         Some(quote!(#gen_impl)),
         Some(quote!(#gen_types)),
         Some(quote!(#gen_where)),
+        [],
     );
 
     // Prepare Topics Conversion to Vec<Val>.

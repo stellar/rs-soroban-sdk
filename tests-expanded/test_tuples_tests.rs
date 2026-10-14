@@ -993,7 +993,14 @@ mod test {
         }
         impl soroban_sdk::SpecAnchor for ContractExecutableRef {
             #[inline(never)]
-            fn spec_anchor() {}
+            fn spec_anchor() {
+                soroban_sdk::spec_anchor_ref(
+                    <soroban_sdk::Address as soroban_sdk::SpecAnchor>::spec_anchor,
+                );
+                soroban_sdk::spec_anchor_ref(
+                    <soroban_sdk::String as soroban_sdk::SpecAnchor>::spec_anchor,
+                );
+            }
         }
         impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for ContractExecutableRef {
             type Error = soroban_sdk::ConversionError;
@@ -1554,7 +1561,17 @@ mod test {
         }
         impl soroban_sdk::SpecAnchor for ContractContext {
             #[inline(never)]
-            fn spec_anchor() {}
+            fn spec_anchor() {
+                soroban_sdk::spec_anchor_ref(
+                    <soroban_sdk::Vec<soroban_sdk::Val> as soroban_sdk::SpecAnchor>::spec_anchor,
+                );
+                soroban_sdk::spec_anchor_ref(
+                    <soroban_sdk::Address as soroban_sdk::SpecAnchor>::spec_anchor,
+                );
+                soroban_sdk::spec_anchor_ref(
+                    <soroban_sdk::Symbol as soroban_sdk::SpecAnchor>::spec_anchor,
+                );
+            }
         }
         impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for ContractContext {
             type Error = soroban_sdk::ConversionError;
@@ -2160,7 +2177,16 @@ mod test {
         }
         impl soroban_sdk::SpecAnchor for SubContractInvocation {
             #[inline(never)]
-            fn spec_anchor() {}
+            fn spec_anchor() {
+                soroban_sdk::spec_anchor_ref(
+                    <ContractContext as soroban_sdk::SpecAnchor>::spec_anchor,
+                );
+                soroban_sdk::spec_anchor_ref(
+                    <soroban_sdk::Vec<
+                        InvokerContractAuthEntry,
+                    > as soroban_sdk::SpecAnchor>::spec_anchor,
+                );
+            }
         }
         impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for SubContractInvocation {
             type Error = soroban_sdk::ConversionError;
@@ -2705,7 +2731,14 @@ mod test {
         }
         impl soroban_sdk::SpecAnchor for CreateContractHostFnContext {
             #[inline(never)]
-            fn spec_anchor() {}
+            fn spec_anchor() {
+                soroban_sdk::spec_anchor_ref(
+                    <ContractExecutable as soroban_sdk::SpecAnchor>::spec_anchor,
+                );
+                soroban_sdk::spec_anchor_ref(
+                    <soroban_sdk::BytesN<32> as soroban_sdk::SpecAnchor>::spec_anchor,
+                );
+            }
         }
         impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for CreateContractHostFnContext {
             type Error = soroban_sdk::ConversionError;
@@ -3297,7 +3330,17 @@ mod test {
         }
         impl soroban_sdk::SpecAnchor for CreateContractWithConstructorHostFnContext {
             #[inline(never)]
-            fn spec_anchor() {}
+            fn spec_anchor() {
+                soroban_sdk::spec_anchor_ref(
+                    <soroban_sdk::Vec<soroban_sdk::Val> as soroban_sdk::SpecAnchor>::spec_anchor,
+                );
+                soroban_sdk::spec_anchor_ref(
+                    <ContractExecutable as soroban_sdk::SpecAnchor>::spec_anchor,
+                );
+                soroban_sdk::spec_anchor_ref(
+                    <soroban_sdk::BytesN<32> as soroban_sdk::SpecAnchor>::spec_anchor,
+                );
+            }
         }
         impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val>
             for CreateContractWithConstructorHostFnContext
@@ -3984,7 +4027,14 @@ mod test {
         }
         impl soroban_sdk::SpecAnchor for ContractExecutable {
             #[inline(never)]
-            fn spec_anchor() {}
+            fn spec_anchor() {
+                soroban_sdk::spec_anchor_ref(
+                    <soroban_sdk::BytesN<32> as soroban_sdk::SpecAnchor>::spec_anchor,
+                );
+                soroban_sdk::spec_anchor_ref(
+                    <ContractExecutableRef as soroban_sdk::SpecAnchor>::spec_anchor,
+                );
+            }
         }
         impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for ContractExecutable {
             type Error = soroban_sdk::ConversionError;
@@ -4701,7 +4751,17 @@ mod test {
         }
         impl soroban_sdk::SpecAnchor for Context {
             #[inline(never)]
-            fn spec_anchor() {}
+            fn spec_anchor() {
+                soroban_sdk::spec_anchor_ref(
+                    <ContractContext as soroban_sdk::SpecAnchor>::spec_anchor,
+                );
+                soroban_sdk::spec_anchor_ref(
+                    <CreateContractHostFnContext as soroban_sdk::SpecAnchor>::spec_anchor,
+                );
+                soroban_sdk::spec_anchor_ref(
+                    <CreateContractWithConstructorHostFnContext as soroban_sdk::SpecAnchor>::spec_anchor,
+                );
+            }
         }
         impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for Context {
             type Error = soroban_sdk::ConversionError;
@@ -5520,7 +5580,17 @@ mod test {
         }
         impl soroban_sdk::SpecAnchor for InvokerContractAuthEntry {
             #[inline(never)]
-            fn spec_anchor() {}
+            fn spec_anchor() {
+                soroban_sdk::spec_anchor_ref(
+                    <SubContractInvocation as soroban_sdk::SpecAnchor>::spec_anchor,
+                );
+                soroban_sdk::spec_anchor_ref(
+                    <CreateContractHostFnContext as soroban_sdk::SpecAnchor>::spec_anchor,
+                );
+                soroban_sdk::spec_anchor_ref(
+                    <CreateContractWithConstructorHostFnContext as soroban_sdk::SpecAnchor>::spec_anchor,
+                );
+            }
         }
         impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for InvokerContractAuthEntry {
             type Error = soroban_sdk::ConversionError;
@@ -6323,7 +6393,11 @@ mod test {
         }
         impl soroban_sdk::SpecAnchor for Executable {
             #[inline(never)]
-            fn spec_anchor() {}
+            fn spec_anchor() {
+                soroban_sdk::spec_anchor_ref(
+                    <soroban_sdk::BytesN<32> as soroban_sdk::SpecAnchor>::spec_anchor,
+                );
+            }
         }
         impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for Executable {
             type Error = soroban_sdk::ConversionError;

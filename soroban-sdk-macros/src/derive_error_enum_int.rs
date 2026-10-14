@@ -120,7 +120,7 @@ pub fn derive_type_error_enum_int(
         shaking::generate_marker_impl(path, quote!(#enum_ident), None, None, None);
 
     // SpecAnchor impl.
-    let spec_anchor = spec_anchor_impl(path, enum_ident, None, None, None);
+    let spec_anchor = spec_anchor_impl(path, enum_ident, None, None, None, []);
 
     // Output.
     quote! {
