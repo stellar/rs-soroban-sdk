@@ -182,8 +182,7 @@ where
 
     #[inline(always)]
     fn try_from_val(env: &Env, obj: &MapObject) -> Result<Self, Self::Error> {
-        K::spec_anchor();
-        V::spec_anchor();
+        <Self as SpecAnchor>::spec_anchor();
         Ok(Map {
             env: env.clone(),
             obj: *obj,
@@ -215,8 +214,7 @@ where
     type Error = Infallible;
 
     fn try_from_val(_env: &Env, v: &Map<K, V>) -> Result<Self, Self::Error> {
-        K::spec_anchor();
-        V::spec_anchor();
+        <Map<K, V> as SpecAnchor>::spec_anchor();
         Ok(v.to_val())
     }
 }
@@ -229,8 +227,7 @@ where
     type Error = Infallible;
 
     fn try_from_val(_env: &Env, v: &&Map<K, V>) -> Result<Self, Self::Error> {
-        K::spec_anchor();
-        V::spec_anchor();
+        <Map<K, V> as SpecAnchor>::spec_anchor();
         Ok(v.to_val())
     }
 }
@@ -460,10 +457,13 @@ where
     /// keys are not guaranteed to be of type `K`, it is not guaranteed that all values
     /// in the returned [Vec] will be of type `K`.
     #[inline(always)]
-    pub fn keys(&self) -> Vec<K> {
+    pub fn keys(&self) -> Vec<K>
+    where
+        K: SpecAnchor,
+    {
         let env = self.env();
         let vec = env.map_keys(self.obj).unwrap_infallible();
-        unsafe { Vec::<K>::unchecked_new(env.clone(), vec) }
+        Vec::<K>::try_from_val(env, &vec).unwrap()
     }
 
     /// Returns a [Vec] of all values in the map, ordered in the map's key-sorted order.
@@ -472,10 +472,13 @@ where
     /// values are not guaranteed to be of type `V`, it is not guaranteed that all values
     /// in the returned [Vec] will be of type `V`.
     #[inline(always)]
-    pub fn values(&self) -> Vec<V> {
+    pub fn values(&self) -> Vec<V>
+    where
+        V: SpecAnchor,
+    {
         let env = self.env();
         let vec = env.map_values(self.obj).unwrap_infallible();
-        unsafe { Vec::<V>::unchecked_new(env.clone(), vec) }
+        Vec::<V>::try_from_val(env, &vec).unwrap()
     }
 }
 

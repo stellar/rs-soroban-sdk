@@ -184,7 +184,7 @@ where
 
     #[inline(always)]
     fn try_from_val(env: &Env, obj: &VecObject) -> Result<Self, Self::Error> {
-        T::spec_anchor();
+        <Self as SpecAnchor>::spec_anchor();
         Ok(unsafe { Vec::<T>::unchecked_new(env.clone(), *obj) })
     }
 }
@@ -207,7 +207,7 @@ impl<T: SpecAnchor> TryFromVal<Env, Vec<T>> for Val {
     type Error = ConversionError;
 
     fn try_from_val(_env: &Env, v: &Vec<T>) -> Result<Self, Self::Error> {
-        T::spec_anchor();
+        <Vec<T> as SpecAnchor>::spec_anchor();
         Ok(v.to_val())
     }
 }
@@ -216,7 +216,7 @@ impl<T: SpecAnchor> TryFromVal<Env, &Vec<T>> for Val {
     type Error = ConversionError;
 
     fn try_from_val(_env: &Env, v: &&Vec<T>) -> Result<Self, Self::Error> {
-        T::spec_anchor();
+        <Vec<T> as SpecAnchor>::spec_anchor();
         Ok(v.to_val())
     }
 }
