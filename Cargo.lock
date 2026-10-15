@@ -1794,6 +1794,7 @@ dependencies = [
  "expect-test",
  "hex",
  "libfuzzer-sys",
+ "ml-dsa",
  "proptest",
  "proptest-arbitrary-interop",
  "rand",
@@ -2471,6 +2472,14 @@ name = "test_macros"
 version = "30.0.0"
 dependencies = [
  "proc_macros",
+ "soroban-sdk 30.0.0",
+]
+
+[[package]]
+name = "test_ml_dsa"
+version = "30.0.0"
+dependencies = [
+ "ml-dsa",
  "soroban-sdk 30.0.0",
 ]
 

@@ -1,0 +1,7516 @@
+#![feature(prelude_import)]
+#![no_std]
+#[macro_use]
+extern crate core;
+#[prelude_import]
+use core::prelude::rust_2021::*;
+use soroban_sdk::{contract, contractimpl, Bytes, BytesN, Env};
+pub struct Contract;
+///ContractArgs is a type for building arg lists for functions defined in "Contract".
+pub struct ContractArgs;
+///ContractClient is a client for calling the contract defined in "Contract".
+pub struct ContractClient<'a> {
+    pub env: soroban_sdk::Env,
+    pub address: soroban_sdk::Address,
+    #[doc(hidden)]
+    config: soroban_sdk::testutils::ClientInternalConfig<'a>,
+}
+impl<'a> ContractClient<'a> {
+    pub fn new(env: &soroban_sdk::Env, address: &soroban_sdk::Address) -> Self {
+        Self {
+            env: env.clone(),
+            address: address.clone(),
+            config: soroban_sdk::testutils::ClientInternalConfig::default(),
+        }
+    }
+    /// Set authorizations in the environment which will be consumed by
+    /// contracts when they invoke `Address::require_auth` or
+    /// `Address::require_auth_for_args` functions.
+    ///
+    /// Requires valid signatures for the authorization to be successful.
+    /// To mock auth without requiring valid signatures, use `mock_auths`.
+    ///
+    /// See `soroban_sdk::Env::set_auths` for more details and examples.
+    pub fn set_auths(&self, auths: &'a [soroban_sdk::xdr::SorobanAuthorizationEntry]) -> Self {
+        Self {
+            env: self.env.clone(),
+            address: self.address.clone(),
+            config: self.config.set_auths(auths),
+        }
+    }
+    /// Mock authorizations in the environment which will cause matching invokes
+    /// of `Address::require_auth` and `Address::require_auth_for_args` to
+    /// pass.
+    ///
+    /// See `soroban_sdk::Env::set_auths` for more details and examples.
+    pub fn mock_auths(&self, mock_auths: &'a [soroban_sdk::testutils::MockAuth<'a>]) -> Self {
+        Self {
+            env: self.env.clone(),
+            address: self.address.clone(),
+            config: self.config.mock_auths(mock_auths),
+        }
+    }
+    /// Mock all calls to the `Address::require_auth` and
+    /// `Address::require_auth_for_args` functions in invoked contracts,
+    /// having them succeed as if authorization was provided.
+    ///
+    /// See `soroban_sdk::Env::mock_all_auths` for more details and
+    /// examples.
+    pub fn mock_all_auths(&self) -> Self {
+        Self {
+            env: self.env.clone(),
+            address: self.address.clone(),
+            config: self.config.mock_all_auths(),
+        }
+    }
+    /// A version of `mock_all_auths` that allows authorizations that
+    /// are not present in the root invocation.
+    ///
+    /// Refer to `mock_all_auths` documentation for details and
+    /// prefer using `mock_all_auths` unless non-root authorization is
+    /// required.
+    ///
+    /// See `soroban_sdk::Env::mock_all_auths_allowing_non_root_auth`
+    /// for more details and examples.
+    pub fn mock_all_auths_allowing_non_root_auth(&self) -> Self {
+        Self {
+            env: self.env.clone(),
+            address: self.address.clone(),
+            config: self.config.mock_all_auths_allowing_non_root_auth(),
+        }
+    }
+}
+mod __contract_fn_set_registry {
+    use super::*;
+    extern crate std;
+    use std::collections::BTreeMap;
+    use std::sync::Mutex;
+    pub type F = soroban_sdk::testutils::ContractFunctionF;
+    static FUNCS: Mutex<BTreeMap<&'static str, &'static F>> = Mutex::new(BTreeMap::new());
+    pub fn register(name: &'static str, func: &'static F) {
+        FUNCS.lock().unwrap().insert(name, func);
+    }
+    pub fn call(
+        name: &str,
+        env: soroban_sdk::Env,
+        args: &[soroban_sdk::Val],
+    ) -> Option<soroban_sdk::Val> {
+        let fopt: Option<&'static F> = FUNCS.lock().unwrap().get(name).map(|f| f.clone());
+        fopt.map(|f| f(env, args))
+    }
+}
+impl soroban_sdk::testutils::ContractFunctionRegister for Contract {
+    fn register(name: &'static str, func: &'static __contract_fn_set_registry::F) {
+        __contract_fn_set_registry::register(name, func);
+    }
+}
+#[doc(hidden)]
+impl soroban_sdk::testutils::ContractFunctionSet for Contract {
+    fn call(
+        &self,
+        func: &str,
+        env: soroban_sdk::Env,
+        args: &[soroban_sdk::Val],
+    ) -> Option<soroban_sdk::Val> {
+        __contract_fn_set_registry::call(func, env, args)
+    }
+}
+impl Contract {
+    pub fn verify_44(
+        env: Env,
+        public_key: BytesN<1312>,
+        message: Bytes,
+        signature: BytesN<2420>,
+        context: Bytes,
+    ) {
+        env.crypto()
+            .ml_dsa_44_verify(&public_key, &message, &signature, &context);
+    }
+    pub fn verify_65(
+        env: Env,
+        public_key: BytesN<1952>,
+        message: Bytes,
+        signature: BytesN<3309>,
+        context: Bytes,
+    ) {
+        env.crypto()
+            .ml_dsa_65_verify(&public_key, &message, &signature, &context);
+    }
+    pub fn verify_87(
+        env: Env,
+        public_key: BytesN<2592>,
+        message: Bytes,
+        signature: BytesN<4627>,
+        context: Bytes,
+    ) {
+        env.crypto()
+            .ml_dsa_87_verify(&public_key, &message, &signature, &context);
+    }
+}
+#[doc(hidden)]
+#[allow(non_snake_case)]
+#[allow(dead_code)]
+mod __Contract__verify_44__spec {
+    #[doc(hidden)]
+    #[allow(non_snake_case)]
+    #[allow(non_upper_case_globals)]
+    #[allow(dead_code)]
+    static __SPEC_XDR_FN_VERIFY_44: [u8; super::Contract::spec_xdr_verify_44().len()] =
+        super::Contract::spec_xdr_verify_44();
+}
+impl Contract {
+    #[allow(non_upper_case_globals)]
+    const __SPEC_XDR_ENTRY_verify_44: soroban_sdk::xdr::r#const::ScSpecEntry =
+        soroban_sdk::xdr::r#const::ScSpecEntry::FunctionV0(
+            soroban_sdk::xdr::r#const::ScSpecFunctionV0 {
+                doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
+                name: soroban_sdk::xdr::r#const::ScSymbol(
+                    soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b"verify_44"),
+                ),
+                inputs: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[
+                    soroban_sdk::xdr::r#const::ScSpecFunctionInputV0 {
+                        doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
+                        name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(
+                            b"public_key",
+                        ),
+                        type_: <BytesN<1312> as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
+                    },
+                    soroban_sdk::xdr::r#const::ScSpecFunctionInputV0 {
+                        doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
+                        name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(
+                            b"message",
+                        ),
+                        type_: <Bytes as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
+                    },
+                    soroban_sdk::xdr::r#const::ScSpecFunctionInputV0 {
+                        doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
+                        name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(
+                            b"signature",
+                        ),
+                        type_: <BytesN<2420> as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
+                    },
+                    soroban_sdk::xdr::r#const::ScSpecFunctionInputV0 {
+                        doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
+                        name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(
+                            b"context",
+                        ),
+                        type_: <Bytes as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
+                    },
+                ]),
+                outputs: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[]),
+            },
+        );
+    #[allow(non_snake_case)]
+    pub const fn spec_xdr_verify_44() -> [u8; Contract::__SPEC_XDR_ENTRY_verify_44.const_xdr_len()]
+    {
+        const { Contract::__SPEC_XDR_ENTRY_verify_44.const_to_xdr() }
+    }
+}
+#[doc(hidden)]
+#[allow(non_snake_case)]
+#[allow(dead_code)]
+mod __Contract__verify_65__spec {
+    #[doc(hidden)]
+    #[allow(non_snake_case)]
+    #[allow(non_upper_case_globals)]
+    #[allow(dead_code)]
+    static __SPEC_XDR_FN_VERIFY_65: [u8; super::Contract::spec_xdr_verify_65().len()] =
+        super::Contract::spec_xdr_verify_65();
+}
+impl Contract {
+    #[allow(non_upper_case_globals)]
+    const __SPEC_XDR_ENTRY_verify_65: soroban_sdk::xdr::r#const::ScSpecEntry =
+        soroban_sdk::xdr::r#const::ScSpecEntry::FunctionV0(
+            soroban_sdk::xdr::r#const::ScSpecFunctionV0 {
+                doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
+                name: soroban_sdk::xdr::r#const::ScSymbol(
+                    soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b"verify_65"),
+                ),
+                inputs: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[
+                    soroban_sdk::xdr::r#const::ScSpecFunctionInputV0 {
+                        doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
+                        name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(
+                            b"public_key",
+                        ),
+                        type_: <BytesN<1952> as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
+                    },
+                    soroban_sdk::xdr::r#const::ScSpecFunctionInputV0 {
+                        doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
+                        name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(
+                            b"message",
+                        ),
+                        type_: <Bytes as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
+                    },
+                    soroban_sdk::xdr::r#const::ScSpecFunctionInputV0 {
+                        doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
+                        name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(
+                            b"signature",
+                        ),
+                        type_: <BytesN<3309> as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
+                    },
+                    soroban_sdk::xdr::r#const::ScSpecFunctionInputV0 {
+                        doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
+                        name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(
+                            b"context",
+                        ),
+                        type_: <Bytes as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
+                    },
+                ]),
+                outputs: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[]),
+            },
+        );
+    #[allow(non_snake_case)]
+    pub const fn spec_xdr_verify_65() -> [u8; Contract::__SPEC_XDR_ENTRY_verify_65.const_xdr_len()]
+    {
+        const { Contract::__SPEC_XDR_ENTRY_verify_65.const_to_xdr() }
+    }
+}
+#[doc(hidden)]
+#[allow(non_snake_case)]
+#[allow(dead_code)]
+mod __Contract__verify_87__spec {
+    #[doc(hidden)]
+    #[allow(non_snake_case)]
+    #[allow(non_upper_case_globals)]
+    #[allow(dead_code)]
+    static __SPEC_XDR_FN_VERIFY_87: [u8; super::Contract::spec_xdr_verify_87().len()] =
+        super::Contract::spec_xdr_verify_87();
+}
+impl Contract {
+    #[allow(non_upper_case_globals)]
+    const __SPEC_XDR_ENTRY_verify_87: soroban_sdk::xdr::r#const::ScSpecEntry =
+        soroban_sdk::xdr::r#const::ScSpecEntry::FunctionV0(
+            soroban_sdk::xdr::r#const::ScSpecFunctionV0 {
+                doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
+                name: soroban_sdk::xdr::r#const::ScSymbol(
+                    soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b"verify_87"),
+                ),
+                inputs: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[
+                    soroban_sdk::xdr::r#const::ScSpecFunctionInputV0 {
+                        doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
+                        name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(
+                            b"public_key",
+                        ),
+                        type_: <BytesN<2592> as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
+                    },
+                    soroban_sdk::xdr::r#const::ScSpecFunctionInputV0 {
+                        doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
+                        name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(
+                            b"message",
+                        ),
+                        type_: <Bytes as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
+                    },
+                    soroban_sdk::xdr::r#const::ScSpecFunctionInputV0 {
+                        doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
+                        name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(
+                            b"signature",
+                        ),
+                        type_: <BytesN<4627> as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
+                    },
+                    soroban_sdk::xdr::r#const::ScSpecFunctionInputV0 {
+                        doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
+                        name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(
+                            b"context",
+                        ),
+                        type_: <Bytes as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
+                    },
+                ]),
+                outputs: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[]),
+            },
+        );
+    #[allow(non_snake_case)]
+    pub const fn spec_xdr_verify_87() -> [u8; Contract::__SPEC_XDR_ENTRY_verify_87.const_xdr_len()]
+    {
+        const { Contract::__SPEC_XDR_ENTRY_verify_87.const_to_xdr() }
+    }
+}
+impl<'a> ContractClient<'a> {
+    /// Call `verify_44` function on the contract.
+    ///
+    /// # Panics
+    ///
+    /// Panics if the invoked contract returns an error or panics.
+    ///
+    /// Use [`Self::try_verify_44`] to receive errors instead of panicking.
+    pub fn verify_44(
+        &self,
+        public_key: &BytesN<1312>,
+        message: &Bytes,
+        signature: &BytesN<2420>,
+        context: &Bytes,
+    ) -> () {
+        let _call_scope = soroban_sdk::testutils::ClientCallScope::enter(&self.env, self.config);
+        use soroban_sdk::{FromVal, IntoVal};
+        let res = self.env.invoke_contract(
+            &self.address,
+            &{
+                #[allow(deprecated)]
+                const SYMBOL: soroban_sdk::Symbol = soroban_sdk::Symbol::short("verify_44");
+                SYMBOL
+            },
+            ::soroban_sdk::Vec::from_array(
+                &self.env,
+                [
+                    public_key.into_val(&self.env),
+                    message.into_val(&self.env),
+                    signature.into_val(&self.env),
+                    context.into_val(&self.env),
+                ],
+            ),
+        );
+        res
+    }
+    /// Call `verify_44` function on the contract.
+    ///
+    /// # Errors
+    ///
+    /// Returns an error if the invoked contract returns an error or panics. A panic in the invoked contract is caught and returned as an error rather than panicking the caller.
+    pub fn try_verify_44(
+        &self,
+        public_key: &BytesN<1312>,
+        message: &Bytes,
+        signature: &BytesN<2420>,
+        context: &Bytes,
+    ) -> Result<
+        Result<(), <() as soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val>>::Error>,
+        Result<soroban_sdk::Error, soroban_sdk::InvokeError>,
+    > {
+        let _call_scope = soroban_sdk::testutils::ClientCallScope::enter(&self.env, self.config);
+        use soroban_sdk::{FromVal, IntoVal};
+        let res = self.env.try_invoke_contract(
+            &self.address,
+            &{
+                #[allow(deprecated)]
+                const SYMBOL: soroban_sdk::Symbol = soroban_sdk::Symbol::short("verify_44");
+                SYMBOL
+            },
+            ::soroban_sdk::Vec::from_array(
+                &self.env,
+                [
+                    public_key.into_val(&self.env),
+                    message.into_val(&self.env),
+                    signature.into_val(&self.env),
+                    context.into_val(&self.env),
+                ],
+            ),
+        );
+        res
+    }
+    /// Call `verify_65` function on the contract.
+    ///
+    /// # Panics
+    ///
+    /// Panics if the invoked contract returns an error or panics.
+    ///
+    /// Use [`Self::try_verify_65`] to receive errors instead of panicking.
+    pub fn verify_65(
+        &self,
+        public_key: &BytesN<1952>,
+        message: &Bytes,
+        signature: &BytesN<3309>,
+        context: &Bytes,
+    ) -> () {
+        let _call_scope = soroban_sdk::testutils::ClientCallScope::enter(&self.env, self.config);
+        use soroban_sdk::{FromVal, IntoVal};
+        let res = self.env.invoke_contract(
+            &self.address,
+            &{
+                #[allow(deprecated)]
+                const SYMBOL: soroban_sdk::Symbol = soroban_sdk::Symbol::short("verify_65");
+                SYMBOL
+            },
+            ::soroban_sdk::Vec::from_array(
+                &self.env,
+                [
+                    public_key.into_val(&self.env),
+                    message.into_val(&self.env),
+                    signature.into_val(&self.env),
+                    context.into_val(&self.env),
+                ],
+            ),
+        );
+        res
+    }
+    /// Call `verify_65` function on the contract.
+    ///
+    /// # Errors
+    ///
+    /// Returns an error if the invoked contract returns an error or panics. A panic in the invoked contract is caught and returned as an error rather than panicking the caller.
+    pub fn try_verify_65(
+        &self,
+        public_key: &BytesN<1952>,
+        message: &Bytes,
+        signature: &BytesN<3309>,
+        context: &Bytes,
+    ) -> Result<
+        Result<(), <() as soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val>>::Error>,
+        Result<soroban_sdk::Error, soroban_sdk::InvokeError>,
+    > {
+        let _call_scope = soroban_sdk::testutils::ClientCallScope::enter(&self.env, self.config);
+        use soroban_sdk::{FromVal, IntoVal};
+        let res = self.env.try_invoke_contract(
+            &self.address,
+            &{
+                #[allow(deprecated)]
+                const SYMBOL: soroban_sdk::Symbol = soroban_sdk::Symbol::short("verify_65");
+                SYMBOL
+            },
+            ::soroban_sdk::Vec::from_array(
+                &self.env,
+                [
+                    public_key.into_val(&self.env),
+                    message.into_val(&self.env),
+                    signature.into_val(&self.env),
+                    context.into_val(&self.env),
+                ],
+            ),
+        );
+        res
+    }
+    /// Call `verify_87` function on the contract.
+    ///
+    /// # Panics
+    ///
+    /// Panics if the invoked contract returns an error or panics.
+    ///
+    /// Use [`Self::try_verify_87`] to receive errors instead of panicking.
+    pub fn verify_87(
+        &self,
+        public_key: &BytesN<2592>,
+        message: &Bytes,
+        signature: &BytesN<4627>,
+        context: &Bytes,
+    ) -> () {
+        let _call_scope = soroban_sdk::testutils::ClientCallScope::enter(&self.env, self.config);
+        use soroban_sdk::{FromVal, IntoVal};
+        let res = self.env.invoke_contract(
+            &self.address,
+            &{
+                #[allow(deprecated)]
+                const SYMBOL: soroban_sdk::Symbol = soroban_sdk::Symbol::short("verify_87");
+                SYMBOL
+            },
+            ::soroban_sdk::Vec::from_array(
+                &self.env,
+                [
+                    public_key.into_val(&self.env),
+                    message.into_val(&self.env),
+                    signature.into_val(&self.env),
+                    context.into_val(&self.env),
+                ],
+            ),
+        );
+        res
+    }
+    /// Call `verify_87` function on the contract.
+    ///
+    /// # Errors
+    ///
+    /// Returns an error if the invoked contract returns an error or panics. A panic in the invoked contract is caught and returned as an error rather than panicking the caller.
+    pub fn try_verify_87(
+        &self,
+        public_key: &BytesN<2592>,
+        message: &Bytes,
+        signature: &BytesN<4627>,
+        context: &Bytes,
+    ) -> Result<
+        Result<(), <() as soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val>>::Error>,
+        Result<soroban_sdk::Error, soroban_sdk::InvokeError>,
+    > {
+        let _call_scope = soroban_sdk::testutils::ClientCallScope::enter(&self.env, self.config);
+        use soroban_sdk::{FromVal, IntoVal};
+        let res = self.env.try_invoke_contract(
+            &self.address,
+            &{
+                #[allow(deprecated)]
+                const SYMBOL: soroban_sdk::Symbol = soroban_sdk::Symbol::short("verify_87");
+                SYMBOL
+            },
+            ::soroban_sdk::Vec::from_array(
+                &self.env,
+                [
+                    public_key.into_val(&self.env),
+                    message.into_val(&self.env),
+                    signature.into_val(&self.env),
+                    context.into_val(&self.env),
+                ],
+            ),
+        );
+        res
+    }
+}
+impl ContractArgs {
+    #[inline(always)]
+    #[allow(clippy::unused_unit)]
+    pub fn verify_44<'i>(
+        public_key: &'i BytesN<1312>,
+        message: &'i Bytes,
+        signature: &'i BytesN<2420>,
+        context: &'i Bytes,
+    ) -> (&'i BytesN<1312>, &'i Bytes, &'i BytesN<2420>, &'i Bytes) {
+        (public_key, message, signature, context)
+    }
+    #[inline(always)]
+    #[allow(clippy::unused_unit)]
+    pub fn verify_65<'i>(
+        public_key: &'i BytesN<1952>,
+        message: &'i Bytes,
+        signature: &'i BytesN<3309>,
+        context: &'i Bytes,
+    ) -> (&'i BytesN<1952>, &'i Bytes, &'i BytesN<3309>, &'i Bytes) {
+        (public_key, message, signature, context)
+    }
+    #[inline(always)]
+    #[allow(clippy::unused_unit)]
+    pub fn verify_87<'i>(
+        public_key: &'i BytesN<2592>,
+        message: &'i Bytes,
+        signature: &'i BytesN<4627>,
+        context: &'i Bytes,
+    ) -> (&'i BytesN<2592>, &'i Bytes, &'i BytesN<4627>, &'i Bytes) {
+        (public_key, message, signature, context)
+    }
+}
+#[doc(hidden)]
+#[allow(non_snake_case)]
+#[deprecated(note = "use `ContractClient::new(&env, &contract_id).verify_44` instead")]
+#[allow(deprecated)]
+pub fn __Contract__verify_44__invoke_raw(
+    env: soroban_sdk::Env,
+    arg_0: soroban_sdk::Val,
+    arg_1: soroban_sdk::Val,
+    arg_2: soroban_sdk::Val,
+    arg_3: soroban_sdk::Val,
+) -> soroban_sdk::Val {
+    soroban_sdk::IntoValForContractFn::into_val_for_contract_fn(
+        <Contract>::verify_44(
+            env.clone(),
+            <_ as soroban_sdk::unwrap::UnwrapOptimized>::unwrap_optimized(
+                <_ as soroban_sdk::TryFromValForContractFn<
+                    soroban_sdk::Env,
+                    soroban_sdk::Val,
+                >>::try_from_val_for_contract_fn(&env, &arg_0),
+            ),
+            <_ as soroban_sdk::unwrap::UnwrapOptimized>::unwrap_optimized(
+                <_ as soroban_sdk::TryFromValForContractFn<
+                    soroban_sdk::Env,
+                    soroban_sdk::Val,
+                >>::try_from_val_for_contract_fn(&env, &arg_1),
+            ),
+            <_ as soroban_sdk::unwrap::UnwrapOptimized>::unwrap_optimized(
+                <_ as soroban_sdk::TryFromValForContractFn<
+                    soroban_sdk::Env,
+                    soroban_sdk::Val,
+                >>::try_from_val_for_contract_fn(&env, &arg_2),
+            ),
+            <_ as soroban_sdk::unwrap::UnwrapOptimized>::unwrap_optimized(
+                <_ as soroban_sdk::TryFromValForContractFn<
+                    soroban_sdk::Env,
+                    soroban_sdk::Val,
+                >>::try_from_val_for_contract_fn(&env, &arg_3),
+            ),
+        ),
+        &env,
+    )
+}
+#[doc(hidden)]
+#[allow(non_snake_case)]
+#[deprecated(note = "use `ContractClient::new(&env, &contract_id).verify_44` instead")]
+pub fn __Contract__verify_44__invoke_raw_slice(
+    env: soroban_sdk::Env,
+    args: &[soroban_sdk::Val],
+) -> soroban_sdk::Val {
+    if args.len() != 4usize {
+        {
+            ::core::panicking::panic_fmt(format_args!(
+                "invalid number of input arguments: {0} expected, got {1}",
+                4usize,
+                args.len(),
+            ));
+        };
+    }
+    #[allow(deprecated)]
+    __Contract__verify_44__invoke_raw(env, args[0usize], args[1usize], args[2usize], args[3usize])
+}
+#[doc(hidden)]
+#[allow(non_snake_case)]
+#[deprecated(note = "use `ContractClient::new(&env, &contract_id).verify_44` instead")]
+pub extern "C" fn __Contract__verify_44__invoke_raw_extern(
+    arg_0: soroban_sdk::Val,
+    arg_1: soroban_sdk::Val,
+    arg_2: soroban_sdk::Val,
+    arg_3: soroban_sdk::Val,
+) -> soroban_sdk::Val {
+    #[allow(deprecated)]
+    __Contract__verify_44__invoke_raw(soroban_sdk::Env::default(), arg_0, arg_1, arg_2, arg_3)
+}
+#[doc(hidden)]
+#[allow(non_snake_case)]
+#[deprecated(note = "use `ContractClient::new(&env, &contract_id).verify_65` instead")]
+#[allow(deprecated)]
+pub fn __Contract__verify_65__invoke_raw(
+    env: soroban_sdk::Env,
+    arg_0: soroban_sdk::Val,
+    arg_1: soroban_sdk::Val,
+    arg_2: soroban_sdk::Val,
+    arg_3: soroban_sdk::Val,
+) -> soroban_sdk::Val {
+    soroban_sdk::IntoValForContractFn::into_val_for_contract_fn(
+        <Contract>::verify_65(
+            env.clone(),
+            <_ as soroban_sdk::unwrap::UnwrapOptimized>::unwrap_optimized(
+                <_ as soroban_sdk::TryFromValForContractFn<
+                    soroban_sdk::Env,
+                    soroban_sdk::Val,
+                >>::try_from_val_for_contract_fn(&env, &arg_0),
+            ),
+            <_ as soroban_sdk::unwrap::UnwrapOptimized>::unwrap_optimized(
+                <_ as soroban_sdk::TryFromValForContractFn<
+                    soroban_sdk::Env,
+                    soroban_sdk::Val,
+                >>::try_from_val_for_contract_fn(&env, &arg_1),
+            ),
+            <_ as soroban_sdk::unwrap::UnwrapOptimized>::unwrap_optimized(
+                <_ as soroban_sdk::TryFromValForContractFn<
+                    soroban_sdk::Env,
+                    soroban_sdk::Val,
+                >>::try_from_val_for_contract_fn(&env, &arg_2),
+            ),
+            <_ as soroban_sdk::unwrap::UnwrapOptimized>::unwrap_optimized(
+                <_ as soroban_sdk::TryFromValForContractFn<
+                    soroban_sdk::Env,
+                    soroban_sdk::Val,
+                >>::try_from_val_for_contract_fn(&env, &arg_3),
+            ),
+        ),
+        &env,
+    )
+}
+#[doc(hidden)]
+#[allow(non_snake_case)]
+#[deprecated(note = "use `ContractClient::new(&env, &contract_id).verify_65` instead")]
+pub fn __Contract__verify_65__invoke_raw_slice(
+    env: soroban_sdk::Env,
+    args: &[soroban_sdk::Val],
+) -> soroban_sdk::Val {
+    if args.len() != 4usize {
+        {
+            ::core::panicking::panic_fmt(format_args!(
+                "invalid number of input arguments: {0} expected, got {1}",
+                4usize,
+                args.len(),
+            ));
+        };
+    }
+    #[allow(deprecated)]
+    __Contract__verify_65__invoke_raw(env, args[0usize], args[1usize], args[2usize], args[3usize])
+}
+#[doc(hidden)]
+#[allow(non_snake_case)]
+#[deprecated(note = "use `ContractClient::new(&env, &contract_id).verify_65` instead")]
+pub extern "C" fn __Contract__verify_65__invoke_raw_extern(
+    arg_0: soroban_sdk::Val,
+    arg_1: soroban_sdk::Val,
+    arg_2: soroban_sdk::Val,
+    arg_3: soroban_sdk::Val,
+) -> soroban_sdk::Val {
+    #[allow(deprecated)]
+    __Contract__verify_65__invoke_raw(soroban_sdk::Env::default(), arg_0, arg_1, arg_2, arg_3)
+}
+#[doc(hidden)]
+#[allow(non_snake_case)]
+#[deprecated(note = "use `ContractClient::new(&env, &contract_id).verify_87` instead")]
+#[allow(deprecated)]
+pub fn __Contract__verify_87__invoke_raw(
+    env: soroban_sdk::Env,
+    arg_0: soroban_sdk::Val,
+    arg_1: soroban_sdk::Val,
+    arg_2: soroban_sdk::Val,
+    arg_3: soroban_sdk::Val,
+) -> soroban_sdk::Val {
+    soroban_sdk::IntoValForContractFn::into_val_for_contract_fn(
+        <Contract>::verify_87(
+            env.clone(),
+            <_ as soroban_sdk::unwrap::UnwrapOptimized>::unwrap_optimized(
+                <_ as soroban_sdk::TryFromValForContractFn<
+                    soroban_sdk::Env,
+                    soroban_sdk::Val,
+                >>::try_from_val_for_contract_fn(&env, &arg_0),
+            ),
+            <_ as soroban_sdk::unwrap::UnwrapOptimized>::unwrap_optimized(
+                <_ as soroban_sdk::TryFromValForContractFn<
+                    soroban_sdk::Env,
+                    soroban_sdk::Val,
+                >>::try_from_val_for_contract_fn(&env, &arg_1),
+            ),
+            <_ as soroban_sdk::unwrap::UnwrapOptimized>::unwrap_optimized(
+                <_ as soroban_sdk::TryFromValForContractFn<
+                    soroban_sdk::Env,
+                    soroban_sdk::Val,
+                >>::try_from_val_for_contract_fn(&env, &arg_2),
+            ),
+            <_ as soroban_sdk::unwrap::UnwrapOptimized>::unwrap_optimized(
+                <_ as soroban_sdk::TryFromValForContractFn<
+                    soroban_sdk::Env,
+                    soroban_sdk::Val,
+                >>::try_from_val_for_contract_fn(&env, &arg_3),
+            ),
+        ),
+        &env,
+    )
+}
+#[doc(hidden)]
+#[allow(non_snake_case)]
+#[deprecated(note = "use `ContractClient::new(&env, &contract_id).verify_87` instead")]
+pub fn __Contract__verify_87__invoke_raw_slice(
+    env: soroban_sdk::Env,
+    args: &[soroban_sdk::Val],
+) -> soroban_sdk::Val {
+    if args.len() != 4usize {
+        {
+            ::core::panicking::panic_fmt(format_args!(
+                "invalid number of input arguments: {0} expected, got {1}",
+                4usize,
+                args.len(),
+            ));
+        };
+    }
+    #[allow(deprecated)]
+    __Contract__verify_87__invoke_raw(env, args[0usize], args[1usize], args[2usize], args[3usize])
+}
+#[doc(hidden)]
+#[allow(non_snake_case)]
+#[deprecated(note = "use `ContractClient::new(&env, &contract_id).verify_87` instead")]
+pub extern "C" fn __Contract__verify_87__invoke_raw_extern(
+    arg_0: soroban_sdk::Val,
+    arg_1: soroban_sdk::Val,
+    arg_2: soroban_sdk::Val,
+    arg_3: soroban_sdk::Val,
+) -> soroban_sdk::Val {
+    #[allow(deprecated)]
+    __Contract__verify_87__invoke_raw(soroban_sdk::Env::default(), arg_0, arg_1, arg_2, arg_3)
+}
+#[doc(hidden)]
+#[allow(non_snake_case)]
+#[allow(unused)]
+fn __Contract____b266c5bfee65335e80854b7bdce9170775114cf3c7f488b04cfa969e5187e608_ctor() {
+    #[allow(unsafe_code)]
+    {
+        #[link_section = ".init_array"]
+        #[used]
+        #[allow(non_upper_case_globals, non_snake_case)]
+        #[doc(hidden)]
+        static f: extern "C" fn() -> ::ctor::__support::CtorRetType = {
+            #[link_section = ".text.startup"]
+            #[allow(non_snake_case)]
+            extern "C" fn f() -> ::ctor::__support::CtorRetType {
+                unsafe {
+                    __Contract____b266c5bfee65335e80854b7bdce9170775114cf3c7f488b04cfa969e5187e608_ctor();
+                };
+                core::default::Default::default()
+            }
+            f
+        };
+    }
+    {
+        <Contract as soroban_sdk::testutils::ContractFunctionRegister>::register(
+            "verify_44",
+            #[allow(deprecated)]
+            &__Contract__verify_44__invoke_raw_slice,
+        );
+        <Contract as soroban_sdk::testutils::ContractFunctionRegister>::register(
+            "verify_65",
+            #[allow(deprecated)]
+            &__Contract__verify_65__invoke_raw_slice,
+        );
+        <Contract as soroban_sdk::testutils::ContractFunctionRegister>::register(
+            "verify_87",
+            #[allow(deprecated)]
+            &__Contract__verify_87__invoke_raw_slice,
+        );
+    }
+}
+mod test {
+    use crate::{Contract, ContractClient};
+    use ml_dsa::{MlDsa44, MlDsa65, MlDsa87, MlDsaParams, SigningKey};
+    use soroban_sdk::{Bytes, BytesN, Env};
+    mod wasm {
+        pub const WASM: &[u8] = b"\x00asm\x01\x00\x00\x00\x01\x0e\x02`\x01~\x01~`\x04~~~~\x01~\x02\x19\x04\x01b\x018\x00\x00\x01c\x01A\x00\x01\x01c\x01B\x00\x01\x01c\x01C\x00\x01\x03\x04\x03\x01\x01\x01\x05\x03\x01\x00\x10\x06!\x04\x7f\x01A\x80\x80\xc0\x00\x0b\x7f\x00A\x80\x80\xc0\x00\x0b\x7f\x00A\x80\x80\xc0\x00\x0b\x7f\x00A\x80\x80\xc0\x00\x0b\x07M\x07\x06memory\x02\x00\tverify_44\x00\x04\tverify_65\x00\x05\tverify_87\x00\x06\x01_\x03\x01\n__data_end\x03\x02\x0b__heap_base\x03\x03\n\xf8\x02\x03|\x00\x02@ \x00B\xff\x01\x83B\xc8\x00R\r\x00 \x00\x10\x80\x80\x80\x80\x00B\x80\x80\x80\x80p\x83B\x80\x80\x80\x80\x80\xa4\x01R\r\x00 \x01B\xff\x01\x83B\xc8\x00R\r\x00 \x02B\xff\x01\x83B\xc8\x00R\r\x00 \x02\x10\x80\x80\x80\x80\x00B\x80\x80\x80\x80p\x83B\x80\x80\x80\x80\xc0\xae\x02R\r\x00 \x03B\xff\x01\x83B\xc8\x00R\r\x00 \x00 \x01 \x02 \x03\x10\x81\x80\x80\x80\x00\x1aB\x02\x0f\x0b\x00\x0b|\x00\x02@ \x00B\xff\x01\x83B\xc8\x00R\r\x00 \x00\x10\x80\x80\x80\x80\x00B\x80\x80\x80\x80p\x83B\x80\x80\x80\x80\x80\xf4\x01R\r\x00 \x01B\xff\x01\x83B\xc8\x00R\r\x00 \x02B\xff\x01\x83B\xc8\x00R\r\x00 \x02\x10\x80\x80\x80\x80\x00B\x80\x80\x80\x80p\x83B\x80\x80\x80\x80\xd0\x9d\x03R\r\x00 \x03B\xff\x01\x83B\xc8\x00R\r\x00 \x00 \x01 \x02 \x03\x10\x82\x80\x80\x80\x00\x1aB\x02\x0f\x0b\x00\x0b|\x00\x02@ \x00B\xff\x01\x83B\xc8\x00R\r\x00 \x00\x10\x80\x80\x80\x80\x00B\x80\x80\x80\x80p\x83B\x80\x80\x80\x80\x80\xc4\x02R\r\x00 \x01B\xff\x01\x83B\xc8\x00R\r\x00 \x02B\xff\x01\x83B\xc8\x00R\r\x00 \x02\x10\x80\x80\x80\x80\x00B\x80\x80\x80\x80p\x83B\x80\x80\x80\x80\xb0\xc2\x04R\r\x00 \x03B\xff\x01\x83B\xc8\x00R\r\x00 \x00 \x01 \x02 \x03\x10\x83\x80\x80\x80\x00\x1aB\x02\x0f\x0b\x00\x0b\x0b\t\x01\x00A\x80\x80\xc0\x00\x0b\x00\x00\xc7\x1f\x0econtractspecv0\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\tverify_44\x00\x00\x00\x00\x00\x00\x04\x00\x00\x00\x00\x00\x00\x00\npublic_key\x00\x00\x00\x00\x03\xee\x00\x00\x05 \x00\x00\x00\x00\x00\x00\x00\x07message\x00\x00\x00\x00\x0e\x00\x00\x00\x00\x00\x00\x00\tsignature\x00\x00\x00\x00\x00\x03\xee\x00\x00\tt\x00\x00\x00\x00\x00\x00\x00\x07context\x00\x00\x00\x00\x0e\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\tverify_65\x00\x00\x00\x00\x00\x00\x04\x00\x00\x00\x00\x00\x00\x00\npublic_key\x00\x00\x00\x00\x03\xee\x00\x00\x07\xa0\x00\x00\x00\x00\x00\x00\x00\x07message\x00\x00\x00\x00\x0e\x00\x00\x00\x00\x00\x00\x00\tsignature\x00\x00\x00\x00\x00\x03\xee\x00\x00\x0c\xed\x00\x00\x00\x00\x00\x00\x00\x07context\x00\x00\x00\x00\x0e\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\tverify_87\x00\x00\x00\x00\x00\x00\x04\x00\x00\x00\x00\x00\x00\x00\npublic_key\x00\x00\x00\x00\x03\xee\x00\x00\n \x00\x00\x00\x00\x00\x00\x00\x07message\x00\x00\x00\x00\x0e\x00\x00\x00\x00\x00\x00\x00\tsignature\x00\x00\x00\x00\x00\x03\xee\x00\x00\x12\x13\x00\x00\x00\x00\x00\x00\x00\x07context\x00\x00\x00\x00\x0e\x00\x00\x00\x00\x00\x00\x00\x02\x00\x00\x00_Contract executable used for creating a new contract and used in\n`CreateContractHostFnContext`.\x00\x00\x00\x00\x00\x00\x00\x00!::soroban_sdk::ContractExecutable\x00\x00\x00\x00\x00\x00\x02\x00\x00\x00\x01\x00\x00\x00xExecutable specified by the contract instance as a specific Wasm contract code entry identified by its Wasm sha256 hash.\x00\x00\x00\x04Wasm\x00\x00\x00\x01\x00\x00\x03\xee\x00\x00\x00 \x00\x00\x00\x01\x00\x00\x00_Executable reference via a persistent storage entry owned by this contract or another contract.\x00\x00\x00\x00\x0bExternalRef\x00\x00\x00\x00\x01\x00\x00\x07\xd0\x00\x00\x00$::soroban_sdk::ContractExecutableRef\x00\x00\x00\x01\x00\x00\x00\xc0Executable referenced via a persistent storage entry owned by a contract,\neither this contract or another contract.\n\nThe persistent storage entry owned by the `owner` has the `tag` as its key.\x00\x00\x00\x00\x00\x00\x00$::soroban_sdk::ContractExecutableRef\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x05owner\x00\x00\x00\x00\x00\x00\x13\x00\x00\x00\x00\x00\x00\x00\x03tag\x00\x00\x00\x00\x10\x00\x00\x00\x02\x00\x00\x00\xe3Context of a single authorized call performed by an address.\n\nCustom account contracts that implement `__check_auth` special function\nreceive a list of `Context` values corresponding to all the calls that\nneed to be authorized.\x00\x00\x00\x00\x00\x00\x00\x00\x1c::soroban_sdk::auth::Context\x00\x00\x00\x03\x00\x00\x00\x01\x00\x00\x00\x14Contract invocation.\x00\x00\x00\x08Contract\x00\x00\x00\x01\x00\x00\x07\xd0\x00\x00\x00$::soroban_sdk::auth::ContractContext\x00\x00\x00\x01\x00\x00\x00=Contract that has a constructor with no arguments is created.\x00\x00\x00\x00\x00\x00\x14CreateContractHostFn\x00\x00\x00\x01\x00\x00\x07\xd0\x00\x00\x000::soroban_sdk::auth::CreateContractHostFnContext\x00\x00\x00\x01\x00\x00\x00DContract that has a constructor with 1 or more arguments is created.\x00\x00\x00\x1cCreateContractWithCtorHostFn\x00\x00\x00\x01\x00\x00\x07\xd0\x00\x00\x00?::soroban_sdk::auth::CreateContractWithConstructorHostFnContext\x00\x00\x00\x00\x01\x00\x00\x00\xbdAuthorization context of a single contract call.\n\nThis struct corresponds to a `require_auth_for_args` call for an address\nfrom `contract` function with `fn_name` name and `args` arguments.\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00$::soroban_sdk::auth::ContractContext\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00\x04args\x00\x00\x03\xea\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x08contract\x00\x00\x00\x13\x00\x00\x00\x00\x00\x00\x00\x07fn_name\x00\x00\x00\x00\x11\x00\x00\x00\x01\x00\x00\x008Value of contract node in InvokerContractAuthEntry tree.\x00\x00\x00\x00\x00\x00\x00*::soroban_sdk::auth::SubContractInvocation\x00\x00\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x07context\x00\x00\x00\x07\xd0\x00\x00\x00$::soroban_sdk::auth::ContractContext\x00\x00\x00\x00\x00\x00\x00\x0fsub_invocations\x00\x00\x00\x03\xea\x00\x00\x07\xd0\x00\x00\x00-::soroban_sdk::auth::InvokerContractAuthEntry\x00\x00\x00\x00\x00\x00\x02\x00\x00\x01/A node in the tree of authorizations performed on behalf of the current\ncontract as invoker of the contracts deeper in the call stack.\n\nThis is used as an argument of `authorize_as_current_contract` host function.\n\nThis tree corresponds `require_auth[_for_args]` calls on behalf of the\ncurrent contract.\x00\x00\x00\x00\x00\x00\x00\x00-::soroban_sdk::auth::InvokerContractAuthEntry\x00\x00\x00\x00\x00\x00\x03\x00\x00\x00\x01\x00\x00\x00\x12Invoke a contract.\x00\x00\x00\x00\x00\x08Contract\x00\x00\x00\x01\x00\x00\x07\xd0\x00\x00\x00*::soroban_sdk::auth::SubContractInvocation\x00\x00\x00\x00\x00\x01\x00\x00\x005Create a contract passing 0 arguments to constructor.\x00\x00\x00\x00\x00\x00\x14CreateContractHostFn\x00\x00\x00\x01\x00\x00\x07\xd0\x00\x00\x000::soroban_sdk::auth::CreateContractHostFnContext\x00\x00\x00\x01\x00\x00\x00=Create a contract passing 0 or more arguments to constructor.\x00\x00\x00\x00\x00\x00\x1cCreateContractWithCtorHostFn\x00\x00\x00\x01\x00\x00\x07\xd0\x00\x00\x00?::soroban_sdk::auth::CreateContractWithConstructorHostFnContext\x00\x00\x00\x00\x01\x00\x00\x00vAuthorization context for `create_contract` host function that creates a\nnew contract on behalf of authorizer address.\x00\x00\x00\x00\x00\x00\x00\x00\x000::soroban_sdk::auth::CreateContractHostFnContext\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\nexecutable\x00\x00\x00\x00\x07\xd0\x00\x00\x00!::soroban_sdk::ContractExecutable\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x04salt\x00\x00\x03\xee\x00\x00\x00 \x00\x00\x00\x01\x00\x00\x00\xd6Authorization context for `create_contract` host function that creates a\nnew contract on behalf of authorizer address.\nThis is the same as `CreateContractHostFnContext`, but also has\ncontract constructor arguments.\x00\x00\x00\x00\x00\x00\x00\x00\x00?::soroban_sdk::auth::CreateContractWithConstructorHostFnContext\x00\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00\x10constructor_args\x00\x00\x03\xea\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\nexecutable\x00\x00\x00\x00\x07\xd0\x00\x00\x00!::soroban_sdk::ContractExecutable\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x04salt\x00\x00\x03\xee\x00\x00\x00 \x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\"::soroban_sdk::address::Executable\x00\x00\x00\x00\x00\x03\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x04Wasm\x00\x00\x00\x01\x00\x00\x03\xee\x00\x00\x00 \x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x0cStellarAsset\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x07Account\x00\x00\x1e\x11contractenvmetav0\x00\x00\x00\x00\x00\x00\x00\x1e\x00\x00\x00\x00\x00G\x0econtractmetav0\x00\x00\x00\x00\x00\x00\x00\x05rsver\x00\x00\x00\x00\x00\x00\x061.91.0\x00\x00\x00\x00\x00\x00\x00\x00\x00\x08rssdkver\x00\x00\x00\x0630.0.0\x00\x00";
+        pub trait Contract {
+            fn verify_44(
+                env: soroban_sdk::Env,
+                public_key: soroban_sdk::BytesN<1312>,
+                message: soroban_sdk::Bytes,
+                signature: soroban_sdk::BytesN<2420>,
+                context: soroban_sdk::Bytes,
+            );
+            fn verify_65(
+                env: soroban_sdk::Env,
+                public_key: soroban_sdk::BytesN<1952>,
+                message: soroban_sdk::Bytes,
+                signature: soroban_sdk::BytesN<3309>,
+                context: soroban_sdk::Bytes,
+            );
+            fn verify_87(
+                env: soroban_sdk::Env,
+                public_key: soroban_sdk::BytesN<2592>,
+                message: soroban_sdk::Bytes,
+                signature: soroban_sdk::BytesN<4627>,
+                context: soroban_sdk::Bytes,
+            );
+        }
+        ///Client is a client for calling the contract defined in "Contract".
+        pub struct Client<'a> {
+            pub env: soroban_sdk::Env,
+            pub address: soroban_sdk::Address,
+            #[doc(hidden)]
+            config: soroban_sdk::testutils::ClientInternalConfig<'a>,
+        }
+        impl<'a> Client<'a> {
+            pub fn new(env: &soroban_sdk::Env, address: &soroban_sdk::Address) -> Self {
+                Self {
+                    env: env.clone(),
+                    address: address.clone(),
+                    config: soroban_sdk::testutils::ClientInternalConfig::default(),
+                }
+            }
+            /// Set authorizations in the environment which will be consumed by
+            /// contracts when they invoke `Address::require_auth` or
+            /// `Address::require_auth_for_args` functions.
+            ///
+            /// Requires valid signatures for the authorization to be successful.
+            /// To mock auth without requiring valid signatures, use `mock_auths`.
+            ///
+            /// See `soroban_sdk::Env::set_auths` for more details and examples.
+            pub fn set_auths(
+                &self,
+                auths: &'a [soroban_sdk::xdr::SorobanAuthorizationEntry],
+            ) -> Self {
+                Self {
+                    env: self.env.clone(),
+                    address: self.address.clone(),
+                    config: self.config.set_auths(auths),
+                }
+            }
+            /// Mock authorizations in the environment which will cause matching invokes
+            /// of `Address::require_auth` and `Address::require_auth_for_args` to
+            /// pass.
+            ///
+            /// See `soroban_sdk::Env::set_auths` for more details and examples.
+            pub fn mock_auths(
+                &self,
+                mock_auths: &'a [soroban_sdk::testutils::MockAuth<'a>],
+            ) -> Self {
+                Self {
+                    env: self.env.clone(),
+                    address: self.address.clone(),
+                    config: self.config.mock_auths(mock_auths),
+                }
+            }
+            /// Mock all calls to the `Address::require_auth` and
+            /// `Address::require_auth_for_args` functions in invoked contracts,
+            /// having them succeed as if authorization was provided.
+            ///
+            /// See `soroban_sdk::Env::mock_all_auths` for more details and
+            /// examples.
+            pub fn mock_all_auths(&self) -> Self {
+                Self {
+                    env: self.env.clone(),
+                    address: self.address.clone(),
+                    config: self.config.mock_all_auths(),
+                }
+            }
+            /// A version of `mock_all_auths` that allows authorizations that
+            /// are not present in the root invocation.
+            ///
+            /// Refer to `mock_all_auths` documentation for details and
+            /// prefer using `mock_all_auths` unless non-root authorization is
+            /// required.
+            ///
+            /// See `soroban_sdk::Env::mock_all_auths_allowing_non_root_auth`
+            /// for more details and examples.
+            pub fn mock_all_auths_allowing_non_root_auth(&self) -> Self {
+                Self {
+                    env: self.env.clone(),
+                    address: self.address.clone(),
+                    config: self.config.mock_all_auths_allowing_non_root_auth(),
+                }
+            }
+        }
+        impl<'a> Client<'a> {
+            /// Call `verify_44` function on the contract.
+            ///
+            /// # Panics
+            ///
+            /// Panics if the invoked contract returns an error or panics.
+            ///
+            /// Use [`Self::try_verify_44`] to receive errors instead of panicking.
+            pub fn verify_44(
+                &self,
+                public_key: &soroban_sdk::BytesN<1312>,
+                message: &soroban_sdk::Bytes,
+                signature: &soroban_sdk::BytesN<2420>,
+                context: &soroban_sdk::Bytes,
+            ) -> () {
+                let _call_scope =
+                    soroban_sdk::testutils::ClientCallScope::enter(&self.env, self.config);
+                use soroban_sdk::{FromVal, IntoVal};
+                let res = self.env.invoke_contract(
+                    &self.address,
+                    &{
+                        #[allow(deprecated)]
+                        const SYMBOL: soroban_sdk::Symbol = soroban_sdk::Symbol::short("verify_44");
+                        SYMBOL
+                    },
+                    ::soroban_sdk::Vec::from_array(
+                        &self.env,
+                        [
+                            public_key.into_val(&self.env),
+                            message.into_val(&self.env),
+                            signature.into_val(&self.env),
+                            context.into_val(&self.env),
+                        ],
+                    ),
+                );
+                res
+            }
+            /// Call `verify_44` function on the contract.
+            ///
+            /// # Errors
+            ///
+            /// Returns an error if the invoked contract returns an error or panics. A panic in the invoked contract is caught and returned as an error rather than panicking the caller.
+            pub fn try_verify_44(
+                &self,
+                public_key: &soroban_sdk::BytesN<1312>,
+                message: &soroban_sdk::Bytes,
+                signature: &soroban_sdk::BytesN<2420>,
+                context: &soroban_sdk::Bytes,
+            ) -> Result<
+                Result<
+                    (),
+                    <() as soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val>>::Error,
+                >,
+                Result<soroban_sdk::Error, soroban_sdk::InvokeError>,
+            > {
+                let _call_scope =
+                    soroban_sdk::testutils::ClientCallScope::enter(&self.env, self.config);
+                use soroban_sdk::{FromVal, IntoVal};
+                let res = self.env.try_invoke_contract(
+                    &self.address,
+                    &{
+                        #[allow(deprecated)]
+                        const SYMBOL: soroban_sdk::Symbol = soroban_sdk::Symbol::short("verify_44");
+                        SYMBOL
+                    },
+                    ::soroban_sdk::Vec::from_array(
+                        &self.env,
+                        [
+                            public_key.into_val(&self.env),
+                            message.into_val(&self.env),
+                            signature.into_val(&self.env),
+                            context.into_val(&self.env),
+                        ],
+                    ),
+                );
+                res
+            }
+            /// Call `verify_65` function on the contract.
+            ///
+            /// # Panics
+            ///
+            /// Panics if the invoked contract returns an error or panics.
+            ///
+            /// Use [`Self::try_verify_65`] to receive errors instead of panicking.
+            pub fn verify_65(
+                &self,
+                public_key: &soroban_sdk::BytesN<1952>,
+                message: &soroban_sdk::Bytes,
+                signature: &soroban_sdk::BytesN<3309>,
+                context: &soroban_sdk::Bytes,
+            ) -> () {
+                let _call_scope =
+                    soroban_sdk::testutils::ClientCallScope::enter(&self.env, self.config);
+                use soroban_sdk::{FromVal, IntoVal};
+                let res = self.env.invoke_contract(
+                    &self.address,
+                    &{
+                        #[allow(deprecated)]
+                        const SYMBOL: soroban_sdk::Symbol = soroban_sdk::Symbol::short("verify_65");
+                        SYMBOL
+                    },
+                    ::soroban_sdk::Vec::from_array(
+                        &self.env,
+                        [
+                            public_key.into_val(&self.env),
+                            message.into_val(&self.env),
+                            signature.into_val(&self.env),
+                            context.into_val(&self.env),
+                        ],
+                    ),
+                );
+                res
+            }
+            /// Call `verify_65` function on the contract.
+            ///
+            /// # Errors
+            ///
+            /// Returns an error if the invoked contract returns an error or panics. A panic in the invoked contract is caught and returned as an error rather than panicking the caller.
+            pub fn try_verify_65(
+                &self,
+                public_key: &soroban_sdk::BytesN<1952>,
+                message: &soroban_sdk::Bytes,
+                signature: &soroban_sdk::BytesN<3309>,
+                context: &soroban_sdk::Bytes,
+            ) -> Result<
+                Result<
+                    (),
+                    <() as soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val>>::Error,
+                >,
+                Result<soroban_sdk::Error, soroban_sdk::InvokeError>,
+            > {
+                let _call_scope =
+                    soroban_sdk::testutils::ClientCallScope::enter(&self.env, self.config);
+                use soroban_sdk::{FromVal, IntoVal};
+                let res = self.env.try_invoke_contract(
+                    &self.address,
+                    &{
+                        #[allow(deprecated)]
+                        const SYMBOL: soroban_sdk::Symbol = soroban_sdk::Symbol::short("verify_65");
+                        SYMBOL
+                    },
+                    ::soroban_sdk::Vec::from_array(
+                        &self.env,
+                        [
+                            public_key.into_val(&self.env),
+                            message.into_val(&self.env),
+                            signature.into_val(&self.env),
+                            context.into_val(&self.env),
+                        ],
+                    ),
+                );
+                res
+            }
+            /// Call `verify_87` function on the contract.
+            ///
+            /// # Panics
+            ///
+            /// Panics if the invoked contract returns an error or panics.
+            ///
+            /// Use [`Self::try_verify_87`] to receive errors instead of panicking.
+            pub fn verify_87(
+                &self,
+                public_key: &soroban_sdk::BytesN<2592>,
+                message: &soroban_sdk::Bytes,
+                signature: &soroban_sdk::BytesN<4627>,
+                context: &soroban_sdk::Bytes,
+            ) -> () {
+                let _call_scope =
+                    soroban_sdk::testutils::ClientCallScope::enter(&self.env, self.config);
+                use soroban_sdk::{FromVal, IntoVal};
+                let res = self.env.invoke_contract(
+                    &self.address,
+                    &{
+                        #[allow(deprecated)]
+                        const SYMBOL: soroban_sdk::Symbol = soroban_sdk::Symbol::short("verify_87");
+                        SYMBOL
+                    },
+                    ::soroban_sdk::Vec::from_array(
+                        &self.env,
+                        [
+                            public_key.into_val(&self.env),
+                            message.into_val(&self.env),
+                            signature.into_val(&self.env),
+                            context.into_val(&self.env),
+                        ],
+                    ),
+                );
+                res
+            }
+            /// Call `verify_87` function on the contract.
+            ///
+            /// # Errors
+            ///
+            /// Returns an error if the invoked contract returns an error or panics. A panic in the invoked contract is caught and returned as an error rather than panicking the caller.
+            pub fn try_verify_87(
+                &self,
+                public_key: &soroban_sdk::BytesN<2592>,
+                message: &soroban_sdk::Bytes,
+                signature: &soroban_sdk::BytesN<4627>,
+                context: &soroban_sdk::Bytes,
+            ) -> Result<
+                Result<
+                    (),
+                    <() as soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val>>::Error,
+                >,
+                Result<soroban_sdk::Error, soroban_sdk::InvokeError>,
+            > {
+                let _call_scope =
+                    soroban_sdk::testutils::ClientCallScope::enter(&self.env, self.config);
+                use soroban_sdk::{FromVal, IntoVal};
+                let res = self.env.try_invoke_contract(
+                    &self.address,
+                    &{
+                        #[allow(deprecated)]
+                        const SYMBOL: soroban_sdk::Symbol = soroban_sdk::Symbol::short("verify_87");
+                        SYMBOL
+                    },
+                    ::soroban_sdk::Vec::from_array(
+                        &self.env,
+                        [
+                            public_key.into_val(&self.env),
+                            message.into_val(&self.env),
+                            signature.into_val(&self.env),
+                            context.into_val(&self.env),
+                        ],
+                    ),
+                );
+                res
+            }
+        }
+        ///Args is a type for building arg lists for functions defined in "Contract".
+        pub struct Args;
+        impl Args {
+            #[inline(always)]
+            #[allow(clippy::unused_unit)]
+            pub fn verify_44<'i>(
+                public_key: &'i soroban_sdk::BytesN<1312>,
+                message: &'i soroban_sdk::Bytes,
+                signature: &'i soroban_sdk::BytesN<2420>,
+                context: &'i soroban_sdk::Bytes,
+            ) -> (
+                &'i soroban_sdk::BytesN<1312>,
+                &'i soroban_sdk::Bytes,
+                &'i soroban_sdk::BytesN<2420>,
+                &'i soroban_sdk::Bytes,
+            ) {
+                (public_key, message, signature, context)
+            }
+            #[inline(always)]
+            #[allow(clippy::unused_unit)]
+            pub fn verify_65<'i>(
+                public_key: &'i soroban_sdk::BytesN<1952>,
+                message: &'i soroban_sdk::Bytes,
+                signature: &'i soroban_sdk::BytesN<3309>,
+                context: &'i soroban_sdk::Bytes,
+            ) -> (
+                &'i soroban_sdk::BytesN<1952>,
+                &'i soroban_sdk::Bytes,
+                &'i soroban_sdk::BytesN<3309>,
+                &'i soroban_sdk::Bytes,
+            ) {
+                (public_key, message, signature, context)
+            }
+            #[inline(always)]
+            #[allow(clippy::unused_unit)]
+            pub fn verify_87<'i>(
+                public_key: &'i soroban_sdk::BytesN<2592>,
+                message: &'i soroban_sdk::Bytes,
+                signature: &'i soroban_sdk::BytesN<4627>,
+                context: &'i soroban_sdk::Bytes,
+            ) -> (
+                &'i soroban_sdk::BytesN<2592>,
+                &'i soroban_sdk::Bytes,
+                &'i soroban_sdk::BytesN<4627>,
+                &'i soroban_sdk::Bytes,
+            ) {
+                (public_key, message, signature, context)
+            }
+        }
+        pub struct ContractExecutableRef {
+            pub owner: soroban_sdk::Address,
+            pub tag: soroban_sdk::String,
+        }
+        #[automatically_derived]
+        impl ::core::fmt::Debug for ContractExecutableRef {
+            #[inline]
+            fn fmt(&self, f: &mut ::core::fmt::Formatter) -> ::core::fmt::Result {
+                ::core::fmt::Formatter::debug_struct_field2_finish(
+                    f,
+                    "ContractExecutableRef",
+                    "owner",
+                    &self.owner,
+                    "tag",
+                    &&self.tag,
+                )
+            }
+        }
+        #[automatically_derived]
+        impl ::core::clone::Clone for ContractExecutableRef {
+            #[inline]
+            fn clone(&self) -> ContractExecutableRef {
+                ContractExecutableRef {
+                    owner: ::core::clone::Clone::clone(&self.owner),
+                    tag: ::core::clone::Clone::clone(&self.tag),
+                }
+            }
+        }
+        #[automatically_derived]
+        impl ::core::cmp::Eq for ContractExecutableRef {
+            #[inline]
+            #[doc(hidden)]
+            #[coverage(off)]
+            fn assert_receiver_is_total_eq(&self) -> () {
+                let _: ::core::cmp::AssertParamIsEq<soroban_sdk::Address>;
+                let _: ::core::cmp::AssertParamIsEq<soroban_sdk::String>;
+            }
+        }
+        #[automatically_derived]
+        impl ::core::marker::StructuralPartialEq for ContractExecutableRef {}
+        #[automatically_derived]
+        impl ::core::cmp::PartialEq for ContractExecutableRef {
+            #[inline]
+            fn eq(&self, other: &ContractExecutableRef) -> bool {
+                self.owner == other.owner && self.tag == other.tag
+            }
+        }
+        #[automatically_derived]
+        impl ::core::cmp::Ord for ContractExecutableRef {
+            #[inline]
+            fn cmp(&self, other: &ContractExecutableRef) -> ::core::cmp::Ordering {
+                match ::core::cmp::Ord::cmp(&self.owner, &other.owner) {
+                    ::core::cmp::Ordering::Equal => ::core::cmp::Ord::cmp(&self.tag, &other.tag),
+                    cmp => cmp,
+                }
+            }
+        }
+        #[automatically_derived]
+        impl ::core::cmp::PartialOrd for ContractExecutableRef {
+            #[inline]
+            fn partial_cmp(
+                &self,
+                other: &ContractExecutableRef,
+            ) -> ::core::option::Option<::core::cmp::Ordering> {
+                match ::core::cmp::PartialOrd::partial_cmp(&self.owner, &other.owner) {
+                    ::core::option::Option::Some(::core::cmp::Ordering::Equal) => {
+                        ::core::cmp::PartialOrd::partial_cmp(&self.tag, &other.tag)
+                    }
+                    cmp => cmp,
+                }
+            }
+        }
+        impl soroban_sdk::SpecName for ContractExecutableRef {
+            const SPEC_NAME: &'static str = {
+                const NAME: &str = "::test_ml_dsa::test::wasm::ContractExecutableRef";
+                const CHECKED_NAME: &str = {
+                    if !(NAME.len() <= soroban_sdk::xdr::SC_SPEC_TYPE_NAME_LIMIT as usize) {
+                        {
+                            ::core::panicking::panic_fmt(
+                                format_args!(
+                                    "type `ContractExecutableRef` full name including its module path is longer than the contract spec\'s type name limit, shorten its module path or name: `::test_ml_dsa::test::wasm::ContractExecutableRef`",
+                                ),
+                            );
+                        }
+                    }
+                    NAME
+                };
+                CHECKED_NAME
+            };
+        }
+        impl soroban_sdk::SpecTypeDef for ContractExecutableRef {
+            const SPEC_TYPE_DEF: soroban_sdk::xdr::r#const::ScSpecTypeDef =
+                soroban_sdk::xdr::r#const::ScSpecTypeDef::Udt(
+                    soroban_sdk::xdr::r#const::ScSpecTypeUdt {
+                        name: soroban_sdk::xdr::r#const::StringM::try_from_str_or_panic(
+                            <Self as soroban_sdk::SpecName>::SPEC_NAME,
+                        ),
+                    },
+                );
+        }
+        #[doc(hidden)]
+        #[allow(dead_code)]
+        static __SPEC_XDR_TYPE_CONTRACTEXECUTABLEREF: [u8; ContractExecutableRef::spec_xdr()
+            .len()] = ContractExecutableRef::spec_xdr();
+        impl ContractExecutableRef {
+            const __SPEC_XDR_ENTRY: soroban_sdk::xdr::r#const::ScSpecEntry = soroban_sdk::xdr::r#const::ScSpecEntry::UdtStructV0(soroban_sdk::xdr::r#const::ScSpecUdtStructV0 {
+                doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
+                lib: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
+                name: soroban_sdk::xdr::r#const::StringM::try_from_str_or_panic(
+                    <ContractExecutableRef as soroban_sdk::SpecName>::SPEC_NAME,
+                ),
+                fields: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(
+                    &[
+                        soroban_sdk::xdr::r#const::ScSpecUdtStructFieldV0 {
+                            doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(
+                                b"",
+                            ),
+                            name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(
+                                b"owner",
+                            ),
+                            type_: <soroban_sdk::Address as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
+                        },
+                        soroban_sdk::xdr::r#const::ScSpecUdtStructFieldV0 {
+                            doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(
+                                b"",
+                            ),
+                            name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(
+                                b"tag",
+                            ),
+                            type_: <soroban_sdk::String as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
+                        },
+                    ],
+                ),
+            });
+            pub const fn spec_xdr() -> [u8; ContractExecutableRef::__SPEC_XDR_ENTRY.const_xdr_len()]
+            {
+                const { ContractExecutableRef::__SPEC_XDR_ENTRY.const_to_xdr() }
+            }
+        }
+        impl soroban_sdk::SpecAnchor for ContractExecutableRef {
+            #[inline(never)]
+            fn spec_anchor() {}
+        }
+        impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for ContractExecutableRef {
+            type Error = soroban_sdk::ConversionError;
+            fn try_from_val(
+                env: &soroban_sdk::Env,
+                val: &soroban_sdk::Val,
+            ) -> Result<Self, soroban_sdk::ConversionError> {
+                <ContractExecutableRef as soroban_sdk::SpecAnchor>::spec_anchor();
+                use soroban_sdk::{ConversionError, EnvBase, MapObject, TryIntoVal, Val};
+                const KEYS: [&'static str; 2usize] = ["owner", "tag"];
+                let mut vals: [Val; 2usize] = [Val::VOID.to_val(); 2usize];
+                let map: MapObject = val.try_into().map_err(|_| ConversionError)?;
+                env.sparse_map_unpack_to_slice(map, &KEYS, &mut vals)
+                    .map_err(|_| ConversionError)?;
+                Ok(Self {
+                    owner: vals[0]
+                        .try_into_val(env)
+                        .map_err(|_| soroban_sdk::ConversionError)?,
+                    tag: vals[1]
+                        .try_into_val(env)
+                        .map_err(|_| soroban_sdk::ConversionError)?,
+                })
+            }
+        }
+        impl soroban_sdk::TryFromVal<soroban_sdk::Env, ContractExecutableRef> for soroban_sdk::Val {
+            type Error = soroban_sdk::ConversionError;
+            fn try_from_val(
+                env: &soroban_sdk::Env,
+                val: &ContractExecutableRef,
+            ) -> Result<Self, soroban_sdk::ConversionError> {
+                <ContractExecutableRef as soroban_sdk::SpecAnchor>::spec_anchor();
+                use soroban_sdk::{ConversionError, EnvBase, TryIntoVal, Val};
+                const KEYS: [&'static str; 2usize] = ["owner", "tag"];
+                let vals: [Val; 2usize] = [
+                    (&val.owner)
+                        .try_into_val(env)
+                        .map_err(|_| ConversionError)?,
+                    (&val.tag).try_into_val(env).map_err(|_| ConversionError)?,
+                ];
+                Ok(env
+                    .map_new_from_slices(&KEYS, &vals)
+                    .map_err(|_| ConversionError)?
+                    .into())
+            }
+        }
+        impl soroban_sdk::TryFromVal<soroban_sdk::Env, &ContractExecutableRef> for soroban_sdk::Val {
+            type Error = soroban_sdk::ConversionError;
+            #[inline(always)]
+            fn try_from_val(
+                env: &soroban_sdk::Env,
+                val: &&ContractExecutableRef,
+            ) -> Result<Self, soroban_sdk::ConversionError> {
+                <_ as soroban_sdk::TryFromVal<
+                    soroban_sdk::Env,
+                    ContractExecutableRef,
+                >>::try_from_val(env, *val)
+            }
+        }
+        impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::xdr::ScMap> for ContractExecutableRef {
+            type Error = soroban_sdk::xdr::Error;
+            #[inline(always)]
+            fn try_from_val(
+                env: &soroban_sdk::Env,
+                val: &soroban_sdk::xdr::ScMap,
+            ) -> Result<Self, soroban_sdk::xdr::Error> {
+                use soroban_sdk::xdr::Validate;
+                use soroban_sdk::TryIntoVal;
+                let map = val;
+                if map
+                    .iter()
+                    .any(|entry| !#[allow(non_exhaustive_omitted_patterns)]
+                    match entry.key {
+                        soroban_sdk::xdr::ScVal::Symbol(_) => true,
+                        _ => false,
+                    })
+                {
+                    return Err(soroban_sdk::xdr::Error::Invalid);
+                }
+                map.validate()?;
+                Ok(Self {
+                    owner: {
+                        let key: soroban_sdk::xdr::ScVal = soroban_sdk::xdr::ScSymbol(
+                            "owner"
+                                .try_into()
+                                .map_err(|_| soroban_sdk::xdr::Error::Invalid)?,
+                        )
+                        .into();
+                        let val = match map.binary_search_by_key(&key, |entry| entry.key.clone()) {
+                            Ok(idx) => map[idx].val.clone(),
+                            Err(_) => soroban_sdk::xdr::ScVal::Void,
+                        };
+                        let rv: soroban_sdk::Val = (&val)
+                            .try_into_val(env)
+                            .map_err(|_| soroban_sdk::xdr::Error::Invalid)?;
+                        rv.try_into_val(env)
+                            .map_err(|_| soroban_sdk::xdr::Error::Invalid)?
+                    },
+                    tag: {
+                        let key: soroban_sdk::xdr::ScVal = soroban_sdk::xdr::ScSymbol(
+                            "tag"
+                                .try_into()
+                                .map_err(|_| soroban_sdk::xdr::Error::Invalid)?,
+                        )
+                        .into();
+                        let val = match map.binary_search_by_key(&key, |entry| entry.key.clone()) {
+                            Ok(idx) => map[idx].val.clone(),
+                            Err(_) => soroban_sdk::xdr::ScVal::Void,
+                        };
+                        let rv: soroban_sdk::Val = (&val)
+                            .try_into_val(env)
+                            .map_err(|_| soroban_sdk::xdr::Error::Invalid)?;
+                        rv.try_into_val(env)
+                            .map_err(|_| soroban_sdk::xdr::Error::Invalid)?
+                    },
+                })
+            }
+        }
+        impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::xdr::ScVal> for ContractExecutableRef {
+            type Error = soroban_sdk::xdr::Error;
+            #[inline(always)]
+            fn try_from_val(
+                env: &soroban_sdk::Env,
+                val: &soroban_sdk::xdr::ScVal,
+            ) -> Result<Self, soroban_sdk::xdr::Error> {
+                if let soroban_sdk::xdr::ScVal::Map(Some(map)) = val {
+                    <_ as soroban_sdk::TryFromVal<_, _>>::try_from_val(env, map)
+                } else {
+                    Err(soroban_sdk::xdr::Error::Invalid)
+                }
+            }
+        }
+        impl TryFrom<&ContractExecutableRef> for soroban_sdk::xdr::ScMap {
+            type Error = soroban_sdk::xdr::Error;
+            #[inline(always)]
+            fn try_from(val: &ContractExecutableRef) -> Result<Self, soroban_sdk::xdr::Error> {
+                extern crate alloc;
+                use soroban_sdk::TryFromVal;
+                soroban_sdk::xdr::ScMap::sorted_from(<[_]>::into_vec(::alloc::boxed::box_new([
+                    soroban_sdk::xdr::ScMapEntry {
+                        key: soroban_sdk::xdr::ScSymbol(
+                            "owner"
+                                .try_into()
+                                .map_err(|_| soroban_sdk::xdr::Error::Invalid)?,
+                        )
+                        .into(),
+                        val: (&val.owner)
+                            .try_into()
+                            .map_err(|_| soroban_sdk::xdr::Error::Invalid)?,
+                    },
+                    soroban_sdk::xdr::ScMapEntry {
+                        key: soroban_sdk::xdr::ScSymbol(
+                            "tag"
+                                .try_into()
+                                .map_err(|_| soroban_sdk::xdr::Error::Invalid)?,
+                        )
+                        .into(),
+                        val: (&val.tag)
+                            .try_into()
+                            .map_err(|_| soroban_sdk::xdr::Error::Invalid)?,
+                    },
+                ])))
+            }
+        }
+        impl TryFrom<ContractExecutableRef> for soroban_sdk::xdr::ScMap {
+            type Error = soroban_sdk::xdr::Error;
+            #[inline(always)]
+            fn try_from(val: ContractExecutableRef) -> Result<Self, soroban_sdk::xdr::Error> {
+                (&val).try_into()
+            }
+        }
+        impl TryFrom<&ContractExecutableRef> for soroban_sdk::xdr::ScVal {
+            type Error = soroban_sdk::xdr::Error;
+            #[inline(always)]
+            fn try_from(val: &ContractExecutableRef) -> Result<Self, soroban_sdk::xdr::Error> {
+                Ok(soroban_sdk::xdr::ScVal::Map(Some(val.try_into()?)))
+            }
+        }
+        impl TryFrom<ContractExecutableRef> for soroban_sdk::xdr::ScVal {
+            type Error = soroban_sdk::xdr::Error;
+            #[inline(always)]
+            fn try_from(val: ContractExecutableRef) -> Result<Self, soroban_sdk::xdr::Error> {
+                (&val).try_into()
+            }
+        }
+        const _: () = {
+            use soroban_sdk::testutils::arbitrary::arbitrary;
+            use soroban_sdk::testutils::arbitrary::std;
+            pub struct ArbitraryContractExecutableRef {
+                owner: <soroban_sdk::Address as soroban_sdk::testutils::arbitrary::SorobanArbitrary>::Prototype,
+                tag: <soroban_sdk::String as soroban_sdk::testutils::arbitrary::SorobanArbitrary>::Prototype,
+            }
+            #[automatically_derived]
+            impl ::core::fmt::Debug for ArbitraryContractExecutableRef {
+                #[inline]
+                fn fmt(&self, f: &mut ::core::fmt::Formatter) -> ::core::fmt::Result {
+                    ::core::fmt::Formatter::debug_struct_field2_finish(
+                        f,
+                        "ArbitraryContractExecutableRef",
+                        "owner",
+                        &self.owner,
+                        "tag",
+                        &&self.tag,
+                    )
+                }
+            }
+            #[automatically_derived]
+            impl ::core::clone::Clone for ArbitraryContractExecutableRef {
+                #[inline]
+                fn clone(&self) -> ArbitraryContractExecutableRef {
+                    ArbitraryContractExecutableRef {
+                        owner: ::core::clone::Clone::clone(&self.owner),
+                        tag: ::core::clone::Clone::clone(&self.tag),
+                    }
+                }
+            }
+            #[automatically_derived]
+            impl ::core::cmp::Eq for ArbitraryContractExecutableRef {
+                #[inline]
+                #[doc(hidden)]
+                #[coverage(off)]
+                fn assert_receiver_is_total_eq(&self) -> () {
+                    let _: ::core::cmp::AssertParamIsEq<
+                        <soroban_sdk::Address as soroban_sdk::testutils::arbitrary::SorobanArbitrary>::Prototype,
+                    >;
+                    let _: ::core::cmp::AssertParamIsEq<
+                        <soroban_sdk::String as soroban_sdk::testutils::arbitrary::SorobanArbitrary>::Prototype,
+                    >;
+                }
+            }
+            #[automatically_derived]
+            impl ::core::marker::StructuralPartialEq for ArbitraryContractExecutableRef {}
+            #[automatically_derived]
+            impl ::core::cmp::PartialEq for ArbitraryContractExecutableRef {
+                #[inline]
+                fn eq(&self, other: &ArbitraryContractExecutableRef) -> bool {
+                    self.owner == other.owner && self.tag == other.tag
+                }
+            }
+            #[automatically_derived]
+            impl ::core::cmp::Ord for ArbitraryContractExecutableRef {
+                #[inline]
+                fn cmp(&self, other: &ArbitraryContractExecutableRef) -> ::core::cmp::Ordering {
+                    match ::core::cmp::Ord::cmp(&self.owner, &other.owner) {
+                        ::core::cmp::Ordering::Equal => {
+                            ::core::cmp::Ord::cmp(&self.tag, &other.tag)
+                        }
+                        cmp => cmp,
+                    }
+                }
+            }
+            #[automatically_derived]
+            impl ::core::cmp::PartialOrd for ArbitraryContractExecutableRef {
+                #[inline]
+                fn partial_cmp(
+                    &self,
+                    other: &ArbitraryContractExecutableRef,
+                ) -> ::core::option::Option<::core::cmp::Ordering> {
+                    match ::core::cmp::PartialOrd::partial_cmp(&self.owner, &other.owner) {
+                        ::core::option::Option::Some(::core::cmp::Ordering::Equal) => {
+                            ::core::cmp::PartialOrd::partial_cmp(&self.tag, &other.tag)
+                        }
+                        cmp => cmp,
+                    }
+                }
+            }
+            const _: () = {
+                #[allow(non_upper_case_globals)]
+                const RECURSIVE_COUNT_ArbitraryContractExecutableRef: ::std::thread::LocalKey<
+                    std::cell::Cell<u32>,
+                > = {
+                    #[inline]
+                    fn __init() -> std::cell::Cell<u32> {
+                        std::cell::Cell::new(0)
+                    }
+                    unsafe {
+                        ::std::thread::LocalKey::new(
+                            const {
+                                if ::std::mem::needs_drop::<std::cell::Cell<u32>>() {
+                                    |init| {
+                                        #[thread_local]
+                                        static VAL: ::std::thread::local_impl::LazyStorage<
+                                            std::cell::Cell<u32>,
+                                            (),
+                                        > = ::std::thread::local_impl::LazyStorage::new();
+                                        VAL.get_or_init(init, __init)
+                                    }
+                                } else {
+                                    |init| {
+                                        #[thread_local]
+                                        static VAL: ::std::thread::local_impl::LazyStorage<
+                                            std::cell::Cell<u32>,
+                                            !,
+                                        > = ::std::thread::local_impl::LazyStorage::new();
+                                        VAL.get_or_init(init, __init)
+                                    }
+                                }
+                            },
+                        )
+                    }
+                };
+                #[automatically_derived]
+                impl<'arbitrary> arbitrary::Arbitrary<'arbitrary> for ArbitraryContractExecutableRef {
+                    fn arbitrary(
+                        u: &mut arbitrary::Unstructured<'arbitrary>,
+                    ) -> arbitrary::Result<Self> {
+                        let guard_against_recursion = u.is_empty();
+                        if guard_against_recursion {
+                            RECURSIVE_COUNT_ArbitraryContractExecutableRef.with(|count| {
+                                if count.get() > 0 {
+                                    return Err(arbitrary::Error::NotEnoughData);
+                                }
+                                count.set(count.get() + 1);
+                                Ok(())
+                            })?;
+                        }
+                        let result = (|| {
+                            Ok(ArbitraryContractExecutableRef {
+                                owner: arbitrary::Arbitrary::arbitrary(u)?,
+                                tag: arbitrary::Arbitrary::arbitrary(u)?,
+                            })
+                        })();
+                        if guard_against_recursion {
+                            RECURSIVE_COUNT_ArbitraryContractExecutableRef.with(|count| {
+                                count.set(count.get() - 1);
+                            });
+                        }
+                        result
+                    }
+                    fn arbitrary_take_rest(
+                        mut u: arbitrary::Unstructured<'arbitrary>,
+                    ) -> arbitrary::Result<Self> {
+                        let guard_against_recursion = u.is_empty();
+                        if guard_against_recursion {
+                            RECURSIVE_COUNT_ArbitraryContractExecutableRef.with(|count| {
+                                if count.get() > 0 {
+                                    return Err(arbitrary::Error::NotEnoughData);
+                                }
+                                count.set(count.get() + 1);
+                                Ok(())
+                            })?;
+                        }
+                        let result = (|| {
+                            Ok(ArbitraryContractExecutableRef {
+                                owner: arbitrary::Arbitrary::arbitrary(&mut u)?,
+                                tag: arbitrary::Arbitrary::arbitrary_take_rest(u)?,
+                            })
+                        })();
+                        if guard_against_recursion {
+                            RECURSIVE_COUNT_ArbitraryContractExecutableRef.with(|count| {
+                                count.set(count.get() - 1);
+                            });
+                        }
+                        result
+                    }
+                    #[inline]
+                    fn size_hint(depth: usize) -> (usize, Option<usize>) {
+                        arbitrary::size_hint::recursion_guard(depth, |depth| {
+                            arbitrary::size_hint::and_all(
+                                &[
+                                    <<soroban_sdk::Address as soroban_sdk::testutils::arbitrary::SorobanArbitrary>::Prototype as arbitrary::Arbitrary>::size_hint(
+                                        depth,
+                                    ),
+                                    <<soroban_sdk::String as soroban_sdk::testutils::arbitrary::SorobanArbitrary>::Prototype as arbitrary::Arbitrary>::size_hint(
+                                        depth,
+                                    ),
+                                ],
+                            )
+                        })
+                    }
+                }
+            };
+            impl soroban_sdk::testutils::arbitrary::SorobanArbitrary for ContractExecutableRef {
+                type Prototype = ArbitraryContractExecutableRef;
+            }
+            impl soroban_sdk::TryFromVal<soroban_sdk::Env, ArbitraryContractExecutableRef>
+                for ContractExecutableRef
+            {
+                type Error = soroban_sdk::ConversionError;
+                fn try_from_val(
+                    env: &soroban_sdk::Env,
+                    v: &ArbitraryContractExecutableRef,
+                ) -> std::result::Result<Self, Self::Error> {
+                    Ok(ContractExecutableRef {
+                        owner: soroban_sdk::IntoVal::into_val(&v.owner, env),
+                        tag: soroban_sdk::IntoVal::into_val(&v.tag, env),
+                    })
+                }
+            }
+        };
+        pub struct ContractContext {
+            pub args: soroban_sdk::Vec<soroban_sdk::Val>,
+            pub contract: soroban_sdk::Address,
+            pub fn_name: soroban_sdk::Symbol,
+        }
+        #[automatically_derived]
+        impl ::core::fmt::Debug for ContractContext {
+            #[inline]
+            fn fmt(&self, f: &mut ::core::fmt::Formatter) -> ::core::fmt::Result {
+                ::core::fmt::Formatter::debug_struct_field3_finish(
+                    f,
+                    "ContractContext",
+                    "args",
+                    &self.args,
+                    "contract",
+                    &self.contract,
+                    "fn_name",
+                    &&self.fn_name,
+                )
+            }
+        }
+        #[automatically_derived]
+        impl ::core::clone::Clone for ContractContext {
+            #[inline]
+            fn clone(&self) -> ContractContext {
+                ContractContext {
+                    args: ::core::clone::Clone::clone(&self.args),
+                    contract: ::core::clone::Clone::clone(&self.contract),
+                    fn_name: ::core::clone::Clone::clone(&self.fn_name),
+                }
+            }
+        }
+        #[automatically_derived]
+        impl ::core::cmp::Eq for ContractContext {
+            #[inline]
+            #[doc(hidden)]
+            #[coverage(off)]
+            fn assert_receiver_is_total_eq(&self) -> () {
+                let _: ::core::cmp::AssertParamIsEq<soroban_sdk::Vec<soroban_sdk::Val>>;
+                let _: ::core::cmp::AssertParamIsEq<soroban_sdk::Address>;
+                let _: ::core::cmp::AssertParamIsEq<soroban_sdk::Symbol>;
+            }
+        }
+        #[automatically_derived]
+        impl ::core::marker::StructuralPartialEq for ContractContext {}
+        #[automatically_derived]
+        impl ::core::cmp::PartialEq for ContractContext {
+            #[inline]
+            fn eq(&self, other: &ContractContext) -> bool {
+                self.args == other.args
+                    && self.contract == other.contract
+                    && self.fn_name == other.fn_name
+            }
+        }
+        #[automatically_derived]
+        impl ::core::cmp::Ord for ContractContext {
+            #[inline]
+            fn cmp(&self, other: &ContractContext) -> ::core::cmp::Ordering {
+                match ::core::cmp::Ord::cmp(&self.args, &other.args) {
+                    ::core::cmp::Ordering::Equal => {
+                        match ::core::cmp::Ord::cmp(&self.contract, &other.contract) {
+                            ::core::cmp::Ordering::Equal => {
+                                ::core::cmp::Ord::cmp(&self.fn_name, &other.fn_name)
+                            }
+                            cmp => cmp,
+                        }
+                    }
+                    cmp => cmp,
+                }
+            }
+        }
+        #[automatically_derived]
+        impl ::core::cmp::PartialOrd for ContractContext {
+            #[inline]
+            fn partial_cmp(
+                &self,
+                other: &ContractContext,
+            ) -> ::core::option::Option<::core::cmp::Ordering> {
+                match ::core::cmp::PartialOrd::partial_cmp(&self.args, &other.args) {
+                    ::core::option::Option::Some(::core::cmp::Ordering::Equal) => {
+                        match ::core::cmp::PartialOrd::partial_cmp(&self.contract, &other.contract)
+                        {
+                            ::core::option::Option::Some(::core::cmp::Ordering::Equal) => {
+                                ::core::cmp::PartialOrd::partial_cmp(&self.fn_name, &other.fn_name)
+                            }
+                            cmp => cmp,
+                        }
+                    }
+                    cmp => cmp,
+                }
+            }
+        }
+        impl soroban_sdk::SpecName for ContractContext {
+            const SPEC_NAME: &'static str = {
+                const NAME: &str = "::test_ml_dsa::test::wasm::ContractContext";
+                const CHECKED_NAME: &str = {
+                    if !(NAME.len() <= soroban_sdk::xdr::SC_SPEC_TYPE_NAME_LIMIT as usize) {
+                        {
+                            ::core::panicking::panic_fmt(
+                                format_args!(
+                                    "type `ContractContext` full name including its module path is longer than the contract spec\'s type name limit, shorten its module path or name: `::test_ml_dsa::test::wasm::ContractContext`",
+                                ),
+                            );
+                        }
+                    }
+                    NAME
+                };
+                CHECKED_NAME
+            };
+        }
+        impl soroban_sdk::SpecTypeDef for ContractContext {
+            const SPEC_TYPE_DEF: soroban_sdk::xdr::r#const::ScSpecTypeDef =
+                soroban_sdk::xdr::r#const::ScSpecTypeDef::Udt(
+                    soroban_sdk::xdr::r#const::ScSpecTypeUdt {
+                        name: soroban_sdk::xdr::r#const::StringM::try_from_str_or_panic(
+                            <Self as soroban_sdk::SpecName>::SPEC_NAME,
+                        ),
+                    },
+                );
+        }
+        #[doc(hidden)]
+        #[allow(dead_code)]
+        static __SPEC_XDR_TYPE_CONTRACTCONTEXT: [u8; ContractContext::spec_xdr().len()] =
+            ContractContext::spec_xdr();
+        impl ContractContext {
+            const __SPEC_XDR_ENTRY: soroban_sdk::xdr::r#const::ScSpecEntry = soroban_sdk::xdr::r#const::ScSpecEntry::UdtStructV0(soroban_sdk::xdr::r#const::ScSpecUdtStructV0 {
+                doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
+                lib: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
+                name: soroban_sdk::xdr::r#const::StringM::try_from_str_or_panic(
+                    <ContractContext as soroban_sdk::SpecName>::SPEC_NAME,
+                ),
+                fields: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(
+                    &[
+                        soroban_sdk::xdr::r#const::ScSpecUdtStructFieldV0 {
+                            doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(
+                                b"",
+                            ),
+                            name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(
+                                b"args",
+                            ),
+                            type_: <soroban_sdk::Vec<
+                                soroban_sdk::Val,
+                            > as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
+                        },
+                        soroban_sdk::xdr::r#const::ScSpecUdtStructFieldV0 {
+                            doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(
+                                b"",
+                            ),
+                            name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(
+                                b"contract",
+                            ),
+                            type_: <soroban_sdk::Address as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
+                        },
+                        soroban_sdk::xdr::r#const::ScSpecUdtStructFieldV0 {
+                            doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(
+                                b"",
+                            ),
+                            name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(
+                                b"fn_name",
+                            ),
+                            type_: <soroban_sdk::Symbol as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
+                        },
+                    ],
+                ),
+            });
+            pub const fn spec_xdr() -> [u8; ContractContext::__SPEC_XDR_ENTRY.const_xdr_len()] {
+                const { ContractContext::__SPEC_XDR_ENTRY.const_to_xdr() }
+            }
+        }
+        impl soroban_sdk::SpecAnchor for ContractContext {
+            #[inline(never)]
+            fn spec_anchor() {}
+        }
+        impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for ContractContext {
+            type Error = soroban_sdk::ConversionError;
+            fn try_from_val(
+                env: &soroban_sdk::Env,
+                val: &soroban_sdk::Val,
+            ) -> Result<Self, soroban_sdk::ConversionError> {
+                <ContractContext as soroban_sdk::SpecAnchor>::spec_anchor();
+                use soroban_sdk::{ConversionError, EnvBase, MapObject, TryIntoVal, Val};
+                const KEYS: [&'static str; 3usize] = ["args", "contract", "fn_name"];
+                let mut vals: [Val; 3usize] = [Val::VOID.to_val(); 3usize];
+                let map: MapObject = val.try_into().map_err(|_| ConversionError)?;
+                env.sparse_map_unpack_to_slice(map, &KEYS, &mut vals)
+                    .map_err(|_| ConversionError)?;
+                Ok(Self {
+                    args: vals[0]
+                        .try_into_val(env)
+                        .map_err(|_| soroban_sdk::ConversionError)?,
+                    contract: vals[1]
+                        .try_into_val(env)
+                        .map_err(|_| soroban_sdk::ConversionError)?,
+                    fn_name: vals[2]
+                        .try_into_val(env)
+                        .map_err(|_| soroban_sdk::ConversionError)?,
+                })
+            }
+        }
+        impl soroban_sdk::TryFromVal<soroban_sdk::Env, ContractContext> for soroban_sdk::Val {
+            type Error = soroban_sdk::ConversionError;
+            fn try_from_val(
+                env: &soroban_sdk::Env,
+                val: &ContractContext,
+            ) -> Result<Self, soroban_sdk::ConversionError> {
+                <ContractContext as soroban_sdk::SpecAnchor>::spec_anchor();
+                use soroban_sdk::{ConversionError, EnvBase, TryIntoVal, Val};
+                const KEYS: [&'static str; 3usize] = ["args", "contract", "fn_name"];
+                let vals: [Val; 3usize] = [
+                    (&val.args).try_into_val(env).map_err(|_| ConversionError)?,
+                    (&val.contract)
+                        .try_into_val(env)
+                        .map_err(|_| ConversionError)?,
+                    (&val.fn_name)
+                        .try_into_val(env)
+                        .map_err(|_| ConversionError)?,
+                ];
+                Ok(env
+                    .map_new_from_slices(&KEYS, &vals)
+                    .map_err(|_| ConversionError)?
+                    .into())
+            }
+        }
+        impl soroban_sdk::TryFromVal<soroban_sdk::Env, &ContractContext> for soroban_sdk::Val {
+            type Error = soroban_sdk::ConversionError;
+            #[inline(always)]
+            fn try_from_val(
+                env: &soroban_sdk::Env,
+                val: &&ContractContext,
+            ) -> Result<Self, soroban_sdk::ConversionError> {
+                <_ as soroban_sdk::TryFromVal<soroban_sdk::Env, ContractContext>>::try_from_val(
+                    env, *val,
+                )
+            }
+        }
+        impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::xdr::ScMap> for ContractContext {
+            type Error = soroban_sdk::xdr::Error;
+            #[inline(always)]
+            fn try_from_val(
+                env: &soroban_sdk::Env,
+                val: &soroban_sdk::xdr::ScMap,
+            ) -> Result<Self, soroban_sdk::xdr::Error> {
+                use soroban_sdk::xdr::Validate;
+                use soroban_sdk::TryIntoVal;
+                let map = val;
+                if map
+                    .iter()
+                    .any(|entry| !#[allow(non_exhaustive_omitted_patterns)]
+                    match entry.key {
+                        soroban_sdk::xdr::ScVal::Symbol(_) => true,
+                        _ => false,
+                    })
+                {
+                    return Err(soroban_sdk::xdr::Error::Invalid);
+                }
+                map.validate()?;
+                Ok(Self {
+                    args: {
+                        let key: soroban_sdk::xdr::ScVal = soroban_sdk::xdr::ScSymbol(
+                            "args"
+                                .try_into()
+                                .map_err(|_| soroban_sdk::xdr::Error::Invalid)?,
+                        )
+                        .into();
+                        let val = match map.binary_search_by_key(&key, |entry| entry.key.clone()) {
+                            Ok(idx) => map[idx].val.clone(),
+                            Err(_) => soroban_sdk::xdr::ScVal::Void,
+                        };
+                        let rv: soroban_sdk::Val = (&val)
+                            .try_into_val(env)
+                            .map_err(|_| soroban_sdk::xdr::Error::Invalid)?;
+                        rv.try_into_val(env)
+                            .map_err(|_| soroban_sdk::xdr::Error::Invalid)?
+                    },
+                    contract: {
+                        let key: soroban_sdk::xdr::ScVal = soroban_sdk::xdr::ScSymbol(
+                            "contract"
+                                .try_into()
+                                .map_err(|_| soroban_sdk::xdr::Error::Invalid)?,
+                        )
+                        .into();
+                        let val = match map.binary_search_by_key(&key, |entry| entry.key.clone()) {
+                            Ok(idx) => map[idx].val.clone(),
+                            Err(_) => soroban_sdk::xdr::ScVal::Void,
+                        };
+                        let rv: soroban_sdk::Val = (&val)
+                            .try_into_val(env)
+                            .map_err(|_| soroban_sdk::xdr::Error::Invalid)?;
+                        rv.try_into_val(env)
+                            .map_err(|_| soroban_sdk::xdr::Error::Invalid)?
+                    },
+                    fn_name: {
+                        let key: soroban_sdk::xdr::ScVal = soroban_sdk::xdr::ScSymbol(
+                            "fn_name"
+                                .try_into()
+                                .map_err(|_| soroban_sdk::xdr::Error::Invalid)?,
+                        )
+                        .into();
+                        let val = match map.binary_search_by_key(&key, |entry| entry.key.clone()) {
+                            Ok(idx) => map[idx].val.clone(),
+                            Err(_) => soroban_sdk::xdr::ScVal::Void,
+                        };
+                        let rv: soroban_sdk::Val = (&val)
+                            .try_into_val(env)
+                            .map_err(|_| soroban_sdk::xdr::Error::Invalid)?;
+                        rv.try_into_val(env)
+                            .map_err(|_| soroban_sdk::xdr::Error::Invalid)?
+                    },
+                })
+            }
+        }
+        impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::xdr::ScVal> for ContractContext {
+            type Error = soroban_sdk::xdr::Error;
+            #[inline(always)]
+            fn try_from_val(
+                env: &soroban_sdk::Env,
+                val: &soroban_sdk::xdr::ScVal,
+            ) -> Result<Self, soroban_sdk::xdr::Error> {
+                if let soroban_sdk::xdr::ScVal::Map(Some(map)) = val {
+                    <_ as soroban_sdk::TryFromVal<_, _>>::try_from_val(env, map)
+                } else {
+                    Err(soroban_sdk::xdr::Error::Invalid)
+                }
+            }
+        }
+        impl TryFrom<&ContractContext> for soroban_sdk::xdr::ScMap {
+            type Error = soroban_sdk::xdr::Error;
+            #[inline(always)]
+            fn try_from(val: &ContractContext) -> Result<Self, soroban_sdk::xdr::Error> {
+                extern crate alloc;
+                use soroban_sdk::TryFromVal;
+                soroban_sdk::xdr::ScMap::sorted_from(<[_]>::into_vec(::alloc::boxed::box_new([
+                    soroban_sdk::xdr::ScMapEntry {
+                        key: soroban_sdk::xdr::ScSymbol(
+                            "args"
+                                .try_into()
+                                .map_err(|_| soroban_sdk::xdr::Error::Invalid)?,
+                        )
+                        .into(),
+                        val: (&val.args)
+                            .try_into()
+                            .map_err(|_| soroban_sdk::xdr::Error::Invalid)?,
+                    },
+                    soroban_sdk::xdr::ScMapEntry {
+                        key: soroban_sdk::xdr::ScSymbol(
+                            "contract"
+                                .try_into()
+                                .map_err(|_| soroban_sdk::xdr::Error::Invalid)?,
+                        )
+                        .into(),
+                        val: (&val.contract)
+                            .try_into()
+                            .map_err(|_| soroban_sdk::xdr::Error::Invalid)?,
+                    },
+                    soroban_sdk::xdr::ScMapEntry {
+                        key: soroban_sdk::xdr::ScSymbol(
+                            "fn_name"
+                                .try_into()
+                                .map_err(|_| soroban_sdk::xdr::Error::Invalid)?,
+                        )
+                        .into(),
+                        val: (&val.fn_name)
+                            .try_into()
+                            .map_err(|_| soroban_sdk::xdr::Error::Invalid)?,
+                    },
+                ])))
+            }
+        }
+        impl TryFrom<ContractContext> for soroban_sdk::xdr::ScMap {
+            type Error = soroban_sdk::xdr::Error;
+            #[inline(always)]
+            fn try_from(val: ContractContext) -> Result<Self, soroban_sdk::xdr::Error> {
+                (&val).try_into()
+            }
+        }
+        impl TryFrom<&ContractContext> for soroban_sdk::xdr::ScVal {
+            type Error = soroban_sdk::xdr::Error;
+            #[inline(always)]
+            fn try_from(val: &ContractContext) -> Result<Self, soroban_sdk::xdr::Error> {
+                Ok(soroban_sdk::xdr::ScVal::Map(Some(val.try_into()?)))
+            }
+        }
+        impl TryFrom<ContractContext> for soroban_sdk::xdr::ScVal {
+            type Error = soroban_sdk::xdr::Error;
+            #[inline(always)]
+            fn try_from(val: ContractContext) -> Result<Self, soroban_sdk::xdr::Error> {
+                (&val).try_into()
+            }
+        }
+        const _: () = {
+            use soroban_sdk::testutils::arbitrary::arbitrary;
+            use soroban_sdk::testutils::arbitrary::std;
+            pub struct ArbitraryContractContext {
+                args: <soroban_sdk::Vec<
+                    soroban_sdk::Val,
+                > as soroban_sdk::testutils::arbitrary::SorobanArbitrary>::Prototype,
+                contract: <soroban_sdk::Address as soroban_sdk::testutils::arbitrary::SorobanArbitrary>::Prototype,
+                fn_name: <soroban_sdk::Symbol as soroban_sdk::testutils::arbitrary::SorobanArbitrary>::Prototype,
+            }
+            #[automatically_derived]
+            impl ::core::fmt::Debug for ArbitraryContractContext {
+                #[inline]
+                fn fmt(&self, f: &mut ::core::fmt::Formatter) -> ::core::fmt::Result {
+                    ::core::fmt::Formatter::debug_struct_field3_finish(
+                        f,
+                        "ArbitraryContractContext",
+                        "args",
+                        &self.args,
+                        "contract",
+                        &self.contract,
+                        "fn_name",
+                        &&self.fn_name,
+                    )
+                }
+            }
+            #[automatically_derived]
+            impl ::core::clone::Clone for ArbitraryContractContext {
+                #[inline]
+                fn clone(&self) -> ArbitraryContractContext {
+                    ArbitraryContractContext {
+                        args: ::core::clone::Clone::clone(&self.args),
+                        contract: ::core::clone::Clone::clone(&self.contract),
+                        fn_name: ::core::clone::Clone::clone(&self.fn_name),
+                    }
+                }
+            }
+            #[automatically_derived]
+            impl ::core::cmp::Eq for ArbitraryContractContext {
+                #[inline]
+                #[doc(hidden)]
+                #[coverage(off)]
+                fn assert_receiver_is_total_eq(&self) -> () {
+                    let _: ::core::cmp::AssertParamIsEq<
+                        <soroban_sdk::Vec<
+                            soroban_sdk::Val,
+                        > as soroban_sdk::testutils::arbitrary::SorobanArbitrary>::Prototype,
+                    >;
+                    let _: ::core::cmp::AssertParamIsEq<
+                        <soroban_sdk::Address as soroban_sdk::testutils::arbitrary::SorobanArbitrary>::Prototype,
+                    >;
+                    let _: ::core::cmp::AssertParamIsEq<
+                        <soroban_sdk::Symbol as soroban_sdk::testutils::arbitrary::SorobanArbitrary>::Prototype,
+                    >;
+                }
+            }
+            #[automatically_derived]
+            impl ::core::marker::StructuralPartialEq for ArbitraryContractContext {}
+            #[automatically_derived]
+            impl ::core::cmp::PartialEq for ArbitraryContractContext {
+                #[inline]
+                fn eq(&self, other: &ArbitraryContractContext) -> bool {
+                    self.args == other.args
+                        && self.contract == other.contract
+                        && self.fn_name == other.fn_name
+                }
+            }
+            #[automatically_derived]
+            impl ::core::cmp::Ord for ArbitraryContractContext {
+                #[inline]
+                fn cmp(&self, other: &ArbitraryContractContext) -> ::core::cmp::Ordering {
+                    match ::core::cmp::Ord::cmp(&self.args, &other.args) {
+                        ::core::cmp::Ordering::Equal => {
+                            match ::core::cmp::Ord::cmp(&self.contract, &other.contract) {
+                                ::core::cmp::Ordering::Equal => {
+                                    ::core::cmp::Ord::cmp(&self.fn_name, &other.fn_name)
+                                }
+                                cmp => cmp,
+                            }
+                        }
+                        cmp => cmp,
+                    }
+                }
+            }
+            #[automatically_derived]
+            impl ::core::cmp::PartialOrd for ArbitraryContractContext {
+                #[inline]
+                fn partial_cmp(
+                    &self,
+                    other: &ArbitraryContractContext,
+                ) -> ::core::option::Option<::core::cmp::Ordering> {
+                    match ::core::cmp::PartialOrd::partial_cmp(&self.args, &other.args) {
+                        ::core::option::Option::Some(::core::cmp::Ordering::Equal) => {
+                            match ::core::cmp::PartialOrd::partial_cmp(
+                                &self.contract,
+                                &other.contract,
+                            ) {
+                                ::core::option::Option::Some(::core::cmp::Ordering::Equal) => {
+                                    ::core::cmp::PartialOrd::partial_cmp(
+                                        &self.fn_name,
+                                        &other.fn_name,
+                                    )
+                                }
+                                cmp => cmp,
+                            }
+                        }
+                        cmp => cmp,
+                    }
+                }
+            }
+            const _: () = {
+                #[allow(non_upper_case_globals)]
+                const RECURSIVE_COUNT_ArbitraryContractContext: ::std::thread::LocalKey<
+                    std::cell::Cell<u32>,
+                > = {
+                    #[inline]
+                    fn __init() -> std::cell::Cell<u32> {
+                        std::cell::Cell::new(0)
+                    }
+                    unsafe {
+                        ::std::thread::LocalKey::new(
+                            const {
+                                if ::std::mem::needs_drop::<std::cell::Cell<u32>>() {
+                                    |init| {
+                                        #[thread_local]
+                                        static VAL: ::std::thread::local_impl::LazyStorage<
+                                            std::cell::Cell<u32>,
+                                            (),
+                                        > = ::std::thread::local_impl::LazyStorage::new();
+                                        VAL.get_or_init(init, __init)
+                                    }
+                                } else {
+                                    |init| {
+                                        #[thread_local]
+                                        static VAL: ::std::thread::local_impl::LazyStorage<
+                                            std::cell::Cell<u32>,
+                                            !,
+                                        > = ::std::thread::local_impl::LazyStorage::new();
+                                        VAL.get_or_init(init, __init)
+                                    }
+                                }
+                            },
+                        )
+                    }
+                };
+                #[automatically_derived]
+                impl<'arbitrary> arbitrary::Arbitrary<'arbitrary> for ArbitraryContractContext {
+                    fn arbitrary(
+                        u: &mut arbitrary::Unstructured<'arbitrary>,
+                    ) -> arbitrary::Result<Self> {
+                        let guard_against_recursion = u.is_empty();
+                        if guard_against_recursion {
+                            RECURSIVE_COUNT_ArbitraryContractContext.with(|count| {
+                                if count.get() > 0 {
+                                    return Err(arbitrary::Error::NotEnoughData);
+                                }
+                                count.set(count.get() + 1);
+                                Ok(())
+                            })?;
+                        }
+                        let result = (|| {
+                            Ok(ArbitraryContractContext {
+                                args: arbitrary::Arbitrary::arbitrary(u)?,
+                                contract: arbitrary::Arbitrary::arbitrary(u)?,
+                                fn_name: arbitrary::Arbitrary::arbitrary(u)?,
+                            })
+                        })();
+                        if guard_against_recursion {
+                            RECURSIVE_COUNT_ArbitraryContractContext.with(|count| {
+                                count.set(count.get() - 1);
+                            });
+                        }
+                        result
+                    }
+                    fn arbitrary_take_rest(
+                        mut u: arbitrary::Unstructured<'arbitrary>,
+                    ) -> arbitrary::Result<Self> {
+                        let guard_against_recursion = u.is_empty();
+                        if guard_against_recursion {
+                            RECURSIVE_COUNT_ArbitraryContractContext.with(|count| {
+                                if count.get() > 0 {
+                                    return Err(arbitrary::Error::NotEnoughData);
+                                }
+                                count.set(count.get() + 1);
+                                Ok(())
+                            })?;
+                        }
+                        let result = (|| {
+                            Ok(ArbitraryContractContext {
+                                args: arbitrary::Arbitrary::arbitrary(&mut u)?,
+                                contract: arbitrary::Arbitrary::arbitrary(&mut u)?,
+                                fn_name: arbitrary::Arbitrary::arbitrary_take_rest(u)?,
+                            })
+                        })();
+                        if guard_against_recursion {
+                            RECURSIVE_COUNT_ArbitraryContractContext.with(|count| {
+                                count.set(count.get() - 1);
+                            });
+                        }
+                        result
+                    }
+                    #[inline]
+                    fn size_hint(depth: usize) -> (usize, Option<usize>) {
+                        arbitrary::size_hint::recursion_guard(depth, |depth| {
+                            arbitrary::size_hint::and_all(
+                                &[
+                                    <<soroban_sdk::Vec<
+                                        soroban_sdk::Val,
+                                    > as soroban_sdk::testutils::arbitrary::SorobanArbitrary>::Prototype as arbitrary::Arbitrary>::size_hint(
+                                        depth,
+                                    ),
+                                    <<soroban_sdk::Address as soroban_sdk::testutils::arbitrary::SorobanArbitrary>::Prototype as arbitrary::Arbitrary>::size_hint(
+                                        depth,
+                                    ),
+                                    <<soroban_sdk::Symbol as soroban_sdk::testutils::arbitrary::SorobanArbitrary>::Prototype as arbitrary::Arbitrary>::size_hint(
+                                        depth,
+                                    ),
+                                ],
+                            )
+                        })
+                    }
+                }
+            };
+            impl soroban_sdk::testutils::arbitrary::SorobanArbitrary for ContractContext {
+                type Prototype = ArbitraryContractContext;
+            }
+            impl soroban_sdk::TryFromVal<soroban_sdk::Env, ArbitraryContractContext> for ContractContext {
+                type Error = soroban_sdk::ConversionError;
+                fn try_from_val(
+                    env: &soroban_sdk::Env,
+                    v: &ArbitraryContractContext,
+                ) -> std::result::Result<Self, Self::Error> {
+                    Ok(ContractContext {
+                        args: soroban_sdk::IntoVal::into_val(&v.args, env),
+                        contract: soroban_sdk::IntoVal::into_val(&v.contract, env),
+                        fn_name: soroban_sdk::IntoVal::into_val(&v.fn_name, env),
+                    })
+                }
+            }
+        };
+        pub struct SubContractInvocation {
+            pub context: ContractContext,
+            pub sub_invocations: soroban_sdk::Vec<InvokerContractAuthEntry>,
+        }
+        #[automatically_derived]
+        impl ::core::fmt::Debug for SubContractInvocation {
+            #[inline]
+            fn fmt(&self, f: &mut ::core::fmt::Formatter) -> ::core::fmt::Result {
+                ::core::fmt::Formatter::debug_struct_field2_finish(
+                    f,
+                    "SubContractInvocation",
+                    "context",
+                    &self.context,
+                    "sub_invocations",
+                    &&self.sub_invocations,
+                )
+            }
+        }
+        #[automatically_derived]
+        impl ::core::clone::Clone for SubContractInvocation {
+            #[inline]
+            fn clone(&self) -> SubContractInvocation {
+                SubContractInvocation {
+                    context: ::core::clone::Clone::clone(&self.context),
+                    sub_invocations: ::core::clone::Clone::clone(&self.sub_invocations),
+                }
+            }
+        }
+        #[automatically_derived]
+        impl ::core::cmp::Eq for SubContractInvocation {
+            #[inline]
+            #[doc(hidden)]
+            #[coverage(off)]
+            fn assert_receiver_is_total_eq(&self) -> () {
+                let _: ::core::cmp::AssertParamIsEq<ContractContext>;
+                let _: ::core::cmp::AssertParamIsEq<soroban_sdk::Vec<InvokerContractAuthEntry>>;
+            }
+        }
+        #[automatically_derived]
+        impl ::core::marker::StructuralPartialEq for SubContractInvocation {}
+        #[automatically_derived]
+        impl ::core::cmp::PartialEq for SubContractInvocation {
+            #[inline]
+            fn eq(&self, other: &SubContractInvocation) -> bool {
+                self.context == other.context && self.sub_invocations == other.sub_invocations
+            }
+        }
+        #[automatically_derived]
+        impl ::core::cmp::Ord for SubContractInvocation {
+            #[inline]
+            fn cmp(&self, other: &SubContractInvocation) -> ::core::cmp::Ordering {
+                match ::core::cmp::Ord::cmp(&self.context, &other.context) {
+                    ::core::cmp::Ordering::Equal => {
+                        ::core::cmp::Ord::cmp(&self.sub_invocations, &other.sub_invocations)
+                    }
+                    cmp => cmp,
+                }
+            }
+        }
+        #[automatically_derived]
+        impl ::core::cmp::PartialOrd for SubContractInvocation {
+            #[inline]
+            fn partial_cmp(
+                &self,
+                other: &SubContractInvocation,
+            ) -> ::core::option::Option<::core::cmp::Ordering> {
+                match ::core::cmp::PartialOrd::partial_cmp(&self.context, &other.context) {
+                    ::core::option::Option::Some(::core::cmp::Ordering::Equal) => {
+                        ::core::cmp::PartialOrd::partial_cmp(
+                            &self.sub_invocations,
+                            &other.sub_invocations,
+                        )
+                    }
+                    cmp => cmp,
+                }
+            }
+        }
+        impl soroban_sdk::SpecName for SubContractInvocation {
+            const SPEC_NAME: &'static str = {
+                const NAME: &str = "::test_ml_dsa::test::wasm::SubContractInvocation";
+                const CHECKED_NAME: &str = {
+                    if !(NAME.len() <= soroban_sdk::xdr::SC_SPEC_TYPE_NAME_LIMIT as usize) {
+                        {
+                            ::core::panicking::panic_fmt(
+                                format_args!(
+                                    "type `SubContractInvocation` full name including its module path is longer than the contract spec\'s type name limit, shorten its module path or name: `::test_ml_dsa::test::wasm::SubContractInvocation`",
+                                ),
+                            );
+                        }
+                    }
+                    NAME
+                };
+                CHECKED_NAME
+            };
+        }
+        impl soroban_sdk::SpecTypeDef for SubContractInvocation {
+            const SPEC_TYPE_DEF: soroban_sdk::xdr::r#const::ScSpecTypeDef =
+                soroban_sdk::xdr::r#const::ScSpecTypeDef::Udt(
+                    soroban_sdk::xdr::r#const::ScSpecTypeUdt {
+                        name: soroban_sdk::xdr::r#const::StringM::try_from_str_or_panic(
+                            <Self as soroban_sdk::SpecName>::SPEC_NAME,
+                        ),
+                    },
+                );
+        }
+        #[doc(hidden)]
+        #[allow(dead_code)]
+        static __SPEC_XDR_TYPE_SUBCONTRACTINVOCATION: [u8; SubContractInvocation::spec_xdr()
+            .len()] = SubContractInvocation::spec_xdr();
+        impl SubContractInvocation {
+            const __SPEC_XDR_ENTRY: soroban_sdk::xdr::r#const::ScSpecEntry = soroban_sdk::xdr::r#const::ScSpecEntry::UdtStructV0(soroban_sdk::xdr::r#const::ScSpecUdtStructV0 {
+                doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
+                lib: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
+                name: soroban_sdk::xdr::r#const::StringM::try_from_str_or_panic(
+                    <SubContractInvocation as soroban_sdk::SpecName>::SPEC_NAME,
+                ),
+                fields: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(
+                    &[
+                        soroban_sdk::xdr::r#const::ScSpecUdtStructFieldV0 {
+                            doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(
+                                b"",
+                            ),
+                            name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(
+                                b"context",
+                            ),
+                            type_: <ContractContext as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
+                        },
+                        soroban_sdk::xdr::r#const::ScSpecUdtStructFieldV0 {
+                            doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(
+                                b"",
+                            ),
+                            name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(
+                                b"sub_invocations",
+                            ),
+                            type_: <soroban_sdk::Vec<
+                                InvokerContractAuthEntry,
+                            > as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
+                        },
+                    ],
+                ),
+            });
+            pub const fn spec_xdr() -> [u8; SubContractInvocation::__SPEC_XDR_ENTRY.const_xdr_len()]
+            {
+                const { SubContractInvocation::__SPEC_XDR_ENTRY.const_to_xdr() }
+            }
+        }
+        impl soroban_sdk::SpecAnchor for SubContractInvocation {
+            #[inline(never)]
+            fn spec_anchor() {}
+        }
+        impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for SubContractInvocation {
+            type Error = soroban_sdk::ConversionError;
+            fn try_from_val(
+                env: &soroban_sdk::Env,
+                val: &soroban_sdk::Val,
+            ) -> Result<Self, soroban_sdk::ConversionError> {
+                <SubContractInvocation as soroban_sdk::SpecAnchor>::spec_anchor();
+                use soroban_sdk::{ConversionError, EnvBase, MapObject, TryIntoVal, Val};
+                const KEYS: [&'static str; 2usize] = ["context", "sub_invocations"];
+                let mut vals: [Val; 2usize] = [Val::VOID.to_val(); 2usize];
+                let map: MapObject = val.try_into().map_err(|_| ConversionError)?;
+                env.sparse_map_unpack_to_slice(map, &KEYS, &mut vals)
+                    .map_err(|_| ConversionError)?;
+                Ok(Self {
+                    context: vals[0]
+                        .try_into_val(env)
+                        .map_err(|_| soroban_sdk::ConversionError)?,
+                    sub_invocations: vals[1]
+                        .try_into_val(env)
+                        .map_err(|_| soroban_sdk::ConversionError)?,
+                })
+            }
+        }
+        impl soroban_sdk::TryFromVal<soroban_sdk::Env, SubContractInvocation> for soroban_sdk::Val {
+            type Error = soroban_sdk::ConversionError;
+            fn try_from_val(
+                env: &soroban_sdk::Env,
+                val: &SubContractInvocation,
+            ) -> Result<Self, soroban_sdk::ConversionError> {
+                <SubContractInvocation as soroban_sdk::SpecAnchor>::spec_anchor();
+                use soroban_sdk::{ConversionError, EnvBase, TryIntoVal, Val};
+                const KEYS: [&'static str; 2usize] = ["context", "sub_invocations"];
+                let vals: [Val; 2usize] = [
+                    (&val.context)
+                        .try_into_val(env)
+                        .map_err(|_| ConversionError)?,
+                    (&val.sub_invocations)
+                        .try_into_val(env)
+                        .map_err(|_| ConversionError)?,
+                ];
+                Ok(env
+                    .map_new_from_slices(&KEYS, &vals)
+                    .map_err(|_| ConversionError)?
+                    .into())
+            }
+        }
+        impl soroban_sdk::TryFromVal<soroban_sdk::Env, &SubContractInvocation> for soroban_sdk::Val {
+            type Error = soroban_sdk::ConversionError;
+            #[inline(always)]
+            fn try_from_val(
+                env: &soroban_sdk::Env,
+                val: &&SubContractInvocation,
+            ) -> Result<Self, soroban_sdk::ConversionError> {
+                <_ as soroban_sdk::TryFromVal<
+                    soroban_sdk::Env,
+                    SubContractInvocation,
+                >>::try_from_val(env, *val)
+            }
+        }
+        impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::xdr::ScMap> for SubContractInvocation {
+            type Error = soroban_sdk::xdr::Error;
+            #[inline(always)]
+            fn try_from_val(
+                env: &soroban_sdk::Env,
+                val: &soroban_sdk::xdr::ScMap,
+            ) -> Result<Self, soroban_sdk::xdr::Error> {
+                use soroban_sdk::xdr::Validate;
+                use soroban_sdk::TryIntoVal;
+                let map = val;
+                if map
+                    .iter()
+                    .any(|entry| !#[allow(non_exhaustive_omitted_patterns)]
+                    match entry.key {
+                        soroban_sdk::xdr::ScVal::Symbol(_) => true,
+                        _ => false,
+                    })
+                {
+                    return Err(soroban_sdk::xdr::Error::Invalid);
+                }
+                map.validate()?;
+                Ok(Self {
+                    context: {
+                        let key: soroban_sdk::xdr::ScVal = soroban_sdk::xdr::ScSymbol(
+                            "context"
+                                .try_into()
+                                .map_err(|_| soroban_sdk::xdr::Error::Invalid)?,
+                        )
+                        .into();
+                        let val = match map.binary_search_by_key(&key, |entry| entry.key.clone()) {
+                            Ok(idx) => map[idx].val.clone(),
+                            Err(_) => soroban_sdk::xdr::ScVal::Void,
+                        };
+                        let rv: soroban_sdk::Val = (&val)
+                            .try_into_val(env)
+                            .map_err(|_| soroban_sdk::xdr::Error::Invalid)?;
+                        rv.try_into_val(env)
+                            .map_err(|_| soroban_sdk::xdr::Error::Invalid)?
+                    },
+                    sub_invocations: {
+                        let key: soroban_sdk::xdr::ScVal = soroban_sdk::xdr::ScSymbol(
+                            "sub_invocations"
+                                .try_into()
+                                .map_err(|_| soroban_sdk::xdr::Error::Invalid)?,
+                        )
+                        .into();
+                        let val = match map.binary_search_by_key(&key, |entry| entry.key.clone()) {
+                            Ok(idx) => map[idx].val.clone(),
+                            Err(_) => soroban_sdk::xdr::ScVal::Void,
+                        };
+                        let rv: soroban_sdk::Val = (&val)
+                            .try_into_val(env)
+                            .map_err(|_| soroban_sdk::xdr::Error::Invalid)?;
+                        rv.try_into_val(env)
+                            .map_err(|_| soroban_sdk::xdr::Error::Invalid)?
+                    },
+                })
+            }
+        }
+        impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::xdr::ScVal> for SubContractInvocation {
+            type Error = soroban_sdk::xdr::Error;
+            #[inline(always)]
+            fn try_from_val(
+                env: &soroban_sdk::Env,
+                val: &soroban_sdk::xdr::ScVal,
+            ) -> Result<Self, soroban_sdk::xdr::Error> {
+                if let soroban_sdk::xdr::ScVal::Map(Some(map)) = val {
+                    <_ as soroban_sdk::TryFromVal<_, _>>::try_from_val(env, map)
+                } else {
+                    Err(soroban_sdk::xdr::Error::Invalid)
+                }
+            }
+        }
+        impl TryFrom<&SubContractInvocation> for soroban_sdk::xdr::ScMap {
+            type Error = soroban_sdk::xdr::Error;
+            #[inline(always)]
+            fn try_from(val: &SubContractInvocation) -> Result<Self, soroban_sdk::xdr::Error> {
+                extern crate alloc;
+                use soroban_sdk::TryFromVal;
+                soroban_sdk::xdr::ScMap::sorted_from(<[_]>::into_vec(::alloc::boxed::box_new([
+                    soroban_sdk::xdr::ScMapEntry {
+                        key: soroban_sdk::xdr::ScSymbol(
+                            "context"
+                                .try_into()
+                                .map_err(|_| soroban_sdk::xdr::Error::Invalid)?,
+                        )
+                        .into(),
+                        val: (&val.context)
+                            .try_into()
+                            .map_err(|_| soroban_sdk::xdr::Error::Invalid)?,
+                    },
+                    soroban_sdk::xdr::ScMapEntry {
+                        key: soroban_sdk::xdr::ScSymbol(
+                            "sub_invocations"
+                                .try_into()
+                                .map_err(|_| soroban_sdk::xdr::Error::Invalid)?,
+                        )
+                        .into(),
+                        val: (&val.sub_invocations)
+                            .try_into()
+                            .map_err(|_| soroban_sdk::xdr::Error::Invalid)?,
+                    },
+                ])))
+            }
+        }
+        impl TryFrom<SubContractInvocation> for soroban_sdk::xdr::ScMap {
+            type Error = soroban_sdk::xdr::Error;
+            #[inline(always)]
+            fn try_from(val: SubContractInvocation) -> Result<Self, soroban_sdk::xdr::Error> {
+                (&val).try_into()
+            }
+        }
+        impl TryFrom<&SubContractInvocation> for soroban_sdk::xdr::ScVal {
+            type Error = soroban_sdk::xdr::Error;
+            #[inline(always)]
+            fn try_from(val: &SubContractInvocation) -> Result<Self, soroban_sdk::xdr::Error> {
+                Ok(soroban_sdk::xdr::ScVal::Map(Some(val.try_into()?)))
+            }
+        }
+        impl TryFrom<SubContractInvocation> for soroban_sdk::xdr::ScVal {
+            type Error = soroban_sdk::xdr::Error;
+            #[inline(always)]
+            fn try_from(val: SubContractInvocation) -> Result<Self, soroban_sdk::xdr::Error> {
+                (&val).try_into()
+            }
+        }
+        const _: () = {
+            use soroban_sdk::testutils::arbitrary::arbitrary;
+            use soroban_sdk::testutils::arbitrary::std;
+            pub struct ArbitrarySubContractInvocation {
+                context: <ContractContext as soroban_sdk::testutils::arbitrary::SorobanArbitrary>::Prototype,
+                sub_invocations: <soroban_sdk::Vec<
+                    InvokerContractAuthEntry,
+                > as soroban_sdk::testutils::arbitrary::SorobanArbitrary>::Prototype,
+            }
+            #[automatically_derived]
+            impl ::core::fmt::Debug for ArbitrarySubContractInvocation {
+                #[inline]
+                fn fmt(&self, f: &mut ::core::fmt::Formatter) -> ::core::fmt::Result {
+                    ::core::fmt::Formatter::debug_struct_field2_finish(
+                        f,
+                        "ArbitrarySubContractInvocation",
+                        "context",
+                        &self.context,
+                        "sub_invocations",
+                        &&self.sub_invocations,
+                    )
+                }
+            }
+            #[automatically_derived]
+            impl ::core::clone::Clone for ArbitrarySubContractInvocation {
+                #[inline]
+                fn clone(&self) -> ArbitrarySubContractInvocation {
+                    ArbitrarySubContractInvocation {
+                        context: ::core::clone::Clone::clone(&self.context),
+                        sub_invocations: ::core::clone::Clone::clone(&self.sub_invocations),
+                    }
+                }
+            }
+            #[automatically_derived]
+            impl ::core::cmp::Eq for ArbitrarySubContractInvocation {
+                #[inline]
+                #[doc(hidden)]
+                #[coverage(off)]
+                fn assert_receiver_is_total_eq(&self) -> () {
+                    let _: ::core::cmp::AssertParamIsEq<
+                        <ContractContext as soroban_sdk::testutils::arbitrary::SorobanArbitrary>::Prototype,
+                    >;
+                    let _: ::core::cmp::AssertParamIsEq<
+                        <soroban_sdk::Vec<
+                            InvokerContractAuthEntry,
+                        > as soroban_sdk::testutils::arbitrary::SorobanArbitrary>::Prototype,
+                    >;
+                }
+            }
+            #[automatically_derived]
+            impl ::core::marker::StructuralPartialEq for ArbitrarySubContractInvocation {}
+            #[automatically_derived]
+            impl ::core::cmp::PartialEq for ArbitrarySubContractInvocation {
+                #[inline]
+                fn eq(&self, other: &ArbitrarySubContractInvocation) -> bool {
+                    self.context == other.context && self.sub_invocations == other.sub_invocations
+                }
+            }
+            #[automatically_derived]
+            impl ::core::cmp::Ord for ArbitrarySubContractInvocation {
+                #[inline]
+                fn cmp(&self, other: &ArbitrarySubContractInvocation) -> ::core::cmp::Ordering {
+                    match ::core::cmp::Ord::cmp(&self.context, &other.context) {
+                        ::core::cmp::Ordering::Equal => {
+                            ::core::cmp::Ord::cmp(&self.sub_invocations, &other.sub_invocations)
+                        }
+                        cmp => cmp,
+                    }
+                }
+            }
+            #[automatically_derived]
+            impl ::core::cmp::PartialOrd for ArbitrarySubContractInvocation {
+                #[inline]
+                fn partial_cmp(
+                    &self,
+                    other: &ArbitrarySubContractInvocation,
+                ) -> ::core::option::Option<::core::cmp::Ordering> {
+                    match ::core::cmp::PartialOrd::partial_cmp(&self.context, &other.context) {
+                        ::core::option::Option::Some(::core::cmp::Ordering::Equal) => {
+                            ::core::cmp::PartialOrd::partial_cmp(
+                                &self.sub_invocations,
+                                &other.sub_invocations,
+                            )
+                        }
+                        cmp => cmp,
+                    }
+                }
+            }
+            const _: () = {
+                #[allow(non_upper_case_globals)]
+                const RECURSIVE_COUNT_ArbitrarySubContractInvocation: ::std::thread::LocalKey<
+                    std::cell::Cell<u32>,
+                > = {
+                    #[inline]
+                    fn __init() -> std::cell::Cell<u32> {
+                        std::cell::Cell::new(0)
+                    }
+                    unsafe {
+                        ::std::thread::LocalKey::new(
+                            const {
+                                if ::std::mem::needs_drop::<std::cell::Cell<u32>>() {
+                                    |init| {
+                                        #[thread_local]
+                                        static VAL: ::std::thread::local_impl::LazyStorage<
+                                            std::cell::Cell<u32>,
+                                            (),
+                                        > = ::std::thread::local_impl::LazyStorage::new();
+                                        VAL.get_or_init(init, __init)
+                                    }
+                                } else {
+                                    |init| {
+                                        #[thread_local]
+                                        static VAL: ::std::thread::local_impl::LazyStorage<
+                                            std::cell::Cell<u32>,
+                                            !,
+                                        > = ::std::thread::local_impl::LazyStorage::new();
+                                        VAL.get_or_init(init, __init)
+                                    }
+                                }
+                            },
+                        )
+                    }
+                };
+                #[automatically_derived]
+                impl<'arbitrary> arbitrary::Arbitrary<'arbitrary> for ArbitrarySubContractInvocation {
+                    fn arbitrary(
+                        u: &mut arbitrary::Unstructured<'arbitrary>,
+                    ) -> arbitrary::Result<Self> {
+                        let guard_against_recursion = u.is_empty();
+                        if guard_against_recursion {
+                            RECURSIVE_COUNT_ArbitrarySubContractInvocation.with(|count| {
+                                if count.get() > 0 {
+                                    return Err(arbitrary::Error::NotEnoughData);
+                                }
+                                count.set(count.get() + 1);
+                                Ok(())
+                            })?;
+                        }
+                        let result = (|| {
+                            Ok(ArbitrarySubContractInvocation {
+                                context: arbitrary::Arbitrary::arbitrary(u)?,
+                                sub_invocations: arbitrary::Arbitrary::arbitrary(u)?,
+                            })
+                        })();
+                        if guard_against_recursion {
+                            RECURSIVE_COUNT_ArbitrarySubContractInvocation.with(|count| {
+                                count.set(count.get() - 1);
+                            });
+                        }
+                        result
+                    }
+                    fn arbitrary_take_rest(
+                        mut u: arbitrary::Unstructured<'arbitrary>,
+                    ) -> arbitrary::Result<Self> {
+                        let guard_against_recursion = u.is_empty();
+                        if guard_against_recursion {
+                            RECURSIVE_COUNT_ArbitrarySubContractInvocation.with(|count| {
+                                if count.get() > 0 {
+                                    return Err(arbitrary::Error::NotEnoughData);
+                                }
+                                count.set(count.get() + 1);
+                                Ok(())
+                            })?;
+                        }
+                        let result = (|| {
+                            Ok(ArbitrarySubContractInvocation {
+                                context: arbitrary::Arbitrary::arbitrary(&mut u)?,
+                                sub_invocations: arbitrary::Arbitrary::arbitrary_take_rest(u)?,
+                            })
+                        })();
+                        if guard_against_recursion {
+                            RECURSIVE_COUNT_ArbitrarySubContractInvocation.with(|count| {
+                                count.set(count.get() - 1);
+                            });
+                        }
+                        result
+                    }
+                    #[inline]
+                    fn size_hint(depth: usize) -> (usize, Option<usize>) {
+                        arbitrary::size_hint::recursion_guard(depth, |depth| {
+                            arbitrary::size_hint::and_all(
+                                &[
+                                    <<ContractContext as soroban_sdk::testutils::arbitrary::SorobanArbitrary>::Prototype as arbitrary::Arbitrary>::size_hint(
+                                        depth,
+                                    ),
+                                    <<soroban_sdk::Vec<
+                                        InvokerContractAuthEntry,
+                                    > as soroban_sdk::testutils::arbitrary::SorobanArbitrary>::Prototype as arbitrary::Arbitrary>::size_hint(
+                                        depth,
+                                    ),
+                                ],
+                            )
+                        })
+                    }
+                }
+            };
+            impl soroban_sdk::testutils::arbitrary::SorobanArbitrary for SubContractInvocation {
+                type Prototype = ArbitrarySubContractInvocation;
+            }
+            impl soroban_sdk::TryFromVal<soroban_sdk::Env, ArbitrarySubContractInvocation>
+                for SubContractInvocation
+            {
+                type Error = soroban_sdk::ConversionError;
+                fn try_from_val(
+                    env: &soroban_sdk::Env,
+                    v: &ArbitrarySubContractInvocation,
+                ) -> std::result::Result<Self, Self::Error> {
+                    Ok(SubContractInvocation {
+                        context: soroban_sdk::IntoVal::into_val(&v.context, env),
+                        sub_invocations: soroban_sdk::IntoVal::into_val(&v.sub_invocations, env),
+                    })
+                }
+            }
+        };
+        pub struct CreateContractHostFnContext {
+            pub executable: ContractExecutable,
+            pub salt: soroban_sdk::BytesN<32>,
+        }
+        #[automatically_derived]
+        impl ::core::fmt::Debug for CreateContractHostFnContext {
+            #[inline]
+            fn fmt(&self, f: &mut ::core::fmt::Formatter) -> ::core::fmt::Result {
+                ::core::fmt::Formatter::debug_struct_field2_finish(
+                    f,
+                    "CreateContractHostFnContext",
+                    "executable",
+                    &self.executable,
+                    "salt",
+                    &&self.salt,
+                )
+            }
+        }
+        #[automatically_derived]
+        impl ::core::clone::Clone for CreateContractHostFnContext {
+            #[inline]
+            fn clone(&self) -> CreateContractHostFnContext {
+                CreateContractHostFnContext {
+                    executable: ::core::clone::Clone::clone(&self.executable),
+                    salt: ::core::clone::Clone::clone(&self.salt),
+                }
+            }
+        }
+        #[automatically_derived]
+        impl ::core::cmp::Eq for CreateContractHostFnContext {
+            #[inline]
+            #[doc(hidden)]
+            #[coverage(off)]
+            fn assert_receiver_is_total_eq(&self) -> () {
+                let _: ::core::cmp::AssertParamIsEq<ContractExecutable>;
+                let _: ::core::cmp::AssertParamIsEq<soroban_sdk::BytesN<32>>;
+            }
+        }
+        #[automatically_derived]
+        impl ::core::marker::StructuralPartialEq for CreateContractHostFnContext {}
+        #[automatically_derived]
+        impl ::core::cmp::PartialEq for CreateContractHostFnContext {
+            #[inline]
+            fn eq(&self, other: &CreateContractHostFnContext) -> bool {
+                self.executable == other.executable && self.salt == other.salt
+            }
+        }
+        #[automatically_derived]
+        impl ::core::cmp::Ord for CreateContractHostFnContext {
+            #[inline]
+            fn cmp(&self, other: &CreateContractHostFnContext) -> ::core::cmp::Ordering {
+                match ::core::cmp::Ord::cmp(&self.executable, &other.executable) {
+                    ::core::cmp::Ordering::Equal => ::core::cmp::Ord::cmp(&self.salt, &other.salt),
+                    cmp => cmp,
+                }
+            }
+        }
+        #[automatically_derived]
+        impl ::core::cmp::PartialOrd for CreateContractHostFnContext {
+            #[inline]
+            fn partial_cmp(
+                &self,
+                other: &CreateContractHostFnContext,
+            ) -> ::core::option::Option<::core::cmp::Ordering> {
+                match ::core::cmp::PartialOrd::partial_cmp(&self.executable, &other.executable) {
+                    ::core::option::Option::Some(::core::cmp::Ordering::Equal) => {
+                        ::core::cmp::PartialOrd::partial_cmp(&self.salt, &other.salt)
+                    }
+                    cmp => cmp,
+                }
+            }
+        }
+        impl soroban_sdk::SpecName for CreateContractHostFnContext {
+            const SPEC_NAME: &'static str = {
+                const NAME: &str = "::test_ml_dsa::test::wasm::CreateContractHostFnContext";
+                const CHECKED_NAME: &str = {
+                    if !(NAME.len() <= soroban_sdk::xdr::SC_SPEC_TYPE_NAME_LIMIT as usize) {
+                        {
+                            ::core::panicking::panic_fmt(
+                                format_args!(
+                                    "type `CreateContractHostFnContext` full name including its module path is longer than the contract spec\'s type name limit, shorten its module path or name: `::test_ml_dsa::test::wasm::CreateContractHostFnContext`",
+                                ),
+                            );
+                        }
+                    }
+                    NAME
+                };
+                CHECKED_NAME
+            };
+        }
+        impl soroban_sdk::SpecTypeDef for CreateContractHostFnContext {
+            const SPEC_TYPE_DEF: soroban_sdk::xdr::r#const::ScSpecTypeDef =
+                soroban_sdk::xdr::r#const::ScSpecTypeDef::Udt(
+                    soroban_sdk::xdr::r#const::ScSpecTypeUdt {
+                        name: soroban_sdk::xdr::r#const::StringM::try_from_str_or_panic(
+                            <Self as soroban_sdk::SpecName>::SPEC_NAME,
+                        ),
+                    },
+                );
+        }
+        #[doc(hidden)]
+        #[allow(dead_code)]
+        static __SPEC_XDR_TYPE_CREATECONTRACTHOSTFNCONTEXT: [u8;
+            CreateContractHostFnContext::spec_xdr().len()] =
+            CreateContractHostFnContext::spec_xdr();
+        impl CreateContractHostFnContext {
+            const __SPEC_XDR_ENTRY: soroban_sdk::xdr::r#const::ScSpecEntry = soroban_sdk::xdr::r#const::ScSpecEntry::UdtStructV0(soroban_sdk::xdr::r#const::ScSpecUdtStructV0 {
+                doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
+                lib: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
+                name: soroban_sdk::xdr::r#const::StringM::try_from_str_or_panic(
+                    <CreateContractHostFnContext as soroban_sdk::SpecName>::SPEC_NAME,
+                ),
+                fields: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(
+                    &[
+                        soroban_sdk::xdr::r#const::ScSpecUdtStructFieldV0 {
+                            doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(
+                                b"",
+                            ),
+                            name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(
+                                b"executable",
+                            ),
+                            type_: <ContractExecutable as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
+                        },
+                        soroban_sdk::xdr::r#const::ScSpecUdtStructFieldV0 {
+                            doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(
+                                b"",
+                            ),
+                            name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(
+                                b"salt",
+                            ),
+                            type_: <soroban_sdk::BytesN<
+                                32,
+                            > as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
+                        },
+                    ],
+                ),
+            });
+            pub const fn spec_xdr(
+            ) -> [u8; CreateContractHostFnContext::__SPEC_XDR_ENTRY.const_xdr_len()] {
+                const { CreateContractHostFnContext::__SPEC_XDR_ENTRY.const_to_xdr() }
+            }
+        }
+        impl soroban_sdk::SpecAnchor for CreateContractHostFnContext {
+            #[inline(never)]
+            fn spec_anchor() {}
+        }
+        impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for CreateContractHostFnContext {
+            type Error = soroban_sdk::ConversionError;
+            fn try_from_val(
+                env: &soroban_sdk::Env,
+                val: &soroban_sdk::Val,
+            ) -> Result<Self, soroban_sdk::ConversionError> {
+                <CreateContractHostFnContext as soroban_sdk::SpecAnchor>::spec_anchor();
+                use soroban_sdk::{ConversionError, EnvBase, MapObject, TryIntoVal, Val};
+                const KEYS: [&'static str; 2usize] = ["executable", "salt"];
+                let mut vals: [Val; 2usize] = [Val::VOID.to_val(); 2usize];
+                let map: MapObject = val.try_into().map_err(|_| ConversionError)?;
+                env.sparse_map_unpack_to_slice(map, &KEYS, &mut vals)
+                    .map_err(|_| ConversionError)?;
+                Ok(Self {
+                    executable: vals[0]
+                        .try_into_val(env)
+                        .map_err(|_| soroban_sdk::ConversionError)?,
+                    salt: vals[1]
+                        .try_into_val(env)
+                        .map_err(|_| soroban_sdk::ConversionError)?,
+                })
+            }
+        }
+        impl soroban_sdk::TryFromVal<soroban_sdk::Env, CreateContractHostFnContext> for soroban_sdk::Val {
+            type Error = soroban_sdk::ConversionError;
+            fn try_from_val(
+                env: &soroban_sdk::Env,
+                val: &CreateContractHostFnContext,
+            ) -> Result<Self, soroban_sdk::ConversionError> {
+                <CreateContractHostFnContext as soroban_sdk::SpecAnchor>::spec_anchor();
+                use soroban_sdk::{ConversionError, EnvBase, TryIntoVal, Val};
+                const KEYS: [&'static str; 2usize] = ["executable", "salt"];
+                let vals: [Val; 2usize] = [
+                    (&val.executable)
+                        .try_into_val(env)
+                        .map_err(|_| ConversionError)?,
+                    (&val.salt).try_into_val(env).map_err(|_| ConversionError)?,
+                ];
+                Ok(env
+                    .map_new_from_slices(&KEYS, &vals)
+                    .map_err(|_| ConversionError)?
+                    .into())
+            }
+        }
+        impl soroban_sdk::TryFromVal<soroban_sdk::Env, &CreateContractHostFnContext> for soroban_sdk::Val {
+            type Error = soroban_sdk::ConversionError;
+            #[inline(always)]
+            fn try_from_val(
+                env: &soroban_sdk::Env,
+                val: &&CreateContractHostFnContext,
+            ) -> Result<Self, soroban_sdk::ConversionError> {
+                <_ as soroban_sdk::TryFromVal<
+                    soroban_sdk::Env,
+                    CreateContractHostFnContext,
+                >>::try_from_val(env, *val)
+            }
+        }
+        impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::xdr::ScMap>
+            for CreateContractHostFnContext
+        {
+            type Error = soroban_sdk::xdr::Error;
+            #[inline(always)]
+            fn try_from_val(
+                env: &soroban_sdk::Env,
+                val: &soroban_sdk::xdr::ScMap,
+            ) -> Result<Self, soroban_sdk::xdr::Error> {
+                use soroban_sdk::xdr::Validate;
+                use soroban_sdk::TryIntoVal;
+                let map = val;
+                if map
+                    .iter()
+                    .any(|entry| !#[allow(non_exhaustive_omitted_patterns)]
+                    match entry.key {
+                        soroban_sdk::xdr::ScVal::Symbol(_) => true,
+                        _ => false,
+                    })
+                {
+                    return Err(soroban_sdk::xdr::Error::Invalid);
+                }
+                map.validate()?;
+                Ok(Self {
+                    executable: {
+                        let key: soroban_sdk::xdr::ScVal = soroban_sdk::xdr::ScSymbol(
+                            "executable"
+                                .try_into()
+                                .map_err(|_| soroban_sdk::xdr::Error::Invalid)?,
+                        )
+                        .into();
+                        let val = match map.binary_search_by_key(&key, |entry| entry.key.clone()) {
+                            Ok(idx) => map[idx].val.clone(),
+                            Err(_) => soroban_sdk::xdr::ScVal::Void,
+                        };
+                        let rv: soroban_sdk::Val = (&val)
+                            .try_into_val(env)
+                            .map_err(|_| soroban_sdk::xdr::Error::Invalid)?;
+                        rv.try_into_val(env)
+                            .map_err(|_| soroban_sdk::xdr::Error::Invalid)?
+                    },
+                    salt: {
+                        let key: soroban_sdk::xdr::ScVal = soroban_sdk::xdr::ScSymbol(
+                            "salt"
+                                .try_into()
+                                .map_err(|_| soroban_sdk::xdr::Error::Invalid)?,
+                        )
+                        .into();
+                        let val = match map.binary_search_by_key(&key, |entry| entry.key.clone()) {
+                            Ok(idx) => map[idx].val.clone(),
+                            Err(_) => soroban_sdk::xdr::ScVal::Void,
+                        };
+                        let rv: soroban_sdk::Val = (&val)
+                            .try_into_val(env)
+                            .map_err(|_| soroban_sdk::xdr::Error::Invalid)?;
+                        rv.try_into_val(env)
+                            .map_err(|_| soroban_sdk::xdr::Error::Invalid)?
+                    },
+                })
+            }
+        }
+        impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::xdr::ScVal>
+            for CreateContractHostFnContext
+        {
+            type Error = soroban_sdk::xdr::Error;
+            #[inline(always)]
+            fn try_from_val(
+                env: &soroban_sdk::Env,
+                val: &soroban_sdk::xdr::ScVal,
+            ) -> Result<Self, soroban_sdk::xdr::Error> {
+                if let soroban_sdk::xdr::ScVal::Map(Some(map)) = val {
+                    <_ as soroban_sdk::TryFromVal<_, _>>::try_from_val(env, map)
+                } else {
+                    Err(soroban_sdk::xdr::Error::Invalid)
+                }
+            }
+        }
+        impl TryFrom<&CreateContractHostFnContext> for soroban_sdk::xdr::ScMap {
+            type Error = soroban_sdk::xdr::Error;
+            #[inline(always)]
+            fn try_from(
+                val: &CreateContractHostFnContext,
+            ) -> Result<Self, soroban_sdk::xdr::Error> {
+                extern crate alloc;
+                use soroban_sdk::TryFromVal;
+                soroban_sdk::xdr::ScMap::sorted_from(<[_]>::into_vec(::alloc::boxed::box_new([
+                    soroban_sdk::xdr::ScMapEntry {
+                        key: soroban_sdk::xdr::ScSymbol(
+                            "executable"
+                                .try_into()
+                                .map_err(|_| soroban_sdk::xdr::Error::Invalid)?,
+                        )
+                        .into(),
+                        val: (&val.executable)
+                            .try_into()
+                            .map_err(|_| soroban_sdk::xdr::Error::Invalid)?,
+                    },
+                    soroban_sdk::xdr::ScMapEntry {
+                        key: soroban_sdk::xdr::ScSymbol(
+                            "salt"
+                                .try_into()
+                                .map_err(|_| soroban_sdk::xdr::Error::Invalid)?,
+                        )
+                        .into(),
+                        val: (&val.salt)
+                            .try_into()
+                            .map_err(|_| soroban_sdk::xdr::Error::Invalid)?,
+                    },
+                ])))
+            }
+        }
+        impl TryFrom<CreateContractHostFnContext> for soroban_sdk::xdr::ScMap {
+            type Error = soroban_sdk::xdr::Error;
+            #[inline(always)]
+            fn try_from(val: CreateContractHostFnContext) -> Result<Self, soroban_sdk::xdr::Error> {
+                (&val).try_into()
+            }
+        }
+        impl TryFrom<&CreateContractHostFnContext> for soroban_sdk::xdr::ScVal {
+            type Error = soroban_sdk::xdr::Error;
+            #[inline(always)]
+            fn try_from(
+                val: &CreateContractHostFnContext,
+            ) -> Result<Self, soroban_sdk::xdr::Error> {
+                Ok(soroban_sdk::xdr::ScVal::Map(Some(val.try_into()?)))
+            }
+        }
+        impl TryFrom<CreateContractHostFnContext> for soroban_sdk::xdr::ScVal {
+            type Error = soroban_sdk::xdr::Error;
+            #[inline(always)]
+            fn try_from(val: CreateContractHostFnContext) -> Result<Self, soroban_sdk::xdr::Error> {
+                (&val).try_into()
+            }
+        }
+        const _: () = {
+            use soroban_sdk::testutils::arbitrary::arbitrary;
+            use soroban_sdk::testutils::arbitrary::std;
+            pub struct ArbitraryCreateContractHostFnContext {
+                executable: <ContractExecutable as soroban_sdk::testutils::arbitrary::SorobanArbitrary>::Prototype,
+                salt: <soroban_sdk::BytesN<
+                    32,
+                > as soroban_sdk::testutils::arbitrary::SorobanArbitrary>::Prototype,
+            }
+            #[automatically_derived]
+            impl ::core::fmt::Debug for ArbitraryCreateContractHostFnContext {
+                #[inline]
+                fn fmt(&self, f: &mut ::core::fmt::Formatter) -> ::core::fmt::Result {
+                    ::core::fmt::Formatter::debug_struct_field2_finish(
+                        f,
+                        "ArbitraryCreateContractHostFnContext",
+                        "executable",
+                        &self.executable,
+                        "salt",
+                        &&self.salt,
+                    )
+                }
+            }
+            #[automatically_derived]
+            impl ::core::clone::Clone for ArbitraryCreateContractHostFnContext {
+                #[inline]
+                fn clone(&self) -> ArbitraryCreateContractHostFnContext {
+                    ArbitraryCreateContractHostFnContext {
+                        executable: ::core::clone::Clone::clone(&self.executable),
+                        salt: ::core::clone::Clone::clone(&self.salt),
+                    }
+                }
+            }
+            #[automatically_derived]
+            impl ::core::cmp::Eq for ArbitraryCreateContractHostFnContext {
+                #[inline]
+                #[doc(hidden)]
+                #[coverage(off)]
+                fn assert_receiver_is_total_eq(&self) -> () {
+                    let _: ::core::cmp::AssertParamIsEq<
+                        <ContractExecutable as soroban_sdk::testutils::arbitrary::SorobanArbitrary>::Prototype,
+                    >;
+                    let _: ::core::cmp::AssertParamIsEq<
+                        <soroban_sdk::BytesN<
+                            32,
+                        > as soroban_sdk::testutils::arbitrary::SorobanArbitrary>::Prototype,
+                    >;
+                }
+            }
+            #[automatically_derived]
+            impl ::core::marker::StructuralPartialEq for ArbitraryCreateContractHostFnContext {}
+            #[automatically_derived]
+            impl ::core::cmp::PartialEq for ArbitraryCreateContractHostFnContext {
+                #[inline]
+                fn eq(&self, other: &ArbitraryCreateContractHostFnContext) -> bool {
+                    self.executable == other.executable && self.salt == other.salt
+                }
+            }
+            #[automatically_derived]
+            impl ::core::cmp::Ord for ArbitraryCreateContractHostFnContext {
+                #[inline]
+                fn cmp(
+                    &self,
+                    other: &ArbitraryCreateContractHostFnContext,
+                ) -> ::core::cmp::Ordering {
+                    match ::core::cmp::Ord::cmp(&self.executable, &other.executable) {
+                        ::core::cmp::Ordering::Equal => {
+                            ::core::cmp::Ord::cmp(&self.salt, &other.salt)
+                        }
+                        cmp => cmp,
+                    }
+                }
+            }
+            #[automatically_derived]
+            impl ::core::cmp::PartialOrd for ArbitraryCreateContractHostFnContext {
+                #[inline]
+                fn partial_cmp(
+                    &self,
+                    other: &ArbitraryCreateContractHostFnContext,
+                ) -> ::core::option::Option<::core::cmp::Ordering> {
+                    match ::core::cmp::PartialOrd::partial_cmp(&self.executable, &other.executable)
+                    {
+                        ::core::option::Option::Some(::core::cmp::Ordering::Equal) => {
+                            ::core::cmp::PartialOrd::partial_cmp(&self.salt, &other.salt)
+                        }
+                        cmp => cmp,
+                    }
+                }
+            }
+            const _: () = {
+                #[allow(non_upper_case_globals)]
+                const RECURSIVE_COUNT_ArbitraryCreateContractHostFnContext:
+                    ::std::thread::LocalKey<std::cell::Cell<u32>> = {
+                    #[inline]
+                    fn __init() -> std::cell::Cell<u32> {
+                        std::cell::Cell::new(0)
+                    }
+                    unsafe {
+                        ::std::thread::LocalKey::new(
+                            const {
+                                if ::std::mem::needs_drop::<std::cell::Cell<u32>>() {
+                                    |init| {
+                                        #[thread_local]
+                                        static VAL: ::std::thread::local_impl::LazyStorage<
+                                            std::cell::Cell<u32>,
+                                            (),
+                                        > = ::std::thread::local_impl::LazyStorage::new();
+                                        VAL.get_or_init(init, __init)
+                                    }
+                                } else {
+                                    |init| {
+                                        #[thread_local]
+                                        static VAL: ::std::thread::local_impl::LazyStorage<
+                                            std::cell::Cell<u32>,
+                                            !,
+                                        > = ::std::thread::local_impl::LazyStorage::new();
+                                        VAL.get_or_init(init, __init)
+                                    }
+                                }
+                            },
+                        )
+                    }
+                };
+                #[automatically_derived]
+                impl<'arbitrary> arbitrary::Arbitrary<'arbitrary> for ArbitraryCreateContractHostFnContext {
+                    fn arbitrary(
+                        u: &mut arbitrary::Unstructured<'arbitrary>,
+                    ) -> arbitrary::Result<Self> {
+                        let guard_against_recursion = u.is_empty();
+                        if guard_against_recursion {
+                            RECURSIVE_COUNT_ArbitraryCreateContractHostFnContext.with(|count| {
+                                if count.get() > 0 {
+                                    return Err(arbitrary::Error::NotEnoughData);
+                                }
+                                count.set(count.get() + 1);
+                                Ok(())
+                            })?;
+                        }
+                        let result = (|| {
+                            Ok(ArbitraryCreateContractHostFnContext {
+                                executable: arbitrary::Arbitrary::arbitrary(u)?,
+                                salt: arbitrary::Arbitrary::arbitrary(u)?,
+                            })
+                        })();
+                        if guard_against_recursion {
+                            RECURSIVE_COUNT_ArbitraryCreateContractHostFnContext.with(|count| {
+                                count.set(count.get() - 1);
+                            });
+                        }
+                        result
+                    }
+                    fn arbitrary_take_rest(
+                        mut u: arbitrary::Unstructured<'arbitrary>,
+                    ) -> arbitrary::Result<Self> {
+                        let guard_against_recursion = u.is_empty();
+                        if guard_against_recursion {
+                            RECURSIVE_COUNT_ArbitraryCreateContractHostFnContext.with(|count| {
+                                if count.get() > 0 {
+                                    return Err(arbitrary::Error::NotEnoughData);
+                                }
+                                count.set(count.get() + 1);
+                                Ok(())
+                            })?;
+                        }
+                        let result = (|| {
+                            Ok(ArbitraryCreateContractHostFnContext {
+                                executable: arbitrary::Arbitrary::arbitrary(&mut u)?,
+                                salt: arbitrary::Arbitrary::arbitrary_take_rest(u)?,
+                            })
+                        })();
+                        if guard_against_recursion {
+                            RECURSIVE_COUNT_ArbitraryCreateContractHostFnContext.with(|count| {
+                                count.set(count.get() - 1);
+                            });
+                        }
+                        result
+                    }
+                    #[inline]
+                    fn size_hint(depth: usize) -> (usize, Option<usize>) {
+                        arbitrary::size_hint::recursion_guard(depth, |depth| {
+                            arbitrary::size_hint::and_all(
+                                &[
+                                    <<ContractExecutable as soroban_sdk::testutils::arbitrary::SorobanArbitrary>::Prototype as arbitrary::Arbitrary>::size_hint(
+                                        depth,
+                                    ),
+                                    <<soroban_sdk::BytesN<
+                                        32,
+                                    > as soroban_sdk::testutils::arbitrary::SorobanArbitrary>::Prototype as arbitrary::Arbitrary>::size_hint(
+                                        depth,
+                                    ),
+                                ],
+                            )
+                        })
+                    }
+                }
+            };
+            impl soroban_sdk::testutils::arbitrary::SorobanArbitrary for CreateContractHostFnContext {
+                type Prototype = ArbitraryCreateContractHostFnContext;
+            }
+            impl soroban_sdk::TryFromVal<soroban_sdk::Env, ArbitraryCreateContractHostFnContext>
+                for CreateContractHostFnContext
+            {
+                type Error = soroban_sdk::ConversionError;
+                fn try_from_val(
+                    env: &soroban_sdk::Env,
+                    v: &ArbitraryCreateContractHostFnContext,
+                ) -> std::result::Result<Self, Self::Error> {
+                    Ok(CreateContractHostFnContext {
+                        executable: soroban_sdk::IntoVal::into_val(&v.executable, env),
+                        salt: soroban_sdk::IntoVal::into_val(&v.salt, env),
+                    })
+                }
+            }
+        };
+        pub struct CreateContractWithConstructorHostFnContext {
+            pub constructor_args: soroban_sdk::Vec<soroban_sdk::Val>,
+            pub executable: ContractExecutable,
+            pub salt: soroban_sdk::BytesN<32>,
+        }
+        #[automatically_derived]
+        impl ::core::fmt::Debug for CreateContractWithConstructorHostFnContext {
+            #[inline]
+            fn fmt(&self, f: &mut ::core::fmt::Formatter) -> ::core::fmt::Result {
+                ::core::fmt::Formatter::debug_struct_field3_finish(
+                    f,
+                    "CreateContractWithConstructorHostFnContext",
+                    "constructor_args",
+                    &self.constructor_args,
+                    "executable",
+                    &self.executable,
+                    "salt",
+                    &&self.salt,
+                )
+            }
+        }
+        #[automatically_derived]
+        impl ::core::clone::Clone for CreateContractWithConstructorHostFnContext {
+            #[inline]
+            fn clone(&self) -> CreateContractWithConstructorHostFnContext {
+                CreateContractWithConstructorHostFnContext {
+                    constructor_args: ::core::clone::Clone::clone(&self.constructor_args),
+                    executable: ::core::clone::Clone::clone(&self.executable),
+                    salt: ::core::clone::Clone::clone(&self.salt),
+                }
+            }
+        }
+        #[automatically_derived]
+        impl ::core::cmp::Eq for CreateContractWithConstructorHostFnContext {
+            #[inline]
+            #[doc(hidden)]
+            #[coverage(off)]
+            fn assert_receiver_is_total_eq(&self) -> () {
+                let _: ::core::cmp::AssertParamIsEq<soroban_sdk::Vec<soroban_sdk::Val>>;
+                let _: ::core::cmp::AssertParamIsEq<ContractExecutable>;
+                let _: ::core::cmp::AssertParamIsEq<soroban_sdk::BytesN<32>>;
+            }
+        }
+        #[automatically_derived]
+        impl ::core::marker::StructuralPartialEq for CreateContractWithConstructorHostFnContext {}
+        #[automatically_derived]
+        impl ::core::cmp::PartialEq for CreateContractWithConstructorHostFnContext {
+            #[inline]
+            fn eq(&self, other: &CreateContractWithConstructorHostFnContext) -> bool {
+                self.constructor_args == other.constructor_args
+                    && self.executable == other.executable
+                    && self.salt == other.salt
+            }
+        }
+        #[automatically_derived]
+        impl ::core::cmp::Ord for CreateContractWithConstructorHostFnContext {
+            #[inline]
+            fn cmp(
+                &self,
+                other: &CreateContractWithConstructorHostFnContext,
+            ) -> ::core::cmp::Ordering {
+                match ::core::cmp::Ord::cmp(&self.constructor_args, &other.constructor_args) {
+                    ::core::cmp::Ordering::Equal => {
+                        match ::core::cmp::Ord::cmp(&self.executable, &other.executable) {
+                            ::core::cmp::Ordering::Equal => {
+                                ::core::cmp::Ord::cmp(&self.salt, &other.salt)
+                            }
+                            cmp => cmp,
+                        }
+                    }
+                    cmp => cmp,
+                }
+            }
+        }
+        #[automatically_derived]
+        impl ::core::cmp::PartialOrd for CreateContractWithConstructorHostFnContext {
+            #[inline]
+            fn partial_cmp(
+                &self,
+                other: &CreateContractWithConstructorHostFnContext,
+            ) -> ::core::option::Option<::core::cmp::Ordering> {
+                match ::core::cmp::PartialOrd::partial_cmp(
+                    &self.constructor_args,
+                    &other.constructor_args,
+                ) {
+                    ::core::option::Option::Some(::core::cmp::Ordering::Equal) => {
+                        match ::core::cmp::PartialOrd::partial_cmp(
+                            &self.executable,
+                            &other.executable,
+                        ) {
+                            ::core::option::Option::Some(::core::cmp::Ordering::Equal) => {
+                                ::core::cmp::PartialOrd::partial_cmp(&self.salt, &other.salt)
+                            }
+                            cmp => cmp,
+                        }
+                    }
+                    cmp => cmp,
+                }
+            }
+        }
+        impl soroban_sdk::SpecName for CreateContractWithConstructorHostFnContext {
+            const SPEC_NAME: &'static str = {
+                const NAME: &str =
+                    "::test_ml_dsa::test::wasm::CreateContractWithConstructorHostFnContext";
+                const CHECKED_NAME: &str = {
+                    if !(NAME.len() <= soroban_sdk::xdr::SC_SPEC_TYPE_NAME_LIMIT as usize) {
+                        {
+                            ::core::panicking::panic_fmt(
+                                format_args!(
+                                    "type `CreateContractWithConstructorHostFnContext` full name including its module path is longer than the contract spec\'s type name limit, shorten its module path or name: `::test_ml_dsa::test::wasm::CreateContractWithConstructorHostFnContext`",
+                                ),
+                            );
+                        }
+                    }
+                    NAME
+                };
+                CHECKED_NAME
+            };
+        }
+        impl soroban_sdk::SpecTypeDef for CreateContractWithConstructorHostFnContext {
+            const SPEC_TYPE_DEF: soroban_sdk::xdr::r#const::ScSpecTypeDef =
+                soroban_sdk::xdr::r#const::ScSpecTypeDef::Udt(
+                    soroban_sdk::xdr::r#const::ScSpecTypeUdt {
+                        name: soroban_sdk::xdr::r#const::StringM::try_from_str_or_panic(
+                            <Self as soroban_sdk::SpecName>::SPEC_NAME,
+                        ),
+                    },
+                );
+        }
+        #[doc(hidden)]
+        #[allow(dead_code)]
+        static __SPEC_XDR_TYPE_CREATECONTRACTWITHCONSTRUCTORHOSTFNCONTEXT: [u8;
+            CreateContractWithConstructorHostFnContext::spec_xdr().len()] =
+            CreateContractWithConstructorHostFnContext::spec_xdr();
+        impl CreateContractWithConstructorHostFnContext {
+            const __SPEC_XDR_ENTRY: soroban_sdk::xdr::r#const::ScSpecEntry = soroban_sdk::xdr::r#const::ScSpecEntry::UdtStructV0(soroban_sdk::xdr::r#const::ScSpecUdtStructV0 {
+                doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
+                lib: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
+                name: soroban_sdk::xdr::r#const::StringM::try_from_str_or_panic(
+                    <CreateContractWithConstructorHostFnContext as soroban_sdk::SpecName>::SPEC_NAME,
+                ),
+                fields: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(
+                    &[
+                        soroban_sdk::xdr::r#const::ScSpecUdtStructFieldV0 {
+                            doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(
+                                b"",
+                            ),
+                            name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(
+                                b"constructor_args",
+                            ),
+                            type_: <soroban_sdk::Vec<
+                                soroban_sdk::Val,
+                            > as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
+                        },
+                        soroban_sdk::xdr::r#const::ScSpecUdtStructFieldV0 {
+                            doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(
+                                b"",
+                            ),
+                            name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(
+                                b"executable",
+                            ),
+                            type_: <ContractExecutable as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
+                        },
+                        soroban_sdk::xdr::r#const::ScSpecUdtStructFieldV0 {
+                            doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(
+                                b"",
+                            ),
+                            name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(
+                                b"salt",
+                            ),
+                            type_: <soroban_sdk::BytesN<
+                                32,
+                            > as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
+                        },
+                    ],
+                ),
+            });
+            pub const fn spec_xdr(
+            ) -> [u8; CreateContractWithConstructorHostFnContext::__SPEC_XDR_ENTRY.const_xdr_len()]
+            {
+                const { CreateContractWithConstructorHostFnContext::__SPEC_XDR_ENTRY.const_to_xdr() }
+            }
+        }
+        impl soroban_sdk::SpecAnchor for CreateContractWithConstructorHostFnContext {
+            #[inline(never)]
+            fn spec_anchor() {}
+        }
+        impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val>
+            for CreateContractWithConstructorHostFnContext
+        {
+            type Error = soroban_sdk::ConversionError;
+            fn try_from_val(
+                env: &soroban_sdk::Env,
+                val: &soroban_sdk::Val,
+            ) -> Result<Self, soroban_sdk::ConversionError> {
+                <CreateContractWithConstructorHostFnContext as soroban_sdk::SpecAnchor>::spec_anchor();
+                use soroban_sdk::{ConversionError, EnvBase, MapObject, TryIntoVal, Val};
+                const KEYS: [&'static str; 3usize] = ["constructor_args", "executable", "salt"];
+                let mut vals: [Val; 3usize] = [Val::VOID.to_val(); 3usize];
+                let map: MapObject = val.try_into().map_err(|_| ConversionError)?;
+                env.sparse_map_unpack_to_slice(map, &KEYS, &mut vals)
+                    .map_err(|_| ConversionError)?;
+                Ok(Self {
+                    constructor_args: vals[0]
+                        .try_into_val(env)
+                        .map_err(|_| soroban_sdk::ConversionError)?,
+                    executable: vals[1]
+                        .try_into_val(env)
+                        .map_err(|_| soroban_sdk::ConversionError)?,
+                    salt: vals[2]
+                        .try_into_val(env)
+                        .map_err(|_| soroban_sdk::ConversionError)?,
+                })
+            }
+        }
+        impl soroban_sdk::TryFromVal<soroban_sdk::Env, CreateContractWithConstructorHostFnContext>
+            for soroban_sdk::Val
+        {
+            type Error = soroban_sdk::ConversionError;
+            fn try_from_val(
+                env: &soroban_sdk::Env,
+                val: &CreateContractWithConstructorHostFnContext,
+            ) -> Result<Self, soroban_sdk::ConversionError> {
+                <CreateContractWithConstructorHostFnContext as soroban_sdk::SpecAnchor>::spec_anchor();
+                use soroban_sdk::{ConversionError, EnvBase, TryIntoVal, Val};
+                const KEYS: [&'static str; 3usize] = ["constructor_args", "executable", "salt"];
+                let vals: [Val; 3usize] = [
+                    (&val.constructor_args)
+                        .try_into_val(env)
+                        .map_err(|_| ConversionError)?,
+                    (&val.executable)
+                        .try_into_val(env)
+                        .map_err(|_| ConversionError)?,
+                    (&val.salt).try_into_val(env).map_err(|_| ConversionError)?,
+                ];
+                Ok(env
+                    .map_new_from_slices(&KEYS, &vals)
+                    .map_err(|_| ConversionError)?
+                    .into())
+            }
+        }
+        impl soroban_sdk::TryFromVal<soroban_sdk::Env, &CreateContractWithConstructorHostFnContext>
+            for soroban_sdk::Val
+        {
+            type Error = soroban_sdk::ConversionError;
+            #[inline(always)]
+            fn try_from_val(
+                env: &soroban_sdk::Env,
+                val: &&CreateContractWithConstructorHostFnContext,
+            ) -> Result<Self, soroban_sdk::ConversionError> {
+                <_ as soroban_sdk::TryFromVal<
+                    soroban_sdk::Env,
+                    CreateContractWithConstructorHostFnContext,
+                >>::try_from_val(env, *val)
+            }
+        }
+        impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::xdr::ScMap>
+            for CreateContractWithConstructorHostFnContext
+        {
+            type Error = soroban_sdk::xdr::Error;
+            #[inline(always)]
+            fn try_from_val(
+                env: &soroban_sdk::Env,
+                val: &soroban_sdk::xdr::ScMap,
+            ) -> Result<Self, soroban_sdk::xdr::Error> {
+                use soroban_sdk::xdr::Validate;
+                use soroban_sdk::TryIntoVal;
+                let map = val;
+                if map
+                    .iter()
+                    .any(|entry| !#[allow(non_exhaustive_omitted_patterns)]
+                    match entry.key {
+                        soroban_sdk::xdr::ScVal::Symbol(_) => true,
+                        _ => false,
+                    })
+                {
+                    return Err(soroban_sdk::xdr::Error::Invalid);
+                }
+                map.validate()?;
+                Ok(Self {
+                    constructor_args: {
+                        let key: soroban_sdk::xdr::ScVal = soroban_sdk::xdr::ScSymbol(
+                            "constructor_args"
+                                .try_into()
+                                .map_err(|_| soroban_sdk::xdr::Error::Invalid)?,
+                        )
+                        .into();
+                        let val = match map.binary_search_by_key(&key, |entry| entry.key.clone()) {
+                            Ok(idx) => map[idx].val.clone(),
+                            Err(_) => soroban_sdk::xdr::ScVal::Void,
+                        };
+                        let rv: soroban_sdk::Val = (&val)
+                            .try_into_val(env)
+                            .map_err(|_| soroban_sdk::xdr::Error::Invalid)?;
+                        rv.try_into_val(env)
+                            .map_err(|_| soroban_sdk::xdr::Error::Invalid)?
+                    },
+                    executable: {
+                        let key: soroban_sdk::xdr::ScVal = soroban_sdk::xdr::ScSymbol(
+                            "executable"
+                                .try_into()
+                                .map_err(|_| soroban_sdk::xdr::Error::Invalid)?,
+                        )
+                        .into();
+                        let val = match map.binary_search_by_key(&key, |entry| entry.key.clone()) {
+                            Ok(idx) => map[idx].val.clone(),
+                            Err(_) => soroban_sdk::xdr::ScVal::Void,
+                        };
+                        let rv: soroban_sdk::Val = (&val)
+                            .try_into_val(env)
+                            .map_err(|_| soroban_sdk::xdr::Error::Invalid)?;
+                        rv.try_into_val(env)
+                            .map_err(|_| soroban_sdk::xdr::Error::Invalid)?
+                    },
+                    salt: {
+                        let key: soroban_sdk::xdr::ScVal = soroban_sdk::xdr::ScSymbol(
+                            "salt"
+                                .try_into()
+                                .map_err(|_| soroban_sdk::xdr::Error::Invalid)?,
+                        )
+                        .into();
+                        let val = match map.binary_search_by_key(&key, |entry| entry.key.clone()) {
+                            Ok(idx) => map[idx].val.clone(),
+                            Err(_) => soroban_sdk::xdr::ScVal::Void,
+                        };
+                        let rv: soroban_sdk::Val = (&val)
+                            .try_into_val(env)
+                            .map_err(|_| soroban_sdk::xdr::Error::Invalid)?;
+                        rv.try_into_val(env)
+                            .map_err(|_| soroban_sdk::xdr::Error::Invalid)?
+                    },
+                })
+            }
+        }
+        impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::xdr::ScVal>
+            for CreateContractWithConstructorHostFnContext
+        {
+            type Error = soroban_sdk::xdr::Error;
+            #[inline(always)]
+            fn try_from_val(
+                env: &soroban_sdk::Env,
+                val: &soroban_sdk::xdr::ScVal,
+            ) -> Result<Self, soroban_sdk::xdr::Error> {
+                if let soroban_sdk::xdr::ScVal::Map(Some(map)) = val {
+                    <_ as soroban_sdk::TryFromVal<_, _>>::try_from_val(env, map)
+                } else {
+                    Err(soroban_sdk::xdr::Error::Invalid)
+                }
+            }
+        }
+        impl TryFrom<&CreateContractWithConstructorHostFnContext> for soroban_sdk::xdr::ScMap {
+            type Error = soroban_sdk::xdr::Error;
+            #[inline(always)]
+            fn try_from(
+                val: &CreateContractWithConstructorHostFnContext,
+            ) -> Result<Self, soroban_sdk::xdr::Error> {
+                extern crate alloc;
+                use soroban_sdk::TryFromVal;
+                soroban_sdk::xdr::ScMap::sorted_from(<[_]>::into_vec(::alloc::boxed::box_new([
+                    soroban_sdk::xdr::ScMapEntry {
+                        key: soroban_sdk::xdr::ScSymbol(
+                            "constructor_args"
+                                .try_into()
+                                .map_err(|_| soroban_sdk::xdr::Error::Invalid)?,
+                        )
+                        .into(),
+                        val: (&val.constructor_args)
+                            .try_into()
+                            .map_err(|_| soroban_sdk::xdr::Error::Invalid)?,
+                    },
+                    soroban_sdk::xdr::ScMapEntry {
+                        key: soroban_sdk::xdr::ScSymbol(
+                            "executable"
+                                .try_into()
+                                .map_err(|_| soroban_sdk::xdr::Error::Invalid)?,
+                        )
+                        .into(),
+                        val: (&val.executable)
+                            .try_into()
+                            .map_err(|_| soroban_sdk::xdr::Error::Invalid)?,
+                    },
+                    soroban_sdk::xdr::ScMapEntry {
+                        key: soroban_sdk::xdr::ScSymbol(
+                            "salt"
+                                .try_into()
+                                .map_err(|_| soroban_sdk::xdr::Error::Invalid)?,
+                        )
+                        .into(),
+                        val: (&val.salt)
+                            .try_into()
+                            .map_err(|_| soroban_sdk::xdr::Error::Invalid)?,
+                    },
+                ])))
+            }
+        }
+        impl TryFrom<CreateContractWithConstructorHostFnContext> for soroban_sdk::xdr::ScMap {
+            type Error = soroban_sdk::xdr::Error;
+            #[inline(always)]
+            fn try_from(
+                val: CreateContractWithConstructorHostFnContext,
+            ) -> Result<Self, soroban_sdk::xdr::Error> {
+                (&val).try_into()
+            }
+        }
+        impl TryFrom<&CreateContractWithConstructorHostFnContext> for soroban_sdk::xdr::ScVal {
+            type Error = soroban_sdk::xdr::Error;
+            #[inline(always)]
+            fn try_from(
+                val: &CreateContractWithConstructorHostFnContext,
+            ) -> Result<Self, soroban_sdk::xdr::Error> {
+                Ok(soroban_sdk::xdr::ScVal::Map(Some(val.try_into()?)))
+            }
+        }
+        impl TryFrom<CreateContractWithConstructorHostFnContext> for soroban_sdk::xdr::ScVal {
+            type Error = soroban_sdk::xdr::Error;
+            #[inline(always)]
+            fn try_from(
+                val: CreateContractWithConstructorHostFnContext,
+            ) -> Result<Self, soroban_sdk::xdr::Error> {
+                (&val).try_into()
+            }
+        }
+        const _: () = {
+            use soroban_sdk::testutils::arbitrary::arbitrary;
+            use soroban_sdk::testutils::arbitrary::std;
+            pub struct ArbitraryCreateContractWithConstructorHostFnContext {
+                constructor_args: <soroban_sdk::Vec<
+                    soroban_sdk::Val,
+                > as soroban_sdk::testutils::arbitrary::SorobanArbitrary>::Prototype,
+                executable: <ContractExecutable as soroban_sdk::testutils::arbitrary::SorobanArbitrary>::Prototype,
+                salt: <soroban_sdk::BytesN<
+                    32,
+                > as soroban_sdk::testutils::arbitrary::SorobanArbitrary>::Prototype,
+            }
+            #[automatically_derived]
+            impl ::core::fmt::Debug for ArbitraryCreateContractWithConstructorHostFnContext {
+                #[inline]
+                fn fmt(&self, f: &mut ::core::fmt::Formatter) -> ::core::fmt::Result {
+                    ::core::fmt::Formatter::debug_struct_field3_finish(
+                        f,
+                        "ArbitraryCreateContractWithConstructorHostFnContext",
+                        "constructor_args",
+                        &self.constructor_args,
+                        "executable",
+                        &self.executable,
+                        "salt",
+                        &&self.salt,
+                    )
+                }
+            }
+            #[automatically_derived]
+            impl ::core::clone::Clone for ArbitraryCreateContractWithConstructorHostFnContext {
+                #[inline]
+                fn clone(&self) -> ArbitraryCreateContractWithConstructorHostFnContext {
+                    ArbitraryCreateContractWithConstructorHostFnContext {
+                        constructor_args: ::core::clone::Clone::clone(&self.constructor_args),
+                        executable: ::core::clone::Clone::clone(&self.executable),
+                        salt: ::core::clone::Clone::clone(&self.salt),
+                    }
+                }
+            }
+            #[automatically_derived]
+            impl ::core::cmp::Eq for ArbitraryCreateContractWithConstructorHostFnContext {
+                #[inline]
+                #[doc(hidden)]
+                #[coverage(off)]
+                fn assert_receiver_is_total_eq(&self) -> () {
+                    let _: ::core::cmp::AssertParamIsEq<
+                        <soroban_sdk::Vec<
+                            soroban_sdk::Val,
+                        > as soroban_sdk::testutils::arbitrary::SorobanArbitrary>::Prototype,
+                    >;
+                    let _: ::core::cmp::AssertParamIsEq<
+                        <ContractExecutable as soroban_sdk::testutils::arbitrary::SorobanArbitrary>::Prototype,
+                    >;
+                    let _: ::core::cmp::AssertParamIsEq<
+                        <soroban_sdk::BytesN<
+                            32,
+                        > as soroban_sdk::testutils::arbitrary::SorobanArbitrary>::Prototype,
+                    >;
+                }
+            }
+            #[automatically_derived]
+            impl ::core::marker::StructuralPartialEq for ArbitraryCreateContractWithConstructorHostFnContext {}
+            #[automatically_derived]
+            impl ::core::cmp::PartialEq for ArbitraryCreateContractWithConstructorHostFnContext {
+                #[inline]
+                fn eq(&self, other: &ArbitraryCreateContractWithConstructorHostFnContext) -> bool {
+                    self.constructor_args == other.constructor_args
+                        && self.executable == other.executable
+                        && self.salt == other.salt
+                }
+            }
+            #[automatically_derived]
+            impl ::core::cmp::Ord for ArbitraryCreateContractWithConstructorHostFnContext {
+                #[inline]
+                fn cmp(
+                    &self,
+                    other: &ArbitraryCreateContractWithConstructorHostFnContext,
+                ) -> ::core::cmp::Ordering {
+                    match ::core::cmp::Ord::cmp(&self.constructor_args, &other.constructor_args) {
+                        ::core::cmp::Ordering::Equal => {
+                            match ::core::cmp::Ord::cmp(&self.executable, &other.executable) {
+                                ::core::cmp::Ordering::Equal => {
+                                    ::core::cmp::Ord::cmp(&self.salt, &other.salt)
+                                }
+                                cmp => cmp,
+                            }
+                        }
+                        cmp => cmp,
+                    }
+                }
+            }
+            #[automatically_derived]
+            impl ::core::cmp::PartialOrd for ArbitraryCreateContractWithConstructorHostFnContext {
+                #[inline]
+                fn partial_cmp(
+                    &self,
+                    other: &ArbitraryCreateContractWithConstructorHostFnContext,
+                ) -> ::core::option::Option<::core::cmp::Ordering> {
+                    match ::core::cmp::PartialOrd::partial_cmp(
+                        &self.constructor_args,
+                        &other.constructor_args,
+                    ) {
+                        ::core::option::Option::Some(::core::cmp::Ordering::Equal) => {
+                            match ::core::cmp::PartialOrd::partial_cmp(
+                                &self.executable,
+                                &other.executable,
+                            ) {
+                                ::core::option::Option::Some(::core::cmp::Ordering::Equal) => {
+                                    ::core::cmp::PartialOrd::partial_cmp(&self.salt, &other.salt)
+                                }
+                                cmp => cmp,
+                            }
+                        }
+                        cmp => cmp,
+                    }
+                }
+            }
+            const _: () = {
+                #[allow(non_upper_case_globals)]
+                const RECURSIVE_COUNT_ArbitraryCreateContractWithConstructorHostFnContext:
+                    ::std::thread::LocalKey<std::cell::Cell<u32>> = {
+                    #[inline]
+                    fn __init() -> std::cell::Cell<u32> {
+                        std::cell::Cell::new(0)
+                    }
+                    unsafe {
+                        ::std::thread::LocalKey::new(
+                            const {
+                                if ::std::mem::needs_drop::<std::cell::Cell<u32>>() {
+                                    |init| {
+                                        #[thread_local]
+                                        static VAL: ::std::thread::local_impl::LazyStorage<
+                                            std::cell::Cell<u32>,
+                                            (),
+                                        > = ::std::thread::local_impl::LazyStorage::new();
+                                        VAL.get_or_init(init, __init)
+                                    }
+                                } else {
+                                    |init| {
+                                        #[thread_local]
+                                        static VAL: ::std::thread::local_impl::LazyStorage<
+                                            std::cell::Cell<u32>,
+                                            !,
+                                        > = ::std::thread::local_impl::LazyStorage::new();
+                                        VAL.get_or_init(init, __init)
+                                    }
+                                }
+                            },
+                        )
+                    }
+                };
+                #[automatically_derived]
+                impl<'arbitrary> arbitrary::Arbitrary<'arbitrary>
+                    for ArbitraryCreateContractWithConstructorHostFnContext
+                {
+                    fn arbitrary(
+                        u: &mut arbitrary::Unstructured<'arbitrary>,
+                    ) -> arbitrary::Result<Self> {
+                        let guard_against_recursion = u.is_empty();
+                        if guard_against_recursion {
+                            RECURSIVE_COUNT_ArbitraryCreateContractWithConstructorHostFnContext
+                                .with(|count| {
+                                    if count.get() > 0 {
+                                        return Err(arbitrary::Error::NotEnoughData);
+                                    }
+                                    count.set(count.get() + 1);
+                                    Ok(())
+                                })?;
+                        }
+                        let result = (|| {
+                            Ok(ArbitraryCreateContractWithConstructorHostFnContext {
+                                constructor_args: arbitrary::Arbitrary::arbitrary(u)?,
+                                executable: arbitrary::Arbitrary::arbitrary(u)?,
+                                salt: arbitrary::Arbitrary::arbitrary(u)?,
+                            })
+                        })();
+                        if guard_against_recursion {
+                            RECURSIVE_COUNT_ArbitraryCreateContractWithConstructorHostFnContext
+                                .with(|count| {
+                                    count.set(count.get() - 1);
+                                });
+                        }
+                        result
+                    }
+                    fn arbitrary_take_rest(
+                        mut u: arbitrary::Unstructured<'arbitrary>,
+                    ) -> arbitrary::Result<Self> {
+                        let guard_against_recursion = u.is_empty();
+                        if guard_against_recursion {
+                            RECURSIVE_COUNT_ArbitraryCreateContractWithConstructorHostFnContext
+                                .with(|count| {
+                                    if count.get() > 0 {
+                                        return Err(arbitrary::Error::NotEnoughData);
+                                    }
+                                    count.set(count.get() + 1);
+                                    Ok(())
+                                })?;
+                        }
+                        let result = (|| {
+                            Ok(ArbitraryCreateContractWithConstructorHostFnContext {
+                                constructor_args: arbitrary::Arbitrary::arbitrary(&mut u)?,
+                                executable: arbitrary::Arbitrary::arbitrary(&mut u)?,
+                                salt: arbitrary::Arbitrary::arbitrary_take_rest(u)?,
+                            })
+                        })();
+                        if guard_against_recursion {
+                            RECURSIVE_COUNT_ArbitraryCreateContractWithConstructorHostFnContext
+                                .with(|count| {
+                                    count.set(count.get() - 1);
+                                });
+                        }
+                        result
+                    }
+                    #[inline]
+                    fn size_hint(depth: usize) -> (usize, Option<usize>) {
+                        arbitrary::size_hint::recursion_guard(depth, |depth| {
+                            arbitrary::size_hint::and_all(
+                                &[
+                                    <<soroban_sdk::Vec<
+                                        soroban_sdk::Val,
+                                    > as soroban_sdk::testutils::arbitrary::SorobanArbitrary>::Prototype as arbitrary::Arbitrary>::size_hint(
+                                        depth,
+                                    ),
+                                    <<ContractExecutable as soroban_sdk::testutils::arbitrary::SorobanArbitrary>::Prototype as arbitrary::Arbitrary>::size_hint(
+                                        depth,
+                                    ),
+                                    <<soroban_sdk::BytesN<
+                                        32,
+                                    > as soroban_sdk::testutils::arbitrary::SorobanArbitrary>::Prototype as arbitrary::Arbitrary>::size_hint(
+                                        depth,
+                                    ),
+                                ],
+                            )
+                        })
+                    }
+                }
+            };
+            impl soroban_sdk::testutils::arbitrary::SorobanArbitrary
+                for CreateContractWithConstructorHostFnContext
+            {
+                type Prototype = ArbitraryCreateContractWithConstructorHostFnContext;
+            }
+            impl
+                soroban_sdk::TryFromVal<
+                    soroban_sdk::Env,
+                    ArbitraryCreateContractWithConstructorHostFnContext,
+                > for CreateContractWithConstructorHostFnContext
+            {
+                type Error = soroban_sdk::ConversionError;
+                fn try_from_val(
+                    env: &soroban_sdk::Env,
+                    v: &ArbitraryCreateContractWithConstructorHostFnContext,
+                ) -> std::result::Result<Self, Self::Error> {
+                    Ok(CreateContractWithConstructorHostFnContext {
+                        constructor_args: soroban_sdk::IntoVal::into_val(&v.constructor_args, env),
+                        executable: soroban_sdk::IntoVal::into_val(&v.executable, env),
+                        salt: soroban_sdk::IntoVal::into_val(&v.salt, env),
+                    })
+                }
+            }
+        };
+        pub enum ContractExecutable {
+            Wasm(soroban_sdk::BytesN<32>),
+            ExternalRef(ContractExecutableRef),
+        }
+        #[automatically_derived]
+        impl ::core::fmt::Debug for ContractExecutable {
+            #[inline]
+            fn fmt(&self, f: &mut ::core::fmt::Formatter) -> ::core::fmt::Result {
+                match self {
+                    ContractExecutable::Wasm(__self_0) => {
+                        ::core::fmt::Formatter::debug_tuple_field1_finish(f, "Wasm", &__self_0)
+                    }
+                    ContractExecutable::ExternalRef(__self_0) => {
+                        ::core::fmt::Formatter::debug_tuple_field1_finish(
+                            f,
+                            "ExternalRef",
+                            &__self_0,
+                        )
+                    }
+                }
+            }
+        }
+        #[automatically_derived]
+        impl ::core::clone::Clone for ContractExecutable {
+            #[inline]
+            fn clone(&self) -> ContractExecutable {
+                match self {
+                    ContractExecutable::Wasm(__self_0) => {
+                        ContractExecutable::Wasm(::core::clone::Clone::clone(__self_0))
+                    }
+                    ContractExecutable::ExternalRef(__self_0) => {
+                        ContractExecutable::ExternalRef(::core::clone::Clone::clone(__self_0))
+                    }
+                }
+            }
+        }
+        #[automatically_derived]
+        impl ::core::cmp::Eq for ContractExecutable {
+            #[inline]
+            #[doc(hidden)]
+            #[coverage(off)]
+            fn assert_receiver_is_total_eq(&self) -> () {
+                let _: ::core::cmp::AssertParamIsEq<soroban_sdk::BytesN<32>>;
+                let _: ::core::cmp::AssertParamIsEq<ContractExecutableRef>;
+            }
+        }
+        #[automatically_derived]
+        impl ::core::marker::StructuralPartialEq for ContractExecutable {}
+        #[automatically_derived]
+        impl ::core::cmp::PartialEq for ContractExecutable {
+            #[inline]
+            fn eq(&self, other: &ContractExecutable) -> bool {
+                let __self_discr = ::core::intrinsics::discriminant_value(self);
+                let __arg1_discr = ::core::intrinsics::discriminant_value(other);
+                __self_discr == __arg1_discr
+                    && match (self, other) {
+                        (
+                            ContractExecutable::Wasm(__self_0),
+                            ContractExecutable::Wasm(__arg1_0),
+                        ) => __self_0 == __arg1_0,
+                        (
+                            ContractExecutable::ExternalRef(__self_0),
+                            ContractExecutable::ExternalRef(__arg1_0),
+                        ) => __self_0 == __arg1_0,
+                        _ => unsafe { ::core::intrinsics::unreachable() },
+                    }
+            }
+        }
+        #[automatically_derived]
+        impl ::core::cmp::Ord for ContractExecutable {
+            #[inline]
+            fn cmp(&self, other: &ContractExecutable) -> ::core::cmp::Ordering {
+                let __self_discr = ::core::intrinsics::discriminant_value(self);
+                let __arg1_discr = ::core::intrinsics::discriminant_value(other);
+                match ::core::cmp::Ord::cmp(&__self_discr, &__arg1_discr) {
+                    ::core::cmp::Ordering::Equal => match (self, other) {
+                        (
+                            ContractExecutable::Wasm(__self_0),
+                            ContractExecutable::Wasm(__arg1_0),
+                        ) => ::core::cmp::Ord::cmp(__self_0, __arg1_0),
+                        (
+                            ContractExecutable::ExternalRef(__self_0),
+                            ContractExecutable::ExternalRef(__arg1_0),
+                        ) => ::core::cmp::Ord::cmp(__self_0, __arg1_0),
+                        _ => unsafe { ::core::intrinsics::unreachable() },
+                    },
+                    cmp => cmp,
+                }
+            }
+        }
+        #[automatically_derived]
+        impl ::core::cmp::PartialOrd for ContractExecutable {
+            #[inline]
+            fn partial_cmp(
+                &self,
+                other: &ContractExecutable,
+            ) -> ::core::option::Option<::core::cmp::Ordering> {
+                let __self_discr = ::core::intrinsics::discriminant_value(self);
+                let __arg1_discr = ::core::intrinsics::discriminant_value(other);
+                match (self, other) {
+                    (ContractExecutable::Wasm(__self_0), ContractExecutable::Wasm(__arg1_0)) => {
+                        ::core::cmp::PartialOrd::partial_cmp(__self_0, __arg1_0)
+                    }
+                    (
+                        ContractExecutable::ExternalRef(__self_0),
+                        ContractExecutable::ExternalRef(__arg1_0),
+                    ) => ::core::cmp::PartialOrd::partial_cmp(__self_0, __arg1_0),
+                    _ => ::core::cmp::PartialOrd::partial_cmp(&__self_discr, &__arg1_discr),
+                }
+            }
+        }
+        impl soroban_sdk::SpecName for ContractExecutable {
+            const SPEC_NAME: &'static str = {
+                const NAME: &str = "::test_ml_dsa::test::wasm::ContractExecutable";
+                const CHECKED_NAME: &str = {
+                    if !(NAME.len() <= soroban_sdk::xdr::SC_SPEC_TYPE_NAME_LIMIT as usize) {
+                        {
+                            ::core::panicking::panic_fmt(
+                                format_args!(
+                                    "type `ContractExecutable` full name including its module path is longer than the contract spec\'s type name limit, shorten its module path or name: `::test_ml_dsa::test::wasm::ContractExecutable`",
+                                ),
+                            );
+                        }
+                    }
+                    NAME
+                };
+                CHECKED_NAME
+            };
+        }
+        impl soroban_sdk::SpecTypeDef for ContractExecutable {
+            const SPEC_TYPE_DEF: soroban_sdk::xdr::r#const::ScSpecTypeDef =
+                soroban_sdk::xdr::r#const::ScSpecTypeDef::Udt(
+                    soroban_sdk::xdr::r#const::ScSpecTypeUdt {
+                        name: soroban_sdk::xdr::r#const::StringM::try_from_str_or_panic(
+                            <Self as soroban_sdk::SpecName>::SPEC_NAME,
+                        ),
+                    },
+                );
+        }
+        #[doc(hidden)]
+        #[allow(dead_code)]
+        static __SPEC_XDR_TYPE_CONTRACTEXECUTABLE: [u8; ContractExecutable::spec_xdr().len()] =
+            ContractExecutable::spec_xdr();
+        impl ContractExecutable {
+            const __SPEC_XDR_ENTRY: soroban_sdk::xdr::r#const::ScSpecEntry = soroban_sdk::xdr::r#const::ScSpecEntry::UdtUnionV0(soroban_sdk::xdr::r#const::ScSpecUdtUnionV0 {
+                doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
+                lib: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
+                name: soroban_sdk::xdr::r#const::StringM::try_from_str_or_panic(
+                    <ContractExecutable as soroban_sdk::SpecName>::SPEC_NAME,
+                ),
+                cases: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(
+                    &[
+                        soroban_sdk::xdr::r#const::ScSpecUdtUnionCaseV0::TupleV0(soroban_sdk::xdr::r#const::ScSpecUdtUnionCaseTupleV0 {
+                            doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(
+                                b"",
+                            ),
+                            name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(
+                                b"Wasm",
+                            ),
+                            type_: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(
+                                &[
+                                    <soroban_sdk::BytesN<
+                                        32,
+                                    > as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
+                                ],
+                            ),
+                        }),
+                        soroban_sdk::xdr::r#const::ScSpecUdtUnionCaseV0::TupleV0(soroban_sdk::xdr::r#const::ScSpecUdtUnionCaseTupleV0 {
+                            doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(
+                                b"",
+                            ),
+                            name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(
+                                b"ExternalRef",
+                            ),
+                            type_: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(
+                                &[
+                                    <ContractExecutableRef as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
+                                ],
+                            ),
+                        }),
+                    ],
+                ),
+            });
+            pub const fn spec_xdr() -> [u8; ContractExecutable::__SPEC_XDR_ENTRY.const_xdr_len()] {
+                const { ContractExecutable::__SPEC_XDR_ENTRY.const_to_xdr() }
+            }
+        }
+        impl soroban_sdk::SpecAnchor for ContractExecutable {
+            #[inline(never)]
+            fn spec_anchor() {}
+        }
+        impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for ContractExecutable {
+            type Error = soroban_sdk::ConversionError;
+            #[inline(always)]
+            fn try_from_val(
+                env: &soroban_sdk::Env,
+                val: &soroban_sdk::Val,
+            ) -> Result<Self, soroban_sdk::ConversionError> {
+                <ContractExecutable as soroban_sdk::SpecAnchor>::spec_anchor();
+                use soroban_sdk::{EnvBase, TryFromVal, TryIntoVal};
+                const CASES: &'static [&'static str] = &["Wasm", "ExternalRef"];
+                let vec: soroban_sdk::Vec<soroban_sdk::Val> = val.try_into_val(env)?;
+                let mut iter = vec.try_iter();
+                let discriminant: soroban_sdk::Symbol = iter
+                    .next()
+                    .ok_or(soroban_sdk::ConversionError)??
+                    .try_into_val(env)
+                    .map_err(|_| soroban_sdk::ConversionError)?;
+                Ok(
+                    match u32::from(env.symbol_index_in_strs(discriminant.to_symbol_val(), CASES)?)
+                        as usize
+                    {
+                        0 => {
+                            if iter.len() > 1usize {
+                                return Err(soroban_sdk::ConversionError);
+                            }
+                            Self::Wasm(
+                                iter.next()
+                                    .ok_or(soroban_sdk::ConversionError)??
+                                    .try_into_val(env)?,
+                            )
+                        }
+                        1 => {
+                            if iter.len() > 1usize {
+                                return Err(soroban_sdk::ConversionError);
+                            }
+                            Self::ExternalRef(
+                                iter.next()
+                                    .ok_or(soroban_sdk::ConversionError)??
+                                    .try_into_val(env)?,
+                            )
+                        }
+                        _ => Err(soroban_sdk::ConversionError {})?,
+                    },
+                )
+            }
+        }
+        impl soroban_sdk::TryFromVal<soroban_sdk::Env, ContractExecutable> for soroban_sdk::Val {
+            type Error = soroban_sdk::ConversionError;
+            #[inline(always)]
+            fn try_from_val(
+                env: &soroban_sdk::Env,
+                val: &ContractExecutable,
+            ) -> Result<Self, soroban_sdk::ConversionError> {
+                <ContractExecutable as soroban_sdk::SpecAnchor>::spec_anchor();
+                use soroban_sdk::{TryFromVal, TryIntoVal};
+                match val {
+                    ContractExecutable::Wasm(ref value0) => {
+                        let tup: (soroban_sdk::Val, soroban_sdk::Val) = (
+                            soroban_sdk::Symbol::try_from_val(env, &"Wasm")?.to_val(),
+                            value0.try_into_val(env)?,
+                        );
+                        tup.try_into_val(env).map_err(Into::into)
+                    }
+                    ContractExecutable::ExternalRef(ref value0) => {
+                        let tup: (soroban_sdk::Val, soroban_sdk::Val) = (
+                            soroban_sdk::Symbol::try_from_val(env, &"ExternalRef")?.to_val(),
+                            value0.try_into_val(env)?,
+                        );
+                        tup.try_into_val(env).map_err(Into::into)
+                    }
+                }
+            }
+        }
+        impl soroban_sdk::TryFromVal<soroban_sdk::Env, &ContractExecutable> for soroban_sdk::Val {
+            type Error = soroban_sdk::ConversionError;
+            #[inline(always)]
+            fn try_from_val(
+                env: &soroban_sdk::Env,
+                val: &&ContractExecutable,
+            ) -> Result<Self, soroban_sdk::ConversionError> {
+                <_ as soroban_sdk::TryFromVal<soroban_sdk::Env, ContractExecutable>>::try_from_val(
+                    env, *val,
+                )
+            }
+        }
+        impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::xdr::ScVec> for ContractExecutable {
+            type Error = soroban_sdk::xdr::Error;
+            #[inline(always)]
+            fn try_from_val(
+                env: &soroban_sdk::Env,
+                val: &soroban_sdk::xdr::ScVec,
+            ) -> Result<Self, soroban_sdk::xdr::Error> {
+                use soroban_sdk::xdr::Validate;
+                use soroban_sdk::TryIntoVal;
+                let vec = val;
+                let mut iter = vec.iter();
+                let discriminant: soroban_sdk::xdr::ScSymbol = iter
+                    .next()
+                    .ok_or(soroban_sdk::xdr::Error::Invalid)?
+                    .clone()
+                    .try_into()
+                    .map_err(|_| soroban_sdk::xdr::Error::Invalid)?;
+                let discriminant_name: &str = &discriminant.to_utf8_string()?;
+                Ok(match discriminant_name {
+                    "Wasm" => {
+                        if iter.len() > 1usize {
+                            return Err(soroban_sdk::xdr::Error::Invalid);
+                        }
+                        let rv0: soroban_sdk::Val = iter
+                            .next()
+                            .ok_or(soroban_sdk::xdr::Error::Invalid)?
+                            .try_into_val(env)
+                            .map_err(|_| soroban_sdk::xdr::Error::Invalid)?;
+                        Self::Wasm(
+                            rv0.try_into_val(env)
+                                .map_err(|_| soroban_sdk::xdr::Error::Invalid)?,
+                        )
+                    }
+                    "ExternalRef" => {
+                        if iter.len() > 1usize {
+                            return Err(soroban_sdk::xdr::Error::Invalid);
+                        }
+                        let rv0: soroban_sdk::Val = iter
+                            .next()
+                            .ok_or(soroban_sdk::xdr::Error::Invalid)?
+                            .try_into_val(env)
+                            .map_err(|_| soroban_sdk::xdr::Error::Invalid)?;
+                        Self::ExternalRef(
+                            rv0.try_into_val(env)
+                                .map_err(|_| soroban_sdk::xdr::Error::Invalid)?,
+                        )
+                    }
+                    _ => Err(soroban_sdk::xdr::Error::Invalid)?,
+                })
+            }
+        }
+        impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::xdr::ScVal> for ContractExecutable {
+            type Error = soroban_sdk::xdr::Error;
+            #[inline(always)]
+            fn try_from_val(
+                env: &soroban_sdk::Env,
+                val: &soroban_sdk::xdr::ScVal,
+            ) -> Result<Self, soroban_sdk::xdr::Error> {
+                if let soroban_sdk::xdr::ScVal::Vec(Some(vec)) = val {
+                    <_ as soroban_sdk::TryFromVal<_, _>>::try_from_val(env, vec)
+                } else {
+                    Err(soroban_sdk::xdr::Error::Invalid)
+                }
+            }
+        }
+        impl TryFrom<&ContractExecutable> for soroban_sdk::xdr::ScVec {
+            type Error = soroban_sdk::xdr::Error;
+            #[inline(always)]
+            fn try_from(val: &ContractExecutable) -> Result<Self, soroban_sdk::xdr::Error> {
+                extern crate alloc;
+                Ok(match val {
+                    ContractExecutable::Wasm(value0) => (
+                        soroban_sdk::xdr::ScSymbol(
+                            "Wasm"
+                                .try_into()
+                                .map_err(|_| soroban_sdk::xdr::Error::Invalid)?,
+                        ),
+                        value0,
+                    )
+                        .try_into()
+                        .map_err(|_| soroban_sdk::xdr::Error::Invalid)?,
+                    ContractExecutable::ExternalRef(value0) => (
+                        soroban_sdk::xdr::ScSymbol(
+                            "ExternalRef"
+                                .try_into()
+                                .map_err(|_| soroban_sdk::xdr::Error::Invalid)?,
+                        ),
+                        value0,
+                    )
+                        .try_into()
+                        .map_err(|_| soroban_sdk::xdr::Error::Invalid)?,
+                })
+            }
+        }
+        impl TryFrom<ContractExecutable> for soroban_sdk::xdr::ScVec {
+            type Error = soroban_sdk::xdr::Error;
+            #[inline(always)]
+            fn try_from(val: ContractExecutable) -> Result<Self, soroban_sdk::xdr::Error> {
+                (&val).try_into()
+            }
+        }
+        impl TryFrom<&ContractExecutable> for soroban_sdk::xdr::ScVal {
+            type Error = soroban_sdk::xdr::Error;
+            #[inline(always)]
+            fn try_from(val: &ContractExecutable) -> Result<Self, soroban_sdk::xdr::Error> {
+                Ok(soroban_sdk::xdr::ScVal::Vec(Some(val.try_into()?)))
+            }
+        }
+        impl TryFrom<ContractExecutable> for soroban_sdk::xdr::ScVal {
+            type Error = soroban_sdk::xdr::Error;
+            #[inline(always)]
+            fn try_from(val: ContractExecutable) -> Result<Self, soroban_sdk::xdr::Error> {
+                (&val).try_into()
+            }
+        }
+        const _: () = {
+            use soroban_sdk::testutils::arbitrary::arbitrary;
+            use soroban_sdk::testutils::arbitrary::std;
+            pub enum ArbitraryContractExecutable {
+                Wasm(
+                    <soroban_sdk::BytesN<
+                        32,
+                    > as soroban_sdk::testutils::arbitrary::SorobanArbitrary>::Prototype,
+                ),
+                ExternalRef(
+                    <ContractExecutableRef as soroban_sdk::testutils::arbitrary::SorobanArbitrary>::Prototype,
+                ),
+            }
+            #[automatically_derived]
+            impl ::core::fmt::Debug for ArbitraryContractExecutable {
+                #[inline]
+                fn fmt(&self, f: &mut ::core::fmt::Formatter) -> ::core::fmt::Result {
+                    match self {
+                        ArbitraryContractExecutable::Wasm(__self_0) => {
+                            ::core::fmt::Formatter::debug_tuple_field1_finish(f, "Wasm", &__self_0)
+                        }
+                        ArbitraryContractExecutable::ExternalRef(__self_0) => {
+                            ::core::fmt::Formatter::debug_tuple_field1_finish(
+                                f,
+                                "ExternalRef",
+                                &__self_0,
+                            )
+                        }
+                    }
+                }
+            }
+            #[automatically_derived]
+            impl ::core::clone::Clone for ArbitraryContractExecutable {
+                #[inline]
+                fn clone(&self) -> ArbitraryContractExecutable {
+                    match self {
+                        ArbitraryContractExecutable::Wasm(__self_0) => {
+                            ArbitraryContractExecutable::Wasm(::core::clone::Clone::clone(__self_0))
+                        }
+                        ArbitraryContractExecutable::ExternalRef(__self_0) => {
+                            ArbitraryContractExecutable::ExternalRef(::core::clone::Clone::clone(
+                                __self_0,
+                            ))
+                        }
+                    }
+                }
+            }
+            #[automatically_derived]
+            impl ::core::cmp::Eq for ArbitraryContractExecutable {
+                #[inline]
+                #[doc(hidden)]
+                #[coverage(off)]
+                fn assert_receiver_is_total_eq(&self) -> () {
+                    let _: ::core::cmp::AssertParamIsEq<
+                        <soroban_sdk::BytesN<
+                            32,
+                        > as soroban_sdk::testutils::arbitrary::SorobanArbitrary>::Prototype,
+                    >;
+                    let _: ::core::cmp::AssertParamIsEq<
+                        <ContractExecutableRef as soroban_sdk::testutils::arbitrary::SorobanArbitrary>::Prototype,
+                    >;
+                }
+            }
+            #[automatically_derived]
+            impl ::core::marker::StructuralPartialEq for ArbitraryContractExecutable {}
+            #[automatically_derived]
+            impl ::core::cmp::PartialEq for ArbitraryContractExecutable {
+                #[inline]
+                fn eq(&self, other: &ArbitraryContractExecutable) -> bool {
+                    let __self_discr = ::core::intrinsics::discriminant_value(self);
+                    let __arg1_discr = ::core::intrinsics::discriminant_value(other);
+                    __self_discr == __arg1_discr
+                        && match (self, other) {
+                            (
+                                ArbitraryContractExecutable::Wasm(__self_0),
+                                ArbitraryContractExecutable::Wasm(__arg1_0),
+                            ) => __self_0 == __arg1_0,
+                            (
+                                ArbitraryContractExecutable::ExternalRef(__self_0),
+                                ArbitraryContractExecutable::ExternalRef(__arg1_0),
+                            ) => __self_0 == __arg1_0,
+                            _ => unsafe { ::core::intrinsics::unreachable() },
+                        }
+                }
+            }
+            #[automatically_derived]
+            impl ::core::cmp::Ord for ArbitraryContractExecutable {
+                #[inline]
+                fn cmp(&self, other: &ArbitraryContractExecutable) -> ::core::cmp::Ordering {
+                    let __self_discr = ::core::intrinsics::discriminant_value(self);
+                    let __arg1_discr = ::core::intrinsics::discriminant_value(other);
+                    match ::core::cmp::Ord::cmp(&__self_discr, &__arg1_discr) {
+                        ::core::cmp::Ordering::Equal => match (self, other) {
+                            (
+                                ArbitraryContractExecutable::Wasm(__self_0),
+                                ArbitraryContractExecutable::Wasm(__arg1_0),
+                            ) => ::core::cmp::Ord::cmp(__self_0, __arg1_0),
+                            (
+                                ArbitraryContractExecutable::ExternalRef(__self_0),
+                                ArbitraryContractExecutable::ExternalRef(__arg1_0),
+                            ) => ::core::cmp::Ord::cmp(__self_0, __arg1_0),
+                            _ => unsafe { ::core::intrinsics::unreachable() },
+                        },
+                        cmp => cmp,
+                    }
+                }
+            }
+            #[automatically_derived]
+            impl ::core::cmp::PartialOrd for ArbitraryContractExecutable {
+                #[inline]
+                fn partial_cmp(
+                    &self,
+                    other: &ArbitraryContractExecutable,
+                ) -> ::core::option::Option<::core::cmp::Ordering> {
+                    let __self_discr = ::core::intrinsics::discriminant_value(self);
+                    let __arg1_discr = ::core::intrinsics::discriminant_value(other);
+                    match (self, other) {
+                        (
+                            ArbitraryContractExecutable::Wasm(__self_0),
+                            ArbitraryContractExecutable::Wasm(__arg1_0),
+                        ) => ::core::cmp::PartialOrd::partial_cmp(__self_0, __arg1_0),
+                        (
+                            ArbitraryContractExecutable::ExternalRef(__self_0),
+                            ArbitraryContractExecutable::ExternalRef(__arg1_0),
+                        ) => ::core::cmp::PartialOrd::partial_cmp(__self_0, __arg1_0),
+                        _ => ::core::cmp::PartialOrd::partial_cmp(&__self_discr, &__arg1_discr),
+                    }
+                }
+            }
+            const _: () = {
+                #[allow(non_upper_case_globals)]
+                const RECURSIVE_COUNT_ArbitraryContractExecutable: ::std::thread::LocalKey<
+                    std::cell::Cell<u32>,
+                > = {
+                    #[inline]
+                    fn __init() -> std::cell::Cell<u32> {
+                        std::cell::Cell::new(0)
+                    }
+                    unsafe {
+                        ::std::thread::LocalKey::new(
+                            const {
+                                if ::std::mem::needs_drop::<std::cell::Cell<u32>>() {
+                                    |init| {
+                                        #[thread_local]
+                                        static VAL: ::std::thread::local_impl::LazyStorage<
+                                            std::cell::Cell<u32>,
+                                            (),
+                                        > = ::std::thread::local_impl::LazyStorage::new();
+                                        VAL.get_or_init(init, __init)
+                                    }
+                                } else {
+                                    |init| {
+                                        #[thread_local]
+                                        static VAL: ::std::thread::local_impl::LazyStorage<
+                                            std::cell::Cell<u32>,
+                                            !,
+                                        > = ::std::thread::local_impl::LazyStorage::new();
+                                        VAL.get_or_init(init, __init)
+                                    }
+                                }
+                            },
+                        )
+                    }
+                };
+                #[automatically_derived]
+                impl<'arbitrary> arbitrary::Arbitrary<'arbitrary> for ArbitraryContractExecutable {
+                    fn arbitrary(
+                        u: &mut arbitrary::Unstructured<'arbitrary>,
+                    ) -> arbitrary::Result<Self> {
+                        let guard_against_recursion = u.is_empty();
+                        if guard_against_recursion {
+                            RECURSIVE_COUNT_ArbitraryContractExecutable.with(|count| {
+                                if count.get() > 0 {
+                                    return Err(arbitrary::Error::NotEnoughData);
+                                }
+                                count.set(count.get() + 1);
+                                Ok(())
+                            })?;
+                        }
+                        let result = (|| {
+                            Ok(
+                                match (u64::from(<u32 as arbitrary::Arbitrary>::arbitrary(u)?)
+                                    * 2u64)
+                                    >> 32
+                                {
+                                    0u64 => ArbitraryContractExecutable::Wasm(
+                                        arbitrary::Arbitrary::arbitrary(u)?,
+                                    ),
+                                    1u64 => ArbitraryContractExecutable::ExternalRef(
+                                        arbitrary::Arbitrary::arbitrary(u)?,
+                                    ),
+                                    _ => ::core::panicking::panic(
+                                        "internal error: entered unreachable code",
+                                    ),
+                                },
+                            )
+                        })();
+                        if guard_against_recursion {
+                            RECURSIVE_COUNT_ArbitraryContractExecutable.with(|count| {
+                                count.set(count.get() - 1);
+                            });
+                        }
+                        result
+                    }
+                    fn arbitrary_take_rest(
+                        mut u: arbitrary::Unstructured<'arbitrary>,
+                    ) -> arbitrary::Result<Self> {
+                        let guard_against_recursion = u.is_empty();
+                        if guard_against_recursion {
+                            RECURSIVE_COUNT_ArbitraryContractExecutable.with(|count| {
+                                if count.get() > 0 {
+                                    return Err(arbitrary::Error::NotEnoughData);
+                                }
+                                count.set(count.get() + 1);
+                                Ok(())
+                            })?;
+                        }
+                        let result = (|| {
+                            Ok(
+                                match (u64::from(<u32 as arbitrary::Arbitrary>::arbitrary(&mut u)?)
+                                    * 2u64)
+                                    >> 32
+                                {
+                                    0u64 => ArbitraryContractExecutable::Wasm(
+                                        arbitrary::Arbitrary::arbitrary_take_rest(u)?,
+                                    ),
+                                    1u64 => ArbitraryContractExecutable::ExternalRef(
+                                        arbitrary::Arbitrary::arbitrary_take_rest(u)?,
+                                    ),
+                                    _ => ::core::panicking::panic(
+                                        "internal error: entered unreachable code",
+                                    ),
+                                },
+                            )
+                        })();
+                        if guard_against_recursion {
+                            RECURSIVE_COUNT_ArbitraryContractExecutable.with(|count| {
+                                count.set(count.get() - 1);
+                            });
+                        }
+                        result
+                    }
+                    #[inline]
+                    fn size_hint(depth: usize) -> (usize, Option<usize>) {
+                        arbitrary::size_hint::and(
+                            <u32 as arbitrary::Arbitrary>::size_hint(depth),
+                            arbitrary::size_hint::recursion_guard(depth, |depth| {
+                                arbitrary::size_hint::or_all(
+                                        &[
+                                            arbitrary::size_hint::and_all(
+                                                &[
+                                                    <<soroban_sdk::BytesN<
+                                                        32,
+                                                    > as soroban_sdk::testutils::arbitrary::SorobanArbitrary>::Prototype as arbitrary::Arbitrary>::size_hint(
+                                                        depth,
+                                                    ),
+                                                ],
+                                            ),
+                                            arbitrary::size_hint::and_all(
+                                                &[
+                                                    <<ContractExecutableRef as soroban_sdk::testutils::arbitrary::SorobanArbitrary>::Prototype as arbitrary::Arbitrary>::size_hint(
+                                                        depth,
+                                                    ),
+                                                ],
+                                            ),
+                                        ],
+                                    )
+                            }),
+                        )
+                    }
+                }
+            };
+            impl soroban_sdk::testutils::arbitrary::SorobanArbitrary for ContractExecutable {
+                type Prototype = ArbitraryContractExecutable;
+            }
+            impl soroban_sdk::TryFromVal<soroban_sdk::Env, ArbitraryContractExecutable> for ContractExecutable {
+                type Error = soroban_sdk::ConversionError;
+                fn try_from_val(
+                    env: &soroban_sdk::Env,
+                    v: &ArbitraryContractExecutable,
+                ) -> std::result::Result<Self, Self::Error> {
+                    Ok(match v {
+                        ArbitraryContractExecutable::Wasm(field_0) => {
+                            ContractExecutable::Wasm(soroban_sdk::IntoVal::into_val(field_0, env))
+                        }
+                        ArbitraryContractExecutable::ExternalRef(field_0) => {
+                            ContractExecutable::ExternalRef(soroban_sdk::IntoVal::into_val(
+                                field_0, env,
+                            ))
+                        }
+                    })
+                }
+            }
+        };
+        pub enum Context {
+            Contract(ContractContext),
+            CreateContractHostFn(CreateContractHostFnContext),
+            CreateContractWithCtorHostFn(CreateContractWithConstructorHostFnContext),
+        }
+        #[automatically_derived]
+        impl ::core::fmt::Debug for Context {
+            #[inline]
+            fn fmt(&self, f: &mut ::core::fmt::Formatter) -> ::core::fmt::Result {
+                match self {
+                    Context::Contract(__self_0) => {
+                        ::core::fmt::Formatter::debug_tuple_field1_finish(f, "Contract", &__self_0)
+                    }
+                    Context::CreateContractHostFn(__self_0) => {
+                        ::core::fmt::Formatter::debug_tuple_field1_finish(
+                            f,
+                            "CreateContractHostFn",
+                            &__self_0,
+                        )
+                    }
+                    Context::CreateContractWithCtorHostFn(__self_0) => {
+                        ::core::fmt::Formatter::debug_tuple_field1_finish(
+                            f,
+                            "CreateContractWithCtorHostFn",
+                            &__self_0,
+                        )
+                    }
+                }
+            }
+        }
+        #[automatically_derived]
+        impl ::core::clone::Clone for Context {
+            #[inline]
+            fn clone(&self) -> Context {
+                match self {
+                    Context::Contract(__self_0) => {
+                        Context::Contract(::core::clone::Clone::clone(__self_0))
+                    }
+                    Context::CreateContractHostFn(__self_0) => {
+                        Context::CreateContractHostFn(::core::clone::Clone::clone(__self_0))
+                    }
+                    Context::CreateContractWithCtorHostFn(__self_0) => {
+                        Context::CreateContractWithCtorHostFn(::core::clone::Clone::clone(__self_0))
+                    }
+                }
+            }
+        }
+        #[automatically_derived]
+        impl ::core::cmp::Eq for Context {
+            #[inline]
+            #[doc(hidden)]
+            #[coverage(off)]
+            fn assert_receiver_is_total_eq(&self) -> () {
+                let _: ::core::cmp::AssertParamIsEq<ContractContext>;
+                let _: ::core::cmp::AssertParamIsEq<CreateContractHostFnContext>;
+                let _: ::core::cmp::AssertParamIsEq<CreateContractWithConstructorHostFnContext>;
+            }
+        }
+        #[automatically_derived]
+        impl ::core::marker::StructuralPartialEq for Context {}
+        #[automatically_derived]
+        impl ::core::cmp::PartialEq for Context {
+            #[inline]
+            fn eq(&self, other: &Context) -> bool {
+                let __self_discr = ::core::intrinsics::discriminant_value(self);
+                let __arg1_discr = ::core::intrinsics::discriminant_value(other);
+                __self_discr == __arg1_discr
+                    && match (self, other) {
+                        (Context::Contract(__self_0), Context::Contract(__arg1_0)) => {
+                            __self_0 == __arg1_0
+                        }
+                        (
+                            Context::CreateContractHostFn(__self_0),
+                            Context::CreateContractHostFn(__arg1_0),
+                        ) => __self_0 == __arg1_0,
+                        (
+                            Context::CreateContractWithCtorHostFn(__self_0),
+                            Context::CreateContractWithCtorHostFn(__arg1_0),
+                        ) => __self_0 == __arg1_0,
+                        _ => unsafe { ::core::intrinsics::unreachable() },
+                    }
+            }
+        }
+        #[automatically_derived]
+        impl ::core::cmp::Ord for Context {
+            #[inline]
+            fn cmp(&self, other: &Context) -> ::core::cmp::Ordering {
+                let __self_discr = ::core::intrinsics::discriminant_value(self);
+                let __arg1_discr = ::core::intrinsics::discriminant_value(other);
+                match ::core::cmp::Ord::cmp(&__self_discr, &__arg1_discr) {
+                    ::core::cmp::Ordering::Equal => match (self, other) {
+                        (Context::Contract(__self_0), Context::Contract(__arg1_0)) => {
+                            ::core::cmp::Ord::cmp(__self_0, __arg1_0)
+                        }
+                        (
+                            Context::CreateContractHostFn(__self_0),
+                            Context::CreateContractHostFn(__arg1_0),
+                        ) => ::core::cmp::Ord::cmp(__self_0, __arg1_0),
+                        (
+                            Context::CreateContractWithCtorHostFn(__self_0),
+                            Context::CreateContractWithCtorHostFn(__arg1_0),
+                        ) => ::core::cmp::Ord::cmp(__self_0, __arg1_0),
+                        _ => unsafe { ::core::intrinsics::unreachable() },
+                    },
+                    cmp => cmp,
+                }
+            }
+        }
+        #[automatically_derived]
+        impl ::core::cmp::PartialOrd for Context {
+            #[inline]
+            fn partial_cmp(
+                &self,
+                other: &Context,
+            ) -> ::core::option::Option<::core::cmp::Ordering> {
+                let __self_discr = ::core::intrinsics::discriminant_value(self);
+                let __arg1_discr = ::core::intrinsics::discriminant_value(other);
+                match (self, other) {
+                    (Context::Contract(__self_0), Context::Contract(__arg1_0)) => {
+                        ::core::cmp::PartialOrd::partial_cmp(__self_0, __arg1_0)
+                    }
+                    (
+                        Context::CreateContractHostFn(__self_0),
+                        Context::CreateContractHostFn(__arg1_0),
+                    ) => ::core::cmp::PartialOrd::partial_cmp(__self_0, __arg1_0),
+                    (
+                        Context::CreateContractWithCtorHostFn(__self_0),
+                        Context::CreateContractWithCtorHostFn(__arg1_0),
+                    ) => ::core::cmp::PartialOrd::partial_cmp(__self_0, __arg1_0),
+                    _ => ::core::cmp::PartialOrd::partial_cmp(&__self_discr, &__arg1_discr),
+                }
+            }
+        }
+        impl soroban_sdk::SpecName for Context {
+            const SPEC_NAME: &'static str = {
+                const NAME: &str = "::test_ml_dsa::test::wasm::Context";
+                const CHECKED_NAME: &str = {
+                    if !(NAME.len() <= soroban_sdk::xdr::SC_SPEC_TYPE_NAME_LIMIT as usize) {
+                        {
+                            ::core::panicking::panic_fmt(
+                                format_args!(
+                                    "type `Context` full name including its module path is longer than the contract spec\'s type name limit, shorten its module path or name: `::test_ml_dsa::test::wasm::Context`",
+                                ),
+                            );
+                        }
+                    }
+                    NAME
+                };
+                CHECKED_NAME
+            };
+        }
+        impl soroban_sdk::SpecTypeDef for Context {
+            const SPEC_TYPE_DEF: soroban_sdk::xdr::r#const::ScSpecTypeDef =
+                soroban_sdk::xdr::r#const::ScSpecTypeDef::Udt(
+                    soroban_sdk::xdr::r#const::ScSpecTypeUdt {
+                        name: soroban_sdk::xdr::r#const::StringM::try_from_str_or_panic(
+                            <Self as soroban_sdk::SpecName>::SPEC_NAME,
+                        ),
+                    },
+                );
+        }
+        #[doc(hidden)]
+        #[allow(dead_code)]
+        static __SPEC_XDR_TYPE_CONTEXT: [u8; Context::spec_xdr().len()] = Context::spec_xdr();
+        impl Context {
+            const __SPEC_XDR_ENTRY: soroban_sdk::xdr::r#const::ScSpecEntry = soroban_sdk::xdr::r#const::ScSpecEntry::UdtUnionV0(soroban_sdk::xdr::r#const::ScSpecUdtUnionV0 {
+                doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
+                lib: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
+                name: soroban_sdk::xdr::r#const::StringM::try_from_str_or_panic(
+                    <Context as soroban_sdk::SpecName>::SPEC_NAME,
+                ),
+                cases: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(
+                    &[
+                        soroban_sdk::xdr::r#const::ScSpecUdtUnionCaseV0::TupleV0(soroban_sdk::xdr::r#const::ScSpecUdtUnionCaseTupleV0 {
+                            doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(
+                                b"",
+                            ),
+                            name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(
+                                b"Contract",
+                            ),
+                            type_: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(
+                                &[
+                                    <ContractContext as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
+                                ],
+                            ),
+                        }),
+                        soroban_sdk::xdr::r#const::ScSpecUdtUnionCaseV0::TupleV0(soroban_sdk::xdr::r#const::ScSpecUdtUnionCaseTupleV0 {
+                            doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(
+                                b"",
+                            ),
+                            name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(
+                                b"CreateContractHostFn",
+                            ),
+                            type_: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(
+                                &[
+                                    <CreateContractHostFnContext as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
+                                ],
+                            ),
+                        }),
+                        soroban_sdk::xdr::r#const::ScSpecUdtUnionCaseV0::TupleV0(soroban_sdk::xdr::r#const::ScSpecUdtUnionCaseTupleV0 {
+                            doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(
+                                b"",
+                            ),
+                            name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(
+                                b"CreateContractWithCtorHostFn",
+                            ),
+                            type_: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(
+                                &[
+                                    <CreateContractWithConstructorHostFnContext as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
+                                ],
+                            ),
+                        }),
+                    ],
+                ),
+            });
+            pub const fn spec_xdr() -> [u8; Context::__SPEC_XDR_ENTRY.const_xdr_len()] {
+                const { Context::__SPEC_XDR_ENTRY.const_to_xdr() }
+            }
+        }
+        impl soroban_sdk::SpecAnchor for Context {
+            #[inline(never)]
+            fn spec_anchor() {}
+        }
+        impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for Context {
+            type Error = soroban_sdk::ConversionError;
+            #[inline(always)]
+            fn try_from_val(
+                env: &soroban_sdk::Env,
+                val: &soroban_sdk::Val,
+            ) -> Result<Self, soroban_sdk::ConversionError> {
+                <Context as soroban_sdk::SpecAnchor>::spec_anchor();
+                use soroban_sdk::{EnvBase, TryFromVal, TryIntoVal};
+                const CASES: &'static [&'static str] = &[
+                    "Contract",
+                    "CreateContractHostFn",
+                    "CreateContractWithCtorHostFn",
+                ];
+                let vec: soroban_sdk::Vec<soroban_sdk::Val> = val.try_into_val(env)?;
+                let mut iter = vec.try_iter();
+                let discriminant: soroban_sdk::Symbol = iter
+                    .next()
+                    .ok_or(soroban_sdk::ConversionError)??
+                    .try_into_val(env)
+                    .map_err(|_| soroban_sdk::ConversionError)?;
+                Ok(
+                    match u32::from(env.symbol_index_in_strs(discriminant.to_symbol_val(), CASES)?)
+                        as usize
+                    {
+                        0 => {
+                            if iter.len() > 1usize {
+                                return Err(soroban_sdk::ConversionError);
+                            }
+                            Self::Contract(
+                                iter.next()
+                                    .ok_or(soroban_sdk::ConversionError)??
+                                    .try_into_val(env)?,
+                            )
+                        }
+                        1 => {
+                            if iter.len() > 1usize {
+                                return Err(soroban_sdk::ConversionError);
+                            }
+                            Self::CreateContractHostFn(
+                                iter.next()
+                                    .ok_or(soroban_sdk::ConversionError)??
+                                    .try_into_val(env)?,
+                            )
+                        }
+                        2 => {
+                            if iter.len() > 1usize {
+                                return Err(soroban_sdk::ConversionError);
+                            }
+                            Self::CreateContractWithCtorHostFn(
+                                iter.next()
+                                    .ok_or(soroban_sdk::ConversionError)??
+                                    .try_into_val(env)?,
+                            )
+                        }
+                        _ => Err(soroban_sdk::ConversionError {})?,
+                    },
+                )
+            }
+        }
+        impl soroban_sdk::TryFromVal<soroban_sdk::Env, Context> for soroban_sdk::Val {
+            type Error = soroban_sdk::ConversionError;
+            #[inline(always)]
+            fn try_from_val(
+                env: &soroban_sdk::Env,
+                val: &Context,
+            ) -> Result<Self, soroban_sdk::ConversionError> {
+                <Context as soroban_sdk::SpecAnchor>::spec_anchor();
+                use soroban_sdk::{TryFromVal, TryIntoVal};
+                match val {
+                    Context::Contract(ref value0) => {
+                        let tup: (soroban_sdk::Val, soroban_sdk::Val) = (
+                            soroban_sdk::Symbol::try_from_val(env, &"Contract")?.to_val(),
+                            value0.try_into_val(env)?,
+                        );
+                        tup.try_into_val(env).map_err(Into::into)
+                    }
+                    Context::CreateContractHostFn(ref value0) => {
+                        let tup: (soroban_sdk::Val, soroban_sdk::Val) = (
+                            soroban_sdk::Symbol::try_from_val(env, &"CreateContractHostFn")?
+                                .to_val(),
+                            value0.try_into_val(env)?,
+                        );
+                        tup.try_into_val(env).map_err(Into::into)
+                    }
+                    Context::CreateContractWithCtorHostFn(ref value0) => {
+                        let tup: (soroban_sdk::Val, soroban_sdk::Val) = (
+                            soroban_sdk::Symbol::try_from_val(
+                                env,
+                                &"CreateContractWithCtorHostFn",
+                            )?
+                            .to_val(),
+                            value0.try_into_val(env)?,
+                        );
+                        tup.try_into_val(env).map_err(Into::into)
+                    }
+                }
+            }
+        }
+        impl soroban_sdk::TryFromVal<soroban_sdk::Env, &Context> for soroban_sdk::Val {
+            type Error = soroban_sdk::ConversionError;
+            #[inline(always)]
+            fn try_from_val(
+                env: &soroban_sdk::Env,
+                val: &&Context,
+            ) -> Result<Self, soroban_sdk::ConversionError> {
+                <_ as soroban_sdk::TryFromVal<soroban_sdk::Env, Context>>::try_from_val(env, *val)
+            }
+        }
+        impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::xdr::ScVec> for Context {
+            type Error = soroban_sdk::xdr::Error;
+            #[inline(always)]
+            fn try_from_val(
+                env: &soroban_sdk::Env,
+                val: &soroban_sdk::xdr::ScVec,
+            ) -> Result<Self, soroban_sdk::xdr::Error> {
+                use soroban_sdk::xdr::Validate;
+                use soroban_sdk::TryIntoVal;
+                let vec = val;
+                let mut iter = vec.iter();
+                let discriminant: soroban_sdk::xdr::ScSymbol = iter
+                    .next()
+                    .ok_or(soroban_sdk::xdr::Error::Invalid)?
+                    .clone()
+                    .try_into()
+                    .map_err(|_| soroban_sdk::xdr::Error::Invalid)?;
+                let discriminant_name: &str = &discriminant.to_utf8_string()?;
+                Ok(match discriminant_name {
+                    "Contract" => {
+                        if iter.len() > 1usize {
+                            return Err(soroban_sdk::xdr::Error::Invalid);
+                        }
+                        let rv0: soroban_sdk::Val = iter
+                            .next()
+                            .ok_or(soroban_sdk::xdr::Error::Invalid)?
+                            .try_into_val(env)
+                            .map_err(|_| soroban_sdk::xdr::Error::Invalid)?;
+                        Self::Contract(
+                            rv0.try_into_val(env)
+                                .map_err(|_| soroban_sdk::xdr::Error::Invalid)?,
+                        )
+                    }
+                    "CreateContractHostFn" => {
+                        if iter.len() > 1usize {
+                            return Err(soroban_sdk::xdr::Error::Invalid);
+                        }
+                        let rv0: soroban_sdk::Val = iter
+                            .next()
+                            .ok_or(soroban_sdk::xdr::Error::Invalid)?
+                            .try_into_val(env)
+                            .map_err(|_| soroban_sdk::xdr::Error::Invalid)?;
+                        Self::CreateContractHostFn(
+                            rv0.try_into_val(env)
+                                .map_err(|_| soroban_sdk::xdr::Error::Invalid)?,
+                        )
+                    }
+                    "CreateContractWithCtorHostFn" => {
+                        if iter.len() > 1usize {
+                            return Err(soroban_sdk::xdr::Error::Invalid);
+                        }
+                        let rv0: soroban_sdk::Val = iter
+                            .next()
+                            .ok_or(soroban_sdk::xdr::Error::Invalid)?
+                            .try_into_val(env)
+                            .map_err(|_| soroban_sdk::xdr::Error::Invalid)?;
+                        Self::CreateContractWithCtorHostFn(
+                            rv0.try_into_val(env)
+                                .map_err(|_| soroban_sdk::xdr::Error::Invalid)?,
+                        )
+                    }
+                    _ => Err(soroban_sdk::xdr::Error::Invalid)?,
+                })
+            }
+        }
+        impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::xdr::ScVal> for Context {
+            type Error = soroban_sdk::xdr::Error;
+            #[inline(always)]
+            fn try_from_val(
+                env: &soroban_sdk::Env,
+                val: &soroban_sdk::xdr::ScVal,
+            ) -> Result<Self, soroban_sdk::xdr::Error> {
+                if let soroban_sdk::xdr::ScVal::Vec(Some(vec)) = val {
+                    <_ as soroban_sdk::TryFromVal<_, _>>::try_from_val(env, vec)
+                } else {
+                    Err(soroban_sdk::xdr::Error::Invalid)
+                }
+            }
+        }
+        impl TryFrom<&Context> for soroban_sdk::xdr::ScVec {
+            type Error = soroban_sdk::xdr::Error;
+            #[inline(always)]
+            fn try_from(val: &Context) -> Result<Self, soroban_sdk::xdr::Error> {
+                extern crate alloc;
+                Ok(match val {
+                    Context::Contract(value0) => (
+                        soroban_sdk::xdr::ScSymbol(
+                            "Contract"
+                                .try_into()
+                                .map_err(|_| soroban_sdk::xdr::Error::Invalid)?,
+                        ),
+                        value0,
+                    )
+                        .try_into()
+                        .map_err(|_| soroban_sdk::xdr::Error::Invalid)?,
+                    Context::CreateContractHostFn(value0) => (
+                        soroban_sdk::xdr::ScSymbol(
+                            "CreateContractHostFn"
+                                .try_into()
+                                .map_err(|_| soroban_sdk::xdr::Error::Invalid)?,
+                        ),
+                        value0,
+                    )
+                        .try_into()
+                        .map_err(|_| soroban_sdk::xdr::Error::Invalid)?,
+                    Context::CreateContractWithCtorHostFn(value0) => (
+                        soroban_sdk::xdr::ScSymbol(
+                            "CreateContractWithCtorHostFn"
+                                .try_into()
+                                .map_err(|_| soroban_sdk::xdr::Error::Invalid)?,
+                        ),
+                        value0,
+                    )
+                        .try_into()
+                        .map_err(|_| soroban_sdk::xdr::Error::Invalid)?,
+                })
+            }
+        }
+        impl TryFrom<Context> for soroban_sdk::xdr::ScVec {
+            type Error = soroban_sdk::xdr::Error;
+            #[inline(always)]
+            fn try_from(val: Context) -> Result<Self, soroban_sdk::xdr::Error> {
+                (&val).try_into()
+            }
+        }
+        impl TryFrom<&Context> for soroban_sdk::xdr::ScVal {
+            type Error = soroban_sdk::xdr::Error;
+            #[inline(always)]
+            fn try_from(val: &Context) -> Result<Self, soroban_sdk::xdr::Error> {
+                Ok(soroban_sdk::xdr::ScVal::Vec(Some(val.try_into()?)))
+            }
+        }
+        impl TryFrom<Context> for soroban_sdk::xdr::ScVal {
+            type Error = soroban_sdk::xdr::Error;
+            #[inline(always)]
+            fn try_from(val: Context) -> Result<Self, soroban_sdk::xdr::Error> {
+                (&val).try_into()
+            }
+        }
+        const _: () = {
+            use soroban_sdk::testutils::arbitrary::arbitrary;
+            use soroban_sdk::testutils::arbitrary::std;
+            pub enum ArbitraryContext {
+                Contract(
+                    <ContractContext as soroban_sdk::testutils::arbitrary::SorobanArbitrary>::Prototype,
+                ),
+                CreateContractHostFn(
+                    <CreateContractHostFnContext as soroban_sdk::testutils::arbitrary::SorobanArbitrary>::Prototype,
+                ),
+                CreateContractWithCtorHostFn(
+                    <CreateContractWithConstructorHostFnContext as soroban_sdk::testutils::arbitrary::SorobanArbitrary>::Prototype,
+                ),
+            }
+            #[automatically_derived]
+            impl ::core::fmt::Debug for ArbitraryContext {
+                #[inline]
+                fn fmt(&self, f: &mut ::core::fmt::Formatter) -> ::core::fmt::Result {
+                    match self {
+                        ArbitraryContext::Contract(__self_0) => {
+                            ::core::fmt::Formatter::debug_tuple_field1_finish(
+                                f, "Contract", &__self_0,
+                            )
+                        }
+                        ArbitraryContext::CreateContractHostFn(__self_0) => {
+                            ::core::fmt::Formatter::debug_tuple_field1_finish(
+                                f,
+                                "CreateContractHostFn",
+                                &__self_0,
+                            )
+                        }
+                        ArbitraryContext::CreateContractWithCtorHostFn(__self_0) => {
+                            ::core::fmt::Formatter::debug_tuple_field1_finish(
+                                f,
+                                "CreateContractWithCtorHostFn",
+                                &__self_0,
+                            )
+                        }
+                    }
+                }
+            }
+            #[automatically_derived]
+            impl ::core::clone::Clone for ArbitraryContext {
+                #[inline]
+                fn clone(&self) -> ArbitraryContext {
+                    match self {
+                        ArbitraryContext::Contract(__self_0) => {
+                            ArbitraryContext::Contract(::core::clone::Clone::clone(__self_0))
+                        }
+                        ArbitraryContext::CreateContractHostFn(__self_0) => {
+                            ArbitraryContext::CreateContractHostFn(::core::clone::Clone::clone(
+                                __self_0,
+                            ))
+                        }
+                        ArbitraryContext::CreateContractWithCtorHostFn(__self_0) => {
+                            ArbitraryContext::CreateContractWithCtorHostFn(
+                                ::core::clone::Clone::clone(__self_0),
+                            )
+                        }
+                    }
+                }
+            }
+            #[automatically_derived]
+            impl ::core::cmp::Eq for ArbitraryContext {
+                #[inline]
+                #[doc(hidden)]
+                #[coverage(off)]
+                fn assert_receiver_is_total_eq(&self) -> () {
+                    let _: ::core::cmp::AssertParamIsEq<
+                        <ContractContext as soroban_sdk::testutils::arbitrary::SorobanArbitrary>::Prototype,
+                    >;
+                    let _: ::core::cmp::AssertParamIsEq<
+                        <CreateContractHostFnContext as soroban_sdk::testutils::arbitrary::SorobanArbitrary>::Prototype,
+                    >;
+                    let _: ::core::cmp::AssertParamIsEq<
+                        <CreateContractWithConstructorHostFnContext as soroban_sdk::testutils::arbitrary::SorobanArbitrary>::Prototype,
+                    >;
+                }
+            }
+            #[automatically_derived]
+            impl ::core::marker::StructuralPartialEq for ArbitraryContext {}
+            #[automatically_derived]
+            impl ::core::cmp::PartialEq for ArbitraryContext {
+                #[inline]
+                fn eq(&self, other: &ArbitraryContext) -> bool {
+                    let __self_discr = ::core::intrinsics::discriminant_value(self);
+                    let __arg1_discr = ::core::intrinsics::discriminant_value(other);
+                    __self_discr == __arg1_discr
+                        && match (self, other) {
+                            (
+                                ArbitraryContext::Contract(__self_0),
+                                ArbitraryContext::Contract(__arg1_0),
+                            ) => __self_0 == __arg1_0,
+                            (
+                                ArbitraryContext::CreateContractHostFn(__self_0),
+                                ArbitraryContext::CreateContractHostFn(__arg1_0),
+                            ) => __self_0 == __arg1_0,
+                            (
+                                ArbitraryContext::CreateContractWithCtorHostFn(__self_0),
+                                ArbitraryContext::CreateContractWithCtorHostFn(__arg1_0),
+                            ) => __self_0 == __arg1_0,
+                            _ => unsafe { ::core::intrinsics::unreachable() },
+                        }
+                }
+            }
+            #[automatically_derived]
+            impl ::core::cmp::Ord for ArbitraryContext {
+                #[inline]
+                fn cmp(&self, other: &ArbitraryContext) -> ::core::cmp::Ordering {
+                    let __self_discr = ::core::intrinsics::discriminant_value(self);
+                    let __arg1_discr = ::core::intrinsics::discriminant_value(other);
+                    match ::core::cmp::Ord::cmp(&__self_discr, &__arg1_discr) {
+                        ::core::cmp::Ordering::Equal => match (self, other) {
+                            (
+                                ArbitraryContext::Contract(__self_0),
+                                ArbitraryContext::Contract(__arg1_0),
+                            ) => ::core::cmp::Ord::cmp(__self_0, __arg1_0),
+                            (
+                                ArbitraryContext::CreateContractHostFn(__self_0),
+                                ArbitraryContext::CreateContractHostFn(__arg1_0),
+                            ) => ::core::cmp::Ord::cmp(__self_0, __arg1_0),
+                            (
+                                ArbitraryContext::CreateContractWithCtorHostFn(__self_0),
+                                ArbitraryContext::CreateContractWithCtorHostFn(__arg1_0),
+                            ) => ::core::cmp::Ord::cmp(__self_0, __arg1_0),
+                            _ => unsafe { ::core::intrinsics::unreachable() },
+                        },
+                        cmp => cmp,
+                    }
+                }
+            }
+            #[automatically_derived]
+            impl ::core::cmp::PartialOrd for ArbitraryContext {
+                #[inline]
+                fn partial_cmp(
+                    &self,
+                    other: &ArbitraryContext,
+                ) -> ::core::option::Option<::core::cmp::Ordering> {
+                    let __self_discr = ::core::intrinsics::discriminant_value(self);
+                    let __arg1_discr = ::core::intrinsics::discriminant_value(other);
+                    match (self, other) {
+                        (
+                            ArbitraryContext::Contract(__self_0),
+                            ArbitraryContext::Contract(__arg1_0),
+                        ) => ::core::cmp::PartialOrd::partial_cmp(__self_0, __arg1_0),
+                        (
+                            ArbitraryContext::CreateContractHostFn(__self_0),
+                            ArbitraryContext::CreateContractHostFn(__arg1_0),
+                        ) => ::core::cmp::PartialOrd::partial_cmp(__self_0, __arg1_0),
+                        (
+                            ArbitraryContext::CreateContractWithCtorHostFn(__self_0),
+                            ArbitraryContext::CreateContractWithCtorHostFn(__arg1_0),
+                        ) => ::core::cmp::PartialOrd::partial_cmp(__self_0, __arg1_0),
+                        _ => ::core::cmp::PartialOrd::partial_cmp(&__self_discr, &__arg1_discr),
+                    }
+                }
+            }
+            const _: () = {
+                #[allow(non_upper_case_globals)]
+                const RECURSIVE_COUNT_ArbitraryContext: ::std::thread::LocalKey<
+                    std::cell::Cell<u32>,
+                > = {
+                    #[inline]
+                    fn __init() -> std::cell::Cell<u32> {
+                        std::cell::Cell::new(0)
+                    }
+                    unsafe {
+                        ::std::thread::LocalKey::new(
+                            const {
+                                if ::std::mem::needs_drop::<std::cell::Cell<u32>>() {
+                                    |init| {
+                                        #[thread_local]
+                                        static VAL: ::std::thread::local_impl::LazyStorage<
+                                            std::cell::Cell<u32>,
+                                            (),
+                                        > = ::std::thread::local_impl::LazyStorage::new();
+                                        VAL.get_or_init(init, __init)
+                                    }
+                                } else {
+                                    |init| {
+                                        #[thread_local]
+                                        static VAL: ::std::thread::local_impl::LazyStorage<
+                                            std::cell::Cell<u32>,
+                                            !,
+                                        > = ::std::thread::local_impl::LazyStorage::new();
+                                        VAL.get_or_init(init, __init)
+                                    }
+                                }
+                            },
+                        )
+                    }
+                };
+                #[automatically_derived]
+                impl<'arbitrary> arbitrary::Arbitrary<'arbitrary> for ArbitraryContext {
+                    fn arbitrary(
+                        u: &mut arbitrary::Unstructured<'arbitrary>,
+                    ) -> arbitrary::Result<Self> {
+                        let guard_against_recursion = u.is_empty();
+                        if guard_against_recursion {
+                            RECURSIVE_COUNT_ArbitraryContext.with(|count| {
+                                if count.get() > 0 {
+                                    return Err(arbitrary::Error::NotEnoughData);
+                                }
+                                count.set(count.get() + 1);
+                                Ok(())
+                            })?;
+                        }
+                        let result = (|| {
+                            Ok(
+                                match (u64::from(<u32 as arbitrary::Arbitrary>::arbitrary(u)?)
+                                    * 3u64)
+                                    >> 32
+                                {
+                                    0u64 => ArbitraryContext::Contract(
+                                        arbitrary::Arbitrary::arbitrary(u)?,
+                                    ),
+                                    1u64 => ArbitraryContext::CreateContractHostFn(
+                                        arbitrary::Arbitrary::arbitrary(u)?,
+                                    ),
+                                    2u64 => ArbitraryContext::CreateContractWithCtorHostFn(
+                                        arbitrary::Arbitrary::arbitrary(u)?,
+                                    ),
+                                    _ => ::core::panicking::panic(
+                                        "internal error: entered unreachable code",
+                                    ),
+                                },
+                            )
+                        })();
+                        if guard_against_recursion {
+                            RECURSIVE_COUNT_ArbitraryContext.with(|count| {
+                                count.set(count.get() - 1);
+                            });
+                        }
+                        result
+                    }
+                    fn arbitrary_take_rest(
+                        mut u: arbitrary::Unstructured<'arbitrary>,
+                    ) -> arbitrary::Result<Self> {
+                        let guard_against_recursion = u.is_empty();
+                        if guard_against_recursion {
+                            RECURSIVE_COUNT_ArbitraryContext.with(|count| {
+                                if count.get() > 0 {
+                                    return Err(arbitrary::Error::NotEnoughData);
+                                }
+                                count.set(count.get() + 1);
+                                Ok(())
+                            })?;
+                        }
+                        let result = (|| {
+                            Ok(
+                                match (u64::from(<u32 as arbitrary::Arbitrary>::arbitrary(&mut u)?)
+                                    * 3u64)
+                                    >> 32
+                                {
+                                    0u64 => ArbitraryContext::Contract(
+                                        arbitrary::Arbitrary::arbitrary_take_rest(u)?,
+                                    ),
+                                    1u64 => ArbitraryContext::CreateContractHostFn(
+                                        arbitrary::Arbitrary::arbitrary_take_rest(u)?,
+                                    ),
+                                    2u64 => ArbitraryContext::CreateContractWithCtorHostFn(
+                                        arbitrary::Arbitrary::arbitrary_take_rest(u)?,
+                                    ),
+                                    _ => ::core::panicking::panic(
+                                        "internal error: entered unreachable code",
+                                    ),
+                                },
+                            )
+                        })();
+                        if guard_against_recursion {
+                            RECURSIVE_COUNT_ArbitraryContext.with(|count| {
+                                count.set(count.get() - 1);
+                            });
+                        }
+                        result
+                    }
+                    #[inline]
+                    fn size_hint(depth: usize) -> (usize, Option<usize>) {
+                        arbitrary::size_hint::and(
+                            <u32 as arbitrary::Arbitrary>::size_hint(depth),
+                            arbitrary::size_hint::recursion_guard(depth, |depth| {
+                                arbitrary::size_hint::or_all(
+                                        &[
+                                            arbitrary::size_hint::and_all(
+                                                &[
+                                                    <<ContractContext as soroban_sdk::testutils::arbitrary::SorobanArbitrary>::Prototype as arbitrary::Arbitrary>::size_hint(
+                                                        depth,
+                                                    ),
+                                                ],
+                                            ),
+                                            arbitrary::size_hint::and_all(
+                                                &[
+                                                    <<CreateContractHostFnContext as soroban_sdk::testutils::arbitrary::SorobanArbitrary>::Prototype as arbitrary::Arbitrary>::size_hint(
+                                                        depth,
+                                                    ),
+                                                ],
+                                            ),
+                                            arbitrary::size_hint::and_all(
+                                                &[
+                                                    <<CreateContractWithConstructorHostFnContext as soroban_sdk::testutils::arbitrary::SorobanArbitrary>::Prototype as arbitrary::Arbitrary>::size_hint(
+                                                        depth,
+                                                    ),
+                                                ],
+                                            ),
+                                        ],
+                                    )
+                            }),
+                        )
+                    }
+                }
+            };
+            impl soroban_sdk::testutils::arbitrary::SorobanArbitrary for Context {
+                type Prototype = ArbitraryContext;
+            }
+            impl soroban_sdk::TryFromVal<soroban_sdk::Env, ArbitraryContext> for Context {
+                type Error = soroban_sdk::ConversionError;
+                fn try_from_val(
+                    env: &soroban_sdk::Env,
+                    v: &ArbitraryContext,
+                ) -> std::result::Result<Self, Self::Error> {
+                    Ok(match v {
+                        ArbitraryContext::Contract(field_0) => {
+                            Context::Contract(soroban_sdk::IntoVal::into_val(field_0, env))
+                        }
+                        ArbitraryContext::CreateContractHostFn(field_0) => {
+                            Context::CreateContractHostFn(soroban_sdk::IntoVal::into_val(
+                                field_0, env,
+                            ))
+                        }
+                        ArbitraryContext::CreateContractWithCtorHostFn(field_0) => {
+                            Context::CreateContractWithCtorHostFn(soroban_sdk::IntoVal::into_val(
+                                field_0, env,
+                            ))
+                        }
+                    })
+                }
+            }
+        };
+        pub enum InvokerContractAuthEntry {
+            Contract(SubContractInvocation),
+            CreateContractHostFn(CreateContractHostFnContext),
+            CreateContractWithCtorHostFn(CreateContractWithConstructorHostFnContext),
+        }
+        #[automatically_derived]
+        impl ::core::fmt::Debug for InvokerContractAuthEntry {
+            #[inline]
+            fn fmt(&self, f: &mut ::core::fmt::Formatter) -> ::core::fmt::Result {
+                match self {
+                    InvokerContractAuthEntry::Contract(__self_0) => {
+                        ::core::fmt::Formatter::debug_tuple_field1_finish(f, "Contract", &__self_0)
+                    }
+                    InvokerContractAuthEntry::CreateContractHostFn(__self_0) => {
+                        ::core::fmt::Formatter::debug_tuple_field1_finish(
+                            f,
+                            "CreateContractHostFn",
+                            &__self_0,
+                        )
+                    }
+                    InvokerContractAuthEntry::CreateContractWithCtorHostFn(__self_0) => {
+                        ::core::fmt::Formatter::debug_tuple_field1_finish(
+                            f,
+                            "CreateContractWithCtorHostFn",
+                            &__self_0,
+                        )
+                    }
+                }
+            }
+        }
+        #[automatically_derived]
+        impl ::core::clone::Clone for InvokerContractAuthEntry {
+            #[inline]
+            fn clone(&self) -> InvokerContractAuthEntry {
+                match self {
+                    InvokerContractAuthEntry::Contract(__self_0) => {
+                        InvokerContractAuthEntry::Contract(::core::clone::Clone::clone(__self_0))
+                    }
+                    InvokerContractAuthEntry::CreateContractHostFn(__self_0) => {
+                        InvokerContractAuthEntry::CreateContractHostFn(::core::clone::Clone::clone(
+                            __self_0,
+                        ))
+                    }
+                    InvokerContractAuthEntry::CreateContractWithCtorHostFn(__self_0) => {
+                        InvokerContractAuthEntry::CreateContractWithCtorHostFn(
+                            ::core::clone::Clone::clone(__self_0),
+                        )
+                    }
+                }
+            }
+        }
+        #[automatically_derived]
+        impl ::core::cmp::Eq for InvokerContractAuthEntry {
+            #[inline]
+            #[doc(hidden)]
+            #[coverage(off)]
+            fn assert_receiver_is_total_eq(&self) -> () {
+                let _: ::core::cmp::AssertParamIsEq<SubContractInvocation>;
+                let _: ::core::cmp::AssertParamIsEq<CreateContractHostFnContext>;
+                let _: ::core::cmp::AssertParamIsEq<CreateContractWithConstructorHostFnContext>;
+            }
+        }
+        #[automatically_derived]
+        impl ::core::marker::StructuralPartialEq for InvokerContractAuthEntry {}
+        #[automatically_derived]
+        impl ::core::cmp::PartialEq for InvokerContractAuthEntry {
+            #[inline]
+            fn eq(&self, other: &InvokerContractAuthEntry) -> bool {
+                let __self_discr = ::core::intrinsics::discriminant_value(self);
+                let __arg1_discr = ::core::intrinsics::discriminant_value(other);
+                __self_discr == __arg1_discr
+                    && match (self, other) {
+                        (
+                            InvokerContractAuthEntry::Contract(__self_0),
+                            InvokerContractAuthEntry::Contract(__arg1_0),
+                        ) => __self_0 == __arg1_0,
+                        (
+                            InvokerContractAuthEntry::CreateContractHostFn(__self_0),
+                            InvokerContractAuthEntry::CreateContractHostFn(__arg1_0),
+                        ) => __self_0 == __arg1_0,
+                        (
+                            InvokerContractAuthEntry::CreateContractWithCtorHostFn(__self_0),
+                            InvokerContractAuthEntry::CreateContractWithCtorHostFn(__arg1_0),
+                        ) => __self_0 == __arg1_0,
+                        _ => unsafe { ::core::intrinsics::unreachable() },
+                    }
+            }
+        }
+        #[automatically_derived]
+        impl ::core::cmp::Ord for InvokerContractAuthEntry {
+            #[inline]
+            fn cmp(&self, other: &InvokerContractAuthEntry) -> ::core::cmp::Ordering {
+                let __self_discr = ::core::intrinsics::discriminant_value(self);
+                let __arg1_discr = ::core::intrinsics::discriminant_value(other);
+                match ::core::cmp::Ord::cmp(&__self_discr, &__arg1_discr) {
+                    ::core::cmp::Ordering::Equal => match (self, other) {
+                        (
+                            InvokerContractAuthEntry::Contract(__self_0),
+                            InvokerContractAuthEntry::Contract(__arg1_0),
+                        ) => ::core::cmp::Ord::cmp(__self_0, __arg1_0),
+                        (
+                            InvokerContractAuthEntry::CreateContractHostFn(__self_0),
+                            InvokerContractAuthEntry::CreateContractHostFn(__arg1_0),
+                        ) => ::core::cmp::Ord::cmp(__self_0, __arg1_0),
+                        (
+                            InvokerContractAuthEntry::CreateContractWithCtorHostFn(__self_0),
+                            InvokerContractAuthEntry::CreateContractWithCtorHostFn(__arg1_0),
+                        ) => ::core::cmp::Ord::cmp(__self_0, __arg1_0),
+                        _ => unsafe { ::core::intrinsics::unreachable() },
+                    },
+                    cmp => cmp,
+                }
+            }
+        }
+        #[automatically_derived]
+        impl ::core::cmp::PartialOrd for InvokerContractAuthEntry {
+            #[inline]
+            fn partial_cmp(
+                &self,
+                other: &InvokerContractAuthEntry,
+            ) -> ::core::option::Option<::core::cmp::Ordering> {
+                let __self_discr = ::core::intrinsics::discriminant_value(self);
+                let __arg1_discr = ::core::intrinsics::discriminant_value(other);
+                match (self, other) {
+                    (
+                        InvokerContractAuthEntry::Contract(__self_0),
+                        InvokerContractAuthEntry::Contract(__arg1_0),
+                    ) => ::core::cmp::PartialOrd::partial_cmp(__self_0, __arg1_0),
+                    (
+                        InvokerContractAuthEntry::CreateContractHostFn(__self_0),
+                        InvokerContractAuthEntry::CreateContractHostFn(__arg1_0),
+                    ) => ::core::cmp::PartialOrd::partial_cmp(__self_0, __arg1_0),
+                    (
+                        InvokerContractAuthEntry::CreateContractWithCtorHostFn(__self_0),
+                        InvokerContractAuthEntry::CreateContractWithCtorHostFn(__arg1_0),
+                    ) => ::core::cmp::PartialOrd::partial_cmp(__self_0, __arg1_0),
+                    _ => ::core::cmp::PartialOrd::partial_cmp(&__self_discr, &__arg1_discr),
+                }
+            }
+        }
+        impl soroban_sdk::SpecName for InvokerContractAuthEntry {
+            const SPEC_NAME: &'static str = {
+                const NAME: &str = "::test_ml_dsa::test::wasm::InvokerContractAuthEntry";
+                const CHECKED_NAME: &str = {
+                    if !(NAME.len() <= soroban_sdk::xdr::SC_SPEC_TYPE_NAME_LIMIT as usize) {
+                        {
+                            ::core::panicking::panic_fmt(
+                                format_args!(
+                                    "type `InvokerContractAuthEntry` full name including its module path is longer than the contract spec\'s type name limit, shorten its module path or name: `::test_ml_dsa::test::wasm::InvokerContractAuthEntry`",
+                                ),
+                            );
+                        }
+                    }
+                    NAME
+                };
+                CHECKED_NAME
+            };
+        }
+        impl soroban_sdk::SpecTypeDef for InvokerContractAuthEntry {
+            const SPEC_TYPE_DEF: soroban_sdk::xdr::r#const::ScSpecTypeDef =
+                soroban_sdk::xdr::r#const::ScSpecTypeDef::Udt(
+                    soroban_sdk::xdr::r#const::ScSpecTypeUdt {
+                        name: soroban_sdk::xdr::r#const::StringM::try_from_str_or_panic(
+                            <Self as soroban_sdk::SpecName>::SPEC_NAME,
+                        ),
+                    },
+                );
+        }
+        #[doc(hidden)]
+        #[allow(dead_code)]
+        static __SPEC_XDR_TYPE_INVOKERCONTRACTAUTHENTRY: [u8; InvokerContractAuthEntry::spec_xdr(
+        )
+        .len()] = InvokerContractAuthEntry::spec_xdr();
+        impl InvokerContractAuthEntry {
+            const __SPEC_XDR_ENTRY: soroban_sdk::xdr::r#const::ScSpecEntry = soroban_sdk::xdr::r#const::ScSpecEntry::UdtUnionV0(soroban_sdk::xdr::r#const::ScSpecUdtUnionV0 {
+                doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
+                lib: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
+                name: soroban_sdk::xdr::r#const::StringM::try_from_str_or_panic(
+                    <InvokerContractAuthEntry as soroban_sdk::SpecName>::SPEC_NAME,
+                ),
+                cases: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(
+                    &[
+                        soroban_sdk::xdr::r#const::ScSpecUdtUnionCaseV0::TupleV0(soroban_sdk::xdr::r#const::ScSpecUdtUnionCaseTupleV0 {
+                            doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(
+                                b"",
+                            ),
+                            name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(
+                                b"Contract",
+                            ),
+                            type_: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(
+                                &[
+                                    <SubContractInvocation as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
+                                ],
+                            ),
+                        }),
+                        soroban_sdk::xdr::r#const::ScSpecUdtUnionCaseV0::TupleV0(soroban_sdk::xdr::r#const::ScSpecUdtUnionCaseTupleV0 {
+                            doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(
+                                b"",
+                            ),
+                            name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(
+                                b"CreateContractHostFn",
+                            ),
+                            type_: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(
+                                &[
+                                    <CreateContractHostFnContext as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
+                                ],
+                            ),
+                        }),
+                        soroban_sdk::xdr::r#const::ScSpecUdtUnionCaseV0::TupleV0(soroban_sdk::xdr::r#const::ScSpecUdtUnionCaseTupleV0 {
+                            doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(
+                                b"",
+                            ),
+                            name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(
+                                b"CreateContractWithCtorHostFn",
+                            ),
+                            type_: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(
+                                &[
+                                    <CreateContractWithConstructorHostFnContext as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
+                                ],
+                            ),
+                        }),
+                    ],
+                ),
+            });
+            pub const fn spec_xdr(
+            ) -> [u8; InvokerContractAuthEntry::__SPEC_XDR_ENTRY.const_xdr_len()] {
+                const { InvokerContractAuthEntry::__SPEC_XDR_ENTRY.const_to_xdr() }
+            }
+        }
+        impl soroban_sdk::SpecAnchor for InvokerContractAuthEntry {
+            #[inline(never)]
+            fn spec_anchor() {}
+        }
+        impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for InvokerContractAuthEntry {
+            type Error = soroban_sdk::ConversionError;
+            #[inline(always)]
+            fn try_from_val(
+                env: &soroban_sdk::Env,
+                val: &soroban_sdk::Val,
+            ) -> Result<Self, soroban_sdk::ConversionError> {
+                <InvokerContractAuthEntry as soroban_sdk::SpecAnchor>::spec_anchor();
+                use soroban_sdk::{EnvBase, TryFromVal, TryIntoVal};
+                const CASES: &'static [&'static str] = &[
+                    "Contract",
+                    "CreateContractHostFn",
+                    "CreateContractWithCtorHostFn",
+                ];
+                let vec: soroban_sdk::Vec<soroban_sdk::Val> = val.try_into_val(env)?;
+                let mut iter = vec.try_iter();
+                let discriminant: soroban_sdk::Symbol = iter
+                    .next()
+                    .ok_or(soroban_sdk::ConversionError)??
+                    .try_into_val(env)
+                    .map_err(|_| soroban_sdk::ConversionError)?;
+                Ok(
+                    match u32::from(env.symbol_index_in_strs(discriminant.to_symbol_val(), CASES)?)
+                        as usize
+                    {
+                        0 => {
+                            if iter.len() > 1usize {
+                                return Err(soroban_sdk::ConversionError);
+                            }
+                            Self::Contract(
+                                iter.next()
+                                    .ok_or(soroban_sdk::ConversionError)??
+                                    .try_into_val(env)?,
+                            )
+                        }
+                        1 => {
+                            if iter.len() > 1usize {
+                                return Err(soroban_sdk::ConversionError);
+                            }
+                            Self::CreateContractHostFn(
+                                iter.next()
+                                    .ok_or(soroban_sdk::ConversionError)??
+                                    .try_into_val(env)?,
+                            )
+                        }
+                        2 => {
+                            if iter.len() > 1usize {
+                                return Err(soroban_sdk::ConversionError);
+                            }
+                            Self::CreateContractWithCtorHostFn(
+                                iter.next()
+                                    .ok_or(soroban_sdk::ConversionError)??
+                                    .try_into_val(env)?,
+                            )
+                        }
+                        _ => Err(soroban_sdk::ConversionError {})?,
+                    },
+                )
+            }
+        }
+        impl soroban_sdk::TryFromVal<soroban_sdk::Env, InvokerContractAuthEntry> for soroban_sdk::Val {
+            type Error = soroban_sdk::ConversionError;
+            #[inline(always)]
+            fn try_from_val(
+                env: &soroban_sdk::Env,
+                val: &InvokerContractAuthEntry,
+            ) -> Result<Self, soroban_sdk::ConversionError> {
+                <InvokerContractAuthEntry as soroban_sdk::SpecAnchor>::spec_anchor();
+                use soroban_sdk::{TryFromVal, TryIntoVal};
+                match val {
+                    InvokerContractAuthEntry::Contract(ref value0) => {
+                        let tup: (soroban_sdk::Val, soroban_sdk::Val) = (
+                            soroban_sdk::Symbol::try_from_val(env, &"Contract")?.to_val(),
+                            value0.try_into_val(env)?,
+                        );
+                        tup.try_into_val(env).map_err(Into::into)
+                    }
+                    InvokerContractAuthEntry::CreateContractHostFn(ref value0) => {
+                        let tup: (soroban_sdk::Val, soroban_sdk::Val) = (
+                            soroban_sdk::Symbol::try_from_val(env, &"CreateContractHostFn")?
+                                .to_val(),
+                            value0.try_into_val(env)?,
+                        );
+                        tup.try_into_val(env).map_err(Into::into)
+                    }
+                    InvokerContractAuthEntry::CreateContractWithCtorHostFn(ref value0) => {
+                        let tup: (soroban_sdk::Val, soroban_sdk::Val) = (
+                            soroban_sdk::Symbol::try_from_val(
+                                env,
+                                &"CreateContractWithCtorHostFn",
+                            )?
+                            .to_val(),
+                            value0.try_into_val(env)?,
+                        );
+                        tup.try_into_val(env).map_err(Into::into)
+                    }
+                }
+            }
+        }
+        impl soroban_sdk::TryFromVal<soroban_sdk::Env, &InvokerContractAuthEntry> for soroban_sdk::Val {
+            type Error = soroban_sdk::ConversionError;
+            #[inline(always)]
+            fn try_from_val(
+                env: &soroban_sdk::Env,
+                val: &&InvokerContractAuthEntry,
+            ) -> Result<Self, soroban_sdk::ConversionError> {
+                <_ as soroban_sdk::TryFromVal<
+                    soroban_sdk::Env,
+                    InvokerContractAuthEntry,
+                >>::try_from_val(env, *val)
+            }
+        }
+        impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::xdr::ScVec>
+            for InvokerContractAuthEntry
+        {
+            type Error = soroban_sdk::xdr::Error;
+            #[inline(always)]
+            fn try_from_val(
+                env: &soroban_sdk::Env,
+                val: &soroban_sdk::xdr::ScVec,
+            ) -> Result<Self, soroban_sdk::xdr::Error> {
+                use soroban_sdk::xdr::Validate;
+                use soroban_sdk::TryIntoVal;
+                let vec = val;
+                let mut iter = vec.iter();
+                let discriminant: soroban_sdk::xdr::ScSymbol = iter
+                    .next()
+                    .ok_or(soroban_sdk::xdr::Error::Invalid)?
+                    .clone()
+                    .try_into()
+                    .map_err(|_| soroban_sdk::xdr::Error::Invalid)?;
+                let discriminant_name: &str = &discriminant.to_utf8_string()?;
+                Ok(match discriminant_name {
+                    "Contract" => {
+                        if iter.len() > 1usize {
+                            return Err(soroban_sdk::xdr::Error::Invalid);
+                        }
+                        let rv0: soroban_sdk::Val = iter
+                            .next()
+                            .ok_or(soroban_sdk::xdr::Error::Invalid)?
+                            .try_into_val(env)
+                            .map_err(|_| soroban_sdk::xdr::Error::Invalid)?;
+                        Self::Contract(
+                            rv0.try_into_val(env)
+                                .map_err(|_| soroban_sdk::xdr::Error::Invalid)?,
+                        )
+                    }
+                    "CreateContractHostFn" => {
+                        if iter.len() > 1usize {
+                            return Err(soroban_sdk::xdr::Error::Invalid);
+                        }
+                        let rv0: soroban_sdk::Val = iter
+                            .next()
+                            .ok_or(soroban_sdk::xdr::Error::Invalid)?
+                            .try_into_val(env)
+                            .map_err(|_| soroban_sdk::xdr::Error::Invalid)?;
+                        Self::CreateContractHostFn(
+                            rv0.try_into_val(env)
+                                .map_err(|_| soroban_sdk::xdr::Error::Invalid)?,
+                        )
+                    }
+                    "CreateContractWithCtorHostFn" => {
+                        if iter.len() > 1usize {
+                            return Err(soroban_sdk::xdr::Error::Invalid);
+                        }
+                        let rv0: soroban_sdk::Val = iter
+                            .next()
+                            .ok_or(soroban_sdk::xdr::Error::Invalid)?
+                            .try_into_val(env)
+                            .map_err(|_| soroban_sdk::xdr::Error::Invalid)?;
+                        Self::CreateContractWithCtorHostFn(
+                            rv0.try_into_val(env)
+                                .map_err(|_| soroban_sdk::xdr::Error::Invalid)?,
+                        )
+                    }
+                    _ => Err(soroban_sdk::xdr::Error::Invalid)?,
+                })
+            }
+        }
+        impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::xdr::ScVal>
+            for InvokerContractAuthEntry
+        {
+            type Error = soroban_sdk::xdr::Error;
+            #[inline(always)]
+            fn try_from_val(
+                env: &soroban_sdk::Env,
+                val: &soroban_sdk::xdr::ScVal,
+            ) -> Result<Self, soroban_sdk::xdr::Error> {
+                if let soroban_sdk::xdr::ScVal::Vec(Some(vec)) = val {
+                    <_ as soroban_sdk::TryFromVal<_, _>>::try_from_val(env, vec)
+                } else {
+                    Err(soroban_sdk::xdr::Error::Invalid)
+                }
+            }
+        }
+        impl TryFrom<&InvokerContractAuthEntry> for soroban_sdk::xdr::ScVec {
+            type Error = soroban_sdk::xdr::Error;
+            #[inline(always)]
+            fn try_from(val: &InvokerContractAuthEntry) -> Result<Self, soroban_sdk::xdr::Error> {
+                extern crate alloc;
+                Ok(match val {
+                    InvokerContractAuthEntry::Contract(value0) => (
+                        soroban_sdk::xdr::ScSymbol(
+                            "Contract"
+                                .try_into()
+                                .map_err(|_| soroban_sdk::xdr::Error::Invalid)?,
+                        ),
+                        value0,
+                    )
+                        .try_into()
+                        .map_err(|_| soroban_sdk::xdr::Error::Invalid)?,
+                    InvokerContractAuthEntry::CreateContractHostFn(value0) => (
+                        soroban_sdk::xdr::ScSymbol(
+                            "CreateContractHostFn"
+                                .try_into()
+                                .map_err(|_| soroban_sdk::xdr::Error::Invalid)?,
+                        ),
+                        value0,
+                    )
+                        .try_into()
+                        .map_err(|_| soroban_sdk::xdr::Error::Invalid)?,
+                    InvokerContractAuthEntry::CreateContractWithCtorHostFn(value0) => (
+                        soroban_sdk::xdr::ScSymbol(
+                            "CreateContractWithCtorHostFn"
+                                .try_into()
+                                .map_err(|_| soroban_sdk::xdr::Error::Invalid)?,
+                        ),
+                        value0,
+                    )
+                        .try_into()
+                        .map_err(|_| soroban_sdk::xdr::Error::Invalid)?,
+                })
+            }
+        }
+        impl TryFrom<InvokerContractAuthEntry> for soroban_sdk::xdr::ScVec {
+            type Error = soroban_sdk::xdr::Error;
+            #[inline(always)]
+            fn try_from(val: InvokerContractAuthEntry) -> Result<Self, soroban_sdk::xdr::Error> {
+                (&val).try_into()
+            }
+        }
+        impl TryFrom<&InvokerContractAuthEntry> for soroban_sdk::xdr::ScVal {
+            type Error = soroban_sdk::xdr::Error;
+            #[inline(always)]
+            fn try_from(val: &InvokerContractAuthEntry) -> Result<Self, soroban_sdk::xdr::Error> {
+                Ok(soroban_sdk::xdr::ScVal::Vec(Some(val.try_into()?)))
+            }
+        }
+        impl TryFrom<InvokerContractAuthEntry> for soroban_sdk::xdr::ScVal {
+            type Error = soroban_sdk::xdr::Error;
+            #[inline(always)]
+            fn try_from(val: InvokerContractAuthEntry) -> Result<Self, soroban_sdk::xdr::Error> {
+                (&val).try_into()
+            }
+        }
+        const _: () = {
+            use soroban_sdk::testutils::arbitrary::arbitrary;
+            use soroban_sdk::testutils::arbitrary::std;
+            pub enum ArbitraryInvokerContractAuthEntry {
+                Contract(
+                    <SubContractInvocation as soroban_sdk::testutils::arbitrary::SorobanArbitrary>::Prototype,
+                ),
+                CreateContractHostFn(
+                    <CreateContractHostFnContext as soroban_sdk::testutils::arbitrary::SorobanArbitrary>::Prototype,
+                ),
+                CreateContractWithCtorHostFn(
+                    <CreateContractWithConstructorHostFnContext as soroban_sdk::testutils::arbitrary::SorobanArbitrary>::Prototype,
+                ),
+            }
+            #[automatically_derived]
+            impl ::core::fmt::Debug for ArbitraryInvokerContractAuthEntry {
+                #[inline]
+                fn fmt(&self, f: &mut ::core::fmt::Formatter) -> ::core::fmt::Result {
+                    match self {
+                        ArbitraryInvokerContractAuthEntry::Contract(__self_0) => {
+                            ::core::fmt::Formatter::debug_tuple_field1_finish(
+                                f, "Contract", &__self_0,
+                            )
+                        }
+                        ArbitraryInvokerContractAuthEntry::CreateContractHostFn(__self_0) => {
+                            ::core::fmt::Formatter::debug_tuple_field1_finish(
+                                f,
+                                "CreateContractHostFn",
+                                &__self_0,
+                            )
+                        }
+                        ArbitraryInvokerContractAuthEntry::CreateContractWithCtorHostFn(
+                            __self_0,
+                        ) => ::core::fmt::Formatter::debug_tuple_field1_finish(
+                            f,
+                            "CreateContractWithCtorHostFn",
+                            &__self_0,
+                        ),
+                    }
+                }
+            }
+            #[automatically_derived]
+            impl ::core::clone::Clone for ArbitraryInvokerContractAuthEntry {
+                #[inline]
+                fn clone(&self) -> ArbitraryInvokerContractAuthEntry {
+                    match self {
+                        ArbitraryInvokerContractAuthEntry::Contract(__self_0) => {
+                            ArbitraryInvokerContractAuthEntry::Contract(
+                                ::core::clone::Clone::clone(__self_0),
+                            )
+                        }
+                        ArbitraryInvokerContractAuthEntry::CreateContractHostFn(__self_0) => {
+                            ArbitraryInvokerContractAuthEntry::CreateContractHostFn(
+                                ::core::clone::Clone::clone(__self_0),
+                            )
+                        }
+                        ArbitraryInvokerContractAuthEntry::CreateContractWithCtorHostFn(
+                            __self_0,
+                        ) => ArbitraryInvokerContractAuthEntry::CreateContractWithCtorHostFn(
+                            ::core::clone::Clone::clone(__self_0),
+                        ),
+                    }
+                }
+            }
+            #[automatically_derived]
+            impl ::core::cmp::Eq for ArbitraryInvokerContractAuthEntry {
+                #[inline]
+                #[doc(hidden)]
+                #[coverage(off)]
+                fn assert_receiver_is_total_eq(&self) -> () {
+                    let _: ::core::cmp::AssertParamIsEq<
+                        <SubContractInvocation as soroban_sdk::testutils::arbitrary::SorobanArbitrary>::Prototype,
+                    >;
+                    let _: ::core::cmp::AssertParamIsEq<
+                        <CreateContractHostFnContext as soroban_sdk::testutils::arbitrary::SorobanArbitrary>::Prototype,
+                    >;
+                    let _: ::core::cmp::AssertParamIsEq<
+                        <CreateContractWithConstructorHostFnContext as soroban_sdk::testutils::arbitrary::SorobanArbitrary>::Prototype,
+                    >;
+                }
+            }
+            #[automatically_derived]
+            impl ::core::marker::StructuralPartialEq for ArbitraryInvokerContractAuthEntry {}
+            #[automatically_derived]
+            impl ::core::cmp::PartialEq for ArbitraryInvokerContractAuthEntry {
+                #[inline]
+                fn eq(&self, other: &ArbitraryInvokerContractAuthEntry) -> bool {
+                    let __self_discr = ::core::intrinsics::discriminant_value(self);
+                    let __arg1_discr = ::core::intrinsics::discriminant_value(other);
+                    __self_discr == __arg1_discr
+                        && match (self, other) {
+                            (
+                                ArbitraryInvokerContractAuthEntry::Contract(__self_0),
+                                ArbitraryInvokerContractAuthEntry::Contract(__arg1_0),
+                            ) => __self_0 == __arg1_0,
+                            (
+                                ArbitraryInvokerContractAuthEntry::CreateContractHostFn(__self_0),
+                                ArbitraryInvokerContractAuthEntry::CreateContractHostFn(__arg1_0),
+                            ) => __self_0 == __arg1_0,
+                            (
+                                ArbitraryInvokerContractAuthEntry::CreateContractWithCtorHostFn(
+                                    __self_0,
+                                ),
+                                ArbitraryInvokerContractAuthEntry::CreateContractWithCtorHostFn(
+                                    __arg1_0,
+                                ),
+                            ) => __self_0 == __arg1_0,
+                            _ => unsafe { ::core::intrinsics::unreachable() },
+                        }
+                }
+            }
+            #[automatically_derived]
+            impl ::core::cmp::Ord for ArbitraryInvokerContractAuthEntry {
+                #[inline]
+                fn cmp(&self, other: &ArbitraryInvokerContractAuthEntry) -> ::core::cmp::Ordering {
+                    let __self_discr = ::core::intrinsics::discriminant_value(self);
+                    let __arg1_discr = ::core::intrinsics::discriminant_value(other);
+                    match ::core::cmp::Ord::cmp(&__self_discr, &__arg1_discr) {
+                        ::core::cmp::Ordering::Equal => match (self, other) {
+                            (
+                                ArbitraryInvokerContractAuthEntry::Contract(__self_0),
+                                ArbitraryInvokerContractAuthEntry::Contract(__arg1_0),
+                            ) => ::core::cmp::Ord::cmp(__self_0, __arg1_0),
+                            (
+                                ArbitraryInvokerContractAuthEntry::CreateContractHostFn(__self_0),
+                                ArbitraryInvokerContractAuthEntry::CreateContractHostFn(__arg1_0),
+                            ) => ::core::cmp::Ord::cmp(__self_0, __arg1_0),
+                            (
+                                ArbitraryInvokerContractAuthEntry::CreateContractWithCtorHostFn(
+                                    __self_0,
+                                ),
+                                ArbitraryInvokerContractAuthEntry::CreateContractWithCtorHostFn(
+                                    __arg1_0,
+                                ),
+                            ) => ::core::cmp::Ord::cmp(__self_0, __arg1_0),
+                            _ => unsafe { ::core::intrinsics::unreachable() },
+                        },
+                        cmp => cmp,
+                    }
+                }
+            }
+            #[automatically_derived]
+            impl ::core::cmp::PartialOrd for ArbitraryInvokerContractAuthEntry {
+                #[inline]
+                fn partial_cmp(
+                    &self,
+                    other: &ArbitraryInvokerContractAuthEntry,
+                ) -> ::core::option::Option<::core::cmp::Ordering> {
+                    let __self_discr = ::core::intrinsics::discriminant_value(self);
+                    let __arg1_discr = ::core::intrinsics::discriminant_value(other);
+                    match (self, other) {
+                        (
+                            ArbitraryInvokerContractAuthEntry::Contract(__self_0),
+                            ArbitraryInvokerContractAuthEntry::Contract(__arg1_0),
+                        ) => ::core::cmp::PartialOrd::partial_cmp(__self_0, __arg1_0),
+                        (
+                            ArbitraryInvokerContractAuthEntry::CreateContractHostFn(__self_0),
+                            ArbitraryInvokerContractAuthEntry::CreateContractHostFn(__arg1_0),
+                        ) => ::core::cmp::PartialOrd::partial_cmp(__self_0, __arg1_0),
+                        (
+                            ArbitraryInvokerContractAuthEntry::CreateContractWithCtorHostFn(
+                                __self_0,
+                            ),
+                            ArbitraryInvokerContractAuthEntry::CreateContractWithCtorHostFn(
+                                __arg1_0,
+                            ),
+                        ) => ::core::cmp::PartialOrd::partial_cmp(__self_0, __arg1_0),
+                        _ => ::core::cmp::PartialOrd::partial_cmp(&__self_discr, &__arg1_discr),
+                    }
+                }
+            }
+            const _: () = {
+                #[allow(non_upper_case_globals)]
+                const RECURSIVE_COUNT_ArbitraryInvokerContractAuthEntry: ::std::thread::LocalKey<
+                    std::cell::Cell<u32>,
+                > = {
+                    #[inline]
+                    fn __init() -> std::cell::Cell<u32> {
+                        std::cell::Cell::new(0)
+                    }
+                    unsafe {
+                        ::std::thread::LocalKey::new(
+                            const {
+                                if ::std::mem::needs_drop::<std::cell::Cell<u32>>() {
+                                    |init| {
+                                        #[thread_local]
+                                        static VAL: ::std::thread::local_impl::LazyStorage<
+                                            std::cell::Cell<u32>,
+                                            (),
+                                        > = ::std::thread::local_impl::LazyStorage::new();
+                                        VAL.get_or_init(init, __init)
+                                    }
+                                } else {
+                                    |init| {
+                                        #[thread_local]
+                                        static VAL: ::std::thread::local_impl::LazyStorage<
+                                            std::cell::Cell<u32>,
+                                            !,
+                                        > = ::std::thread::local_impl::LazyStorage::new();
+                                        VAL.get_or_init(init, __init)
+                                    }
+                                }
+                            },
+                        )
+                    }
+                };
+                #[automatically_derived]
+                impl<'arbitrary> arbitrary::Arbitrary<'arbitrary> for ArbitraryInvokerContractAuthEntry {
+                    fn arbitrary(
+                        u: &mut arbitrary::Unstructured<'arbitrary>,
+                    ) -> arbitrary::Result<Self> {
+                        let guard_against_recursion = u.is_empty();
+                        if guard_against_recursion {
+                            RECURSIVE_COUNT_ArbitraryInvokerContractAuthEntry.with(|count| {
+                                if count.get() > 0 {
+                                    return Err(arbitrary::Error::NotEnoughData);
+                                }
+                                count.set(count.get() + 1);
+                                Ok(())
+                            })?;
+                        }
+                        let result = (|| {
+                            Ok(
+                                match (u64::from(
+                                    <u32 as arbitrary::Arbitrary>::arbitrary(u)?,
+                                ) * 3u64) >> 32
+                                {
+                                    0u64 => {
+                                        ArbitraryInvokerContractAuthEntry::Contract(
+                                            arbitrary::Arbitrary::arbitrary(u)?,
+                                        )
+                                    }
+                                    1u64 => {
+                                        ArbitraryInvokerContractAuthEntry::CreateContractHostFn(
+                                            arbitrary::Arbitrary::arbitrary(u)?,
+                                        )
+                                    }
+                                    2u64 => {
+                                        ArbitraryInvokerContractAuthEntry::CreateContractWithCtorHostFn(
+                                            arbitrary::Arbitrary::arbitrary(u)?,
+                                        )
+                                    }
+                                    _ => {
+                                        ::core::panicking::panic(
+                                            "internal error: entered unreachable code",
+                                        )
+                                    }
+                                },
+                            )
+                        })();
+                        if guard_against_recursion {
+                            RECURSIVE_COUNT_ArbitraryInvokerContractAuthEntry.with(|count| {
+                                count.set(count.get() - 1);
+                            });
+                        }
+                        result
+                    }
+                    fn arbitrary_take_rest(
+                        mut u: arbitrary::Unstructured<'arbitrary>,
+                    ) -> arbitrary::Result<Self> {
+                        let guard_against_recursion = u.is_empty();
+                        if guard_against_recursion {
+                            RECURSIVE_COUNT_ArbitraryInvokerContractAuthEntry.with(|count| {
+                                if count.get() > 0 {
+                                    return Err(arbitrary::Error::NotEnoughData);
+                                }
+                                count.set(count.get() + 1);
+                                Ok(())
+                            })?;
+                        }
+                        let result = (|| {
+                            Ok(
+                                match (u64::from(
+                                    <u32 as arbitrary::Arbitrary>::arbitrary(&mut u)?,
+                                ) * 3u64) >> 32
+                                {
+                                    0u64 => {
+                                        ArbitraryInvokerContractAuthEntry::Contract(
+                                            arbitrary::Arbitrary::arbitrary_take_rest(u)?,
+                                        )
+                                    }
+                                    1u64 => {
+                                        ArbitraryInvokerContractAuthEntry::CreateContractHostFn(
+                                            arbitrary::Arbitrary::arbitrary_take_rest(u)?,
+                                        )
+                                    }
+                                    2u64 => {
+                                        ArbitraryInvokerContractAuthEntry::CreateContractWithCtorHostFn(
+                                            arbitrary::Arbitrary::arbitrary_take_rest(u)?,
+                                        )
+                                    }
+                                    _ => {
+                                        ::core::panicking::panic(
+                                            "internal error: entered unreachable code",
+                                        )
+                                    }
+                                },
+                            )
+                        })();
+                        if guard_against_recursion {
+                            RECURSIVE_COUNT_ArbitraryInvokerContractAuthEntry.with(|count| {
+                                count.set(count.get() - 1);
+                            });
+                        }
+                        result
+                    }
+                    #[inline]
+                    fn size_hint(depth: usize) -> (usize, Option<usize>) {
+                        arbitrary::size_hint::and(
+                            <u32 as arbitrary::Arbitrary>::size_hint(depth),
+                            arbitrary::size_hint::recursion_guard(depth, |depth| {
+                                arbitrary::size_hint::or_all(
+                                        &[
+                                            arbitrary::size_hint::and_all(
+                                                &[
+                                                    <<SubContractInvocation as soroban_sdk::testutils::arbitrary::SorobanArbitrary>::Prototype as arbitrary::Arbitrary>::size_hint(
+                                                        depth,
+                                                    ),
+                                                ],
+                                            ),
+                                            arbitrary::size_hint::and_all(
+                                                &[
+                                                    <<CreateContractHostFnContext as soroban_sdk::testutils::arbitrary::SorobanArbitrary>::Prototype as arbitrary::Arbitrary>::size_hint(
+                                                        depth,
+                                                    ),
+                                                ],
+                                            ),
+                                            arbitrary::size_hint::and_all(
+                                                &[
+                                                    <<CreateContractWithConstructorHostFnContext as soroban_sdk::testutils::arbitrary::SorobanArbitrary>::Prototype as arbitrary::Arbitrary>::size_hint(
+                                                        depth,
+                                                    ),
+                                                ],
+                                            ),
+                                        ],
+                                    )
+                            }),
+                        )
+                    }
+                }
+            };
+            impl soroban_sdk::testutils::arbitrary::SorobanArbitrary for InvokerContractAuthEntry {
+                type Prototype = ArbitraryInvokerContractAuthEntry;
+            }
+            impl soroban_sdk::TryFromVal<soroban_sdk::Env, ArbitraryInvokerContractAuthEntry>
+                for InvokerContractAuthEntry
+            {
+                type Error = soroban_sdk::ConversionError;
+                fn try_from_val(
+                    env: &soroban_sdk::Env,
+                    v: &ArbitraryInvokerContractAuthEntry,
+                ) -> std::result::Result<Self, Self::Error> {
+                    Ok(match v {
+                        ArbitraryInvokerContractAuthEntry::Contract(field_0) => {
+                            InvokerContractAuthEntry::Contract(soroban_sdk::IntoVal::into_val(
+                                field_0, env,
+                            ))
+                        }
+                        ArbitraryInvokerContractAuthEntry::CreateContractHostFn(field_0) => {
+                            InvokerContractAuthEntry::CreateContractHostFn(
+                                soroban_sdk::IntoVal::into_val(field_0, env),
+                            )
+                        }
+                        ArbitraryInvokerContractAuthEntry::CreateContractWithCtorHostFn(
+                            field_0,
+                        ) => InvokerContractAuthEntry::CreateContractWithCtorHostFn(
+                            soroban_sdk::IntoVal::into_val(field_0, env),
+                        ),
+                    })
+                }
+            }
+        };
+        pub enum Executable {
+            Wasm(soroban_sdk::BytesN<32>),
+            StellarAsset,
+            Account,
+        }
+        #[automatically_derived]
+        impl ::core::fmt::Debug for Executable {
+            #[inline]
+            fn fmt(&self, f: &mut ::core::fmt::Formatter) -> ::core::fmt::Result {
+                match self {
+                    Executable::Wasm(__self_0) => {
+                        ::core::fmt::Formatter::debug_tuple_field1_finish(f, "Wasm", &__self_0)
+                    }
+                    Executable::StellarAsset => {
+                        ::core::fmt::Formatter::write_str(f, "StellarAsset")
+                    }
+                    Executable::Account => ::core::fmt::Formatter::write_str(f, "Account"),
+                }
+            }
+        }
+        #[automatically_derived]
+        impl ::core::clone::Clone for Executable {
+            #[inline]
+            fn clone(&self) -> Executable {
+                match self {
+                    Executable::Wasm(__self_0) => {
+                        Executable::Wasm(::core::clone::Clone::clone(__self_0))
+                    }
+                    Executable::StellarAsset => Executable::StellarAsset,
+                    Executable::Account => Executable::Account,
+                }
+            }
+        }
+        #[automatically_derived]
+        impl ::core::cmp::Eq for Executable {
+            #[inline]
+            #[doc(hidden)]
+            #[coverage(off)]
+            fn assert_receiver_is_total_eq(&self) -> () {
+                let _: ::core::cmp::AssertParamIsEq<soroban_sdk::BytesN<32>>;
+            }
+        }
+        #[automatically_derived]
+        impl ::core::marker::StructuralPartialEq for Executable {}
+        #[automatically_derived]
+        impl ::core::cmp::PartialEq for Executable {
+            #[inline]
+            fn eq(&self, other: &Executable) -> bool {
+                let __self_discr = ::core::intrinsics::discriminant_value(self);
+                let __arg1_discr = ::core::intrinsics::discriminant_value(other);
+                __self_discr == __arg1_discr
+                    && match (self, other) {
+                        (Executable::Wasm(__self_0), Executable::Wasm(__arg1_0)) => {
+                            __self_0 == __arg1_0
+                        }
+                        _ => true,
+                    }
+            }
+        }
+        #[automatically_derived]
+        impl ::core::cmp::Ord for Executable {
+            #[inline]
+            fn cmp(&self, other: &Executable) -> ::core::cmp::Ordering {
+                let __self_discr = ::core::intrinsics::discriminant_value(self);
+                let __arg1_discr = ::core::intrinsics::discriminant_value(other);
+                match ::core::cmp::Ord::cmp(&__self_discr, &__arg1_discr) {
+                    ::core::cmp::Ordering::Equal => match (self, other) {
+                        (Executable::Wasm(__self_0), Executable::Wasm(__arg1_0)) => {
+                            ::core::cmp::Ord::cmp(__self_0, __arg1_0)
+                        }
+                        _ => ::core::cmp::Ordering::Equal,
+                    },
+                    cmp => cmp,
+                }
+            }
+        }
+        #[automatically_derived]
+        impl ::core::cmp::PartialOrd for Executable {
+            #[inline]
+            fn partial_cmp(
+                &self,
+                other: &Executable,
+            ) -> ::core::option::Option<::core::cmp::Ordering> {
+                let __self_discr = ::core::intrinsics::discriminant_value(self);
+                let __arg1_discr = ::core::intrinsics::discriminant_value(other);
+                match (self, other) {
+                    (Executable::Wasm(__self_0), Executable::Wasm(__arg1_0)) => {
+                        ::core::cmp::PartialOrd::partial_cmp(__self_0, __arg1_0)
+                    }
+                    _ => ::core::cmp::PartialOrd::partial_cmp(&__self_discr, &__arg1_discr),
+                }
+            }
+        }
+        impl soroban_sdk::SpecName for Executable {
+            const SPEC_NAME: &'static str = {
+                const NAME: &str = "::test_ml_dsa::test::wasm::Executable";
+                const CHECKED_NAME: &str = {
+                    if !(NAME.len() <= soroban_sdk::xdr::SC_SPEC_TYPE_NAME_LIMIT as usize) {
+                        {
+                            ::core::panicking::panic_fmt(
+                                format_args!(
+                                    "type `Executable` full name including its module path is longer than the contract spec\'s type name limit, shorten its module path or name: `::test_ml_dsa::test::wasm::Executable`",
+                                ),
+                            );
+                        }
+                    }
+                    NAME
+                };
+                CHECKED_NAME
+            };
+        }
+        impl soroban_sdk::SpecTypeDef for Executable {
+            const SPEC_TYPE_DEF: soroban_sdk::xdr::r#const::ScSpecTypeDef =
+                soroban_sdk::xdr::r#const::ScSpecTypeDef::Udt(
+                    soroban_sdk::xdr::r#const::ScSpecTypeUdt {
+                        name: soroban_sdk::xdr::r#const::StringM::try_from_str_or_panic(
+                            <Self as soroban_sdk::SpecName>::SPEC_NAME,
+                        ),
+                    },
+                );
+        }
+        #[doc(hidden)]
+        #[allow(dead_code)]
+        static __SPEC_XDR_TYPE_EXECUTABLE: [u8; Executable::spec_xdr().len()] =
+            Executable::spec_xdr();
+        impl Executable {
+            const __SPEC_XDR_ENTRY: soroban_sdk::xdr::r#const::ScSpecEntry = soroban_sdk::xdr::r#const::ScSpecEntry::UdtUnionV0(soroban_sdk::xdr::r#const::ScSpecUdtUnionV0 {
+                doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
+                lib: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
+                name: soroban_sdk::xdr::r#const::StringM::try_from_str_or_panic(
+                    <Executable as soroban_sdk::SpecName>::SPEC_NAME,
+                ),
+                cases: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(
+                    &[
+                        soroban_sdk::xdr::r#const::ScSpecUdtUnionCaseV0::TupleV0(soroban_sdk::xdr::r#const::ScSpecUdtUnionCaseTupleV0 {
+                            doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(
+                                b"",
+                            ),
+                            name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(
+                                b"Wasm",
+                            ),
+                            type_: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(
+                                &[
+                                    <soroban_sdk::BytesN<
+                                        32,
+                                    > as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
+                                ],
+                            ),
+                        }),
+                        soroban_sdk::xdr::r#const::ScSpecUdtUnionCaseV0::VoidV0(soroban_sdk::xdr::r#const::ScSpecUdtUnionCaseVoidV0 {
+                            doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(
+                                b"",
+                            ),
+                            name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(
+                                b"StellarAsset",
+                            ),
+                        }),
+                        soroban_sdk::xdr::r#const::ScSpecUdtUnionCaseV0::VoidV0(soroban_sdk::xdr::r#const::ScSpecUdtUnionCaseVoidV0 {
+                            doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(
+                                b"",
+                            ),
+                            name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(
+                                b"Account",
+                            ),
+                        }),
+                    ],
+                ),
+            });
+            pub const fn spec_xdr() -> [u8; Executable::__SPEC_XDR_ENTRY.const_xdr_len()] {
+                const { Executable::__SPEC_XDR_ENTRY.const_to_xdr() }
+            }
+        }
+        impl soroban_sdk::SpecAnchor for Executable {
+            #[inline(never)]
+            fn spec_anchor() {}
+        }
+        impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for Executable {
+            type Error = soroban_sdk::ConversionError;
+            #[inline(always)]
+            fn try_from_val(
+                env: &soroban_sdk::Env,
+                val: &soroban_sdk::Val,
+            ) -> Result<Self, soroban_sdk::ConversionError> {
+                <Executable as soroban_sdk::SpecAnchor>::spec_anchor();
+                use soroban_sdk::{EnvBase, TryFromVal, TryIntoVal};
+                const CASES: &'static [&'static str] = &["Wasm", "StellarAsset", "Account"];
+                let vec: soroban_sdk::Vec<soroban_sdk::Val> = val.try_into_val(env)?;
+                let mut iter = vec.try_iter();
+                let discriminant: soroban_sdk::Symbol = iter
+                    .next()
+                    .ok_or(soroban_sdk::ConversionError)??
+                    .try_into_val(env)
+                    .map_err(|_| soroban_sdk::ConversionError)?;
+                Ok(
+                    match u32::from(env.symbol_index_in_strs(discriminant.to_symbol_val(), CASES)?)
+                        as usize
+                    {
+                        0 => {
+                            if iter.len() > 1usize {
+                                return Err(soroban_sdk::ConversionError);
+                            }
+                            Self::Wasm(
+                                iter.next()
+                                    .ok_or(soroban_sdk::ConversionError)??
+                                    .try_into_val(env)?,
+                            )
+                        }
+                        1 => {
+                            if iter.len() > 0 {
+                                return Err(soroban_sdk::ConversionError);
+                            }
+                            Self::StellarAsset
+                        }
+                        2 => {
+                            if iter.len() > 0 {
+                                return Err(soroban_sdk::ConversionError);
+                            }
+                            Self::Account
+                        }
+                        _ => Err(soroban_sdk::ConversionError {})?,
+                    },
+                )
+            }
+        }
+        impl soroban_sdk::TryFromVal<soroban_sdk::Env, Executable> for soroban_sdk::Val {
+            type Error = soroban_sdk::ConversionError;
+            #[inline(always)]
+            fn try_from_val(
+                env: &soroban_sdk::Env,
+                val: &Executable,
+            ) -> Result<Self, soroban_sdk::ConversionError> {
+                <Executable as soroban_sdk::SpecAnchor>::spec_anchor();
+                use soroban_sdk::{TryFromVal, TryIntoVal};
+                match val {
+                    Executable::Wasm(ref value0) => {
+                        let tup: (soroban_sdk::Val, soroban_sdk::Val) = (
+                            soroban_sdk::Symbol::try_from_val(env, &"Wasm")?.to_val(),
+                            value0.try_into_val(env)?,
+                        );
+                        tup.try_into_val(env).map_err(Into::into)
+                    }
+                    Executable::StellarAsset => {
+                        let tup: (soroban_sdk::Val,) =
+                            (soroban_sdk::Symbol::try_from_val(env, &"StellarAsset")?.to_val(),);
+                        tup.try_into_val(env).map_err(Into::into)
+                    }
+                    Executable::Account => {
+                        let tup: (soroban_sdk::Val,) =
+                            (soroban_sdk::Symbol::try_from_val(env, &"Account")?.to_val(),);
+                        tup.try_into_val(env).map_err(Into::into)
+                    }
+                }
+            }
+        }
+        impl soroban_sdk::TryFromVal<soroban_sdk::Env, &Executable> for soroban_sdk::Val {
+            type Error = soroban_sdk::ConversionError;
+            #[inline(always)]
+            fn try_from_val(
+                env: &soroban_sdk::Env,
+                val: &&Executable,
+            ) -> Result<Self, soroban_sdk::ConversionError> {
+                <_ as soroban_sdk::TryFromVal<soroban_sdk::Env, Executable>>::try_from_val(
+                    env, *val,
+                )
+            }
+        }
+        impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::xdr::ScVec> for Executable {
+            type Error = soroban_sdk::xdr::Error;
+            #[inline(always)]
+            fn try_from_val(
+                env: &soroban_sdk::Env,
+                val: &soroban_sdk::xdr::ScVec,
+            ) -> Result<Self, soroban_sdk::xdr::Error> {
+                use soroban_sdk::xdr::Validate;
+                use soroban_sdk::TryIntoVal;
+                let vec = val;
+                let mut iter = vec.iter();
+                let discriminant: soroban_sdk::xdr::ScSymbol = iter
+                    .next()
+                    .ok_or(soroban_sdk::xdr::Error::Invalid)?
+                    .clone()
+                    .try_into()
+                    .map_err(|_| soroban_sdk::xdr::Error::Invalid)?;
+                let discriminant_name: &str = &discriminant.to_utf8_string()?;
+                Ok(match discriminant_name {
+                    "Wasm" => {
+                        if iter.len() > 1usize {
+                            return Err(soroban_sdk::xdr::Error::Invalid);
+                        }
+                        let rv0: soroban_sdk::Val = iter
+                            .next()
+                            .ok_or(soroban_sdk::xdr::Error::Invalid)?
+                            .try_into_val(env)
+                            .map_err(|_| soroban_sdk::xdr::Error::Invalid)?;
+                        Self::Wasm(
+                            rv0.try_into_val(env)
+                                .map_err(|_| soroban_sdk::xdr::Error::Invalid)?,
+                        )
+                    }
+                    "StellarAsset" => {
+                        if iter.len() > 0 {
+                            return Err(soroban_sdk::xdr::Error::Invalid);
+                        }
+                        Self::StellarAsset
+                    }
+                    "Account" => {
+                        if iter.len() > 0 {
+                            return Err(soroban_sdk::xdr::Error::Invalid);
+                        }
+                        Self::Account
+                    }
+                    _ => Err(soroban_sdk::xdr::Error::Invalid)?,
+                })
+            }
+        }
+        impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::xdr::ScVal> for Executable {
+            type Error = soroban_sdk::xdr::Error;
+            #[inline(always)]
+            fn try_from_val(
+                env: &soroban_sdk::Env,
+                val: &soroban_sdk::xdr::ScVal,
+            ) -> Result<Self, soroban_sdk::xdr::Error> {
+                if let soroban_sdk::xdr::ScVal::Vec(Some(vec)) = val {
+                    <_ as soroban_sdk::TryFromVal<_, _>>::try_from_val(env, vec)
+                } else {
+                    Err(soroban_sdk::xdr::Error::Invalid)
+                }
+            }
+        }
+        impl TryFrom<&Executable> for soroban_sdk::xdr::ScVec {
+            type Error = soroban_sdk::xdr::Error;
+            #[inline(always)]
+            fn try_from(val: &Executable) -> Result<Self, soroban_sdk::xdr::Error> {
+                extern crate alloc;
+                Ok(match val {
+                    Executable::Wasm(value0) => (
+                        soroban_sdk::xdr::ScSymbol(
+                            "Wasm"
+                                .try_into()
+                                .map_err(|_| soroban_sdk::xdr::Error::Invalid)?,
+                        ),
+                        value0,
+                    )
+                        .try_into()
+                        .map_err(|_| soroban_sdk::xdr::Error::Invalid)?,
+                    Executable::StellarAsset => {
+                        let symbol = soroban_sdk::xdr::ScSymbol(
+                            "StellarAsset"
+                                .try_into()
+                                .map_err(|_| soroban_sdk::xdr::Error::Invalid)?,
+                        );
+                        let val = soroban_sdk::xdr::ScVal::Symbol(symbol);
+                        (val,)
+                            .try_into()
+                            .map_err(|_| soroban_sdk::xdr::Error::Invalid)?
+                    }
+                    Executable::Account => {
+                        let symbol = soroban_sdk::xdr::ScSymbol(
+                            "Account"
+                                .try_into()
+                                .map_err(|_| soroban_sdk::xdr::Error::Invalid)?,
+                        );
+                        let val = soroban_sdk::xdr::ScVal::Symbol(symbol);
+                        (val,)
+                            .try_into()
+                            .map_err(|_| soroban_sdk::xdr::Error::Invalid)?
+                    }
+                })
+            }
+        }
+        impl TryFrom<Executable> for soroban_sdk::xdr::ScVec {
+            type Error = soroban_sdk::xdr::Error;
+            #[inline(always)]
+            fn try_from(val: Executable) -> Result<Self, soroban_sdk::xdr::Error> {
+                (&val).try_into()
+            }
+        }
+        impl TryFrom<&Executable> for soroban_sdk::xdr::ScVal {
+            type Error = soroban_sdk::xdr::Error;
+            #[inline(always)]
+            fn try_from(val: &Executable) -> Result<Self, soroban_sdk::xdr::Error> {
+                Ok(soroban_sdk::xdr::ScVal::Vec(Some(val.try_into()?)))
+            }
+        }
+        impl TryFrom<Executable> for soroban_sdk::xdr::ScVal {
+            type Error = soroban_sdk::xdr::Error;
+            #[inline(always)]
+            fn try_from(val: Executable) -> Result<Self, soroban_sdk::xdr::Error> {
+                (&val).try_into()
+            }
+        }
+        const _: () = {
+            use soroban_sdk::testutils::arbitrary::arbitrary;
+            use soroban_sdk::testutils::arbitrary::std;
+            pub enum ArbitraryExecutable {
+                Wasm(
+                    <soroban_sdk::BytesN<
+                        32,
+                    > as soroban_sdk::testutils::arbitrary::SorobanArbitrary>::Prototype,
+                ),
+                StellarAsset,
+                Account,
+            }
+            #[automatically_derived]
+            impl ::core::fmt::Debug for ArbitraryExecutable {
+                #[inline]
+                fn fmt(&self, f: &mut ::core::fmt::Formatter) -> ::core::fmt::Result {
+                    match self {
+                        ArbitraryExecutable::Wasm(__self_0) => {
+                            ::core::fmt::Formatter::debug_tuple_field1_finish(f, "Wasm", &__self_0)
+                        }
+                        ArbitraryExecutable::StellarAsset => {
+                            ::core::fmt::Formatter::write_str(f, "StellarAsset")
+                        }
+                        ArbitraryExecutable::Account => {
+                            ::core::fmt::Formatter::write_str(f, "Account")
+                        }
+                    }
+                }
+            }
+            #[automatically_derived]
+            impl ::core::clone::Clone for ArbitraryExecutable {
+                #[inline]
+                fn clone(&self) -> ArbitraryExecutable {
+                    match self {
+                        ArbitraryExecutable::Wasm(__self_0) => {
+                            ArbitraryExecutable::Wasm(::core::clone::Clone::clone(__self_0))
+                        }
+                        ArbitraryExecutable::StellarAsset => ArbitraryExecutable::StellarAsset,
+                        ArbitraryExecutable::Account => ArbitraryExecutable::Account,
+                    }
+                }
+            }
+            #[automatically_derived]
+            impl ::core::cmp::Eq for ArbitraryExecutable {
+                #[inline]
+                #[doc(hidden)]
+                #[coverage(off)]
+                fn assert_receiver_is_total_eq(&self) -> () {
+                    let _: ::core::cmp::AssertParamIsEq<
+                        <soroban_sdk::BytesN<
+                            32,
+                        > as soroban_sdk::testutils::arbitrary::SorobanArbitrary>::Prototype,
+                    >;
+                }
+            }
+            #[automatically_derived]
+            impl ::core::marker::StructuralPartialEq for ArbitraryExecutable {}
+            #[automatically_derived]
+            impl ::core::cmp::PartialEq for ArbitraryExecutable {
+                #[inline]
+                fn eq(&self, other: &ArbitraryExecutable) -> bool {
+                    let __self_discr = ::core::intrinsics::discriminant_value(self);
+                    let __arg1_discr = ::core::intrinsics::discriminant_value(other);
+                    __self_discr == __arg1_discr
+                        && match (self, other) {
+                            (
+                                ArbitraryExecutable::Wasm(__self_0),
+                                ArbitraryExecutable::Wasm(__arg1_0),
+                            ) => __self_0 == __arg1_0,
+                            _ => true,
+                        }
+                }
+            }
+            #[automatically_derived]
+            impl ::core::cmp::Ord for ArbitraryExecutable {
+                #[inline]
+                fn cmp(&self, other: &ArbitraryExecutable) -> ::core::cmp::Ordering {
+                    let __self_discr = ::core::intrinsics::discriminant_value(self);
+                    let __arg1_discr = ::core::intrinsics::discriminant_value(other);
+                    match ::core::cmp::Ord::cmp(&__self_discr, &__arg1_discr) {
+                        ::core::cmp::Ordering::Equal => match (self, other) {
+                            (
+                                ArbitraryExecutable::Wasm(__self_0),
+                                ArbitraryExecutable::Wasm(__arg1_0),
+                            ) => ::core::cmp::Ord::cmp(__self_0, __arg1_0),
+                            _ => ::core::cmp::Ordering::Equal,
+                        },
+                        cmp => cmp,
+                    }
+                }
+            }
+            #[automatically_derived]
+            impl ::core::cmp::PartialOrd for ArbitraryExecutable {
+                #[inline]
+                fn partial_cmp(
+                    &self,
+                    other: &ArbitraryExecutable,
+                ) -> ::core::option::Option<::core::cmp::Ordering> {
+                    let __self_discr = ::core::intrinsics::discriminant_value(self);
+                    let __arg1_discr = ::core::intrinsics::discriminant_value(other);
+                    match (self, other) {
+                        (
+                            ArbitraryExecutable::Wasm(__self_0),
+                            ArbitraryExecutable::Wasm(__arg1_0),
+                        ) => ::core::cmp::PartialOrd::partial_cmp(__self_0, __arg1_0),
+                        _ => ::core::cmp::PartialOrd::partial_cmp(&__self_discr, &__arg1_discr),
+                    }
+                }
+            }
+            const _: () = {
+                #[allow(non_upper_case_globals)]
+                const RECURSIVE_COUNT_ArbitraryExecutable: ::std::thread::LocalKey<
+                    std::cell::Cell<u32>,
+                > = {
+                    #[inline]
+                    fn __init() -> std::cell::Cell<u32> {
+                        std::cell::Cell::new(0)
+                    }
+                    unsafe {
+                        ::std::thread::LocalKey::new(
+                            const {
+                                if ::std::mem::needs_drop::<std::cell::Cell<u32>>() {
+                                    |init| {
+                                        #[thread_local]
+                                        static VAL: ::std::thread::local_impl::LazyStorage<
+                                            std::cell::Cell<u32>,
+                                            (),
+                                        > = ::std::thread::local_impl::LazyStorage::new();
+                                        VAL.get_or_init(init, __init)
+                                    }
+                                } else {
+                                    |init| {
+                                        #[thread_local]
+                                        static VAL: ::std::thread::local_impl::LazyStorage<
+                                            std::cell::Cell<u32>,
+                                            !,
+                                        > = ::std::thread::local_impl::LazyStorage::new();
+                                        VAL.get_or_init(init, __init)
+                                    }
+                                }
+                            },
+                        )
+                    }
+                };
+                #[automatically_derived]
+                impl<'arbitrary> arbitrary::Arbitrary<'arbitrary> for ArbitraryExecutable {
+                    fn arbitrary(
+                        u: &mut arbitrary::Unstructured<'arbitrary>,
+                    ) -> arbitrary::Result<Self> {
+                        let guard_against_recursion = u.is_empty();
+                        if guard_against_recursion {
+                            RECURSIVE_COUNT_ArbitraryExecutable.with(|count| {
+                                if count.get() > 0 {
+                                    return Err(arbitrary::Error::NotEnoughData);
+                                }
+                                count.set(count.get() + 1);
+                                Ok(())
+                            })?;
+                        }
+                        let result = (|| {
+                            Ok(
+                                match (u64::from(<u32 as arbitrary::Arbitrary>::arbitrary(u)?)
+                                    * 3u64)
+                                    >> 32
+                                {
+                                    0u64 => ArbitraryExecutable::Wasm(
+                                        arbitrary::Arbitrary::arbitrary(u)?,
+                                    ),
+                                    1u64 => ArbitraryExecutable::StellarAsset,
+                                    2u64 => ArbitraryExecutable::Account,
+                                    _ => ::core::panicking::panic(
+                                        "internal error: entered unreachable code",
+                                    ),
+                                },
+                            )
+                        })();
+                        if guard_against_recursion {
+                            RECURSIVE_COUNT_ArbitraryExecutable.with(|count| {
+                                count.set(count.get() - 1);
+                            });
+                        }
+                        result
+                    }
+                    fn arbitrary_take_rest(
+                        mut u: arbitrary::Unstructured<'arbitrary>,
+                    ) -> arbitrary::Result<Self> {
+                        let guard_against_recursion = u.is_empty();
+                        if guard_against_recursion {
+                            RECURSIVE_COUNT_ArbitraryExecutable.with(|count| {
+                                if count.get() > 0 {
+                                    return Err(arbitrary::Error::NotEnoughData);
+                                }
+                                count.set(count.get() + 1);
+                                Ok(())
+                            })?;
+                        }
+                        let result = (|| {
+                            Ok(
+                                match (u64::from(<u32 as arbitrary::Arbitrary>::arbitrary(&mut u)?)
+                                    * 3u64)
+                                    >> 32
+                                {
+                                    0u64 => ArbitraryExecutable::Wasm(
+                                        arbitrary::Arbitrary::arbitrary_take_rest(u)?,
+                                    ),
+                                    1u64 => ArbitraryExecutable::StellarAsset,
+                                    2u64 => ArbitraryExecutable::Account,
+                                    _ => ::core::panicking::panic(
+                                        "internal error: entered unreachable code",
+                                    ),
+                                },
+                            )
+                        })();
+                        if guard_against_recursion {
+                            RECURSIVE_COUNT_ArbitraryExecutable.with(|count| {
+                                count.set(count.get() - 1);
+                            });
+                        }
+                        result
+                    }
+                    #[inline]
+                    fn size_hint(depth: usize) -> (usize, Option<usize>) {
+                        arbitrary::size_hint::and(
+                            <u32 as arbitrary::Arbitrary>::size_hint(depth),
+                            arbitrary::size_hint::recursion_guard(depth, |depth| {
+                                arbitrary::size_hint::or_all(
+                                        &[
+                                            arbitrary::size_hint::and_all(
+                                                &[
+                                                    <<soroban_sdk::BytesN<
+                                                        32,
+                                                    > as soroban_sdk::testutils::arbitrary::SorobanArbitrary>::Prototype as arbitrary::Arbitrary>::size_hint(
+                                                        depth,
+                                                    ),
+                                                ],
+                                            ),
+                                            arbitrary::size_hint::and_all(&[]),
+                                            arbitrary::size_hint::and_all(&[]),
+                                        ],
+                                    )
+                            }),
+                        )
+                    }
+                }
+            };
+            impl soroban_sdk::testutils::arbitrary::SorobanArbitrary for Executable {
+                type Prototype = ArbitraryExecutable;
+            }
+            impl soroban_sdk::TryFromVal<soroban_sdk::Env, ArbitraryExecutable> for Executable {
+                type Error = soroban_sdk::ConversionError;
+                fn try_from_val(
+                    env: &soroban_sdk::Env,
+                    v: &ArbitraryExecutable,
+                ) -> std::result::Result<Self, Self::Error> {
+                    Ok(match v {
+                        ArbitraryExecutable::Wasm(field_0) => {
+                            Executable::Wasm(soroban_sdk::IntoVal::into_val(field_0, env))
+                        }
+                        ArbitraryExecutable::StellarAsset => Executable::StellarAsset,
+                        ArbitraryExecutable::Account => Executable::Account,
+                    })
+                }
+            }
+        };
+    }
+    const MSG: &[u8] = b"test_ml_dsa message";
+    const CTX: &[u8] = b"test_ml_dsa context";
+    /// Signs `msg` under `ctx` with a key derived from `seed`, returning the
+    /// encoded verifying key and signature. Key generation and signing are
+    /// both deterministic, so the fixtures, and the test snapshots that record
+    /// them, are stable across runs.
+    fn sign<P: MlDsaParams>(env: &Env, seed: u8, msg: &[u8], ctx: &[u8]) -> (Bytes, Bytes) {
+        let sk = SigningKey::<P>::from_seed(&[seed; 32].into());
+        let sk = sk.expanded_key();
+        let sig = sk.sign_deterministic(msg, ctx).unwrap();
+        (
+            Bytes::from_slice(env, &sk.verifying_key().encode()),
+            Bytes::from_slice(env, &sig.encode()),
+        )
+    }
+    mod ml_dsa_44 {
+        use super::*;
+        fn sign(env: &Env, seed: u8, msg: &[u8], ctx: &[u8]) -> (BytesN<1312>, BytesN<2420>) {
+            let (pk, sig) = super::sign::<MlDsa44>(env, seed, msg, ctx);
+            (pk.try_into().unwrap(), sig.try_into().unwrap())
+        }
+        extern crate test;
+        #[rustc_test_marker = "test::ml_dsa_44::test_native"]
+        #[doc(hidden)]
+        pub const test_native: test::TestDescAndFn = test::TestDescAndFn {
+            desc: test::TestDesc {
+                name: test::StaticTestName("test::ml_dsa_44::test_native"),
+                ignore: false,
+                ignore_message: ::core::option::Option::None,
+                source_file: "tests/ml_dsa/src/lib.rs",
+                start_line: 89usize,
+                start_col: 20usize,
+                end_line: 89usize,
+                end_col: 31usize,
+                compile_fail: false,
+                no_run: false,
+                should_panic: test::ShouldPanic::No,
+                test_type: test::TestType::UnitTest,
+            },
+            testfn: test::StaticTestFn(
+                #[coverage(off)]
+                || test::assert_test_result(test_native()),
+            ),
+        };
+        fn test_native() {
+            let env = Env::default();
+            let contract_id = env.register(Contract, ());
+            let client = ContractClient::new(&env, &contract_id);
+            let msg = Bytes::from_slice(&env, MSG);
+            let ctx = Bytes::from_slice(&env, CTX);
+            let (pk, sig) = sign(&env, 1, MSG, CTX);
+            client.verify_44(&pk, &msg, &sig, &ctx);
+        }
+        extern crate test;
+        #[rustc_test_marker = "test::ml_dsa_44::test_wasm"]
+        #[doc(hidden)]
+        pub const test_wasm: test::TestDescAndFn = test::TestDescAndFn {
+            desc: test::TestDesc {
+                name: test::StaticTestName("test::ml_dsa_44::test_wasm"),
+                ignore: false,
+                ignore_message: ::core::option::Option::None,
+                source_file: "tests/ml_dsa/src/lib.rs",
+                start_line: 102usize,
+                start_col: 20usize,
+                end_line: 102usize,
+                end_col: 29usize,
+                compile_fail: false,
+                no_run: false,
+                should_panic: test::ShouldPanic::No,
+                test_type: test::TestType::UnitTest,
+            },
+            testfn: test::StaticTestFn(
+                #[coverage(off)]
+                || test::assert_test_result(test_wasm()),
+            ),
+        };
+        fn test_wasm() {
+            let env = Env::default();
+            let contract_id = env.register(wasm::WASM, ());
+            let client = wasm::Client::new(&env, &contract_id);
+            let msg = Bytes::from_slice(&env, MSG);
+            let ctx = Bytes::from_slice(&env, CTX);
+            let (pk, sig) = sign(&env, 1, MSG, CTX);
+            client.verify_44(&pk, &msg, &sig, &ctx);
+        }
+        extern crate test;
+        #[rustc_test_marker = "test::ml_dsa_44::test_wasm_invalid_signature"]
+        #[doc(hidden)]
+        pub const test_wasm_invalid_signature: test::TestDescAndFn = test::TestDescAndFn {
+            desc: test::TestDesc {
+                name: test::StaticTestName("test::ml_dsa_44::test_wasm_invalid_signature"),
+                ignore: false,
+                ignore_message: ::core::option::Option::None,
+                source_file: "tests/ml_dsa/src/lib.rs",
+                start_line: 116usize,
+                start_col: 20usize,
+                end_line: 116usize,
+                end_col: 47usize,
+                compile_fail: false,
+                no_run: false,
+                should_panic: test::ShouldPanic::YesWithMessage("Error(Crypto, InvalidInput)"),
+                test_type: test::TestType::UnitTest,
+            },
+            testfn: test::StaticTestFn(
+                #[coverage(off)]
+                || test::assert_test_result(test_wasm_invalid_signature()),
+            ),
+        };
+        #[should_panic(expected = "Error(Crypto, InvalidInput)")]
+        fn test_wasm_invalid_signature() {
+            let env = Env::default();
+            let contract_id = env.register(wasm::WASM, ());
+            let client = wasm::Client::new(&env, &contract_id);
+            let msg = Bytes::from_slice(&env, MSG);
+            let ctx = Bytes::new(&env);
+            let (pk, sig) = sign(&env, 1, MSG, CTX);
+            client.verify_44(&pk, &msg, &sig, &ctx);
+        }
+    }
+    mod ml_dsa_65 {
+        use super::*;
+        fn sign(env: &Env, seed: u8, msg: &[u8], ctx: &[u8]) -> (BytesN<1952>, BytesN<3309>) {
+            let (pk, sig) = super::sign::<MlDsa65>(env, seed, msg, ctx);
+            (pk.try_into().unwrap(), sig.try_into().unwrap())
+        }
+        extern crate test;
+        #[rustc_test_marker = "test::ml_dsa_65::test_native"]
+        #[doc(hidden)]
+        pub const test_native: test::TestDescAndFn = test::TestDescAndFn {
+            desc: test::TestDesc {
+                name: test::StaticTestName("test::ml_dsa_65::test_native"),
+                ignore: false,
+                ignore_message: ::core::option::Option::None,
+                source_file: "tests/ml_dsa/src/lib.rs",
+                start_line: 89usize,
+                start_col: 20usize,
+                end_line: 89usize,
+                end_col: 31usize,
+                compile_fail: false,
+                no_run: false,
+                should_panic: test::ShouldPanic::No,
+                test_type: test::TestType::UnitTest,
+            },
+            testfn: test::StaticTestFn(
+                #[coverage(off)]
+                || test::assert_test_result(test_native()),
+            ),
+        };
+        fn test_native() {
+            let env = Env::default();
+            let contract_id = env.register(Contract, ());
+            let client = ContractClient::new(&env, &contract_id);
+            let msg = Bytes::from_slice(&env, MSG);
+            let ctx = Bytes::from_slice(&env, CTX);
+            let (pk, sig) = sign(&env, 1, MSG, CTX);
+            client.verify_65(&pk, &msg, &sig, &ctx);
+        }
+        extern crate test;
+        #[rustc_test_marker = "test::ml_dsa_65::test_wasm"]
+        #[doc(hidden)]
+        pub const test_wasm: test::TestDescAndFn = test::TestDescAndFn {
+            desc: test::TestDesc {
+                name: test::StaticTestName("test::ml_dsa_65::test_wasm"),
+                ignore: false,
+                ignore_message: ::core::option::Option::None,
+                source_file: "tests/ml_dsa/src/lib.rs",
+                start_line: 102usize,
+                start_col: 20usize,
+                end_line: 102usize,
+                end_col: 29usize,
+                compile_fail: false,
+                no_run: false,
+                should_panic: test::ShouldPanic::No,
+                test_type: test::TestType::UnitTest,
+            },
+            testfn: test::StaticTestFn(
+                #[coverage(off)]
+                || test::assert_test_result(test_wasm()),
+            ),
+        };
+        fn test_wasm() {
+            let env = Env::default();
+            let contract_id = env.register(wasm::WASM, ());
+            let client = wasm::Client::new(&env, &contract_id);
+            let msg = Bytes::from_slice(&env, MSG);
+            let ctx = Bytes::from_slice(&env, CTX);
+            let (pk, sig) = sign(&env, 1, MSG, CTX);
+            client.verify_65(&pk, &msg, &sig, &ctx);
+        }
+        extern crate test;
+        #[rustc_test_marker = "test::ml_dsa_65::test_wasm_invalid_signature"]
+        #[doc(hidden)]
+        pub const test_wasm_invalid_signature: test::TestDescAndFn = test::TestDescAndFn {
+            desc: test::TestDesc {
+                name: test::StaticTestName("test::ml_dsa_65::test_wasm_invalid_signature"),
+                ignore: false,
+                ignore_message: ::core::option::Option::None,
+                source_file: "tests/ml_dsa/src/lib.rs",
+                start_line: 116usize,
+                start_col: 20usize,
+                end_line: 116usize,
+                end_col: 47usize,
+                compile_fail: false,
+                no_run: false,
+                should_panic: test::ShouldPanic::YesWithMessage("Error(Crypto, InvalidInput)"),
+                test_type: test::TestType::UnitTest,
+            },
+            testfn: test::StaticTestFn(
+                #[coverage(off)]
+                || test::assert_test_result(test_wasm_invalid_signature()),
+            ),
+        };
+        #[should_panic(expected = "Error(Crypto, InvalidInput)")]
+        fn test_wasm_invalid_signature() {
+            let env = Env::default();
+            let contract_id = env.register(wasm::WASM, ());
+            let client = wasm::Client::new(&env, &contract_id);
+            let msg = Bytes::from_slice(&env, MSG);
+            let ctx = Bytes::new(&env);
+            let (pk, sig) = sign(&env, 1, MSG, CTX);
+            client.verify_65(&pk, &msg, &sig, &ctx);
+        }
+    }
+    mod ml_dsa_87 {
+        use super::*;
+        fn sign(env: &Env, seed: u8, msg: &[u8], ctx: &[u8]) -> (BytesN<2592>, BytesN<4627>) {
+            let (pk, sig) = super::sign::<MlDsa87>(env, seed, msg, ctx);
+            (pk.try_into().unwrap(), sig.try_into().unwrap())
+        }
+        extern crate test;
+        #[rustc_test_marker = "test::ml_dsa_87::test_native"]
+        #[doc(hidden)]
+        pub const test_native: test::TestDescAndFn = test::TestDescAndFn {
+            desc: test::TestDesc {
+                name: test::StaticTestName("test::ml_dsa_87::test_native"),
+                ignore: false,
+                ignore_message: ::core::option::Option::None,
+                source_file: "tests/ml_dsa/src/lib.rs",
+                start_line: 89usize,
+                start_col: 20usize,
+                end_line: 89usize,
+                end_col: 31usize,
+                compile_fail: false,
+                no_run: false,
+                should_panic: test::ShouldPanic::No,
+                test_type: test::TestType::UnitTest,
+            },
+            testfn: test::StaticTestFn(
+                #[coverage(off)]
+                || test::assert_test_result(test_native()),
+            ),
+        };
+        fn test_native() {
+            let env = Env::default();
+            let contract_id = env.register(Contract, ());
+            let client = ContractClient::new(&env, &contract_id);
+            let msg = Bytes::from_slice(&env, MSG);
+            let ctx = Bytes::from_slice(&env, CTX);
+            let (pk, sig) = sign(&env, 1, MSG, CTX);
+            client.verify_87(&pk, &msg, &sig, &ctx);
+        }
+        extern crate test;
+        #[rustc_test_marker = "test::ml_dsa_87::test_wasm"]
+        #[doc(hidden)]
+        pub const test_wasm: test::TestDescAndFn = test::TestDescAndFn {
+            desc: test::TestDesc {
+                name: test::StaticTestName("test::ml_dsa_87::test_wasm"),
+                ignore: false,
+                ignore_message: ::core::option::Option::None,
+                source_file: "tests/ml_dsa/src/lib.rs",
+                start_line: 102usize,
+                start_col: 20usize,
+                end_line: 102usize,
+                end_col: 29usize,
+                compile_fail: false,
+                no_run: false,
+                should_panic: test::ShouldPanic::No,
+                test_type: test::TestType::UnitTest,
+            },
+            testfn: test::StaticTestFn(
+                #[coverage(off)]
+                || test::assert_test_result(test_wasm()),
+            ),
+        };
+        fn test_wasm() {
+            let env = Env::default();
+            let contract_id = env.register(wasm::WASM, ());
+            let client = wasm::Client::new(&env, &contract_id);
+            let msg = Bytes::from_slice(&env, MSG);
+            let ctx = Bytes::from_slice(&env, CTX);
+            let (pk, sig) = sign(&env, 1, MSG, CTX);
+            client.verify_87(&pk, &msg, &sig, &ctx);
+        }
+        extern crate test;
+        #[rustc_test_marker = "test::ml_dsa_87::test_wasm_invalid_signature"]
+        #[doc(hidden)]
+        pub const test_wasm_invalid_signature: test::TestDescAndFn = test::TestDescAndFn {
+            desc: test::TestDesc {
+                name: test::StaticTestName("test::ml_dsa_87::test_wasm_invalid_signature"),
+                ignore: false,
+                ignore_message: ::core::option::Option::None,
+                source_file: "tests/ml_dsa/src/lib.rs",
+                start_line: 116usize,
+                start_col: 20usize,
+                end_line: 116usize,
+                end_col: 47usize,
+                compile_fail: false,
+                no_run: false,
+                should_panic: test::ShouldPanic::YesWithMessage("Error(Crypto, InvalidInput)"),
+                test_type: test::TestType::UnitTest,
+            },
+            testfn: test::StaticTestFn(
+                #[coverage(off)]
+                || test::assert_test_result(test_wasm_invalid_signature()),
+            ),
+        };
+        #[should_panic(expected = "Error(Crypto, InvalidInput)")]
+        fn test_wasm_invalid_signature() {
+            let env = Env::default();
+            let contract_id = env.register(wasm::WASM, ());
+            let client = wasm::Client::new(&env, &contract_id);
+            let msg = Bytes::from_slice(&env, MSG);
+            let ctx = Bytes::new(&env);
+            let (pk, sig) = sign(&env, 1, MSG, CTX);
+            client.verify_87(&pk, &msg, &sig, &ctx);
+        }
+    }
+}
+#[rustc_main]
+#[coverage(off)]
+#[doc(hidden)]
+pub fn main() -> () {
+    extern crate test;
+    test::test_main_static(&[
+        &test_native,
+        &test_wasm,
+        &test_wasm_invalid_signature,
+        &test_native,
+        &test_wasm,
+        &test_wasm_invalid_signature,
+        &test_native,
+        &test_wasm,
+        &test_wasm_invalid_signature,
+    ])
+}

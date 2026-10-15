@@ -190,6 +190,114 @@ impl Crypto {
         CryptoHazmat::new(env).secp256r1_verify(public_key, &message_digest.0, signature)
     }
 
+    /// Verifies an ML-DSA-44 signature.
+    ///
+    /// The signature is verified as a valid ML-DSA-44 signature of the message
+    /// by the public key, for the given context, using the pure (non-pre-hashed)
+    /// `ML-DSA.Verify` interface of [FIPS 204]. The public key is a 1312-byte
+    /// encoded verifying key and the signature is a 2420-byte encoded signature,
+    /// both as encoded by FIPS 204.
+    ///
+    /// The context is a domain separation string of at most 255 bytes chosen by
+    /// the signer when producing the signature. Pass empty bytes when the signer
+    /// used no context, which is the default for most signers.
+    ///
+    /// ### Panics
+    ///
+    /// If the signature verification fails, the signature is malformed, or the
+    /// context is longer than 255 bytes.
+    ///
+    /// [FIPS 204]: https://nvlpubs.nist.gov/nistpubs/FIPS/NIST.FIPS.204.pdf
+    pub fn ml_dsa_44_verify(
+        &self,
+        public_key: &BytesN<1312>,
+        message: &Bytes,
+        signature: &BytesN<2420>,
+        context: &Bytes,
+    ) {
+        let env = self.env();
+        let _ = internal::Env::verify_sig_ml_dsa_44(
+            env,
+            public_key.to_object(),
+            message.to_object(),
+            signature.to_object(),
+            context.to_object(),
+        )
+        .unwrap_infallible();
+    }
+
+    /// Verifies an ML-DSA-65 signature.
+    ///
+    /// The signature is verified as a valid ML-DSA-65 signature of the message
+    /// by the public key, for the given context, using the pure (non-pre-hashed)
+    /// `ML-DSA.Verify` interface of [FIPS 204]. The public key is a 1952-byte
+    /// encoded verifying key and the signature is a 3309-byte encoded signature,
+    /// both as encoded by FIPS 204.
+    ///
+    /// The context is a domain separation string of at most 255 bytes chosen by
+    /// the signer when producing the signature. Pass empty bytes when the signer
+    /// used no context, which is the default for most signers.
+    ///
+    /// ### Panics
+    ///
+    /// If the signature verification fails, the signature is malformed, or the
+    /// context is longer than 255 bytes.
+    ///
+    /// [FIPS 204]: https://nvlpubs.nist.gov/nistpubs/FIPS/NIST.FIPS.204.pdf
+    pub fn ml_dsa_65_verify(
+        &self,
+        public_key: &BytesN<1952>,
+        message: &Bytes,
+        signature: &BytesN<3309>,
+        context: &Bytes,
+    ) {
+        let env = self.env();
+        let _ = internal::Env::verify_sig_ml_dsa_65(
+            env,
+            public_key.to_object(),
+            message.to_object(),
+            signature.to_object(),
+            context.to_object(),
+        )
+        .unwrap_infallible();
+    }
+
+    /// Verifies an ML-DSA-87 signature.
+    ///
+    /// The signature is verified as a valid ML-DSA-87 signature of the message
+    /// by the public key, for the given context, using the pure (non-pre-hashed)
+    /// `ML-DSA.Verify` interface of [FIPS 204]. The public key is a 2592-byte
+    /// encoded verifying key and the signature is a 4627-byte encoded signature,
+    /// both as encoded by FIPS 204.
+    ///
+    /// The context is a domain separation string of at most 255 bytes chosen by
+    /// the signer when producing the signature. Pass empty bytes when the signer
+    /// used no context, which is the default for most signers.
+    ///
+    /// ### Panics
+    ///
+    /// If the signature verification fails, the signature is malformed, or the
+    /// context is longer than 255 bytes.
+    ///
+    /// [FIPS 204]: https://nvlpubs.nist.gov/nistpubs/FIPS/NIST.FIPS.204.pdf
+    pub fn ml_dsa_87_verify(
+        &self,
+        public_key: &BytesN<2592>,
+        message: &Bytes,
+        signature: &BytesN<4627>,
+        context: &Bytes,
+    ) {
+        let env = self.env();
+        let _ = internal::Env::verify_sig_ml_dsa_87(
+            env,
+            public_key.to_object(),
+            message.to_object(),
+            signature.to_object(),
+            context.to_object(),
+        )
+        .unwrap_infallible();
+    }
+
     /// Get a [Bls12_381][bls12_381::Bls12_381] for accessing the bls12-381
     /// functions.
     pub fn bls12_381(&self) -> bls12_381::Bls12_381 {

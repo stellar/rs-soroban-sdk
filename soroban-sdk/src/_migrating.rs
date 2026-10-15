@@ -20,6 +20,9 @@
 //!
 //! - [A `MuxedAddress` may now be a contract address with an id (CAP-84)][v30_muxed_contracts].
 //!
+//! - [ML-DSA (FIPS 204) post-quantum signature verification added (CAP-87)][v30_ml_dsa]. Access
+//!   via `env.crypto().ml_dsa_44_verify()`, `ml_dsa_65_verify()`, and `ml_dsa_87_verify()`.
+//!
 //! The following changes are largely internal details, but are included here for visibility for
 //! tool builders who may be inspecting Wasm and contract spec internal data.
 //!
@@ -31,6 +34,7 @@
 //! [v30_cli_version]: v30_cli_version
 //! [v30_duplicate_names]: v30_duplicate_names
 //! [v30_muxed_contracts]: v30_muxed_contracts
+//! [v30_ml_dsa]: v30_ml_dsa
 //! [v30_spec_markers]: v30_spec_markers
 //! [`panic_with_error!`]: crate::panic_with_error
 //! [`Env::panic_with_error`]: crate::Env::panic_with_error
@@ -488,5 +492,6 @@ pub mod v28_native_contract_code;
 pub mod v28_spec_shaking;
 pub mod v30_cli_version;
 pub mod v30_duplicate_names;
+pub mod v30_ml_dsa;
 pub mod v30_muxed_contracts;
 pub mod v30_spec_markers;

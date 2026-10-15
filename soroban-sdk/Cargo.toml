@@ -52,6 +52,7 @@ soroban-ledger-snapshot = { workspace = true, features = ["testutils"] }
 stellar-xdr = { workspace = true, features = ["std"] }
 soroban-spec = { workspace = true, features = ["std"] }
 ed25519-dalek = "2.0.0"
+ml-dsa = { version = "0.1.1", default-features = false, features = ["alloc"] }
 rand = "0.8.5"
 ctor = "0.5.0"
 hex = "0.4.3"
