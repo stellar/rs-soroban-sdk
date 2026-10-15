@@ -9,5 +9,5 @@ pub mod names;
 pub mod read;
 #[cfg(feature = "std")]
 pub mod reduce;
-pub mod reduce_events;
+pub mod reduce_const;
 pub mod shaking;

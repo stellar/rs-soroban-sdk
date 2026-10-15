@@ -76,7 +76,7 @@ pub(crate) const XDR_INPUT: &[&[u8]] = &[
     &soroban_token_sdk::events::Clawback::spec_xdr(),
 ];
 
-pub(crate) const XDR_LEN: usize = soroban_spec::reduce_events::len(XDR_INPUT);
+pub(crate) const XDR_LEN: usize = soroban_spec::reduce_const::len(XDR_INPUT);
 
 /// Returns the contract spec for a SEP-41 Token contract.
 pub const fn xdr() -> &'static [u8] {
@@ -85,6 +85,6 @@ pub const fn xdr() -> &'static [u8] {
 
 /// The contract spec for a SEP-41 Token contract.
 ///
-/// The names of its events are reduced to simple names, as `stellar contract
+/// Its type and event names are reduced to simple names, as `stellar contract
 /// build` reduces them for a contract.
-const XDR: [u8; XDR_LEN] = soroban_spec::reduce_events::concat(XDR_INPUT);
+const XDR: [u8; XDR_LEN] = soroban_spec::reduce_const::reduce(XDR_INPUT);
