@@ -85,8 +85,6 @@ pub fn generate_from_wasm_with_options(
     }
 
     let mut spec = from_wasm(wasm).map_err(GenerateFromFileError::GetSpec)?;
-    // Callable functions the spec does not describe are generated with `Val`
-    // typed inputs and output.
     spec.extend(missing_fns_from_wasm(wasm).map_err(GenerateFromFileError::GetSpec)?);
     let meta = soroban_meta::read::from_wasm(wasm).map_err(GenerateFromFileError::GetMeta)?;
     let sdk_major_version = sdk_major_version_from_meta(&meta);
