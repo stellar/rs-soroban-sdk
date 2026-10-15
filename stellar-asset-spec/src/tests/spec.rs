@@ -1,6 +1,6 @@
 extern crate std;
 
-use crate::{XDR_INPUT, XDR_LEN};
+use crate::XDR_INPUT;
 use soroban_sdk::xdr::{
     Error, Limited, Limits, ReadXdr, ScSpecEntry, ScSpecEventParamLocationV0, ScSpecEventParamV0,
     ScSpecTypeDef, StringM,
@@ -9,9 +9,23 @@ use std::collections::HashSet;
 use std::vec::Vec;
 
 #[test]
-fn test_stellar_asset_spec_xdr_len() {
-    let len = XDR_INPUT.iter().fold(0usize, |sum, x| sum + x.len());
-    assert_eq!(XDR_LEN, len);
+fn test_stellar_asset_spec_xdr_is_reduced() -> Result<(), Error> {
+    // The spec is the entries the macros emit, with their names reduced as
+    // `stellar contract build` reduces them.
+    let raw = XDR_INPUT.concat();
+    let entries =
+        ScSpecEntry::read_xdr_iter(&mut Limited::new(std::io::Cursor::new(raw), Limits::none()))
+            .collect::<Result<Vec<_>, _>>()?;
+    let reduced = soroban_spec::reduce::reduce(&entries).unwrap();
+    assert!(reduced.renames().any(|r| r.renamed()));
+    let expected: Vec<ScSpecEntry> = reduced.into_entries().collect();
+    let actual = ScSpecEntry::read_xdr_iter(&mut Limited::new(
+        std::io::Cursor::new(crate::xdr()),
+        Limits::none(),
+    ))
+    .collect::<Result<Vec<_>, _>>()?;
+    assert_eq!(actual, expected);
+    Ok(())
 }
 
 fn strip_doc(entry: &mut ScSpecEntry) {
@@ -59,10 +73,7 @@ fn test_stellar_asset_spec_includes_token_spec() -> Result<(), Error> {
     // Read token spec entries, strip docs, and add sep0011_asset to event topics.
     let token_xdr = soroban_token_spec::xdr();
     let token_cursor = std::io::Cursor::new(token_xdr);
-    // Each spec defines its entries in its own crate, so their fully
-    // qualified type and event names differ even where the entries otherwise
-    // match; names are reduced to simple names before comparing.
-    let token_entries: Vec<ScSpecEntry> =
+    let token_entries: HashSet<ScSpecEntry> =
         ScSpecEntry::read_xdr_iter(&mut Limited::new(token_cursor, Limits::none()))
             .map(|e| {
                 e.map(|mut e| {
@@ -73,16 +84,12 @@ fn test_stellar_asset_spec_includes_token_spec() -> Result<(), Error> {
                     e
                 })
             })
-            .collect::<Result<Vec<_>, _>>()?;
-    let token_entries: HashSet<ScSpecEntry> = soroban_spec::reduce::reduce(&token_entries)
-        .unwrap()
-        .into_entries()
-        .collect();
+            .collect::<Result<HashSet<_>, _>>()?;
 
     // Read stellar asset spec entries and strip docs.
     let stellar_asset_xdr = crate::xdr();
     let stellar_asset_cursor = std::io::Cursor::new(stellar_asset_xdr);
-    let stellar_asset_entries: Vec<ScSpecEntry> =
+    let stellar_asset_entries: HashSet<ScSpecEntry> =
         ScSpecEntry::read_xdr_iter(&mut Limited::new(stellar_asset_cursor, Limits::none()))
             .map(|e| {
                 e.map(|mut e| {
@@ -90,12 +97,7 @@ fn test_stellar_asset_spec_includes_token_spec() -> Result<(), Error> {
                     e
                 })
             })
-            .collect::<Result<Vec<_>, _>>()?;
-    let stellar_asset_entries: HashSet<ScSpecEntry> =
-        soroban_spec::reduce::reduce(&stellar_asset_entries)
-            .unwrap()
-            .into_entries()
-            .collect();
+            .collect::<Result<HashSet<_>, _>>()?;
 
     // Check that all token entries (with sep0011_asset added to events) are
     // present in the stellar asset spec (which uses SAC-specific event types

@@ -76,16 +76,7 @@ pub(crate) const XDR_INPUT: &[&[u8]] = &[
     &soroban_token_sdk::events::Clawback::spec_xdr(),
 ];
 
-pub(crate) const XDR_LEN: usize = {
-    let input = XDR_INPUT;
-    let mut len = 0usize;
-    let mut i = 0;
-    while i < input.len() {
-        len += input[i].len();
-        i += 1;
-    }
-    len
-};
+pub(crate) const XDR_LEN: usize = soroban_spec::reduce_events::len(XDR_INPUT);
 
 /// Returns the contract spec for a SEP-41 Token contract.
 pub const fn xdr() -> &'static [u8] {
@@ -93,28 +84,7 @@ pub const fn xdr() -> &'static [u8] {
 }
 
 /// The contract spec for a SEP-41 Token contract.
-const XDR: [u8; XDR_LEN] = {
-    let input = XDR_INPUT;
-    // Concatenate all XDR for each item that makes up the token spec.
-    let mut output = [0u8; XDR_LEN];
-    let mut input_i = 0;
-    let mut output_i = 0;
-    while input_i < input.len() {
-        let subinput = input[input_i];
-        let mut subinput_i = 0;
-        while subinput_i < subinput.len() {
-            output[output_i] = subinput[subinput_i];
-            output_i += 1;
-            subinput_i += 1;
-        }
-        input_i += 1;
-    }
-
-    // Check that the numbers of bytes written is equal to the number of bytes
-    // expected in the output.
-    if output_i != output.len() {
-        panic!("unexpected output length",);
-    }
-
-    output
-};
+///
+/// The names of its events are reduced to simple names, as `stellar contract
+/// build` reduces them for a contract.
+const XDR: [u8; XDR_LEN] = soroban_spec::reduce_events::concat(XDR_INPUT);

@@ -15,6 +15,7 @@ doctest = false
 
 [dependencies]
 soroban-sdk = { workspace = true }
+soroban-spec = { workspace = true }
 soroban-token-spec = { workspace = true }
 
 [dev-dependencies]
