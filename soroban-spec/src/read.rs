@@ -86,18 +86,15 @@ pub fn missing_fns_from_wasm(wasm: &[u8]) -> Result<Vec<ScSpecEntry>, FromWasmEr
         Err(FromWasmError::NotFound) => vec![],
         Err(e) => return Err(e),
     };
+    let fn_name = |entry: &ScSpecEntry| match entry {
+        ScSpecEntry::FunctionV0(f) => Some(f.name.clone()),
+        _ => None,
+    };
     let missing = exported_fn_entries(wasm)?
         .into_iter()
         .filter(|e| !spec.iter().any(|s| fn_name(s) == fn_name(e)))
         .collect();
     Ok(missing)
-}
-
-fn fn_name(entry: &ScSpecEntry) -> Option<&[u8]> {
-    match entry {
-        ScSpecEntry::FunctionV0(f) => Some(f.name.as_slice()),
-        _ => None,
-    }
 }
 
 /// Returns a function entry for every function exported by the wasm that is
@@ -329,8 +326,11 @@ mod test {
         let names = missing_fns_from_wasm(&wasm)
             .unwrap()
             .iter()
-            .map(|e| fn_name(e).unwrap().to_vec())
+            .map(|e| match e {
+                ScSpecEntry::FunctionV0(f) => f.name.to_utf8_string_lossy(),
+                _ => panic!("expected function entry"),
+            })
             .collect::<Vec<_>>();
-        assert_eq!(names, [&b"add"[..], b"reexported", b"missing", b"no_args"]);
+        assert_eq!(names, ["add", "reexported", "missing", "no_args"]);
     }
 }
