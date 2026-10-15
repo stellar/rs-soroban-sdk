@@ -121,8 +121,10 @@ pub trait TokenInterface {
     ///
     /// # Events
     ///
-    /// Emits an event with topics `["approve", from: Address,
-    /// spender: Address], data = [amount: i128, live_until_ledger: u32]`
+    /// Emits
+    /// [`Approve`](https://docs.rs/soroban-token-sdk/latest/soroban_token_sdk/events/struct.Approve.html)
+    /// with topics `["approve", from: Address, spender: Address], data =
+    /// [amount: i128, live_until_ledger: u32]`
     fn approve(env: Env, from: Address, spender: Address, amount: i128, live_until_ledger: u32);
 
     /// Returns the balance of `id`.
@@ -144,11 +146,15 @@ pub trait TokenInterface {
     ///
     /// # Events
     ///
-    /// Emits an event with:
+    /// Emits
+    /// [`Transfer`](https://docs.rs/soroban-token-sdk/latest/soroban_token_sdk/events/struct.Transfer.html)
+    /// with:
     /// * topics `["transfer", from: Address, to: Address]`
     /// * data `{ amount: i128, to_muxed_id: Option<u64> }: Map`
     ///
-    /// Legacy implementations may emit an event with:
+    /// Legacy implementations may emit
+    /// [`TransferWithAmountOnly`](https://docs.rs/soroban-token-sdk/latest/soroban_token_sdk/events/struct.TransferWithAmountOnly.html)
+    /// with:
     /// * topics `["transfer", from: Address, to: Address]`
     /// * data `amount: i128`
     fn transfer(env: Env, from: Address, to: MuxedAddress, amount: i128);
@@ -173,8 +179,10 @@ pub trait TokenInterface {
     ///
     /// # Events
     ///
-    /// Emits an event with topics `["transfer", from: Address, to: Address],
-    /// data = amount: i128`
+    /// Emits
+    /// [`TransferWithAmountOnly`](https://docs.rs/soroban-token-sdk/latest/soroban_token_sdk/events/struct.TransferWithAmountOnly.html)
+    /// with topics `["transfer", from: Address, to: Address], data = amount:
+    /// i128`
     fn transfer_from(env: Env, spender: Address, from: Address, to: Address, amount: i128);
 
     /// Burn `amount` from `from`.
@@ -190,8 +198,9 @@ pub trait TokenInterface {
     ///
     /// # Events
     ///
-    /// Emits an event with topics `["burn", from: Address], data = amount:
-    /// i128`
+    /// Emits
+    /// [`Burn`](https://docs.rs/soroban-token-sdk/latest/soroban_token_sdk/events/struct.Burn.html)
+    /// with topics `["burn", from: Address], data = amount: i128`
     fn burn(env: Env, from: Address, amount: i128);
 
     /// Burn `amount` from `from`, consuming the allowance of `spender`.
@@ -214,8 +223,9 @@ pub trait TokenInterface {
     ///
     /// # Events
     ///
-    /// Emits an event with topics `["burn", from: Address], data = amount:
-    /// i128`
+    /// Emits
+    /// [`Burn`](https://docs.rs/soroban-token-sdk/latest/soroban_token_sdk/events/struct.Burn.html)
+    /// with topics `["burn", from: Address], data = amount: i128`
     fn burn_from(env: Env, spender: Address, from: Address, amount: i128);
 
     /// Returns the number of decimals used to represent amounts of this token.

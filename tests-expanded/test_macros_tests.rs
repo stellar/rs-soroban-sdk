@@ -181,6 +181,13 @@ impl Contract {
     }
 }
 impl<'a> ContractClient<'a> {
+    /// Call `empty` function on the contract.
+    ///
+    /// # Panics
+    ///
+    /// Panics if the invoked contract returns an error or panics.
+    ///
+    /// Use [`Self::try_empty`] to receive errors instead of panicking.
     pub fn empty(&self) -> () {
         let _call_scope = soroban_sdk::testutils::ClientCallScope::enter(&self.env, self.config);
         use soroban_sdk::{FromVal, IntoVal};
@@ -195,6 +202,11 @@ impl<'a> ContractClient<'a> {
         );
         res
     }
+    /// Call `empty` function on the contract.
+    ///
+    /// # Errors
+    ///
+    /// Returns an error if the invoked contract returns an error or panics. A panic in the invoked contract is caught and returned as an error rather than panicking the caller.
     pub fn try_empty(
         &self,
     ) -> Result<
@@ -214,6 +226,13 @@ impl<'a> ContractClient<'a> {
         );
         res
     }
+    /// Call `empty2` function on the contract.
+    ///
+    /// # Panics
+    ///
+    /// Panics if the invoked contract returns an error or panics.
+    ///
+    /// Use [`Self::try_empty2`] to receive errors instead of panicking.
     pub fn empty2(&self) -> () {
         let _call_scope = soroban_sdk::testutils::ClientCallScope::enter(&self.env, self.config);
         use soroban_sdk::{FromVal, IntoVal};
@@ -228,6 +247,11 @@ impl<'a> ContractClient<'a> {
         );
         res
     }
+    /// Call `empty2` function on the contract.
+    ///
+    /// # Errors
+    ///
+    /// Returns an error if the invoked contract returns an error or panics. A panic in the invoked contract is caught and returned as an error rather than panicking the caller.
     pub fn try_empty2(
         &self,
     ) -> Result<
