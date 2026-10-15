@@ -1155,15 +1155,10 @@ mod test_a {
             #[inline(always)]
             fn spec_shaking_marker() {}
         }
-        impl soroban_sdk::SpecAnchor for Error {
-            #[inline(never)]
-            fn spec_anchor() {}
-        }
         impl TryFrom<soroban_sdk::Error> for Error {
             type Error = soroban_sdk::Error;
             #[inline(always)]
             fn try_from(error: soroban_sdk::Error) -> Result<Self, soroban_sdk::Error> {
-                <Error as soroban_sdk::SpecAnchor>::spec_anchor();
                 if error.is_type(soroban_sdk::xdr::ScErrorType::Contract) {
                     let discriminant = error.get_code();
                     Ok(match discriminant {
@@ -1191,7 +1186,6 @@ mod test_a {
         impl From<&Error> for soroban_sdk::Error {
             #[inline(always)]
             fn from(val: &Error) -> soroban_sdk::Error {
-                <Error as soroban_sdk::SpecAnchor>::spec_anchor();
                 match val {
                     Error::Decline => soroban_sdk::Error::from_contract_error(1u32),
                 }
@@ -1201,7 +1195,6 @@ mod test_a {
             type Error = soroban_sdk::InvokeError;
             #[inline(always)]
             fn try_from(error: soroban_sdk::InvokeError) -> Result<Self, soroban_sdk::InvokeError> {
-                <Error as soroban_sdk::SpecAnchor>::spec_anchor();
                 match error {
                     soroban_sdk::InvokeError::Abort => Err(error),
                     soroban_sdk::InvokeError::Contract(code) => Ok(match code {
@@ -1229,7 +1222,6 @@ mod test_a {
         impl From<&Error> for soroban_sdk::InvokeError {
             #[inline(always)]
             fn from(val: &Error) -> soroban_sdk::InvokeError {
-                <Error as soroban_sdk::SpecAnchor>::spec_anchor();
                 match val {
                     Error::Decline => soroban_sdk::InvokeError::Contract(1u32),
                 }
@@ -2727,15 +2719,10 @@ mod test_b {
             #[inline(always)]
             fn spec_shaking_marker() {}
         }
-        impl soroban_sdk::SpecAnchor for Error {
-            #[inline(never)]
-            fn spec_anchor() {}
-        }
         impl TryFrom<soroban_sdk::Error> for Error {
             type Error = soroban_sdk::Error;
             #[inline(always)]
             fn try_from(error: soroban_sdk::Error) -> Result<Self, soroban_sdk::Error> {
-                <Error as soroban_sdk::SpecAnchor>::spec_anchor();
                 if error.is_type(soroban_sdk::xdr::ScErrorType::Contract) {
                     let discriminant = error.get_code();
                     Ok(match discriminant {
@@ -2763,7 +2750,6 @@ mod test_b {
         impl From<&Error> for soroban_sdk::Error {
             #[inline(always)]
             fn from(val: &Error) -> soroban_sdk::Error {
-                <Error as soroban_sdk::SpecAnchor>::spec_anchor();
                 match val {
                     Error::Decline => soroban_sdk::Error::from_contract_error(1u32),
                 }
@@ -2773,7 +2759,6 @@ mod test_b {
             type Error = soroban_sdk::InvokeError;
             #[inline(always)]
             fn try_from(error: soroban_sdk::InvokeError) -> Result<Self, soroban_sdk::InvokeError> {
-                <Error as soroban_sdk::SpecAnchor>::spec_anchor();
                 match error {
                     soroban_sdk::InvokeError::Abort => Err(error),
                     soroban_sdk::InvokeError::Contract(code) => Ok(match code {
@@ -2801,7 +2786,6 @@ mod test_b {
         impl From<&Error> for soroban_sdk::InvokeError {
             #[inline(always)]
             fn from(val: &Error) -> soroban_sdk::InvokeError {
-                <Error as soroban_sdk::SpecAnchor>::spec_anchor();
                 match val {
                     Error::Decline => soroban_sdk::InvokeError::Contract(1u32),
                 }
