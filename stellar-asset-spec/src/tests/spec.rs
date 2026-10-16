@@ -108,6 +108,7 @@ fn test_stellar_asset_spec_includes_token_spec() -> Result<(), Error> {
 }
 
 #[test]
+#[cfg(feature = "std")]
 fn test_spec_xdr_reduced_names() -> Result<(), Error> {
     let xdr = crate::spec_xdr();
     let cursor = std::io::Cursor::new(xdr);

@@ -20,6 +20,7 @@ fn test_spec_xdr_unprocessed() -> Result<(), Error> {
 }
 
 #[test]
+#[cfg(feature = "std")]
 fn test_spec_xdr_reduced_names() -> Result<(), Error> {
     let xdr = crate::spec_xdr();
     let cursor = std::io::Cursor::new(xdr);
