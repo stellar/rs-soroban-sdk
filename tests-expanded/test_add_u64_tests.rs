@@ -201,15 +201,10 @@ impl soroban_sdk::SpecShakingMarker for Error {
     #[inline(always)]
     fn spec_shaking_marker() {}
 }
-impl soroban_sdk::SpecAnchor for Error {
-    #[inline(never)]
-    fn spec_anchor() {}
-}
 impl TryFrom<soroban_sdk::Error> for Error {
     type Error = soroban_sdk::Error;
     #[inline(always)]
     fn try_from(error: soroban_sdk::Error) -> Result<Self, soroban_sdk::Error> {
-        <Error as soroban_sdk::SpecAnchor>::spec_anchor();
         if error.is_type(soroban_sdk::xdr::ScErrorType::Contract) {
             let discriminant = error.get_code();
             Ok(match discriminant {
@@ -237,7 +232,6 @@ impl From<Error> for soroban_sdk::Error {
 impl From<&Error> for soroban_sdk::Error {
     #[inline(always)]
     fn from(val: &Error) -> soroban_sdk::Error {
-        <Error as soroban_sdk::SpecAnchor>::spec_anchor();
         match val {
             Error::Overflow => soroban_sdk::Error::from_contract_error(1u32),
         }
@@ -247,7 +241,6 @@ impl TryFrom<soroban_sdk::InvokeError> for Error {
     type Error = soroban_sdk::InvokeError;
     #[inline(always)]
     fn try_from(error: soroban_sdk::InvokeError) -> Result<Self, soroban_sdk::InvokeError> {
-        <Error as soroban_sdk::SpecAnchor>::spec_anchor();
         match error {
             soroban_sdk::InvokeError::Abort => Err(error),
             soroban_sdk::InvokeError::Contract(code) => Ok(match code {
@@ -273,7 +266,6 @@ impl From<Error> for soroban_sdk::InvokeError {
 impl From<&Error> for soroban_sdk::InvokeError {
     #[inline(always)]
     fn from(val: &Error) -> soroban_sdk::InvokeError {
-        <Error as soroban_sdk::SpecAnchor>::spec_anchor();
         match val {
             Error::Overflow => soroban_sdk::InvokeError::Contract(1u32),
         }
@@ -398,15 +390,10 @@ impl soroban_sdk::SpecShakingMarker for MyError {
     #[inline(always)]
     fn spec_shaking_marker() {}
 }
-impl soroban_sdk::SpecAnchor for MyError {
-    #[inline(never)]
-    fn spec_anchor() {}
-}
 impl TryFrom<soroban_sdk::Error> for MyError {
     type Error = soroban_sdk::Error;
     #[inline(always)]
     fn try_from(error: soroban_sdk::Error) -> Result<Self, soroban_sdk::Error> {
-        <MyError as soroban_sdk::SpecAnchor>::spec_anchor();
         if error.is_type(soroban_sdk::xdr::ScErrorType::Contract) {
             let discriminant = error.get_code();
             Ok(match discriminant {
@@ -434,7 +421,6 @@ impl From<MyError> for soroban_sdk::Error {
 impl From<&MyError> for soroban_sdk::Error {
     #[inline(always)]
     fn from(val: &MyError) -> soroban_sdk::Error {
-        <MyError as soroban_sdk::SpecAnchor>::spec_anchor();
         match val {
             MyError::Overflow => soroban_sdk::Error::from_contract_error(1u32),
         }
@@ -444,7 +430,6 @@ impl TryFrom<soroban_sdk::InvokeError> for MyError {
     type Error = soroban_sdk::InvokeError;
     #[inline(always)]
     fn try_from(error: soroban_sdk::InvokeError) -> Result<Self, soroban_sdk::InvokeError> {
-        <MyError as soroban_sdk::SpecAnchor>::spec_anchor();
         match error {
             soroban_sdk::InvokeError::Abort => Err(error),
             soroban_sdk::InvokeError::Contract(code) => Ok(match code {
@@ -470,7 +455,6 @@ impl From<MyError> for soroban_sdk::InvokeError {
 impl From<&MyError> for soroban_sdk::InvokeError {
     #[inline(always)]
     fn from(val: &MyError) -> soroban_sdk::InvokeError {
-        <MyError as soroban_sdk::SpecAnchor>::spec_anchor();
         match val {
             MyError::Overflow => soroban_sdk::InvokeError::Contract(1u32),
         }

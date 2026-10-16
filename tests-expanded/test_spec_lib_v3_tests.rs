@@ -112,17 +112,12 @@ impl StructA {
         const { StructA::__SPEC_XDR_ENTRY.const_to_xdr() }
     }
 }
-impl soroban_sdk::SpecAnchor for StructA {
-    #[inline(never)]
-    fn spec_anchor() {}
-}
 impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for StructA {
     type Error = soroban_sdk::ConversionError;
     fn try_from_val(
         env: &soroban_sdk::Env,
         val: &soroban_sdk::Val,
     ) -> Result<Self, soroban_sdk::ConversionError> {
-        <StructA as soroban_sdk::SpecAnchor>::spec_anchor();
         use soroban_sdk::{ConversionError, EnvBase, MapObject, TryIntoVal, Val};
         const KEYS: [&'static str; 2usize] = ["f1", "f2"];
         let mut vals: [Val; 2usize] = [Val::VOID.to_val(); 2usize];
@@ -145,7 +140,6 @@ impl soroban_sdk::TryFromVal<soroban_sdk::Env, StructA> for soroban_sdk::Val {
         env: &soroban_sdk::Env,
         val: &StructA,
     ) -> Result<Self, soroban_sdk::ConversionError> {
-        <StructA as soroban_sdk::SpecAnchor>::spec_anchor();
         use soroban_sdk::{ConversionError, EnvBase, TryIntoVal, Val};
         const KEYS: [&'static str; 2usize] = ["f1", "f2"];
         let vals: [Val; 2usize] = [
@@ -594,17 +588,12 @@ impl StructB {
         const { StructB::__SPEC_XDR_ENTRY.const_to_xdr() }
     }
 }
-impl soroban_sdk::SpecAnchor for StructB {
-    #[inline(never)]
-    fn spec_anchor() {}
-}
 impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for StructB {
     type Error = soroban_sdk::ConversionError;
     fn try_from_val(
         env: &soroban_sdk::Env,
         val: &soroban_sdk::Val,
     ) -> Result<Self, soroban_sdk::ConversionError> {
-        <StructB as soroban_sdk::SpecAnchor>::spec_anchor();
         use soroban_sdk::{ConversionError, EnvBase, MapObject, TryIntoVal, Val};
         const KEYS: [&'static str; 2usize] = ["f1", "f2"];
         let mut vals: [Val; 2usize] = [Val::VOID.to_val(); 2usize];
@@ -627,7 +616,6 @@ impl soroban_sdk::TryFromVal<soroban_sdk::Env, StructB> for soroban_sdk::Val {
         env: &soroban_sdk::Env,
         val: &StructB,
     ) -> Result<Self, soroban_sdk::ConversionError> {
-        <StructB as soroban_sdk::SpecAnchor>::spec_anchor();
         use soroban_sdk::{ConversionError, EnvBase, TryIntoVal, Val};
         const KEYS: [&'static str; 2usize] = ["f1", "f2"];
         let vals: [Val; 2usize] = [
@@ -1076,17 +1064,12 @@ impl StructC {
         const { StructC::__SPEC_XDR_ENTRY.const_to_xdr() }
     }
 }
-impl soroban_sdk::SpecAnchor for StructC {
-    #[inline(never)]
-    fn spec_anchor() {}
-}
 impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for StructC {
     type Error = soroban_sdk::ConversionError;
     fn try_from_val(
         env: &soroban_sdk::Env,
         val: &soroban_sdk::Val,
     ) -> Result<Self, soroban_sdk::ConversionError> {
-        <StructC as soroban_sdk::SpecAnchor>::spec_anchor();
         use soroban_sdk::{ConversionError, EnvBase, MapObject, TryIntoVal, Val};
         const KEYS: [&'static str; 2usize] = ["f1", "f2"];
         let mut vals: [Val; 2usize] = [Val::VOID.to_val(); 2usize];
@@ -1109,7 +1092,6 @@ impl soroban_sdk::TryFromVal<soroban_sdk::Env, StructC> for soroban_sdk::Val {
         env: &soroban_sdk::Env,
         val: &StructC,
     ) -> Result<Self, soroban_sdk::ConversionError> {
-        <StructC as soroban_sdk::SpecAnchor>::spec_anchor();
         use soroban_sdk::{ConversionError, EnvBase, TryIntoVal, Val};
         const KEYS: [&'static str; 2usize] = ["f1", "f2"];
         let vals: [Val; 2usize] = [
@@ -1555,10 +1537,6 @@ impl StructTupleA {
         const { StructTupleA::__SPEC_XDR_ENTRY.const_to_xdr() }
     }
 }
-impl soroban_sdk::SpecAnchor for StructTupleA {
-    #[inline(never)]
-    fn spec_anchor() {}
-}
 impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for StructTupleA {
     type Error = soroban_sdk::ConversionError;
     #[inline(always)]
@@ -1566,7 +1544,6 @@ impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for StructTuple
         env: &soroban_sdk::Env,
         val: &soroban_sdk::Val,
     ) -> Result<Self, soroban_sdk::ConversionError> {
-        <StructTupleA as soroban_sdk::SpecAnchor>::spec_anchor();
         use soroban_sdk::{ConversionError, EnvBase, TryIntoVal, Val, VecObject};
         let vec: VecObject = (*val).try_into().map_err(|_| ConversionError)?;
         let mut vals: [Val; 2usize] = [Val::VOID.to_val(); 2usize];
@@ -1585,7 +1562,6 @@ impl soroban_sdk::TryFromVal<soroban_sdk::Env, StructTupleA> for soroban_sdk::Va
         env: &soroban_sdk::Env,
         val: &StructTupleA,
     ) -> Result<Self, soroban_sdk::ConversionError> {
-        <StructTupleA as soroban_sdk::SpecAnchor>::spec_anchor();
         use soroban_sdk::{ConversionError, EnvBase, TryIntoVal, Val};
         let vals: [Val; 2usize] = [
             (&val.0).try_into_val(env).map_err(|_| ConversionError)?,
@@ -1989,10 +1965,6 @@ impl StructTupleB {
         const { StructTupleB::__SPEC_XDR_ENTRY.const_to_xdr() }
     }
 }
-impl soroban_sdk::SpecAnchor for StructTupleB {
-    #[inline(never)]
-    fn spec_anchor() {}
-}
 impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for StructTupleB {
     type Error = soroban_sdk::ConversionError;
     #[inline(always)]
@@ -2000,7 +1972,6 @@ impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for StructTuple
         env: &soroban_sdk::Env,
         val: &soroban_sdk::Val,
     ) -> Result<Self, soroban_sdk::ConversionError> {
-        <StructTupleB as soroban_sdk::SpecAnchor>::spec_anchor();
         use soroban_sdk::{ConversionError, EnvBase, TryIntoVal, Val, VecObject};
         let vec: VecObject = (*val).try_into().map_err(|_| ConversionError)?;
         let mut vals: [Val; 2usize] = [Val::VOID.to_val(); 2usize];
@@ -2019,7 +1990,6 @@ impl soroban_sdk::TryFromVal<soroban_sdk::Env, StructTupleB> for soroban_sdk::Va
         env: &soroban_sdk::Env,
         val: &StructTupleB,
     ) -> Result<Self, soroban_sdk::ConversionError> {
-        <StructTupleB as soroban_sdk::SpecAnchor>::spec_anchor();
         use soroban_sdk::{ConversionError, EnvBase, TryIntoVal, Val};
         let vals: [Val; 2usize] = [
             (&val.0).try_into_val(env).map_err(|_| ConversionError)?,
@@ -2424,10 +2394,6 @@ impl StructTupleC {
         const { StructTupleC::__SPEC_XDR_ENTRY.const_to_xdr() }
     }
 }
-impl soroban_sdk::SpecAnchor for StructTupleC {
-    #[inline(never)]
-    fn spec_anchor() {}
-}
 impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for StructTupleC {
     type Error = soroban_sdk::ConversionError;
     #[inline(always)]
@@ -2435,7 +2401,6 @@ impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for StructTuple
         env: &soroban_sdk::Env,
         val: &soroban_sdk::Val,
     ) -> Result<Self, soroban_sdk::ConversionError> {
-        <StructTupleC as soroban_sdk::SpecAnchor>::spec_anchor();
         use soroban_sdk::{ConversionError, EnvBase, TryIntoVal, Val, VecObject};
         let vec: VecObject = (*val).try_into().map_err(|_| ConversionError)?;
         let mut vals: [Val; 2usize] = [Val::VOID.to_val(); 2usize];
@@ -2454,7 +2419,6 @@ impl soroban_sdk::TryFromVal<soroban_sdk::Env, StructTupleC> for soroban_sdk::Va
         env: &soroban_sdk::Env,
         val: &StructTupleC,
     ) -> Result<Self, soroban_sdk::ConversionError> {
-        <StructTupleC as soroban_sdk::SpecAnchor>::spec_anchor();
         use soroban_sdk::{ConversionError, EnvBase, TryIntoVal, Val};
         let vals: [Val; 2usize] = [
             (&val.0).try_into_val(env).map_err(|_| ConversionError)?,
@@ -2883,10 +2847,6 @@ impl EnumA {
         const { EnumA::__SPEC_XDR_ENTRY.const_to_xdr() }
     }
 }
-impl soroban_sdk::SpecAnchor for EnumA {
-    #[inline(never)]
-    fn spec_anchor() {}
-}
 impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for EnumA {
     type Error = soroban_sdk::ConversionError;
     #[inline(always)]
@@ -2894,7 +2854,6 @@ impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for EnumA {
         env: &soroban_sdk::Env,
         val: &soroban_sdk::Val,
     ) -> Result<Self, soroban_sdk::ConversionError> {
-        <EnumA as soroban_sdk::SpecAnchor>::spec_anchor();
         use soroban_sdk::{EnvBase, TryFromVal, TryIntoVal};
         const CASES: &'static [&'static str] = &["V1", "V2", "V3"];
         let vec: soroban_sdk::Vec<soroban_sdk::Val> = val.try_into_val(env)?;
@@ -2937,7 +2896,6 @@ impl soroban_sdk::TryFromVal<soroban_sdk::Env, EnumA> for soroban_sdk::Val {
         env: &soroban_sdk::Env,
         val: &EnumA,
     ) -> Result<Self, soroban_sdk::ConversionError> {
-        <EnumA as soroban_sdk::SpecAnchor>::spec_anchor();
         use soroban_sdk::{TryFromVal, TryIntoVal};
         match val {
             EnumA::V1 => {
@@ -3434,10 +3392,6 @@ impl EnumB {
         const { EnumB::__SPEC_XDR_ENTRY.const_to_xdr() }
     }
 }
-impl soroban_sdk::SpecAnchor for EnumB {
-    #[inline(never)]
-    fn spec_anchor() {}
-}
 impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for EnumB {
     type Error = soroban_sdk::ConversionError;
     #[inline(always)]
@@ -3445,7 +3399,6 @@ impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for EnumB {
         env: &soroban_sdk::Env,
         val: &soroban_sdk::Val,
     ) -> Result<Self, soroban_sdk::ConversionError> {
-        <EnumB as soroban_sdk::SpecAnchor>::spec_anchor();
         use soroban_sdk::{EnvBase, TryFromVal, TryIntoVal};
         const CASES: &'static [&'static str] = &["V1", "V2", "V3"];
         let vec: soroban_sdk::Vec<soroban_sdk::Val> = val.try_into_val(env)?;
@@ -3499,7 +3452,6 @@ impl soroban_sdk::TryFromVal<soroban_sdk::Env, EnumB> for soroban_sdk::Val {
         env: &soroban_sdk::Env,
         val: &EnumB,
     ) -> Result<Self, soroban_sdk::ConversionError> {
-        <EnumB as soroban_sdk::SpecAnchor>::spec_anchor();
         use soroban_sdk::{TryFromVal, TryIntoVal};
         match val {
             EnumB::V1 => {
@@ -4106,10 +4058,6 @@ impl EnumC {
         const { EnumC::__SPEC_XDR_ENTRY.const_to_xdr() }
     }
 }
-impl soroban_sdk::SpecAnchor for EnumC {
-    #[inline(never)]
-    fn spec_anchor() {}
-}
 impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for EnumC {
     type Error = soroban_sdk::ConversionError;
     #[inline(always)]
@@ -4117,7 +4065,6 @@ impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for EnumC {
         env: &soroban_sdk::Env,
         val: &soroban_sdk::Val,
     ) -> Result<Self, soroban_sdk::ConversionError> {
-        <EnumC as soroban_sdk::SpecAnchor>::spec_anchor();
         use soroban_sdk::{EnvBase, TryFromVal, TryIntoVal};
         const CASES: &'static [&'static str] = &["V1", "V2", "V3"];
         let vec: soroban_sdk::Vec<soroban_sdk::Val> = val.try_into_val(env)?;
@@ -4168,7 +4115,6 @@ impl soroban_sdk::TryFromVal<soroban_sdk::Env, EnumC> for soroban_sdk::Val {
         env: &soroban_sdk::Env,
         val: &EnumC,
     ) -> Result<Self, soroban_sdk::ConversionError> {
-        <EnumC as soroban_sdk::SpecAnchor>::spec_anchor();
         use soroban_sdk::{TryFromVal, TryIntoVal};
         match val {
             EnumC::V1 => {
@@ -4714,10 +4660,6 @@ impl EnumIntA {
         const { EnumIntA::__SPEC_XDR_ENTRY.const_to_xdr() }
     }
 }
-impl soroban_sdk::SpecAnchor for EnumIntA {
-    #[inline(never)]
-    fn spec_anchor() {}
-}
 impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for EnumIntA {
     type Error = soroban_sdk::ConversionError;
     #[inline(always)]
@@ -4725,7 +4667,6 @@ impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for EnumIntA {
         env: &soroban_sdk::Env,
         val: &soroban_sdk::Val,
     ) -> Result<Self, soroban_sdk::ConversionError> {
-        <EnumIntA as soroban_sdk::SpecAnchor>::spec_anchor();
         use soroban_sdk::TryIntoVal;
         let discriminant: u32 = val.try_into_val(env)?;
         Ok(match discriminant {
@@ -4743,7 +4684,6 @@ impl soroban_sdk::TryFromVal<soroban_sdk::Env, EnumIntA> for soroban_sdk::Val {
         env: &soroban_sdk::Env,
         val: &EnumIntA,
     ) -> Result<Self, soroban_sdk::ConversionError> {
-        <EnumIntA as soroban_sdk::SpecAnchor>::spec_anchor();
         Ok(match val {
             EnumIntA::V1 => 1u32.into(),
             EnumIntA::V2 => 2u32.into(),
@@ -5122,10 +5062,6 @@ impl EnumIntB {
         const { EnumIntB::__SPEC_XDR_ENTRY.const_to_xdr() }
     }
 }
-impl soroban_sdk::SpecAnchor for EnumIntB {
-    #[inline(never)]
-    fn spec_anchor() {}
-}
 impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for EnumIntB {
     type Error = soroban_sdk::ConversionError;
     #[inline(always)]
@@ -5133,7 +5069,6 @@ impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for EnumIntB {
         env: &soroban_sdk::Env,
         val: &soroban_sdk::Val,
     ) -> Result<Self, soroban_sdk::ConversionError> {
-        <EnumIntB as soroban_sdk::SpecAnchor>::spec_anchor();
         use soroban_sdk::TryIntoVal;
         let discriminant: u32 = val.try_into_val(env)?;
         Ok(match discriminant {
@@ -5151,7 +5086,6 @@ impl soroban_sdk::TryFromVal<soroban_sdk::Env, EnumIntB> for soroban_sdk::Val {
         env: &soroban_sdk::Env,
         val: &EnumIntB,
     ) -> Result<Self, soroban_sdk::ConversionError> {
-        <EnumIntB as soroban_sdk::SpecAnchor>::spec_anchor();
         Ok(match val {
             EnumIntB::V1 => 10u32.into(),
             EnumIntB::V2 => 20u32.into(),
@@ -5530,10 +5464,6 @@ impl EnumIntC {
         const { EnumIntC::__SPEC_XDR_ENTRY.const_to_xdr() }
     }
 }
-impl soroban_sdk::SpecAnchor for EnumIntC {
-    #[inline(never)]
-    fn spec_anchor() {}
-}
 impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for EnumIntC {
     type Error = soroban_sdk::ConversionError;
     #[inline(always)]
@@ -5541,7 +5471,6 @@ impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for EnumIntC {
         env: &soroban_sdk::Env,
         val: &soroban_sdk::Val,
     ) -> Result<Self, soroban_sdk::ConversionError> {
-        <EnumIntC as soroban_sdk::SpecAnchor>::spec_anchor();
         use soroban_sdk::TryIntoVal;
         let discriminant: u32 = val.try_into_val(env)?;
         Ok(match discriminant {
@@ -5559,7 +5488,6 @@ impl soroban_sdk::TryFromVal<soroban_sdk::Env, EnumIntC> for soroban_sdk::Val {
         env: &soroban_sdk::Env,
         val: &EnumIntC,
     ) -> Result<Self, soroban_sdk::ConversionError> {
-        <EnumIntC as soroban_sdk::SpecAnchor>::spec_anchor();
         Ok(match val {
             EnumIntC::V1 => 100u32.into(),
             EnumIntC::V2 => 200u32.into(),
@@ -5943,15 +5871,10 @@ impl soroban_sdk::SpecShakingMarker for ErrorA {
     #[inline(always)]
     fn spec_shaking_marker() {}
 }
-impl soroban_sdk::SpecAnchor for ErrorA {
-    #[inline(never)]
-    fn spec_anchor() {}
-}
 impl TryFrom<soroban_sdk::Error> for ErrorA {
     type Error = soroban_sdk::Error;
     #[inline(always)]
     fn try_from(error: soroban_sdk::Error) -> Result<Self, soroban_sdk::Error> {
-        <ErrorA as soroban_sdk::SpecAnchor>::spec_anchor();
         if error.is_type(soroban_sdk::xdr::ScErrorType::Contract) {
             let discriminant = error.get_code();
             Ok(match discriminant {
@@ -5981,7 +5904,6 @@ impl From<ErrorA> for soroban_sdk::Error {
 impl From<&ErrorA> for soroban_sdk::Error {
     #[inline(always)]
     fn from(val: &ErrorA) -> soroban_sdk::Error {
-        <ErrorA as soroban_sdk::SpecAnchor>::spec_anchor();
         match val {
             ErrorA::E1 => soroban_sdk::Error::from_contract_error(1u32),
             ErrorA::E2 => soroban_sdk::Error::from_contract_error(2u32),
@@ -5993,7 +5915,6 @@ impl TryFrom<soroban_sdk::InvokeError> for ErrorA {
     type Error = soroban_sdk::InvokeError;
     #[inline(always)]
     fn try_from(error: soroban_sdk::InvokeError) -> Result<Self, soroban_sdk::InvokeError> {
-        <ErrorA as soroban_sdk::SpecAnchor>::spec_anchor();
         match error {
             soroban_sdk::InvokeError::Abort => Err(error),
             soroban_sdk::InvokeError::Contract(code) => Ok(match code {
@@ -6021,7 +5942,6 @@ impl From<ErrorA> for soroban_sdk::InvokeError {
 impl From<&ErrorA> for soroban_sdk::InvokeError {
     #[inline(always)]
     fn from(val: &ErrorA) -> soroban_sdk::InvokeError {
-        <ErrorA as soroban_sdk::SpecAnchor>::spec_anchor();
         match val {
             ErrorA::E1 => soroban_sdk::InvokeError::Contract(1u32),
             ErrorA::E2 => soroban_sdk::InvokeError::Contract(2u32),
@@ -6183,15 +6103,10 @@ impl soroban_sdk::SpecShakingMarker for ErrorB {
     #[inline(always)]
     fn spec_shaking_marker() {}
 }
-impl soroban_sdk::SpecAnchor for ErrorB {
-    #[inline(never)]
-    fn spec_anchor() {}
-}
 impl TryFrom<soroban_sdk::Error> for ErrorB {
     type Error = soroban_sdk::Error;
     #[inline(always)]
     fn try_from(error: soroban_sdk::Error) -> Result<Self, soroban_sdk::Error> {
-        <ErrorB as soroban_sdk::SpecAnchor>::spec_anchor();
         if error.is_type(soroban_sdk::xdr::ScErrorType::Contract) {
             let discriminant = error.get_code();
             Ok(match discriminant {
@@ -6221,7 +6136,6 @@ impl From<ErrorB> for soroban_sdk::Error {
 impl From<&ErrorB> for soroban_sdk::Error {
     #[inline(always)]
     fn from(val: &ErrorB) -> soroban_sdk::Error {
-        <ErrorB as soroban_sdk::SpecAnchor>::spec_anchor();
         match val {
             ErrorB::E1 => soroban_sdk::Error::from_contract_error(10u32),
             ErrorB::E2 => soroban_sdk::Error::from_contract_error(11u32),
@@ -6233,7 +6147,6 @@ impl TryFrom<soroban_sdk::InvokeError> for ErrorB {
     type Error = soroban_sdk::InvokeError;
     #[inline(always)]
     fn try_from(error: soroban_sdk::InvokeError) -> Result<Self, soroban_sdk::InvokeError> {
-        <ErrorB as soroban_sdk::SpecAnchor>::spec_anchor();
         match error {
             soroban_sdk::InvokeError::Abort => Err(error),
             soroban_sdk::InvokeError::Contract(code) => Ok(match code {
@@ -6261,7 +6174,6 @@ impl From<ErrorB> for soroban_sdk::InvokeError {
 impl From<&ErrorB> for soroban_sdk::InvokeError {
     #[inline(always)]
     fn from(val: &ErrorB) -> soroban_sdk::InvokeError {
-        <ErrorB as soroban_sdk::SpecAnchor>::spec_anchor();
         match val {
             ErrorB::E1 => soroban_sdk::InvokeError::Contract(10u32),
             ErrorB::E2 => soroban_sdk::InvokeError::Contract(11u32),
@@ -6423,15 +6335,10 @@ impl soroban_sdk::SpecShakingMarker for ErrorC {
     #[inline(always)]
     fn spec_shaking_marker() {}
 }
-impl soroban_sdk::SpecAnchor for ErrorC {
-    #[inline(never)]
-    fn spec_anchor() {}
-}
 impl TryFrom<soroban_sdk::Error> for ErrorC {
     type Error = soroban_sdk::Error;
     #[inline(always)]
     fn try_from(error: soroban_sdk::Error) -> Result<Self, soroban_sdk::Error> {
-        <ErrorC as soroban_sdk::SpecAnchor>::spec_anchor();
         if error.is_type(soroban_sdk::xdr::ScErrorType::Contract) {
             let discriminant = error.get_code();
             Ok(match discriminant {
@@ -6461,7 +6368,6 @@ impl From<ErrorC> for soroban_sdk::Error {
 impl From<&ErrorC> for soroban_sdk::Error {
     #[inline(always)]
     fn from(val: &ErrorC) -> soroban_sdk::Error {
-        <ErrorC as soroban_sdk::SpecAnchor>::spec_anchor();
         match val {
             ErrorC::E1 => soroban_sdk::Error::from_contract_error(100u32),
             ErrorC::E2 => soroban_sdk::Error::from_contract_error(101u32),
@@ -6473,7 +6379,6 @@ impl TryFrom<soroban_sdk::InvokeError> for ErrorC {
     type Error = soroban_sdk::InvokeError;
     #[inline(always)]
     fn try_from(error: soroban_sdk::InvokeError) -> Result<Self, soroban_sdk::InvokeError> {
-        <ErrorC as soroban_sdk::SpecAnchor>::spec_anchor();
         match error {
             soroban_sdk::InvokeError::Abort => Err(error),
             soroban_sdk::InvokeError::Contract(code) => Ok(match code {
@@ -6501,7 +6406,6 @@ impl From<ErrorC> for soroban_sdk::InvokeError {
 impl From<&ErrorC> for soroban_sdk::InvokeError {
     #[inline(always)]
     fn from(val: &ErrorC) -> soroban_sdk::InvokeError {
-        <ErrorC as soroban_sdk::SpecAnchor>::spec_anchor();
         match val {
             ErrorC::E1 => soroban_sdk::InvokeError::Contract(100u32),
             ErrorC::E2 => soroban_sdk::InvokeError::Contract(101u32),
@@ -6660,13 +6564,8 @@ impl soroban_sdk::SpecShakingMarker for EventA {
     #[inline(always)]
     fn spec_shaking_marker() {}
 }
-impl soroban_sdk::SpecAnchor for EventA {
-    #[inline(never)]
-    fn spec_anchor() {}
-}
 impl soroban_sdk::Event for EventA {
     fn topics(&self, env: &soroban_sdk::Env) -> soroban_sdk::Vec<soroban_sdk::Val> {
-        <Self as soroban_sdk::SpecAnchor>::spec_anchor();
         use soroban_sdk::IntoVal;
         (
             &{
@@ -6682,7 +6581,6 @@ impl soroban_sdk::Event for EventA {
             .into_val(env)
     }
     fn data(&self, env: &soroban_sdk::Env) -> soroban_sdk::Val {
-        <Self as soroban_sdk::SpecAnchor>::spec_anchor();
         use soroban_sdk::{unwrap::UnwrapInfallible, EnvBase, IntoVal};
         const KEYS: [&'static str; 1usize] = ["f2"];
         let vals: [soroban_sdk::Val; 1usize] = [self.f2.into_val(env)];
@@ -6822,13 +6720,8 @@ impl soroban_sdk::SpecShakingMarker for EventB {
     #[inline(always)]
     fn spec_shaking_marker() {}
 }
-impl soroban_sdk::SpecAnchor for EventB {
-    #[inline(never)]
-    fn spec_anchor() {}
-}
 impl soroban_sdk::Event for EventB {
     fn topics(&self, env: &soroban_sdk::Env) -> soroban_sdk::Vec<soroban_sdk::Val> {
-        <Self as soroban_sdk::SpecAnchor>::spec_anchor();
         use soroban_sdk::IntoVal;
         (
             &{
@@ -6848,7 +6741,6 @@ impl soroban_sdk::Event for EventB {
             .into_val(env)
     }
     fn data(&self, env: &soroban_sdk::Env) -> soroban_sdk::Val {
-        <Self as soroban_sdk::SpecAnchor>::spec_anchor();
         use soroban_sdk::{unwrap::UnwrapInfallible, EnvBase, IntoVal};
         const KEYS: [&'static str; 1usize] = ["f3"];
         let vals: [soroban_sdk::Val; 1usize] = [self.f3.into_val(env)];
@@ -6988,13 +6880,8 @@ impl soroban_sdk::SpecShakingMarker for EventC {
     #[inline(always)]
     fn spec_shaking_marker() {}
 }
-impl soroban_sdk::SpecAnchor for EventC {
-    #[inline(never)]
-    fn spec_anchor() {}
-}
 impl soroban_sdk::Event for EventC {
     fn topics(&self, env: &soroban_sdk::Env) -> soroban_sdk::Vec<soroban_sdk::Val> {
-        <Self as soroban_sdk::SpecAnchor>::spec_anchor();
         use soroban_sdk::IntoVal;
         (
             &{
@@ -7010,7 +6897,6 @@ impl soroban_sdk::Event for EventC {
             .into_val(env)
     }
     fn data(&self, env: &soroban_sdk::Env) -> soroban_sdk::Val {
-        <Self as soroban_sdk::SpecAnchor>::spec_anchor();
         use soroban_sdk::{unwrap::UnwrapInfallible, EnvBase, IntoVal};
         const KEYS: [&'static str; 2usize] = ["f2", "f3"];
         let vals: [soroban_sdk::Val; 2usize] = [self.f2.into_val(env), self.f3.into_val(env)];
@@ -7118,13 +7004,8 @@ impl soroban_sdk::SpecShakingMarker for EventD {
     #[inline(always)]
     fn spec_shaking_marker() {}
 }
-impl soroban_sdk::SpecAnchor for EventD {
-    #[inline(never)]
-    fn spec_anchor() {}
-}
 impl soroban_sdk::Event for EventD {
     fn topics(&self, env: &soroban_sdk::Env) -> soroban_sdk::Vec<soroban_sdk::Val> {
-        <Self as soroban_sdk::SpecAnchor>::spec_anchor();
         use soroban_sdk::IntoVal;
         (&{
             #[allow(deprecated)]
@@ -7134,7 +7015,6 @@ impl soroban_sdk::Event for EventD {
             .into_val(env)
     }
     fn data(&self, env: &soroban_sdk::Env) -> soroban_sdk::Val {
-        <Self as soroban_sdk::SpecAnchor>::spec_anchor();
         use soroban_sdk::{unwrap::UnwrapInfallible, EnvBase, IntoVal};
         const KEYS: [&'static str; 0usize] = [];
         let vals: [soroban_sdk::Val; 0usize] = [];
