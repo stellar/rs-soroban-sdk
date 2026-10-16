@@ -5,7 +5,10 @@ use syn::{Error, FnArg, LitStr, Path, Type, TypePath, TypeReference};
 
 use syn::ext::IdentExt as _;
 
-use crate::{attribute::pass_through_attr_to_gen_code, symbol, syn_ext};
+use crate::{
+    attribute::{is_attr_doc, pass_through_attr_to_gen_code},
+    symbol, syn_ext,
+};
 
 /// Whether the argument's type is written as `MuxedAddress`, so that the client
 /// can accept anything that converts into one.
@@ -202,13 +205,41 @@ pub fn derive_client_impl(crate_path: &Path, name: &str, fns: &[syn_ext::Fn]) ->
                 .multiunzip();
             let fn_output = f.output();
             let fn_try_output = f.try_output(crate_path);
-            let fn_attrs = f
+            let (fn_doc_attrs, fn_attrs): (Vec<_>, Vec<_>) = f
                 .attrs
                 .iter()
                 .filter(|attr| pass_through_attr_to_gen_code(attr))
-                .collect::<Vec<_>>();
+                .partition(|attr| is_attr_doc(attr));
+            let fn_call_doc = format!(" Call `{fn_name}` function on the contract.");
+            let fn_contract_docs = (!fn_doc_attrs.is_empty()).then(|| {
+                quote! {
+                    #[doc = ""]
+                    #(#fn_doc_attrs)*
+                }
+            });
+            let fn_try_doc =
+                format!(" Use [`Self::{fn_try_ident}`] to receive errors instead of panicking.");
+            let fn_docs = quote! {
+                #[doc = #fn_call_doc]
+                #fn_contract_docs
+                #[doc = ""]
+                #[doc = " # Panics"]
+                #[doc = ""]
+                #[doc = " Panics if the invoked contract returns an error or panics."]
+                #[doc = ""]
+                #[doc = #fn_try_doc]
+            };
+            let fn_try_docs = quote! {
+                #[doc = #fn_call_doc]
+                #fn_contract_docs
+                #[doc = ""]
+                #[doc = " # Errors"]
+                #[doc = ""]
+                #[doc = " Returns an error if the invoked contract returns an error or panics. A panic in the invoked contract is caught and returned as an error rather than panicking the caller."]
+            };
             if cfg!(not(feature = "testutils")) {
                 quote! {
+                    #fn_docs
                     #(#fn_attrs)*
                     pub fn #fn_ident(&self, #(#fn_input_types),*) -> #fn_output {
                         use core::ops::Not;
@@ -221,6 +252,7 @@ pub fn derive_client_impl(crate_path: &Path, name: &str, fns: &[syn_ext::Fn]) ->
                         res
                     }
 
+                    #fn_try_docs
                     #(#fn_attrs)*
                     pub fn #fn_try_ident(&self, #(#fn_input_types),*) -> #fn_try_output {
                         use #crate_path::{IntoVal,FromVal};
@@ -234,6 +266,7 @@ pub fn derive_client_impl(crate_path: &Path, name: &str, fns: &[syn_ext::Fn]) ->
                 }
             } else {
                 quote! {
+                    #fn_docs
                     #(#fn_attrs)*
                     pub fn #fn_ident(&self, #(#fn_input_types),*) -> #fn_output {
                         // Exists only to be dropped at the end of this fn, restoring the auth
@@ -248,6 +281,7 @@ pub fn derive_client_impl(crate_path: &Path, name: &str, fns: &[syn_ext::Fn]) ->
                         res
                     }
 
+                    #fn_try_docs
                     #(#fn_attrs)*
                     pub fn #fn_try_ident(&self, #(#fn_input_types),*) -> #fn_try_output {
                         // Exists only to be dropped at the end of this fn, restoring the auth

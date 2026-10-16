@@ -1,13 +1,14 @@
-use soroban_sdk_macros::{contract, contractimpl, contracttype};
+use soroban_sdk_macros::{contract, contractevent, contractimpl, contracttype};
 
-use crate::testutils::{Address as _, MuxedAddress as _};
+use crate::testutils::{Address as _, Events as _, MuxedAddress as _};
 use crate::{self as soroban_sdk, Bytes, String};
 use crate::{
     env::xdr::{
         AccountId, ClaimableBalanceId, Hash, PoolId, ScAddress, ScBytes, ScError, ScMap, ScString,
         ScSymbol, ScVal, ScVec, Uint256,
     },
-    Address, ConversionError, Env, MuxedAddress, TryFromVal,
+    token::{StellarAssetClient, TokenClient},
+    Address, ConversionError, Env, Event, MuxedAddress, TryFromVal,
 };
 
 #[derive(Clone, Debug, Eq, PartialEq)]
@@ -145,6 +146,70 @@ fn test_muxed_address_component_getters() {
     let muxed_address_from_address = MuxedAddress::new(muxed_address_with_another_id.address(), 0);
     assert_eq!(muxed_address_from_address.address(), expected_address);
     assert_eq!(muxed_address_from_address.id(), Some(0));
+}
+
+#[test]
+fn test_muxed_contract_address() {
+    let env = Env::default();
+    let contract = env.register(MuxedAddressContract, ());
+
+    let muxed_address = MuxedAddress::new(&contract, 123456);
+    assert_eq!(muxed_address.address(), contract);
+    assert_eq!(muxed_address.id(), Some(123456));
+
+    let strkey = muxed_address.to_strkey();
+    assert!(strkey.to_string().starts_with('W'));
+    assert_eq!(
+        format!("{muxed_address:?}"),
+        format!("MuxedContract({strkey})")
+    );
+    assert_eq!(MuxedAddress::from_string(&strkey), muxed_address);
+
+    let muxed_address_with_another_id = MuxedAddress::new(muxed_address, u64::MAX);
+    assert_eq!(muxed_address_with_another_id.address(), contract);
+    assert_eq!(muxed_address_with_another_id.id(), Some(u64::MAX));
+}
+
+#[test]
+fn test_sac_transfer_to_muxed_contract_address() {
+    let env = Env::default();
+    env.mock_all_auths();
+    let contract = env.register(MuxedAddressContract, ());
+    let muxed_address = MuxedAddress::new(&contract, 123456);
+
+    let admin = Address::generate(&env);
+    let sac = env.register_stellar_asset_contract_v2(admin);
+    let from = Address::generate(&env);
+    StellarAssetClient::new(&env, &sac.address()).mint(&from, &100);
+    let token = TokenClient::new(&env, &sac.address());
+    token.transfer(&from, &muxed_address, &40);
+    assert_eq!(
+        env.events().all(),
+        [SacTransfer {
+            from: from.clone(),
+            to: contract.clone(),
+            name: token.name(),
+            amount: 40,
+            to_muxed_id: 123456,
+        }
+        .to_xdr(&env, &sac.address())]
+    );
+    assert_eq!(token.balance(&from), 60);
+    assert_eq!(token.balance(&contract), 40);
+}
+
+/// The event the Stellar Asset Contract publishes for a transfer to a muxed
+/// address.
+#[contractevent(topics = ["transfer"])]
+struct SacTransfer {
+    #[topic]
+    from: Address,
+    #[topic]
+    to: Address,
+    #[topic]
+    name: String,
+    amount: i128,
+    to_muxed_id: u64,
 }
 
 #[test]

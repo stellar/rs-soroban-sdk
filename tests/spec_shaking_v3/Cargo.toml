@@ -8,7 +8,7 @@ publish = false
 rust-version.workspace = true
 
 # Builds with the soroban-sdk in this repo, whose wasm is shaken by following
-# references. test_spec_shaking_v2 builds this same src with soroban-sdk 28.0.0.
+# references. test_spec_shaking_v2 builds this same src with soroban-sdk 29.0.1.
 [lib]
 crate-type = ["cdylib"]
 doctest = false

@@ -99,17 +99,12 @@ impl AttributeType {
         const { AttributeType::__SPEC_XDR_ENTRY.const_to_xdr() }
     }
 }
-impl soroban_sdk::SpecAnchor for AttributeType {
-    #[inline(never)]
-    fn spec_anchor() {}
-}
 impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for AttributeType {
     type Error = soroban_sdk::ConversionError;
     fn try_from_val(
         env: &soroban_sdk::Env,
         val: &soroban_sdk::Val,
     ) -> Result<Self, soroban_sdk::ConversionError> {
-        <AttributeType as soroban_sdk::SpecAnchor>::spec_anchor();
         use soroban_sdk::{ConversionError, EnvBase, MapObject, TryIntoVal, Val};
         const KEYS: [&'static str; 1usize] = ["value"];
         let mut vals: [Val; 1usize] = [Val::VOID.to_val(); 1usize];
@@ -129,7 +124,6 @@ impl soroban_sdk::TryFromVal<soroban_sdk::Env, AttributeType> for soroban_sdk::V
         env: &soroban_sdk::Env,
         val: &AttributeType,
     ) -> Result<Self, soroban_sdk::ConversionError> {
-        <AttributeType as soroban_sdk::SpecAnchor>::spec_anchor();
         use soroban_sdk::{ConversionError, EnvBase, TryIntoVal, Val};
         const KEYS: [&'static str; 1usize] = ["value"];
         let vals: [Val; 1usize] = [(&val.value)
@@ -499,13 +493,8 @@ impl soroban_sdk::SpecShakingMarker for AttributeEvent {
     #[inline(always)]
     fn spec_shaking_marker() {}
 }
-impl soroban_sdk::SpecAnchor for AttributeEvent {
-    #[inline(never)]
-    fn spec_anchor() {}
-}
 impl soroban_sdk::Event for AttributeEvent {
     fn topics(&self, env: &soroban_sdk::Env) -> soroban_sdk::Vec<soroban_sdk::Val> {
-        <Self as soroban_sdk::SpecAnchor>::spec_anchor();
         use soroban_sdk::IntoVal;
         (&{ soroban_sdk::Symbol::new(env, "attribute_event") }, {
             let v: soroban_sdk::Val = self.topic.into_val(env);
@@ -514,7 +503,6 @@ impl soroban_sdk::Event for AttributeEvent {
             .into_val(env)
     }
     fn data(&self, env: &soroban_sdk::Env) -> soroban_sdk::Val {
-        <Self as soroban_sdk::SpecAnchor>::spec_anchor();
         use soroban_sdk::{unwrap::UnwrapInfallible, EnvBase, IntoVal};
         const KEYS: [&'static str; 1usize] = ["value"];
         let vals: [soroban_sdk::Val; 1usize] = [self.value.into_val(env)];
@@ -737,6 +725,13 @@ impl<'a> AttributeTraitClient<'a> {
     }
 }
 impl<'a> AttributeTraitClient<'a> {
+    /// Call `trait_override` function on the contract.
+    ///
+    /// # Panics
+    ///
+    /// Panics if the invoked contract returns an error or panics.
+    ///
+    /// Use [`Self::try_trait_override`] to receive errors instead of panicking.
     pub fn trait_override(&self) -> u32 {
         let _call_scope = soroban_sdk::testutils::ClientCallScope::enter(&self.env, self.config);
         use soroban_sdk::{FromVal, IntoVal};
@@ -747,6 +742,11 @@ impl<'a> AttributeTraitClient<'a> {
         );
         res
     }
+    /// Call `trait_override` function on the contract.
+    ///
+    /// # Errors
+    ///
+    /// Returns an error if the invoked contract returns an error or panics. A panic in the invoked contract is caught and returned as an error rather than panicking the caller.
     pub fn try_trait_override(
         &self,
     ) -> Result<
@@ -762,6 +762,13 @@ impl<'a> AttributeTraitClient<'a> {
         );
         res
     }
+    /// Call `trait_default` function on the contract.
+    ///
+    /// # Panics
+    ///
+    /// Panics if the invoked contract returns an error or panics.
+    ///
+    /// Use [`Self::try_trait_default`] to receive errors instead of panicking.
     pub fn trait_default(&self) -> u32 {
         let _call_scope = soroban_sdk::testutils::ClientCallScope::enter(&self.env, self.config);
         use soroban_sdk::{FromVal, IntoVal};
@@ -772,6 +779,11 @@ impl<'a> AttributeTraitClient<'a> {
         );
         res
     }
+    /// Call `trait_default` function on the contract.
+    ///
+    /// # Errors
+    ///
+    /// Returns an error if the invoked contract returns an error or panics. A panic in the invoked contract is caught and returned as an error rather than panicking the caller.
     pub fn try_trait_default(
         &self,
     ) -> Result<
@@ -787,6 +799,13 @@ impl<'a> AttributeTraitClient<'a> {
         );
         res
     }
+    /// Call `trait_default_stacked_cfg` function on the contract.
+    ///
+    /// # Panics
+    ///
+    /// Panics if the invoked contract returns an error or panics.
+    ///
+    /// Use [`Self::try_trait_default_stacked_cfg`] to receive errors instead of panicking.
     pub fn trait_default_stacked_cfg(&self) -> u32 {
         let _call_scope = soroban_sdk::testutils::ClientCallScope::enter(&self.env, self.config);
         use soroban_sdk::{FromVal, IntoVal};
@@ -797,6 +816,11 @@ impl<'a> AttributeTraitClient<'a> {
         );
         res
     }
+    /// Call `trait_default_stacked_cfg` function on the contract.
+    ///
+    /// # Errors
+    ///
+    /// Returns an error if the invoked contract returns an error or panics. A panic in the invoked contract is caught and returned as an error rather than panicking the caller.
     pub fn try_trait_default_stacked_cfg(
         &self,
     ) -> Result<
@@ -812,6 +836,13 @@ impl<'a> AttributeTraitClient<'a> {
         );
         res
     }
+    /// Call `trait_override_stacked_cfg` function on the contract.
+    ///
+    /// # Panics
+    ///
+    /// Panics if the invoked contract returns an error or panics.
+    ///
+    /// Use [`Self::try_trait_override_stacked_cfg`] to receive errors instead of panicking.
     pub fn trait_override_stacked_cfg(&self) -> u32 {
         let _call_scope = soroban_sdk::testutils::ClientCallScope::enter(&self.env, self.config);
         use soroban_sdk::{FromVal, IntoVal};
@@ -822,6 +853,11 @@ impl<'a> AttributeTraitClient<'a> {
         );
         res
     }
+    /// Call `trait_override_stacked_cfg` function on the contract.
+    ///
+    /// # Errors
+    ///
+    /// Returns an error if the invoked contract returns an error or panics. A panic in the invoked contract is caught and returned as an error rather than panicking the caller.
     pub fn try_trait_override_stacked_cfg(
         &self,
     ) -> Result<
@@ -837,6 +873,13 @@ impl<'a> AttributeTraitClient<'a> {
         );
         res
     }
+    /// Call `trait_override_negated_cfg` function on the contract.
+    ///
+    /// # Panics
+    ///
+    /// Panics if the invoked contract returns an error or panics.
+    ///
+    /// Use [`Self::try_trait_override_negated_cfg`] to receive errors instead of panicking.
     pub fn trait_override_negated_cfg(&self) -> u32 {
         let _call_scope = soroban_sdk::testutils::ClientCallScope::enter(&self.env, self.config);
         use soroban_sdk::{FromVal, IntoVal};
@@ -847,6 +890,11 @@ impl<'a> AttributeTraitClient<'a> {
         );
         res
     }
+    /// Call `trait_override_negated_cfg` function on the contract.
+    ///
+    /// # Errors
+    ///
+    /// Returns an error if the invoked contract returns an error or panics. A panic in the invoked contract is caught and returned as an error rather than panicking the caller.
     pub fn try_trait_override_negated_cfg(
         &self,
     ) -> Result<
@@ -862,6 +910,13 @@ impl<'a> AttributeTraitClient<'a> {
         );
         res
     }
+    /// Call `trait_override_dual_cfg` function on the contract.
+    ///
+    /// # Panics
+    ///
+    /// Panics if the invoked contract returns an error or panics.
+    ///
+    /// Use [`Self::try_trait_override_dual_cfg`] to receive errors instead of panicking.
     pub fn trait_override_dual_cfg(&self) -> u32 {
         let _call_scope = soroban_sdk::testutils::ClientCallScope::enter(&self.env, self.config);
         use soroban_sdk::{FromVal, IntoVal};
@@ -872,6 +927,11 @@ impl<'a> AttributeTraitClient<'a> {
         );
         res
     }
+    /// Call `trait_override_dual_cfg` function on the contract.
+    ///
+    /// # Errors
+    ///
+    /// Returns an error if the invoked contract returns an error or panics. A panic in the invoked contract is caught and returned as an error rather than panicking the caller.
     pub fn try_trait_override_dual_cfg(
         &self,
     ) -> Result<
@@ -887,6 +947,13 @@ impl<'a> AttributeTraitClient<'a> {
         );
         res
     }
+    /// Call `trait_default_dual_cfg` function on the contract.
+    ///
+    /// # Panics
+    ///
+    /// Panics if the invoked contract returns an error or panics.
+    ///
+    /// Use [`Self::try_trait_default_dual_cfg`] to receive errors instead of panicking.
     pub fn trait_default_dual_cfg(&self) -> u32 {
         let _call_scope = soroban_sdk::testutils::ClientCallScope::enter(&self.env, self.config);
         use soroban_sdk::{FromVal, IntoVal};
@@ -897,6 +964,11 @@ impl<'a> AttributeTraitClient<'a> {
         );
         res
     }
+    /// Call `trait_default_dual_cfg` function on the contract.
+    ///
+    /// # Errors
+    ///
+    /// Returns an error if the invoked contract returns an error or panics. A panic in the invoked contract is caught and returned as an error rather than panicking the caller.
     pub fn try_trait_default_dual_cfg(
         &self,
     ) -> Result<
@@ -1237,6 +1309,13 @@ impl Contract {
     }
 }
 impl<'a> ContractClient<'a> {
+    /// Call `always` function on the contract.
+    ///
+    /// # Panics
+    ///
+    /// Panics if the invoked contract returns an error or panics.
+    ///
+    /// Use [`Self::try_always`] to receive errors instead of panicking.
     pub fn always(&self, value: &AttributeType) -> u32 {
         let _call_scope = soroban_sdk::testutils::ClientCallScope::enter(&self.env, self.config);
         use soroban_sdk::{FromVal, IntoVal};
@@ -1251,6 +1330,11 @@ impl<'a> ContractClient<'a> {
         );
         res
     }
+    /// Call `always` function on the contract.
+    ///
+    /// # Errors
+    ///
+    /// Returns an error if the invoked contract returns an error or panics. A panic in the invoked contract is caught and returned as an error rather than panicking the caller.
     pub fn try_always(
         &self,
         value: &AttributeType,
@@ -1271,6 +1355,13 @@ impl<'a> ContractClient<'a> {
         );
         res
     }
+    /// Call `cfg_included` function on the contract.
+    ///
+    /// # Panics
+    ///
+    /// Panics if the invoked contract returns an error or panics.
+    ///
+    /// Use [`Self::try_cfg_included`] to receive errors instead of panicking.
     pub fn cfg_included(&self, value: &u32) -> u32 {
         let _call_scope = soroban_sdk::testutils::ClientCallScope::enter(&self.env, self.config);
         use soroban_sdk::{FromVal, IntoVal};
@@ -1281,6 +1372,11 @@ impl<'a> ContractClient<'a> {
         );
         res
     }
+    /// Call `cfg_included` function on the contract.
+    ///
+    /// # Errors
+    ///
+    /// Returns an error if the invoked contract returns an error or panics. A panic in the invoked contract is caught and returned as an error rather than panicking the caller.
     pub fn try_cfg_included(
         &self,
         value: &u32,
@@ -1297,6 +1393,13 @@ impl<'a> ContractClient<'a> {
         );
         res
     }
+    /// Call `publish` function on the contract.
+    ///
+    /// # Panics
+    ///
+    /// Panics if the invoked contract returns an error or panics.
+    ///
+    /// Use [`Self::try_publish`] to receive errors instead of panicking.
     pub fn publish(&self, topic: &u32, value: &u32) -> () {
         let _call_scope = soroban_sdk::testutils::ClientCallScope::enter(&self.env, self.config);
         use soroban_sdk::{FromVal, IntoVal};
@@ -1314,6 +1417,11 @@ impl<'a> ContractClient<'a> {
         );
         res
     }
+    /// Call `publish` function on the contract.
+    ///
+    /// # Errors
+    ///
+    /// Returns an error if the invoked contract returns an error or panics. A panic in the invoked contract is caught and returned as an error rather than panicking the caller.
     pub fn try_publish(
         &self,
         topic: &u32,
@@ -1706,6 +1814,13 @@ impl Contract {}
 impl Contract {}
 impl Contract {}
 impl<'a> ContractClient<'a> {
+    /// Call `trait_override` function on the contract.
+    ///
+    /// # Panics
+    ///
+    /// Panics if the invoked contract returns an error or panics.
+    ///
+    /// Use [`Self::try_trait_override`] to receive errors instead of panicking.
     pub fn trait_override(&self) -> u32 {
         let _call_scope = soroban_sdk::testutils::ClientCallScope::enter(&self.env, self.config);
         use soroban_sdk::{FromVal, IntoVal};
@@ -1716,6 +1831,11 @@ impl<'a> ContractClient<'a> {
         );
         res
     }
+    /// Call `trait_override` function on the contract.
+    ///
+    /// # Errors
+    ///
+    /// Returns an error if the invoked contract returns an error or panics. A panic in the invoked contract is caught and returned as an error rather than panicking the caller.
     pub fn try_trait_override(
         &self,
     ) -> Result<
@@ -1731,6 +1851,13 @@ impl<'a> ContractClient<'a> {
         );
         res
     }
+    /// Call `trait_override_stacked_cfg` function on the contract.
+    ///
+    /// # Panics
+    ///
+    /// Panics if the invoked contract returns an error or panics.
+    ///
+    /// Use [`Self::try_trait_override_stacked_cfg`] to receive errors instead of panicking.
     pub fn trait_override_stacked_cfg(&self) -> u32 {
         let _call_scope = soroban_sdk::testutils::ClientCallScope::enter(&self.env, self.config);
         use soroban_sdk::{FromVal, IntoVal};
@@ -1741,6 +1868,11 @@ impl<'a> ContractClient<'a> {
         );
         res
     }
+    /// Call `trait_override_stacked_cfg` function on the contract.
+    ///
+    /// # Errors
+    ///
+    /// Returns an error if the invoked contract returns an error or panics. A panic in the invoked contract is caught and returned as an error rather than panicking the caller.
     pub fn try_trait_override_stacked_cfg(
         &self,
     ) -> Result<
@@ -1756,6 +1888,13 @@ impl<'a> ContractClient<'a> {
         );
         res
     }
+    /// Call `trait_override_negated_cfg` function on the contract.
+    ///
+    /// # Panics
+    ///
+    /// Panics if the invoked contract returns an error or panics.
+    ///
+    /// Use [`Self::try_trait_override_negated_cfg`] to receive errors instead of panicking.
     pub fn trait_override_negated_cfg(&self) -> u32 {
         let _call_scope = soroban_sdk::testutils::ClientCallScope::enter(&self.env, self.config);
         use soroban_sdk::{FromVal, IntoVal};
@@ -1766,6 +1905,11 @@ impl<'a> ContractClient<'a> {
         );
         res
     }
+    /// Call `trait_override_negated_cfg` function on the contract.
+    ///
+    /// # Errors
+    ///
+    /// Returns an error if the invoked contract returns an error or panics. A panic in the invoked contract is caught and returned as an error rather than panicking the caller.
     pub fn try_trait_override_negated_cfg(
         &self,
     ) -> Result<
@@ -1781,6 +1925,13 @@ impl<'a> ContractClient<'a> {
         );
         res
     }
+    /// Call `trait_override_dual_cfg` function on the contract.
+    ///
+    /// # Panics
+    ///
+    /// Panics if the invoked contract returns an error or panics.
+    ///
+    /// Use [`Self::try_trait_override_dual_cfg`] to receive errors instead of panicking.
     pub fn trait_override_dual_cfg(&self) -> u32 {
         let _call_scope = soroban_sdk::testutils::ClientCallScope::enter(&self.env, self.config);
         use soroban_sdk::{FromVal, IntoVal};
@@ -1791,6 +1942,11 @@ impl<'a> ContractClient<'a> {
         );
         res
     }
+    /// Call `trait_override_dual_cfg` function on the contract.
+    ///
+    /// # Errors
+    ///
+    /// Returns an error if the invoked contract returns an error or panics. A panic in the invoked contract is caught and returned as an error rather than panicking the caller.
     pub fn try_trait_override_dual_cfg(
         &self,
     ) -> Result<
@@ -2218,6 +2374,13 @@ impl Contract {
     }
 }
 impl<'a> ContractClient<'a> {
+    /// Call `trait_default` function on the contract.
+    ///
+    /// # Panics
+    ///
+    /// Panics if the invoked contract returns an error or panics.
+    ///
+    /// Use [`Self::try_trait_default`] to receive errors instead of panicking.
     pub fn trait_default(&self) -> u32 {
         let _call_scope = soroban_sdk::testutils::ClientCallScope::enter(&self.env, self.config);
         use soroban_sdk::{FromVal, IntoVal};
@@ -2228,6 +2391,11 @@ impl<'a> ContractClient<'a> {
         );
         res
     }
+    /// Call `trait_default` function on the contract.
+    ///
+    /// # Errors
+    ///
+    /// Returns an error if the invoked contract returns an error or panics. A panic in the invoked contract is caught and returned as an error rather than panicking the caller.
     pub fn try_trait_default(
         &self,
     ) -> Result<
@@ -2243,6 +2411,13 @@ impl<'a> ContractClient<'a> {
         );
         res
     }
+    /// Call `trait_default_stacked_cfg` function on the contract.
+    ///
+    /// # Panics
+    ///
+    /// Panics if the invoked contract returns an error or panics.
+    ///
+    /// Use [`Self::try_trait_default_stacked_cfg`] to receive errors instead of panicking.
     pub fn trait_default_stacked_cfg(&self) -> u32 {
         let _call_scope = soroban_sdk::testutils::ClientCallScope::enter(&self.env, self.config);
         use soroban_sdk::{FromVal, IntoVal};
@@ -2253,6 +2428,11 @@ impl<'a> ContractClient<'a> {
         );
         res
     }
+    /// Call `trait_default_stacked_cfg` function on the contract.
+    ///
+    /// # Errors
+    ///
+    /// Returns an error if the invoked contract returns an error or panics. A panic in the invoked contract is caught and returned as an error rather than panicking the caller.
     pub fn try_trait_default_stacked_cfg(
         &self,
     ) -> Result<
@@ -2268,6 +2448,13 @@ impl<'a> ContractClient<'a> {
         );
         res
     }
+    /// Call `trait_default_dual_cfg` function on the contract.
+    ///
+    /// # Panics
+    ///
+    /// Panics if the invoked contract returns an error or panics.
+    ///
+    /// Use [`Self::try_trait_default_dual_cfg`] to receive errors instead of panicking.
     pub fn trait_default_dual_cfg(&self) -> u32 {
         let _call_scope = soroban_sdk::testutils::ClientCallScope::enter(&self.env, self.config);
         use soroban_sdk::{FromVal, IntoVal};
@@ -2278,6 +2465,11 @@ impl<'a> ContractClient<'a> {
         );
         res
     }
+    /// Call `trait_default_dual_cfg` function on the contract.
+    ///
+    /// # Errors
+    ///
+    /// Returns an error if the invoked contract returns an error or panics. A panic in the invoked contract is caught and returned as an error rather than panicking the caller.
     pub fn try_trait_default_dual_cfg(
         &self,
     ) -> Result<
@@ -2761,7 +2953,7 @@ mod test {
                 }
             }
         };
-        let wasm = b"\x00asm\x01\x00\x00\x00\x01\x1f\x05`\x04~~~~\x01~`\x02~~\x01~`\x03~~~\x01~`\x01~\x01~`\x00\x01~\x02\x1f\x05\x01m\x01c\x00\x00\x01b\x01j\x00\x01\x01v\x01g\x00\x01\x01m\x01b\x00\x02\x01x\x011\x00\x01\x03\x0b\n\x03\x03\x01\x04\x04\x04\x04\x04\x04\x04\x05\x03\x01\x00\x11\x06!\x04\x7f\x01A\x80\x80\xc0\x00\x0b\x7f\x00A\xab\x80\xc0\x00\x0b\x7f\x00A\xab\x80\xc0\x00\x0b\x7f\x00A\xb0\x80\xc0\x00\x0b\x07\xf5\x01\x0e\x06memory\x02\x00\x06always\x00\x05\x0ccfg_included\x00\x06\x07publish\x00\x07\rtrait_default\x00\x08\x16trait_default_dual_cfg\x00\t\x19trait_default_stacked_cfg\x00\n\x0etrait_override\x00\x0b\x17trait_override_dual_cfg\x00\x0c\x1atrait_override_negated_cfg\x00\r\x1atrait_override_stacked_cfg\x00\x0e\x01_\x03\x01\n__data_end\x03\x02\x0b__heap_base\x03\x03\n\xfa\x03\n{\x01\x01\x7f#\x80\x80\x80\x80\x00A\x10k\"\x01$\x80\x80\x80\x80\x00 \x01B\x027\x03\x08\x02@\x02@ \x00B\xff\x01\x83B\xcc\x00R\r\x00 \x00A\x94\x80\xc0\x80\x00\xadB \x86B\x04\x84 \x01A\x08j\xadB \x86B\x04\x84B\x84\x80\x80\x80\x10\x10\x80\x80\x80\x80\x00\x1a \x01)\x03\x08\"\x00B\xff\x01\x83B\x04Q\r\x01\x0b\x00\x0b \x01A\x10j$\x80\x80\x80\x80\x00 \x00B\x84\x80\x80\x80p\x83\x0b\x1a\x00\x02@ \x00B\xff\x01\x83B\x04Q\r\x00\x00\x0b \x00B\x84\x80\x80\x80p\x83\x0b\x9c\x02\x02\x02\x7f\x01~#\x80\x80\x80\x80\x00A k\"\x02$\x80\x80\x80\x80\x00\x02@ \x00B\xff\x01\x83B\x04R\r\x00 \x01B\xff\x01\x83B\x04R\r\x00A\x00!\x03A\x00-\x00\x80\x80\xc0\x80\x00\x1aA\x9c\x80\xc0\x80\x00\xadB \x86B\x04\x84B\x84\x80\x80\x80\xf0\x01\x10\x81\x80\x80\x80\x00!\x04 \x02 \x00B\x84\x80\x80\x80p\x837\x03\x08 \x02 \x047\x03\x00\x03@\x02@ \x03A\x10G\r\x00A\x00!\x03\x02@\x03@ \x03A\x10F\r\x01 \x02A\x10j \x03j \x02 \x03j)\x03\x007\x03\x00 \x03A\x08j!\x03\x0c\x00\x0b\x0b \x02A\x10j\xadB \x86B\x04\x84\"\x00B\x84\x80\x80\x80 \x10\x82\x80\x80\x80\x00!\x04 \x02 \x01B\x84\x80\x80\x80p\x837\x03\x10 \x04A\x94\x80\xc0\x80\x00\xadB \x86B\x04\x84 \x00B\x84\x80\x80\x80\x10\x10\x83\x80\x80\x80\x00\x10\x84\x80\x80\x80\x00\x1a \x02A j$\x80\x80\x80\x80\x00B\x02\x0f\x0b \x02A\x10j \x03jB\x027\x03\x00 \x03A\x08j!\x03\x0c\x00\x0b\x0b\x00\x0b\x08\x00B\x84\x80\x80\x80 \x0b\t\x00B\x84\x80\x80\x80\xe0\x01\x0b\t\x00B\x84\x80\x80\x80\xd0\x00\x0b\x08\x00B\x84\x80\x80\x800\x0b\t\x00B\x84\x80\x80\x80\xc0\x01\x0b\t\x00B\x84\x80\x80\x80\xa0\x01\x0b\t\x00B\x84\x80\x80\x80\x80\x01\x0b\x0b4\x01\x00A\x80\x80\xc0\x00\x0b+SpEcV1Y\xdd\x10W\xb8\x88X\x03value\x00\x0e\x00\x10\x00\x05\x00\x00\x00attribute_event\x00\xb3\"\x0econtractspecv0\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x06always\x00\x00\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x05value\x00\x00\x00\x00\x00\x07\xd0\x00\x00\x00 ::test_attributes::AttributeType\x00\x00\x00\x01\x00\x00\x00\x04\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x07publish\x00\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x05topic\x00\x00\x00\x00\x00\x00\x04\x00\x00\x00\x00\x00\x00\x00\x05value\x00\x00\x00\x00\x00\x00\x04\x00\x00\x00\x00\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00 ::test_attributes::AttributeType\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x05value\x00\x00\x00\x00\x00\x00\x04\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x0ccfg_included\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x05value\x00\x00\x00\x00\x00\x00\x04\x00\x00\x00\x01\x00\x00\x00\x04\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\rtrait_default\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x01\x00\x00\x00\x04\x00\x00\x00\x05\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00!::test_attributes::AttributeEvent\x00\x00\x00\x00\x00\x00\x01\x00\x00\x00\x0fattribute_event\x00\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x05topic\x00\x00\x00\x00\x00\x00\x04\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x05value\x00\x00\x00\x00\x00\x00\x04\x00\x00\x00\x00\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x0etrait_override\x00\x00\x00\x00\x00\x00\x00\x00\x00\x01\x00\x00\x00\x04\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x16trait_default_dual_cfg\x00\x00\x00\x00\x00\x00\x00\x00\x00\x01\x00\x00\x00\x04\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x17trait_override_dual_cfg\x00\x00\x00\x00\x00\x00\x00\x00\x01\x00\x00\x00\x04\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x19trait_default_stacked_cfg\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x01\x00\x00\x00\x04\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x1atrait_override_negated_cfg\x00\x00\x00\x00\x00\x00\x00\x00\x00\x01\x00\x00\x00\x04\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x1atrait_override_stacked_cfg\x00\x00\x00\x00\x00\x00\x00\x00\x00\x01\x00\x00\x00\x04\x00\x00\x00\x02\x00\x00\x00_Contract executable used for creating a new contract and used in\n`CreateContractHostFnContext`.\x00\x00\x00\x00\x00\x00\x00\x00!::soroban_sdk::ContractExecutable\x00\x00\x00\x00\x00\x00\x02\x00\x00\x00\x01\x00\x00\x00xExecutable specified by the contract instance as a specific Wasm contract code entry identified by its Wasm sha256 hash.\x00\x00\x00\x04Wasm\x00\x00\x00\x01\x00\x00\x03\xee\x00\x00\x00 \x00\x00\x00\x01\x00\x00\x00_Executable reference via a persistent storage entry owned by this contract or another contract.\x00\x00\x00\x00\x0bExternalRef\x00\x00\x00\x00\x01\x00\x00\x07\xd0\x00\x00\x00$::soroban_sdk::ContractExecutableRef\x00\x00\x00\x01\x00\x00\x00\xc0Executable referenced via a persistent storage entry owned by a contract,\neither this contract or another contract.\n\nThe persistent storage entry owned by the `owner` has the `tag` as its key.\x00\x00\x00\x00\x00\x00\x00$::soroban_sdk::ContractExecutableRef\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x05owner\x00\x00\x00\x00\x00\x00\x13\x00\x00\x00\x00\x00\x00\x00\x03tag\x00\x00\x00\x00\x10\x00\x00\x00\x02\x00\x00\x00\xe3Context of a single authorized call performed by an address.\n\nCustom account contracts that implement `__check_auth` special function\nreceive a list of `Context` values corresponding to all the calls that\nneed to be authorized.\x00\x00\x00\x00\x00\x00\x00\x00\x1c::soroban_sdk::auth::Context\x00\x00\x00\x03\x00\x00\x00\x01\x00\x00\x00\x14Contract invocation.\x00\x00\x00\x08Contract\x00\x00\x00\x01\x00\x00\x07\xd0\x00\x00\x00$::soroban_sdk::auth::ContractContext\x00\x00\x00\x01\x00\x00\x00=Contract that has a constructor with no arguments is created.\x00\x00\x00\x00\x00\x00\x14CreateContractHostFn\x00\x00\x00\x01\x00\x00\x07\xd0\x00\x00\x000::soroban_sdk::auth::CreateContractHostFnContext\x00\x00\x00\x01\x00\x00\x00DContract that has a constructor with 1 or more arguments is created.\x00\x00\x00\x1cCreateContractWithCtorHostFn\x00\x00\x00\x01\x00\x00\x07\xd0\x00\x00\x00?::soroban_sdk::auth::CreateContractWithConstructorHostFnContext\x00\x00\x00\x00\x01\x00\x00\x00\xbdAuthorization context of a single contract call.\n\nThis struct corresponds to a `require_auth_for_args` call for an address\nfrom `contract` function with `fn_name` name and `args` arguments.\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00$::soroban_sdk::auth::ContractContext\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00\x04args\x00\x00\x03\xea\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x08contract\x00\x00\x00\x13\x00\x00\x00\x00\x00\x00\x00\x07fn_name\x00\x00\x00\x00\x11\x00\x00\x00\x01\x00\x00\x008Value of contract node in InvokerContractAuthEntry tree.\x00\x00\x00\x00\x00\x00\x00*::soroban_sdk::auth::SubContractInvocation\x00\x00\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x07context\x00\x00\x00\x07\xd0\x00\x00\x00$::soroban_sdk::auth::ContractContext\x00\x00\x00\x00\x00\x00\x00\x0fsub_invocations\x00\x00\x00\x03\xea\x00\x00\x07\xd0\x00\x00\x00-::soroban_sdk::auth::InvokerContractAuthEntry\x00\x00\x00\x00\x00\x00\x02\x00\x00\x01/A node in the tree of authorizations performed on behalf of the current\ncontract as invoker of the contracts deeper in the call stack.\n\nThis is used as an argument of `authorize_as_current_contract` host function.\n\nThis tree corresponds `require_auth[_for_args]` calls on behalf of the\ncurrent contract.\x00\x00\x00\x00\x00\x00\x00\x00-::soroban_sdk::auth::InvokerContractAuthEntry\x00\x00\x00\x00\x00\x00\x03\x00\x00\x00\x01\x00\x00\x00\x12Invoke a contract.\x00\x00\x00\x00\x00\x08Contract\x00\x00\x00\x01\x00\x00\x07\xd0\x00\x00\x00*::soroban_sdk::auth::SubContractInvocation\x00\x00\x00\x00\x00\x01\x00\x00\x005Create a contract passing 0 arguments to constructor.\x00\x00\x00\x00\x00\x00\x14CreateContractHostFn\x00\x00\x00\x01\x00\x00\x07\xd0\x00\x00\x000::soroban_sdk::auth::CreateContractHostFnContext\x00\x00\x00\x01\x00\x00\x00=Create a contract passing 0 or more arguments to constructor.\x00\x00\x00\x00\x00\x00\x1cCreateContractWithCtorHostFn\x00\x00\x00\x01\x00\x00\x07\xd0\x00\x00\x00?::soroban_sdk::auth::CreateContractWithConstructorHostFnContext\x00\x00\x00\x00\x01\x00\x00\x00vAuthorization context for `create_contract` host function that creates a\nnew contract on behalf of authorizer address.\x00\x00\x00\x00\x00\x00\x00\x00\x000::soroban_sdk::auth::CreateContractHostFnContext\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\nexecutable\x00\x00\x00\x00\x07\xd0\x00\x00\x00!::soroban_sdk::ContractExecutable\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x04salt\x00\x00\x03\xee\x00\x00\x00 \x00\x00\x00\x01\x00\x00\x00\xd6Authorization context for `create_contract` host function that creates a\nnew contract on behalf of authorizer address.\nThis is the same as `CreateContractHostFnContext`, but also has\ncontract constructor arguments.\x00\x00\x00\x00\x00\x00\x00\x00\x00?::soroban_sdk::auth::CreateContractWithConstructorHostFnContext\x00\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00\x10constructor_args\x00\x00\x03\xea\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\nexecutable\x00\x00\x00\x00\x07\xd0\x00\x00\x00!::soroban_sdk::ContractExecutable\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x04salt\x00\x00\x03\xee\x00\x00\x00 \x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\"::soroban_sdk::address::Executable\x00\x00\x00\x00\x00\x03\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x04Wasm\x00\x00\x00\x01\x00\x00\x03\xee\x00\x00\x00 \x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x0cStellarAsset\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x07Account\x00\x00\x1e\x11contractenvmetav0\x00\x00\x00\x00\x00\x00\x00\x1d\x00\x00\x00\x00\x00G\x0econtractmetav0\x00\x00\x00\x00\x00\x00\x00\x05rsver\x00\x00\x00\x00\x00\x00\x061.91.0\x00\x00\x00\x00\x00\x00\x00\x00\x00\x08rssdkver\x00\x00\x00\x0630.0.0\x00\x00";
+        let wasm = b"\x00asm\x01\x00\x00\x00\x01\x1f\x05`\x04~~~~\x01~`\x02~~\x01~`\x03~~~\x01~`\x01~\x01~`\x00\x01~\x02\x1f\x05\x01m\x01c\x00\x00\x01b\x01j\x00\x01\x01v\x01g\x00\x01\x01m\x01b\x00\x02\x01x\x011\x00\x01\x03\x0b\n\x03\x03\x01\x04\x04\x04\x04\x04\x04\x04\x05\x03\x01\x00\x11\x06!\x04\x7f\x01A\x80\x80\xc0\x00\x0b\x7f\x00A\xab\x80\xc0\x00\x0b\x7f\x00A\xab\x80\xc0\x00\x0b\x7f\x00A\xb0\x80\xc0\x00\x0b\x07\xf5\x01\x0e\x06memory\x02\x00\x06always\x00\x05\x0ccfg_included\x00\x06\x07publish\x00\x07\rtrait_default\x00\x08\x16trait_default_dual_cfg\x00\t\x19trait_default_stacked_cfg\x00\n\x0etrait_override\x00\x0b\x17trait_override_dual_cfg\x00\x0c\x1atrait_override_negated_cfg\x00\r\x1atrait_override_stacked_cfg\x00\x0e\x01_\x03\x01\n__data_end\x03\x02\x0b__heap_base\x03\x03\n\xfa\x03\n{\x01\x01\x7f#\x80\x80\x80\x80\x00A\x10k\"\x01$\x80\x80\x80\x80\x00 \x01B\x027\x03\x08\x02@\x02@ \x00B\xff\x01\x83B\xcc\x00R\r\x00 \x00A\x94\x80\xc0\x80\x00\xadB \x86B\x04\x84 \x01A\x08j\xadB \x86B\x04\x84B\x84\x80\x80\x80\x10\x10\x80\x80\x80\x80\x00\x1a \x01)\x03\x08\"\x00B\xff\x01\x83B\x04Q\r\x01\x0b\x00\x0b \x01A\x10j$\x80\x80\x80\x80\x00 \x00B\x84\x80\x80\x80p\x83\x0b\x1a\x00\x02@ \x00B\xff\x01\x83B\x04Q\r\x00\x00\x0b \x00B\x84\x80\x80\x80p\x83\x0b\x9c\x02\x02\x02\x7f\x01~#\x80\x80\x80\x80\x00A k\"\x02$\x80\x80\x80\x80\x00\x02@ \x00B\xff\x01\x83B\x04R\r\x00 \x01B\xff\x01\x83B\x04R\r\x00A\x00!\x03A\x00-\x00\x80\x80\xc0\x80\x00\x1aA\x9c\x80\xc0\x80\x00\xadB \x86B\x04\x84B\x84\x80\x80\x80\xf0\x01\x10\x81\x80\x80\x80\x00!\x04 \x02 \x00B\x84\x80\x80\x80p\x837\x03\x08 \x02 \x047\x03\x00\x03@\x02@ \x03A\x10G\r\x00A\x00!\x03\x02@\x03@ \x03A\x10F\r\x01 \x02A\x10j \x03j \x02 \x03j)\x03\x007\x03\x00 \x03A\x08j!\x03\x0c\x00\x0b\x0b \x02A\x10j\xadB \x86B\x04\x84\"\x00B\x84\x80\x80\x80 \x10\x82\x80\x80\x80\x00!\x04 \x02 \x01B\x84\x80\x80\x80p\x837\x03\x10 \x04A\x94\x80\xc0\x80\x00\xadB \x86B\x04\x84 \x00B\x84\x80\x80\x80\x10\x10\x83\x80\x80\x80\x00\x10\x84\x80\x80\x80\x00\x1a \x02A j$\x80\x80\x80\x80\x00B\x02\x0f\x0b \x02A\x10j \x03jB\x027\x03\x00 \x03A\x08j!\x03\x0c\x00\x0b\x0b\x00\x0b\x08\x00B\x84\x80\x80\x80 \x0b\t\x00B\x84\x80\x80\x80\xe0\x01\x0b\t\x00B\x84\x80\x80\x80\xd0\x00\x0b\x08\x00B\x84\x80\x80\x800\x0b\t\x00B\x84\x80\x80\x80\xc0\x01\x0b\t\x00B\x84\x80\x80\x80\xa0\x01\x0b\t\x00B\x84\x80\x80\x80\x80\x01\x0b\x0b4\x01\x00A\x80\x80\xc0\x00\x0b+SpEcV1Y\xdd\x10W\xb8\x88X\x03value\x00\x0e\x00\x10\x00\x05\x00\x00\x00attribute_event\x00\xb3\"\x0econtractspecv0\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x06always\x00\x00\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x05value\x00\x00\x00\x00\x00\x07\xd0\x00\x00\x00 ::test_attributes::AttributeType\x00\x00\x00\x01\x00\x00\x00\x04\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x07publish\x00\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x05topic\x00\x00\x00\x00\x00\x00\x04\x00\x00\x00\x00\x00\x00\x00\x05value\x00\x00\x00\x00\x00\x00\x04\x00\x00\x00\x00\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00 ::test_attributes::AttributeType\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x05value\x00\x00\x00\x00\x00\x00\x04\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x0ccfg_included\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x05value\x00\x00\x00\x00\x00\x00\x04\x00\x00\x00\x01\x00\x00\x00\x04\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\rtrait_default\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x01\x00\x00\x00\x04\x00\x00\x00\x05\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00!::test_attributes::AttributeEvent\x00\x00\x00\x00\x00\x00\x01\x00\x00\x00\x0fattribute_event\x00\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x05topic\x00\x00\x00\x00\x00\x00\x04\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x05value\x00\x00\x00\x00\x00\x00\x04\x00\x00\x00\x00\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x0etrait_override\x00\x00\x00\x00\x00\x00\x00\x00\x00\x01\x00\x00\x00\x04\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x16trait_default_dual_cfg\x00\x00\x00\x00\x00\x00\x00\x00\x00\x01\x00\x00\x00\x04\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x17trait_override_dual_cfg\x00\x00\x00\x00\x00\x00\x00\x00\x01\x00\x00\x00\x04\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x19trait_default_stacked_cfg\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x01\x00\x00\x00\x04\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x1atrait_override_negated_cfg\x00\x00\x00\x00\x00\x00\x00\x00\x00\x01\x00\x00\x00\x04\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x1atrait_override_stacked_cfg\x00\x00\x00\x00\x00\x00\x00\x00\x00\x01\x00\x00\x00\x04\x00\x00\x00\x02\x00\x00\x00_Contract executable used for creating a new contract and used in\n`CreateContractHostFnContext`.\x00\x00\x00\x00\x00\x00\x00\x00!::soroban_sdk::ContractExecutable\x00\x00\x00\x00\x00\x00\x02\x00\x00\x00\x01\x00\x00\x00xExecutable specified by the contract instance as a specific Wasm contract code entry identified by its Wasm sha256 hash.\x00\x00\x00\x04Wasm\x00\x00\x00\x01\x00\x00\x03\xee\x00\x00\x00 \x00\x00\x00\x01\x00\x00\x00_Executable reference via a persistent storage entry owned by this contract or another contract.\x00\x00\x00\x00\x0bExternalRef\x00\x00\x00\x00\x01\x00\x00\x07\xd0\x00\x00\x00$::soroban_sdk::ContractExecutableRef\x00\x00\x00\x01\x00\x00\x00\xc0Executable referenced via a persistent storage entry owned by a contract,\neither this contract or another contract.\n\nThe persistent storage entry owned by the `owner` has the `tag` as its key.\x00\x00\x00\x00\x00\x00\x00$::soroban_sdk::ContractExecutableRef\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x05owner\x00\x00\x00\x00\x00\x00\x13\x00\x00\x00\x00\x00\x00\x00\x03tag\x00\x00\x00\x00\x10\x00\x00\x00\x02\x00\x00\x00\xe3Context of a single authorized call performed by an address.\n\nCustom account contracts that implement `__check_auth` special function\nreceive a list of `Context` values corresponding to all the calls that\nneed to be authorized.\x00\x00\x00\x00\x00\x00\x00\x00\x1c::soroban_sdk::auth::Context\x00\x00\x00\x03\x00\x00\x00\x01\x00\x00\x00\x14Contract invocation.\x00\x00\x00\x08Contract\x00\x00\x00\x01\x00\x00\x07\xd0\x00\x00\x00$::soroban_sdk::auth::ContractContext\x00\x00\x00\x01\x00\x00\x00=Contract that has a constructor with no arguments is created.\x00\x00\x00\x00\x00\x00\x14CreateContractHostFn\x00\x00\x00\x01\x00\x00\x07\xd0\x00\x00\x000::soroban_sdk::auth::CreateContractHostFnContext\x00\x00\x00\x01\x00\x00\x00DContract that has a constructor with 1 or more arguments is created.\x00\x00\x00\x1cCreateContractWithCtorHostFn\x00\x00\x00\x01\x00\x00\x07\xd0\x00\x00\x00?::soroban_sdk::auth::CreateContractWithConstructorHostFnContext\x00\x00\x00\x00\x01\x00\x00\x00\xbdAuthorization context of a single contract call.\n\nThis struct corresponds to a `require_auth_for_args` call for an address\nfrom `contract` function with `fn_name` name and `args` arguments.\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00$::soroban_sdk::auth::ContractContext\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00\x04args\x00\x00\x03\xea\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x08contract\x00\x00\x00\x13\x00\x00\x00\x00\x00\x00\x00\x07fn_name\x00\x00\x00\x00\x11\x00\x00\x00\x01\x00\x00\x008Value of contract node in InvokerContractAuthEntry tree.\x00\x00\x00\x00\x00\x00\x00*::soroban_sdk::auth::SubContractInvocation\x00\x00\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x07context\x00\x00\x00\x07\xd0\x00\x00\x00$::soroban_sdk::auth::ContractContext\x00\x00\x00\x00\x00\x00\x00\x0fsub_invocations\x00\x00\x00\x03\xea\x00\x00\x07\xd0\x00\x00\x00-::soroban_sdk::auth::InvokerContractAuthEntry\x00\x00\x00\x00\x00\x00\x02\x00\x00\x01/A node in the tree of authorizations performed on behalf of the current\ncontract as invoker of the contracts deeper in the call stack.\n\nThis is used as an argument of `authorize_as_current_contract` host function.\n\nThis tree corresponds `require_auth[_for_args]` calls on behalf of the\ncurrent contract.\x00\x00\x00\x00\x00\x00\x00\x00-::soroban_sdk::auth::InvokerContractAuthEntry\x00\x00\x00\x00\x00\x00\x03\x00\x00\x00\x01\x00\x00\x00\x12Invoke a contract.\x00\x00\x00\x00\x00\x08Contract\x00\x00\x00\x01\x00\x00\x07\xd0\x00\x00\x00*::soroban_sdk::auth::SubContractInvocation\x00\x00\x00\x00\x00\x01\x00\x00\x005Create a contract passing 0 arguments to constructor.\x00\x00\x00\x00\x00\x00\x14CreateContractHostFn\x00\x00\x00\x01\x00\x00\x07\xd0\x00\x00\x000::soroban_sdk::auth::CreateContractHostFnContext\x00\x00\x00\x01\x00\x00\x00=Create a contract passing 0 or more arguments to constructor.\x00\x00\x00\x00\x00\x00\x1cCreateContractWithCtorHostFn\x00\x00\x00\x01\x00\x00\x07\xd0\x00\x00\x00?::soroban_sdk::auth::CreateContractWithConstructorHostFnContext\x00\x00\x00\x00\x01\x00\x00\x00vAuthorization context for `create_contract` host function that creates a\nnew contract on behalf of authorizer address.\x00\x00\x00\x00\x00\x00\x00\x00\x000::soroban_sdk::auth::CreateContractHostFnContext\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\nexecutable\x00\x00\x00\x00\x07\xd0\x00\x00\x00!::soroban_sdk::ContractExecutable\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x04salt\x00\x00\x03\xee\x00\x00\x00 \x00\x00\x00\x01\x00\x00\x00\xd6Authorization context for `create_contract` host function that creates a\nnew contract on behalf of authorizer address.\nThis is the same as `CreateContractHostFnContext`, but also has\ncontract constructor arguments.\x00\x00\x00\x00\x00\x00\x00\x00\x00?::soroban_sdk::auth::CreateContractWithConstructorHostFnContext\x00\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00\x10constructor_args\x00\x00\x03\xea\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\nexecutable\x00\x00\x00\x00\x07\xd0\x00\x00\x00!::soroban_sdk::ContractExecutable\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x04salt\x00\x00\x03\xee\x00\x00\x00 \x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\"::soroban_sdk::address::Executable\x00\x00\x00\x00\x00\x03\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x04Wasm\x00\x00\x00\x01\x00\x00\x03\xee\x00\x00\x00 \x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x0cStellarAsset\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x07Account\x00\x00\x1e\x11contractenvmetav0\x00\x00\x00\x00\x00\x00\x00\x1e\x00\x00\x00\x00\x00G\x0econtractmetav0\x00\x00\x00\x00\x00\x00\x00\x05rsver\x00\x00\x00\x00\x00\x00\x061.91.0\x00\x00\x00\x00\x00\x00\x00\x00\x00\x08rssdkver\x00\x00\x00\x0630.0.0\x00\x00";
         let fn_names: HashSet<std::string::String> = soroban_spec::read::from_wasm(wasm)
             .unwrap()
             .iter()

@@ -88,17 +88,12 @@ impl DummyProof {
         const { DummyProof::__SPEC_XDR_ENTRY.const_to_xdr() }
     }
 }
-impl soroban_sdk::SpecAnchor for DummyProof {
-    #[inline(never)]
-    fn spec_anchor() {}
-}
 impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for DummyProof {
     type Error = soroban_sdk::ConversionError;
     fn try_from_val(
         env: &soroban_sdk::Env,
         val: &soroban_sdk::Val,
     ) -> Result<Self, soroban_sdk::ConversionError> {
-        <DummyProof as soroban_sdk::SpecAnchor>::spec_anchor();
         use soroban_sdk::{ConversionError, EnvBase, MapObject, TryIntoVal, Val};
         const KEYS: [&'static str; 5usize] = ["fp", "fp2", "fr", "g1", "g2"];
         let mut vals: [Val; 5usize] = [Val::VOID.to_val(); 5usize];
@@ -130,7 +125,6 @@ impl soroban_sdk::TryFromVal<soroban_sdk::Env, DummyProof> for soroban_sdk::Val 
         env: &soroban_sdk::Env,
         val: &DummyProof,
     ) -> Result<Self, soroban_sdk::ConversionError> {
-        <DummyProof as soroban_sdk::SpecAnchor>::spec_anchor();
         use soroban_sdk::{ConversionError, EnvBase, TryIntoVal, Val};
         const KEYS: [&'static str; 5usize] = ["fp", "fp2", "fr", "g1", "g2"];
         let vals: [Val; 5usize] = [
@@ -394,6 +388,13 @@ impl Contract {
     }
 }
 impl<'a> ContractClient<'a> {
+    /// Call `g1_mul` function on the contract.
+    ///
+    /// # Panics
+    ///
+    /// Panics if the invoked contract returns an error or panics.
+    ///
+    /// Use [`Self::try_g1_mul`] to receive errors instead of panicking.
     pub fn g1_mul(&self, p: &Bls12381G1Affine, s: &Bls12381Fr) -> Bls12381G1Affine {
         use core::ops::Not;
         use soroban_sdk::{FromVal, IntoVal};
@@ -411,6 +412,11 @@ impl<'a> ContractClient<'a> {
         );
         res
     }
+    /// Call `g1_mul` function on the contract.
+    ///
+    /// # Errors
+    ///
+    /// Returns an error if the invoked contract returns an error or panics. A panic in the invoked contract is caught and returned as an error rather than panicking the caller.
     pub fn try_g1_mul(
         &self,
         p: &Bls12381G1Affine,
@@ -440,6 +446,13 @@ impl<'a> ContractClient<'a> {
         );
         res
     }
+    /// Call `g2_mul` function on the contract.
+    ///
+    /// # Panics
+    ///
+    /// Panics if the invoked contract returns an error or panics.
+    ///
+    /// Use [`Self::try_g2_mul`] to receive errors instead of panicking.
     pub fn g2_mul(&self, p: &Bls12381G2Affine, s: &Bls12381Fr) -> Bls12381G2Affine {
         use core::ops::Not;
         use soroban_sdk::{FromVal, IntoVal};
@@ -457,6 +470,11 @@ impl<'a> ContractClient<'a> {
         );
         res
     }
+    /// Call `g2_mul` function on the contract.
+    ///
+    /// # Errors
+    ///
+    /// Returns an error if the invoked contract returns an error or panics. A panic in the invoked contract is caught and returned as an error rather than panicking the caller.
     pub fn try_g2_mul(
         &self,
         p: &Bls12381G2Affine,
@@ -486,6 +504,13 @@ impl<'a> ContractClient<'a> {
         );
         res
     }
+    /// Call `dummy_verify` function on the contract.
+    ///
+    /// # Panics
+    ///
+    /// Panics if the invoked contract returns an error or panics.
+    ///
+    /// Use [`Self::try_dummy_verify`] to receive errors instead of panicking.
     pub fn dummy_verify(&self, proof: &DummyProof) -> bool {
         use core::ops::Not;
         use soroban_sdk::{FromVal, IntoVal};
@@ -496,6 +521,11 @@ impl<'a> ContractClient<'a> {
         );
         res
     }
+    /// Call `dummy_verify` function on the contract.
+    ///
+    /// # Errors
+    ///
+    /// Returns an error if the invoked contract returns an error or panics. A panic in the invoked contract is caught and returned as an error rather than panicking the caller.
     pub fn try_dummy_verify(
         &self,
         proof: &DummyProof,
@@ -511,6 +541,13 @@ impl<'a> ContractClient<'a> {
         );
         res
     }
+    /// Call `fr_vec_get` function on the contract.
+    ///
+    /// # Panics
+    ///
+    /// Panics if the invoked contract returns an error or panics.
+    ///
+    /// Use [`Self::try_fr_vec_get`] to receive errors instead of panicking.
     pub fn fr_vec_get(&self, values: &Vec<Bls12381Fr>, index: &u32) -> Bls12381Fr {
         use core::ops::Not;
         use soroban_sdk::{FromVal, IntoVal};
@@ -524,6 +561,11 @@ impl<'a> ContractClient<'a> {
         );
         res
     }
+    /// Call `fr_vec_get` function on the contract.
+    ///
+    /// # Errors
+    ///
+    /// Returns an error if the invoked contract returns an error or panics. A panic in the invoked contract is caught and returned as an error rather than panicking the caller.
     pub fn try_fr_vec_get(
         &self,
         values: &Vec<Bls12381Fr>,

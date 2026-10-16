@@ -6,7 +6,7 @@ extern crate core;
 use core::prelude::rust_2021::*;
 use soroban_sdk::{contract, contracterror, contractimpl, Address, Env};
 mod addcontract {
-    pub const WASM: &[u8] = b"\x00asm\x01\x00\x00\x00\x01\x14\x04`\x01~\x01~`\x02\x7f~\x00`\x02~~\x01~`\x00\x00\x02\r\x02\x01i\x010\x00\x00\x01i\x01_\x00\x00\x03\x07\x06\x01\x01\x02\x03\x02\x03\x04\x05\x01p\x01\x01\x01\x05\x03\x01\x00\x10\x06!\x04\x7f\x01A\x80\x80\xc0\x00\x0b\x7f\x00A\x80\x80\xc0\x00\x0b\x7f\x00A\x80\x80\xc0\x00\x0b\x7f\x00A\x80\x80\xc0\x00\x0b\x07I\x07\x06memory\x02\x00\x03add\x00\x04\x08safe_add\x00\x06\x01_\x03\x01\x0csafe_add_two\x00\x06\n__data_end\x03\x02\x0b__heap_base\x03\x03\n\xcd\x03\x06]\x02\x01\x7f\x01~\x02@\x02@ \x01\xa7A\xff\x01q\"\x02A\xc0\x00F\r\x00\x02@ \x02A\x06F\r\x00B\x01!\x03B\x83\x90\x80\x80\x80\x01!\x01\x0c\x02\x0b \x01B\x08\x88!\x01B\x00!\x03\x0c\x01\x0bB\x00!\x03 \x01\x10\x80\x80\x80\x80\x00!\x01\x0b \x00 \x037\x03\x00 \x00 \x017\x03\x08\x0b;\x00\x02@\x02@ \x01B\xff\xff\xff\xff\xff\xff\xff\xff\x00V\r\x00 \x01B\x08\x86B\x06\x84!\x01\x0c\x01\x0b \x01\x10\x81\x80\x80\x80\x00!\x01\x0b \x00B\x007\x03\x00 \x00 \x017\x03\x08\x0b\x8e\x01\x01\x01\x7f#\x80\x80\x80\x80\x00A\x10k\"\x02$\x80\x80\x80\x80\x00 \x02 \x00\x10\x82\x80\x80\x80\x00\x02@\x02@\x02@ \x02(\x02\x00A\x01F\r\x00 \x02)\x03\x08!\x00 \x02 \x01\x10\x82\x80\x80\x80\x00 \x02(\x02\x00A\x01F\r\x00 \x02)\x03\x08\"\x01 \x00|\"\x00 \x01T\r\x01 \x02 \x00\x10\x83\x80\x80\x80\x00 \x02(\x02\x00A\x01G\r\x02\x0b\x00\x0b\x10\x85\x80\x80\x80\x00\x00\x0b \x02)\x03\x08!\x00 \x02A\x10j$\x80\x80\x80\x80\x00 \x00\x0b\t\x00\x10\x87\x80\x80\x80\x00\x00\x0b\x92\x01\x01\x01\x7f#\x80\x80\x80\x80\x00A\x10k\"\x02$\x80\x80\x80\x80\x00 \x02 \x00\x10\x82\x80\x80\x80\x00\x02@ \x02(\x02\x00A\x01F\r\x00 \x02)\x03\x08!\x00 \x02 \x01\x10\x82\x80\x80\x80\x00 \x02(\x02\x00A\x01F\r\x00\x02@\x02@ \x02)\x03\x08\"\x01 \x00|\"\x00 \x01Z\r\x00B\x83\x80\x80\x80\x10!\x00\x0c\x01\x0b \x02 \x00\x10\x83\x80\x80\x80\x00 \x02(\x02\x00A\x01F\r\x01 \x02)\x03\x08!\x00\x0b \x02A\x10j$\x80\x80\x80\x80\x00 \x00\x0f\x0b\x00\x0b\x03\x00\x00\x0b\x0b\t\x01\x00A\x80\x80\xc0\x00\x0b\x00\x00\xcf\x1f\x0econtractspecv0\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x03add\x00\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x01a\x00\x00\x00\x00\x00\x00\x06\x00\x00\x00\x00\x00\x00\x00\x01b\x00\x00\x00\x00\x00\x00\x06\x00\x00\x00\x01\x00\x00\x00\x06\x00\x00\x00\x04\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x15::test_add_u64::Error\x00\x00\x00\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x08Overflow\x00\x00\x00\x01\x00\x00\x00\x04\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x17::test_add_u64::MyError\x00\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x08Overflow\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x08safe_add\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x01a\x00\x00\x00\x00\x00\x00\x06\x00\x00\x00\x00\x00\x00\x00\x01b\x00\x00\x00\x00\x00\x00\x06\x00\x00\x00\x01\x00\x00\x03\xe9\x00\x00\x00\x06\x00\x00\x07\xd0\x00\x00\x00\x15::test_add_u64::Error\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x0csafe_add_two\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x01a\x00\x00\x00\x00\x00\x00\x06\x00\x00\x00\x00\x00\x00\x00\x01b\x00\x00\x00\x00\x00\x00\x06\x00\x00\x00\x01\x00\x00\x03\xe9\x00\x00\x00\x06\x00\x00\x07\xd0\x00\x00\x00\x17::test_add_u64::MyError\x00\x00\x00\x00\x02\x00\x00\x00_Contract executable used for creating a new contract and used in\n`CreateContractHostFnContext`.\x00\x00\x00\x00\x00\x00\x00\x00!::soroban_sdk::ContractExecutable\x00\x00\x00\x00\x00\x00\x02\x00\x00\x00\x01\x00\x00\x00xExecutable specified by the contract instance as a specific Wasm contract code entry identified by its Wasm sha256 hash.\x00\x00\x00\x04Wasm\x00\x00\x00\x01\x00\x00\x03\xee\x00\x00\x00 \x00\x00\x00\x01\x00\x00\x00_Executable reference via a persistent storage entry owned by this contract or another contract.\x00\x00\x00\x00\x0bExternalRef\x00\x00\x00\x00\x01\x00\x00\x07\xd0\x00\x00\x00$::soroban_sdk::ContractExecutableRef\x00\x00\x00\x01\x00\x00\x00\xc0Executable referenced via a persistent storage entry owned by a contract,\neither this contract or another contract.\n\nThe persistent storage entry owned by the `owner` has the `tag` as its key.\x00\x00\x00\x00\x00\x00\x00$::soroban_sdk::ContractExecutableRef\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x05owner\x00\x00\x00\x00\x00\x00\x13\x00\x00\x00\x00\x00\x00\x00\x03tag\x00\x00\x00\x00\x10\x00\x00\x00\x02\x00\x00\x00\xe3Context of a single authorized call performed by an address.\n\nCustom account contracts that implement `__check_auth` special function\nreceive a list of `Context` values corresponding to all the calls that\nneed to be authorized.\x00\x00\x00\x00\x00\x00\x00\x00\x1c::soroban_sdk::auth::Context\x00\x00\x00\x03\x00\x00\x00\x01\x00\x00\x00\x14Contract invocation.\x00\x00\x00\x08Contract\x00\x00\x00\x01\x00\x00\x07\xd0\x00\x00\x00$::soroban_sdk::auth::ContractContext\x00\x00\x00\x01\x00\x00\x00=Contract that has a constructor with no arguments is created.\x00\x00\x00\x00\x00\x00\x14CreateContractHostFn\x00\x00\x00\x01\x00\x00\x07\xd0\x00\x00\x000::soroban_sdk::auth::CreateContractHostFnContext\x00\x00\x00\x01\x00\x00\x00DContract that has a constructor with 1 or more arguments is created.\x00\x00\x00\x1cCreateContractWithCtorHostFn\x00\x00\x00\x01\x00\x00\x07\xd0\x00\x00\x00?::soroban_sdk::auth::CreateContractWithConstructorHostFnContext\x00\x00\x00\x00\x01\x00\x00\x00\xbdAuthorization context of a single contract call.\n\nThis struct corresponds to a `require_auth_for_args` call for an address\nfrom `contract` function with `fn_name` name and `args` arguments.\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00$::soroban_sdk::auth::ContractContext\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00\x04args\x00\x00\x03\xea\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x08contract\x00\x00\x00\x13\x00\x00\x00\x00\x00\x00\x00\x07fn_name\x00\x00\x00\x00\x11\x00\x00\x00\x01\x00\x00\x008Value of contract node in InvokerContractAuthEntry tree.\x00\x00\x00\x00\x00\x00\x00*::soroban_sdk::auth::SubContractInvocation\x00\x00\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x07context\x00\x00\x00\x07\xd0\x00\x00\x00$::soroban_sdk::auth::ContractContext\x00\x00\x00\x00\x00\x00\x00\x0fsub_invocations\x00\x00\x00\x03\xea\x00\x00\x07\xd0\x00\x00\x00-::soroban_sdk::auth::InvokerContractAuthEntry\x00\x00\x00\x00\x00\x00\x02\x00\x00\x01/A node in the tree of authorizations performed on behalf of the current\ncontract as invoker of the contracts deeper in the call stack.\n\nThis is used as an argument of `authorize_as_current_contract` host function.\n\nThis tree corresponds `require_auth[_for_args]` calls on behalf of the\ncurrent contract.\x00\x00\x00\x00\x00\x00\x00\x00-::soroban_sdk::auth::InvokerContractAuthEntry\x00\x00\x00\x00\x00\x00\x03\x00\x00\x00\x01\x00\x00\x00\x12Invoke a contract.\x00\x00\x00\x00\x00\x08Contract\x00\x00\x00\x01\x00\x00\x07\xd0\x00\x00\x00*::soroban_sdk::auth::SubContractInvocation\x00\x00\x00\x00\x00\x01\x00\x00\x005Create a contract passing 0 arguments to constructor.\x00\x00\x00\x00\x00\x00\x14CreateContractHostFn\x00\x00\x00\x01\x00\x00\x07\xd0\x00\x00\x000::soroban_sdk::auth::CreateContractHostFnContext\x00\x00\x00\x01\x00\x00\x00=Create a contract passing 0 or more arguments to constructor.\x00\x00\x00\x00\x00\x00\x1cCreateContractWithCtorHostFn\x00\x00\x00\x01\x00\x00\x07\xd0\x00\x00\x00?::soroban_sdk::auth::CreateContractWithConstructorHostFnContext\x00\x00\x00\x00\x01\x00\x00\x00vAuthorization context for `create_contract` host function that creates a\nnew contract on behalf of authorizer address.\x00\x00\x00\x00\x00\x00\x00\x00\x000::soroban_sdk::auth::CreateContractHostFnContext\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\nexecutable\x00\x00\x00\x00\x07\xd0\x00\x00\x00!::soroban_sdk::ContractExecutable\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x04salt\x00\x00\x03\xee\x00\x00\x00 \x00\x00\x00\x01\x00\x00\x00\xd6Authorization context for `create_contract` host function that creates a\nnew contract on behalf of authorizer address.\nThis is the same as `CreateContractHostFnContext`, but also has\ncontract constructor arguments.\x00\x00\x00\x00\x00\x00\x00\x00\x00?::soroban_sdk::auth::CreateContractWithConstructorHostFnContext\x00\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00\x10constructor_args\x00\x00\x03\xea\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\nexecutable\x00\x00\x00\x00\x07\xd0\x00\x00\x00!::soroban_sdk::ContractExecutable\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x04salt\x00\x00\x03\xee\x00\x00\x00 \x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\"::soroban_sdk::address::Executable\x00\x00\x00\x00\x00\x03\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x04Wasm\x00\x00\x00\x01\x00\x00\x03\xee\x00\x00\x00 \x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x0cStellarAsset\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x07Account\x00\x00\x1e\x11contractenvmetav0\x00\x00\x00\x00\x00\x00\x00\x1d\x00\x00\x00\x00\x00G\x0econtractmetav0\x00\x00\x00\x00\x00\x00\x00\x05rsver\x00\x00\x00\x00\x00\x00\x061.91.0\x00\x00\x00\x00\x00\x00\x00\x00\x00\x08rssdkver\x00\x00\x00\x0630.0.0\x00\x00";
+    pub const WASM: &[u8] = b"\x00asm\x01\x00\x00\x00\x01\x14\x04`\x01~\x01~`\x02\x7f~\x00`\x02~~\x01~`\x00\x00\x02\r\x02\x01i\x010\x00\x00\x01i\x01_\x00\x00\x03\x07\x06\x01\x01\x02\x03\x02\x03\x04\x05\x01p\x01\x01\x01\x05\x03\x01\x00\x10\x06!\x04\x7f\x01A\x80\x80\xc0\x00\x0b\x7f\x00A\x80\x80\xc0\x00\x0b\x7f\x00A\x80\x80\xc0\x00\x0b\x7f\x00A\x80\x80\xc0\x00\x0b\x07I\x07\x06memory\x02\x00\x03add\x00\x04\x08safe_add\x00\x06\x01_\x03\x01\x0csafe_add_two\x00\x06\n__data_end\x03\x02\x0b__heap_base\x03\x03\n\xcd\x03\x06]\x02\x01\x7f\x01~\x02@\x02@ \x01\xa7A\xff\x01q\"\x02A\xc0\x00F\r\x00\x02@ \x02A\x06F\r\x00B\x01!\x03B\x83\x90\x80\x80\x80\x01!\x01\x0c\x02\x0b \x01B\x08\x88!\x01B\x00!\x03\x0c\x01\x0bB\x00!\x03 \x01\x10\x80\x80\x80\x80\x00!\x01\x0b \x00 \x037\x03\x00 \x00 \x017\x03\x08\x0b;\x00\x02@\x02@ \x01B\xff\xff\xff\xff\xff\xff\xff\xff\x00V\r\x00 \x01B\x08\x86B\x06\x84!\x01\x0c\x01\x0b \x01\x10\x81\x80\x80\x80\x00!\x01\x0b \x00B\x007\x03\x00 \x00 \x017\x03\x08\x0b\x8e\x01\x01\x01\x7f#\x80\x80\x80\x80\x00A\x10k\"\x02$\x80\x80\x80\x80\x00 \x02 \x00\x10\x82\x80\x80\x80\x00\x02@\x02@\x02@ \x02(\x02\x00A\x01F\r\x00 \x02)\x03\x08!\x00 \x02 \x01\x10\x82\x80\x80\x80\x00 \x02(\x02\x00A\x01F\r\x00 \x02)\x03\x08\"\x01 \x00|\"\x00 \x01T\r\x01 \x02 \x00\x10\x83\x80\x80\x80\x00 \x02(\x02\x00A\x01G\r\x02\x0b\x00\x0b\x10\x85\x80\x80\x80\x00\x00\x0b \x02)\x03\x08!\x00 \x02A\x10j$\x80\x80\x80\x80\x00 \x00\x0b\t\x00\x10\x87\x80\x80\x80\x00\x00\x0b\x92\x01\x01\x01\x7f#\x80\x80\x80\x80\x00A\x10k\"\x02$\x80\x80\x80\x80\x00 \x02 \x00\x10\x82\x80\x80\x80\x00\x02@ \x02(\x02\x00A\x01F\r\x00 \x02)\x03\x08!\x00 \x02 \x01\x10\x82\x80\x80\x80\x00 \x02(\x02\x00A\x01F\r\x00\x02@\x02@ \x02)\x03\x08\"\x01 \x00|\"\x00 \x01Z\r\x00B\x83\x80\x80\x80\x10!\x00\x0c\x01\x0b \x02 \x00\x10\x83\x80\x80\x80\x00 \x02(\x02\x00A\x01F\r\x01 \x02)\x03\x08!\x00\x0b \x02A\x10j$\x80\x80\x80\x80\x00 \x00\x0f\x0b\x00\x0b\x03\x00\x00\x0b\x0b\t\x01\x00A\x80\x80\xc0\x00\x0b\x00\x00\xcf\x1f\x0econtractspecv0\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x03add\x00\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x01a\x00\x00\x00\x00\x00\x00\x06\x00\x00\x00\x00\x00\x00\x00\x01b\x00\x00\x00\x00\x00\x00\x06\x00\x00\x00\x01\x00\x00\x00\x06\x00\x00\x00\x04\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x15::test_add_u64::Error\x00\x00\x00\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x08Overflow\x00\x00\x00\x01\x00\x00\x00\x04\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x17::test_add_u64::MyError\x00\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x08Overflow\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x08safe_add\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x01a\x00\x00\x00\x00\x00\x00\x06\x00\x00\x00\x00\x00\x00\x00\x01b\x00\x00\x00\x00\x00\x00\x06\x00\x00\x00\x01\x00\x00\x03\xe9\x00\x00\x00\x06\x00\x00\x07\xd0\x00\x00\x00\x15::test_add_u64::Error\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x0csafe_add_two\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x01a\x00\x00\x00\x00\x00\x00\x06\x00\x00\x00\x00\x00\x00\x00\x01b\x00\x00\x00\x00\x00\x00\x06\x00\x00\x00\x01\x00\x00\x03\xe9\x00\x00\x00\x06\x00\x00\x07\xd0\x00\x00\x00\x17::test_add_u64::MyError\x00\x00\x00\x00\x02\x00\x00\x00_Contract executable used for creating a new contract and used in\n`CreateContractHostFnContext`.\x00\x00\x00\x00\x00\x00\x00\x00!::soroban_sdk::ContractExecutable\x00\x00\x00\x00\x00\x00\x02\x00\x00\x00\x01\x00\x00\x00xExecutable specified by the contract instance as a specific Wasm contract code entry identified by its Wasm sha256 hash.\x00\x00\x00\x04Wasm\x00\x00\x00\x01\x00\x00\x03\xee\x00\x00\x00 \x00\x00\x00\x01\x00\x00\x00_Executable reference via a persistent storage entry owned by this contract or another contract.\x00\x00\x00\x00\x0bExternalRef\x00\x00\x00\x00\x01\x00\x00\x07\xd0\x00\x00\x00$::soroban_sdk::ContractExecutableRef\x00\x00\x00\x01\x00\x00\x00\xc0Executable referenced via a persistent storage entry owned by a contract,\neither this contract or another contract.\n\nThe persistent storage entry owned by the `owner` has the `tag` as its key.\x00\x00\x00\x00\x00\x00\x00$::soroban_sdk::ContractExecutableRef\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x05owner\x00\x00\x00\x00\x00\x00\x13\x00\x00\x00\x00\x00\x00\x00\x03tag\x00\x00\x00\x00\x10\x00\x00\x00\x02\x00\x00\x00\xe3Context of a single authorized call performed by an address.\n\nCustom account contracts that implement `__check_auth` special function\nreceive a list of `Context` values corresponding to all the calls that\nneed to be authorized.\x00\x00\x00\x00\x00\x00\x00\x00\x1c::soroban_sdk::auth::Context\x00\x00\x00\x03\x00\x00\x00\x01\x00\x00\x00\x14Contract invocation.\x00\x00\x00\x08Contract\x00\x00\x00\x01\x00\x00\x07\xd0\x00\x00\x00$::soroban_sdk::auth::ContractContext\x00\x00\x00\x01\x00\x00\x00=Contract that has a constructor with no arguments is created.\x00\x00\x00\x00\x00\x00\x14CreateContractHostFn\x00\x00\x00\x01\x00\x00\x07\xd0\x00\x00\x000::soroban_sdk::auth::CreateContractHostFnContext\x00\x00\x00\x01\x00\x00\x00DContract that has a constructor with 1 or more arguments is created.\x00\x00\x00\x1cCreateContractWithCtorHostFn\x00\x00\x00\x01\x00\x00\x07\xd0\x00\x00\x00?::soroban_sdk::auth::CreateContractWithConstructorHostFnContext\x00\x00\x00\x00\x01\x00\x00\x00\xbdAuthorization context of a single contract call.\n\nThis struct corresponds to a `require_auth_for_args` call for an address\nfrom `contract` function with `fn_name` name and `args` arguments.\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00$::soroban_sdk::auth::ContractContext\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00\x04args\x00\x00\x03\xea\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x08contract\x00\x00\x00\x13\x00\x00\x00\x00\x00\x00\x00\x07fn_name\x00\x00\x00\x00\x11\x00\x00\x00\x01\x00\x00\x008Value of contract node in InvokerContractAuthEntry tree.\x00\x00\x00\x00\x00\x00\x00*::soroban_sdk::auth::SubContractInvocation\x00\x00\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x07context\x00\x00\x00\x07\xd0\x00\x00\x00$::soroban_sdk::auth::ContractContext\x00\x00\x00\x00\x00\x00\x00\x0fsub_invocations\x00\x00\x00\x03\xea\x00\x00\x07\xd0\x00\x00\x00-::soroban_sdk::auth::InvokerContractAuthEntry\x00\x00\x00\x00\x00\x00\x02\x00\x00\x01/A node in the tree of authorizations performed on behalf of the current\ncontract as invoker of the contracts deeper in the call stack.\n\nThis is used as an argument of `authorize_as_current_contract` host function.\n\nThis tree corresponds `require_auth[_for_args]` calls on behalf of the\ncurrent contract.\x00\x00\x00\x00\x00\x00\x00\x00-::soroban_sdk::auth::InvokerContractAuthEntry\x00\x00\x00\x00\x00\x00\x03\x00\x00\x00\x01\x00\x00\x00\x12Invoke a contract.\x00\x00\x00\x00\x00\x08Contract\x00\x00\x00\x01\x00\x00\x07\xd0\x00\x00\x00*::soroban_sdk::auth::SubContractInvocation\x00\x00\x00\x00\x00\x01\x00\x00\x005Create a contract passing 0 arguments to constructor.\x00\x00\x00\x00\x00\x00\x14CreateContractHostFn\x00\x00\x00\x01\x00\x00\x07\xd0\x00\x00\x000::soroban_sdk::auth::CreateContractHostFnContext\x00\x00\x00\x01\x00\x00\x00=Create a contract passing 0 or more arguments to constructor.\x00\x00\x00\x00\x00\x00\x1cCreateContractWithCtorHostFn\x00\x00\x00\x01\x00\x00\x07\xd0\x00\x00\x00?::soroban_sdk::auth::CreateContractWithConstructorHostFnContext\x00\x00\x00\x00\x01\x00\x00\x00vAuthorization context for `create_contract` host function that creates a\nnew contract on behalf of authorizer address.\x00\x00\x00\x00\x00\x00\x00\x00\x000::soroban_sdk::auth::CreateContractHostFnContext\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\nexecutable\x00\x00\x00\x00\x07\xd0\x00\x00\x00!::soroban_sdk::ContractExecutable\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x04salt\x00\x00\x03\xee\x00\x00\x00 \x00\x00\x00\x01\x00\x00\x00\xd6Authorization context for `create_contract` host function that creates a\nnew contract on behalf of authorizer address.\nThis is the same as `CreateContractHostFnContext`, but also has\ncontract constructor arguments.\x00\x00\x00\x00\x00\x00\x00\x00\x00?::soroban_sdk::auth::CreateContractWithConstructorHostFnContext\x00\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00\x10constructor_args\x00\x00\x03\xea\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\nexecutable\x00\x00\x00\x00\x07\xd0\x00\x00\x00!::soroban_sdk::ContractExecutable\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x04salt\x00\x00\x03\xee\x00\x00\x00 \x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\"::soroban_sdk::address::Executable\x00\x00\x00\x00\x00\x03\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x04Wasm\x00\x00\x00\x01\x00\x00\x03\xee\x00\x00\x00 \x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x0cStellarAsset\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x07Account\x00\x00\x1e\x11contractenvmetav0\x00\x00\x00\x00\x00\x00\x00\x1e\x00\x00\x00\x00\x00G\x0econtractmetav0\x00\x00\x00\x00\x00\x00\x00\x05rsver\x00\x00\x00\x00\x00\x00\x061.91.0\x00\x00\x00\x00\x00\x00\x00\x00\x00\x08rssdkver\x00\x00\x00\x0630.0.0\x00\x00";
     pub trait Contract {
         fn add(env: soroban_sdk::Env, a: u64, b: u64) -> u64;
         fn safe_add(env: soroban_sdk::Env, a: u64, b: u64) -> Result<u64, Error>;
@@ -85,6 +85,13 @@ mod addcontract {
         }
     }
     impl<'a> Client<'a> {
+        /// Call `add` function on the contract.
+        ///
+        /// # Panics
+        ///
+        /// Panics if the invoked contract returns an error or panics.
+        ///
+        /// Use [`Self::try_add`] to receive errors instead of panicking.
         pub fn add(&self, a: &u64, b: &u64) -> u64 {
             let _call_scope =
                 soroban_sdk::testutils::ClientCallScope::enter(&self.env, self.config);
@@ -103,6 +110,11 @@ mod addcontract {
             );
             res
         }
+        /// Call `add` function on the contract.
+        ///
+        /// # Errors
+        ///
+        /// Returns an error if the invoked contract returns an error or panics. A panic in the invoked contract is caught and returned as an error rather than panicking the caller.
         pub fn try_add(
             &self,
             a: &u64,
@@ -131,6 +143,13 @@ mod addcontract {
             );
             res
         }
+        /// Call `safe_add` function on the contract.
+        ///
+        /// # Panics
+        ///
+        /// Panics if the invoked contract returns an error or panics.
+        ///
+        /// Use [`Self::try_safe_add`] to receive errors instead of panicking.
         pub fn safe_add(&self, a: &u64, b: &u64) -> u64 {
             let _call_scope =
                 soroban_sdk::testutils::ClientCallScope::enter(&self.env, self.config);
@@ -149,6 +168,11 @@ mod addcontract {
             );
             res
         }
+        /// Call `safe_add` function on the contract.
+        ///
+        /// # Errors
+        ///
+        /// Returns an error if the invoked contract returns an error or panics. A panic in the invoked contract is caught and returned as an error rather than panicking the caller.
         pub fn try_safe_add(
             &self,
             a: &u64,
@@ -177,6 +201,13 @@ mod addcontract {
             );
             res
         }
+        /// Call `safe_add_two` function on the contract.
+        ///
+        /// # Panics
+        ///
+        /// Panics if the invoked contract returns an error or panics.
+        ///
+        /// Use [`Self::try_safe_add_two`] to receive errors instead of panicking.
         pub fn safe_add_two(&self, a: &u64, b: &u64) -> u64 {
             let _call_scope =
                 soroban_sdk::testutils::ClientCallScope::enter(&self.env, self.config);
@@ -191,6 +222,11 @@ mod addcontract {
             );
             res
         }
+        /// Call `safe_add_two` function on the contract.
+        ///
+        /// # Errors
+        ///
+        /// Returns an error if the invoked contract returns an error or panics. A panic in the invoked contract is caught and returned as an error rather than panicking the caller.
         pub fn try_safe_add_two(
             &self,
             a: &u64,
@@ -371,17 +407,12 @@ mod addcontract {
             const { ContractExecutableRef::__SPEC_XDR_ENTRY.const_to_xdr() }
         }
     }
-    impl soroban_sdk::SpecAnchor for ContractExecutableRef {
-        #[inline(never)]
-        fn spec_anchor() {}
-    }
     impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for ContractExecutableRef {
         type Error = soroban_sdk::ConversionError;
         fn try_from_val(
             env: &soroban_sdk::Env,
             val: &soroban_sdk::Val,
         ) -> Result<Self, soroban_sdk::ConversionError> {
-            <ContractExecutableRef as soroban_sdk::SpecAnchor>::spec_anchor();
             use soroban_sdk::{ConversionError, EnvBase, MapObject, TryIntoVal, Val};
             const KEYS: [&'static str; 2usize] = ["owner", "tag"];
             let mut vals: [Val; 2usize] = [Val::VOID.to_val(); 2usize];
@@ -404,7 +435,6 @@ mod addcontract {
             env: &soroban_sdk::Env,
             val: &ContractExecutableRef,
         ) -> Result<Self, soroban_sdk::ConversionError> {
-            <ContractExecutableRef as soroban_sdk::SpecAnchor>::spec_anchor();
             use soroban_sdk::{ConversionError, EnvBase, TryIntoVal, Val};
             const KEYS: [&'static str; 2usize] = ["owner", "tag"];
             let vals: [Val; 2usize] = [
@@ -928,17 +958,12 @@ mod addcontract {
             const { ContractContext::__SPEC_XDR_ENTRY.const_to_xdr() }
         }
     }
-    impl soroban_sdk::SpecAnchor for ContractContext {
-        #[inline(never)]
-        fn spec_anchor() {}
-    }
     impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for ContractContext {
         type Error = soroban_sdk::ConversionError;
         fn try_from_val(
             env: &soroban_sdk::Env,
             val: &soroban_sdk::Val,
         ) -> Result<Self, soroban_sdk::ConversionError> {
-            <ContractContext as soroban_sdk::SpecAnchor>::spec_anchor();
             use soroban_sdk::{ConversionError, EnvBase, MapObject, TryIntoVal, Val};
             const KEYS: [&'static str; 3usize] = ["args", "contract", "fn_name"];
             let mut vals: [Val; 3usize] = [Val::VOID.to_val(); 3usize];
@@ -964,7 +989,6 @@ mod addcontract {
             env: &soroban_sdk::Env,
             val: &ContractContext,
         ) -> Result<Self, soroban_sdk::ConversionError> {
-            <ContractContext as soroban_sdk::SpecAnchor>::spec_anchor();
             use soroban_sdk::{ConversionError, EnvBase, TryIntoVal, Val};
             const KEYS: [&'static str; 3usize] = ["args", "contract", "fn_name"];
             let vals: [Val; 3usize] = [
@@ -1528,17 +1552,12 @@ mod addcontract {
             const { SubContractInvocation::__SPEC_XDR_ENTRY.const_to_xdr() }
         }
     }
-    impl soroban_sdk::SpecAnchor for SubContractInvocation {
-        #[inline(never)]
-        fn spec_anchor() {}
-    }
     impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for SubContractInvocation {
         type Error = soroban_sdk::ConversionError;
         fn try_from_val(
             env: &soroban_sdk::Env,
             val: &soroban_sdk::Val,
         ) -> Result<Self, soroban_sdk::ConversionError> {
-            <SubContractInvocation as soroban_sdk::SpecAnchor>::spec_anchor();
             use soroban_sdk::{ConversionError, EnvBase, MapObject, TryIntoVal, Val};
             const KEYS: [&'static str; 2usize] = ["context", "sub_invocations"];
             let mut vals: [Val; 2usize] = [Val::VOID.to_val(); 2usize];
@@ -1561,7 +1580,6 @@ mod addcontract {
             env: &soroban_sdk::Env,
             val: &SubContractInvocation,
         ) -> Result<Self, soroban_sdk::ConversionError> {
-            <SubContractInvocation as soroban_sdk::SpecAnchor>::spec_anchor();
             use soroban_sdk::{ConversionError, EnvBase, TryIntoVal, Val};
             const KEYS: [&'static str; 2usize] = ["context", "sub_invocations"];
             let vals: [Val; 2usize] = [
@@ -2067,17 +2085,12 @@ mod addcontract {
             const { CreateContractHostFnContext::__SPEC_XDR_ENTRY.const_to_xdr() }
         }
     }
-    impl soroban_sdk::SpecAnchor for CreateContractHostFnContext {
-        #[inline(never)]
-        fn spec_anchor() {}
-    }
     impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for CreateContractHostFnContext {
         type Error = soroban_sdk::ConversionError;
         fn try_from_val(
             env: &soroban_sdk::Env,
             val: &soroban_sdk::Val,
         ) -> Result<Self, soroban_sdk::ConversionError> {
-            <CreateContractHostFnContext as soroban_sdk::SpecAnchor>::spec_anchor();
             use soroban_sdk::{ConversionError, EnvBase, MapObject, TryIntoVal, Val};
             const KEYS: [&'static str; 2usize] = ["executable", "salt"];
             let mut vals: [Val; 2usize] = [Val::VOID.to_val(); 2usize];
@@ -2100,7 +2113,6 @@ mod addcontract {
             env: &soroban_sdk::Env,
             val: &CreateContractHostFnContext,
         ) -> Result<Self, soroban_sdk::ConversionError> {
-            <CreateContractHostFnContext as soroban_sdk::SpecAnchor>::spec_anchor();
             use soroban_sdk::{ConversionError, EnvBase, TryIntoVal, Val};
             const KEYS: [&'static str; 2usize] = ["executable", "salt"];
             let vals: [Val; 2usize] = [
@@ -2645,10 +2657,6 @@ mod addcontract {
             const { CreateContractWithConstructorHostFnContext::__SPEC_XDR_ENTRY.const_to_xdr() }
         }
     }
-    impl soroban_sdk::SpecAnchor for CreateContractWithConstructorHostFnContext {
-        #[inline(never)]
-        fn spec_anchor() {}
-    }
     impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val>
         for CreateContractWithConstructorHostFnContext
     {
@@ -2657,7 +2665,6 @@ mod addcontract {
             env: &soroban_sdk::Env,
             val: &soroban_sdk::Val,
         ) -> Result<Self, soroban_sdk::ConversionError> {
-            <CreateContractWithConstructorHostFnContext as soroban_sdk::SpecAnchor>::spec_anchor();
             use soroban_sdk::{ConversionError, EnvBase, MapObject, TryIntoVal, Val};
             const KEYS: [&'static str; 3usize] = ["constructor_args", "executable", "salt"];
             let mut vals: [Val; 3usize] = [Val::VOID.to_val(); 3usize];
@@ -2685,7 +2692,6 @@ mod addcontract {
             env: &soroban_sdk::Env,
             val: &CreateContractWithConstructorHostFnContext,
         ) -> Result<Self, soroban_sdk::ConversionError> {
-            <CreateContractWithConstructorHostFnContext as soroban_sdk::SpecAnchor>::spec_anchor();
             use soroban_sdk::{ConversionError, EnvBase, TryIntoVal, Val};
             const KEYS: [&'static str; 3usize] = ["constructor_args", "executable", "salt"];
             let vals: [Val; 3usize] = [
@@ -3330,10 +3336,6 @@ mod addcontract {
             const { ContractExecutable::__SPEC_XDR_ENTRY.const_to_xdr() }
         }
     }
-    impl soroban_sdk::SpecAnchor for ContractExecutable {
-        #[inline(never)]
-        fn spec_anchor() {}
-    }
     impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for ContractExecutable {
         type Error = soroban_sdk::ConversionError;
         #[inline(always)]
@@ -3341,7 +3343,6 @@ mod addcontract {
             env: &soroban_sdk::Env,
             val: &soroban_sdk::Val,
         ) -> Result<Self, soroban_sdk::ConversionError> {
-            <ContractExecutable as soroban_sdk::SpecAnchor>::spec_anchor();
             use soroban_sdk::{EnvBase, TryFromVal, TryIntoVal};
             const CASES: &'static [&'static str] = &["Wasm", "ExternalRef"];
             let vec: soroban_sdk::Vec<soroban_sdk::Val> = val.try_into_val(env)?;
@@ -3387,7 +3388,6 @@ mod addcontract {
             env: &soroban_sdk::Env,
             val: &ContractExecutable,
         ) -> Result<Self, soroban_sdk::ConversionError> {
-            <ContractExecutable as soroban_sdk::SpecAnchor>::spec_anchor();
             use soroban_sdk::{TryFromVal, TryIntoVal};
             match val {
                 ContractExecutable::Wasm(ref value0) => {
@@ -4043,10 +4043,6 @@ mod addcontract {
             const { Context::__SPEC_XDR_ENTRY.const_to_xdr() }
         }
     }
-    impl soroban_sdk::SpecAnchor for Context {
-        #[inline(never)]
-        fn spec_anchor() {}
-    }
     impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for Context {
         type Error = soroban_sdk::ConversionError;
         #[inline(always)]
@@ -4054,7 +4050,6 @@ mod addcontract {
             env: &soroban_sdk::Env,
             val: &soroban_sdk::Val,
         ) -> Result<Self, soroban_sdk::ConversionError> {
-            <Context as soroban_sdk::SpecAnchor>::spec_anchor();
             use soroban_sdk::{EnvBase, TryFromVal, TryIntoVal};
             const CASES: &'static [&'static str] = &[
                 "Contract",
@@ -4114,7 +4109,6 @@ mod addcontract {
             env: &soroban_sdk::Env,
             val: &Context,
         ) -> Result<Self, soroban_sdk::ConversionError> {
-            <Context as soroban_sdk::SpecAnchor>::spec_anchor();
             use soroban_sdk::{TryFromVal, TryIntoVal};
             match val {
                 Context::Contract(ref value0) => {
@@ -4850,10 +4844,6 @@ mod addcontract {
             const { InvokerContractAuthEntry::__SPEC_XDR_ENTRY.const_to_xdr() }
         }
     }
-    impl soroban_sdk::SpecAnchor for InvokerContractAuthEntry {
-        #[inline(never)]
-        fn spec_anchor() {}
-    }
     impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for InvokerContractAuthEntry {
         type Error = soroban_sdk::ConversionError;
         #[inline(always)]
@@ -4861,7 +4851,6 @@ mod addcontract {
             env: &soroban_sdk::Env,
             val: &soroban_sdk::Val,
         ) -> Result<Self, soroban_sdk::ConversionError> {
-            <InvokerContractAuthEntry as soroban_sdk::SpecAnchor>::spec_anchor();
             use soroban_sdk::{EnvBase, TryFromVal, TryIntoVal};
             const CASES: &'static [&'static str] = &[
                 "Contract",
@@ -4921,7 +4910,6 @@ mod addcontract {
             env: &soroban_sdk::Env,
             val: &InvokerContractAuthEntry,
         ) -> Result<Self, soroban_sdk::ConversionError> {
-            <InvokerContractAuthEntry as soroban_sdk::SpecAnchor>::spec_anchor();
             use soroban_sdk::{TryFromVal, TryIntoVal};
             match val {
                 InvokerContractAuthEntry::Contract(ref value0) => {
@@ -5623,10 +5611,6 @@ mod addcontract {
             const { Executable::__SPEC_XDR_ENTRY.const_to_xdr() }
         }
     }
-    impl soroban_sdk::SpecAnchor for Executable {
-        #[inline(never)]
-        fn spec_anchor() {}
-    }
     impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for Executable {
         type Error = soroban_sdk::ConversionError;
         #[inline(always)]
@@ -5634,7 +5618,6 @@ mod addcontract {
             env: &soroban_sdk::Env,
             val: &soroban_sdk::Val,
         ) -> Result<Self, soroban_sdk::ConversionError> {
-            <Executable as soroban_sdk::SpecAnchor>::spec_anchor();
             use soroban_sdk::{EnvBase, TryFromVal, TryIntoVal};
             const CASES: &'static [&'static str] = &["Wasm", "StellarAsset", "Account"];
             let vec: soroban_sdk::Vec<soroban_sdk::Val> = val.try_into_val(env)?;
@@ -5682,7 +5665,6 @@ mod addcontract {
             env: &soroban_sdk::Env,
             val: &Executable,
         ) -> Result<Self, soroban_sdk::ConversionError> {
-            <Executable as soroban_sdk::SpecAnchor>::spec_anchor();
             use soroban_sdk::{TryFromVal, TryIntoVal};
             match val {
                 Executable::Wasm(ref value0) => {
@@ -6209,15 +6191,10 @@ mod addcontract {
         #[inline(always)]
         fn spec_shaking_marker() {}
     }
-    impl soroban_sdk::SpecAnchor for Error {
-        #[inline(never)]
-        fn spec_anchor() {}
-    }
     impl TryFrom<soroban_sdk::Error> for Error {
         type Error = soroban_sdk::Error;
         #[inline(always)]
         fn try_from(error: soroban_sdk::Error) -> Result<Self, soroban_sdk::Error> {
-            <Error as soroban_sdk::SpecAnchor>::spec_anchor();
             if error.is_type(soroban_sdk::xdr::ScErrorType::Contract) {
                 let discriminant = error.get_code();
                 Ok(match discriminant {
@@ -6245,7 +6222,6 @@ mod addcontract {
     impl From<&Error> for soroban_sdk::Error {
         #[inline(always)]
         fn from(val: &Error) -> soroban_sdk::Error {
-            <Error as soroban_sdk::SpecAnchor>::spec_anchor();
             match val {
                 Error::Overflow => soroban_sdk::Error::from_contract_error(1u32),
             }
@@ -6255,7 +6231,6 @@ mod addcontract {
         type Error = soroban_sdk::InvokeError;
         #[inline(always)]
         fn try_from(error: soroban_sdk::InvokeError) -> Result<Self, soroban_sdk::InvokeError> {
-            <Error as soroban_sdk::SpecAnchor>::spec_anchor();
             match error {
                 soroban_sdk::InvokeError::Abort => Err(error),
                 soroban_sdk::InvokeError::Contract(code) => Ok(match code {
@@ -6281,7 +6256,6 @@ mod addcontract {
     impl From<&Error> for soroban_sdk::InvokeError {
         #[inline(always)]
         fn from(val: &Error) -> soroban_sdk::InvokeError {
-            <Error as soroban_sdk::SpecAnchor>::spec_anchor();
             match val {
                 Error::Overflow => soroban_sdk::InvokeError::Contract(1u32),
             }
@@ -6429,15 +6403,10 @@ mod addcontract {
         #[inline(always)]
         fn spec_shaking_marker() {}
     }
-    impl soroban_sdk::SpecAnchor for MyError {
-        #[inline(never)]
-        fn spec_anchor() {}
-    }
     impl TryFrom<soroban_sdk::Error> for MyError {
         type Error = soroban_sdk::Error;
         #[inline(always)]
         fn try_from(error: soroban_sdk::Error) -> Result<Self, soroban_sdk::Error> {
-            <MyError as soroban_sdk::SpecAnchor>::spec_anchor();
             if error.is_type(soroban_sdk::xdr::ScErrorType::Contract) {
                 let discriminant = error.get_code();
                 Ok(match discriminant {
@@ -6465,7 +6434,6 @@ mod addcontract {
     impl From<&MyError> for soroban_sdk::Error {
         #[inline(always)]
         fn from(val: &MyError) -> soroban_sdk::Error {
-            <MyError as soroban_sdk::SpecAnchor>::spec_anchor();
             match val {
                 MyError::Overflow => soroban_sdk::Error::from_contract_error(1u32),
             }
@@ -6475,7 +6443,6 @@ mod addcontract {
         type Error = soroban_sdk::InvokeError;
         #[inline(always)]
         fn try_from(error: soroban_sdk::InvokeError) -> Result<Self, soroban_sdk::InvokeError> {
-            <MyError as soroban_sdk::SpecAnchor>::spec_anchor();
             match error {
                 soroban_sdk::InvokeError::Abort => Err(error),
                 soroban_sdk::InvokeError::Contract(code) => Ok(match code {
@@ -6501,7 +6468,6 @@ mod addcontract {
     impl From<&MyError> for soroban_sdk::InvokeError {
         #[inline(always)]
         fn from(val: &MyError) -> soroban_sdk::InvokeError {
-            <MyError as soroban_sdk::SpecAnchor>::spec_anchor();
             match val {
                 MyError::Overflow => soroban_sdk::InvokeError::Contract(1u32),
             }
@@ -6542,7 +6508,7 @@ mod addcontract {
     }
 }
 mod eventscontract {
-    pub const WASM: &[u8] = b"\x00asm\x01\x00\x00\x00\x010\t`\x01~\x01~`\x02~~\x01~`\x03~~~\x01~`\x01\x7f\x00`\x01\x7f\x01~`\x02\x7f\x7f\x01~`\x02\x7f~\x01~`\x02\x7f~\x00`\x00\x00\x02C\x0b\x01i\x01_\x00\x00\x01x\x011\x00\x01\x01a\x014\x00\x00\x01a\x015\x00\x00\x01i\x010\x00\x00\x01v\x01g\x00\x01\x01i\x018\x00\x00\x01i\x017\x00\x00\x01b\x01j\x00\x01\x01i\x016\x00\x01\x01m\x01b\x00\x02\x03\x11\x10\x03\x04\x05\x01\x05\x06\x02\x07\x08\x02\x05\x01\x00\x02\x08\x02\x05\x03\x01\x00\x11\x06!\x04\x7f\x01A\x80\x80\xc0\x00\x0b\x7f\x00A\xb5\x81\xc0\x00\x0b\x7f\x00A\xb5\x81\xc0\x00\x0b\x7f\x00A\xc0\x81\xc0\x00\x0b\x07\x83\x01\n\x06memory\x02\x00\x0ffailed_transfer\x00\x11\nmap_values\x00\x14\x0csingle_value\x00\x16\x11single_value_void\x00\x17\x08transfer\x00\x18\nvec_values\x00\x1a\x01_\x03\x01\n__data_end\x03\x02\x0b__heap_base\x03\x03\n\xe2\r\x10\xb9\x02\x02\x02\x7f\x03~#\x80\x80\x80\x80\x00A0k\"\x01$\x80\x80\x80\x80\x00A\x00!\x02A\x00-\x00\x80\x80\xc0\x80\x00\x1a \x00)\x03 !\x03 \x00)\x03(!\x04A\xe8\x80\xc0\x80\x00\x10\x8c\x80\x80\x80\x00!\x05 \x01 \x047\x03\x10 \x01 \x037\x03\x08 \x01 \x057\x03\x00\x03@\x02@ \x02A\x18G\r\x00A\x00!\x02\x02@\x03@ \x02A\x18F\r\x01 \x01A\x18j \x02j \x01 \x02j)\x03\x007\x03\x00 \x02A\x08j!\x02\x0c\x00\x0b\x0b \x01A\x18jA\x03\x10\x8d\x80\x80\x80\x00!\x04 \x00)\x03\x10 \x00)\x03\x18\x10\x8e\x80\x80\x80\x00!\x05B\x02!\x03\x02@ \x00(\x02\x00A\x01G\r\x00\x02@ \x00)\x03\x08\"\x03B\xff\xff\xff\xff\xff\xff\xff\xff\x00V\r\x00 \x03B\x08\x86B\x06\x84!\x03\x0c\x01\x0b \x03\x10\x80\x80\x80\x80\x00!\x03\x0b \x01 \x037\x03  \x01 \x057\x03\x18 \x04A\xd8\x80\xc0\x80\x00 \x01A\x18j\x10\x8f\x80\x80\x80\x00\x10\x81\x80\x80\x80\x00\x1a \x01A0j$\x80\x80\x80\x80\x00\x0f\x0b \x01A\x18j \x02jB\x027\x03\x00 \x02A\x08j!\x02\x0c\x00\x0b\x0b\x07\x00 \x00)\x03\x00\x0b\x1a\x00 \x00\xadB \x86B\x04\x84 \x01\xadB \x86B\x04\x84\x10\x85\x80\x80\x80\x00\x0bE\x00\x02@ \x00B\x80\x80\x80\x80\x80\x80\x80\xc0\x00|B\xff\xff\xff\xff\xff\xff\xff\xff\x00V\r\x00 \x00 \x00\x85 \x01 \x00B?\x87\x85\x84B\x00R\r\x00 \x00B\x08\x86B\x0b\x84\x0f\x0b \x01 \x00\x10\x89\x80\x80\x80\x00\x0b \x00 \x00\xadB \x86B\x04\x84 \x01\xadB \x86B\x04\x84B\x84\x80\x80\x80 \x10\x8a\x80\x80\x80\x00\x0b\xa0\x01\x02\x01\x7f\x01~#\x80\x80\x80\x80\x00A k\"\x02$\x80\x80\x80\x80\x00 \x00\x10\x8c\x80\x80\x80\x00!\x03 \x02 \x017\x03\x08 \x02 \x037\x03\x00A\x00!\x00\x03~\x02@ \x00A\x10G\r\x00A\x00!\x00\x02@\x03@ \x00A\x10F\r\x01 \x02A\x10j \x00j \x02 \x00j)\x03\x007\x03\x00 \x00A\x08j!\x00\x0c\x00\x0b\x0b \x02A\x10jA\x02\x10\x8d\x80\x80\x80\x00!\x01 \x02A j$\x80\x80\x80\x80\x00 \x01\x0f\x0b \x02A\x10j \x00jB\x027\x03\x00 \x00A\x08j!\x00\x0c\x00\x0b\x0b\x80\x01\x01\x01\x7f#\x80\x80\x80\x80\x00A0k\"\x03$\x80\x80\x80\x80\x00\x02@ \x00B\xff\x01\x83B\xcd\x00R\r\x00 \x01B\xff\x01\x83B\xcd\x00R\r\x00 \x03 \x02\x10\x92\x80\x80\x80\x00 \x03(\x02\x00A\x01F\r\x00 \x03)\x03\x10!\x02 \x03 \x03)\x03\x187\x03\x18 \x03 \x027\x03\x10 \x03 \x017\x03( \x03 \x007\x03  \x03B\x007\x03\x00 \x03\x10\x8b\x80\x80\x80\x00\x10\x93\x80\x80\x80\x00\x0b\x00\x0b}\x02\x01\x7f\x01~\x02@\x02@\x02@\x02@ \x01\xa7A\xff\x01q\"\x02A\xc5\x00F\r\x00 \x02A\x0bG\r\x02 \x00 \x01B?\x877\x03\x18 \x00 \x01B\x08\x877\x03\x10\x0c\x01\x0b \x01\x10\x86\x80\x80\x80\x00!\x03 \x01\x10\x87\x80\x80\x80\x00!\x01 \x00 \x037\x03\x18 \x00 \x017\x03\x10\x0bB\x00!\x01\x0c\x01\x0b \x00B\x83\x90\x80\x80\x80\x017\x03\x08B\x01!\x01\x0b \x00 \x017\x03\x00\x0b\x03\x00\x00\x0b\xa5\x01\x01\x01\x7f#\x80\x80\x80\x80\x00A\x10k\"\x03$\x80\x80\x80\x80\x00\x02@ \x00B\xff\x01\x83B\xcd\x00R\r\x00 \x01B\xff\x01\x83B\x04R\r\x00 \x02B\xff\x01\x83B\x04R\r\x00A\x00-\x00\x8e\x80\xc0\x80\x00\x1a \x03A\x84\x81\xc0\x80\x00A\n\x10\x95\x80\x80\x80\x007\x03\x00 \x03 \x00\x10\x90\x80\x80\x80\x00!\x00 \x03 \x02B\x84\x80\x80\x80p\x837\x03\x08 \x03 \x01B\x84\x80\x80\x80p\x837\x03\x00 \x00A\xf4\x80\xc0\x80\x00 \x03\x10\x8f\x80\x80\x80\x00\x10\x81\x80\x80\x80\x00\x1a \x03A\x10j$\x80\x80\x80\x80\x00B\x02\x0f\x0b\x00\x0b\x1a\x00 \x00\xadB \x86B\x04\x84 \x01\xadB \x86B\x04\x84\x10\x88\x80\x80\x80\x00\x0b\x8f\x01\x02\x01\x7f\x01~#\x80\x80\x80\x80\x00A k\"\x02$\x80\x80\x80\x80\x00\x02@ \x00B\xff\x01\x83B\xcd\x00R\r\x00 \x02 \x01\x10\x92\x80\x80\x80\x00 \x02(\x02\x00A\x01F\r\x00A\x00-\x00\xaa\x80\xc0\x80\x00\x1a \x02)\x03\x18!\x01 \x02)\x03\x10!\x03 \x02A\x98\x81\xc0\x80\x00A\x0c\x10\x95\x80\x80\x80\x007\x03\x00 \x02 \x00\x10\x90\x80\x80\x80\x00 \x03 \x01\x10\x8e\x80\x80\x80\x00\x10\x81\x80\x80\x80\x00\x1a \x02A j$\x80\x80\x80\x80\x00B\x02\x0f\x0b\x00\x0be\x01\x01\x7f#\x80\x80\x80\x80\x00A\x10k\"\x01$\x80\x80\x80\x80\x00\x02@ \x00B\xff\x01\x83B\xcd\x00Q\r\x00\x00\x0bA\x00-\x00\xb8\x80\xc0\x80\x00\x1a \x01A\xa4\x81\xc0\x80\x00A\x11\x10\x95\x80\x80\x80\x007\x03\x08 \x01A\x08j \x00\x10\x90\x80\x80\x80\x00B\x02\x10\x81\x80\x80\x80\x00\x1a \x01A\x10j$\x80\x80\x80\x80\x00B\x02\x0b\x8e\x02\x02\x02\x7f\x04~#\x80\x80\x80\x80\x00A0k\"\x03$\x80\x80\x80\x80\x00\x02@ \x00B\xff\x01\x83B\xcd\x00R\r\x00A\x01!\x04\x02@\x02@ \x01\xa7A\xff\x01qA\xb3\x7fj\x0e\x02\x00\x01\x02\x0bA\x00!\x04\x0b \x03 \x02\x10\x92\x80\x80\x80\x00 \x03(\x02\x00A\x01F\r\x00 \x03)\x03\x18!\x02 \x03)\x03\x10!\x05\x02@\x02@ \x04\r\x00B\x00!\x06\x0c\x01\x0b \x01\x10\x82\x80\x80\x80\x00!\x07\x02@\x02@ \x01\x10\x83\x80\x80\x80\x00\"\x01\xa7A\xff\x01q\"\x04A\x06F\r\x00\x02@ \x04A\xc0\x00G\r\x00B\x01!\x06 \x01\x10\x84\x80\x80\x80\x00!\x08\x0c\x02\x0b\x10\x99\x80\x80\x80\x00\x00\x0b \x01B\x08\x88!\x08B\x01!\x06\x0b \x07!\x01\x0b \x03 \x057\x03\x10 \x03 \x017\x03( \x03 \x007\x03  \x03 \x087\x03\x08 \x03 \x067\x03\x00 \x03 \x027\x03\x18 \x03\x10\x8b\x80\x80\x80\x00 \x03A0j$\x80\x80\x80\x80\x00B\x02\x0f\x0b\x00\x0b\t\x00\x10\x93\x80\x80\x80\x00\x00\x0b\xa1\x01\x01\x01\x7f#\x80\x80\x80\x80\x00A\x10k\"\x03$\x80\x80\x80\x80\x00\x02@ \x00B\xff\x01\x83B\xcd\x00R\r\x00 \x01B\xff\x01\x83B\x04R\r\x00 \x02B\xff\x01\x83B\x04R\r\x00A\x00-\x00\x9c\x80\xc0\x80\x00\x1a \x03A\x8e\x81\xc0\x80\x00A\n\x10\x95\x80\x80\x80\x007\x03\x00 \x03 \x00\x10\x90\x80\x80\x80\x00!\x00 \x03 \x02B\x84\x80\x80\x80p\x837\x03\x08 \x03 \x01B\x84\x80\x80\x80p\x837\x03\x00 \x00 \x03A\x02\x10\x8d\x80\x80\x80\x00\x10\x81\x80\x80\x80\x00\x1a \x03A\x10j$\x80\x80\x80\x80\x00B\x02\x0f\x0b\x00\x0b\x0b\xbf\x01\x01\x00A\x80\x80\xc0\x00\x0b\xb5\x01SpEcV1\xdbTN\xd8\x83:a\xb6SpEcV1@\x04\xf7\xe9\xd8\xae\xab\xfdSpEcV1?\x81\x12\xc9\xc6\x10e\x9fSpEcV1\x03\xf9\xd2\xa7\x88\xc4\xae\x95SpEcV16\x00I`\x18\xd4K\x1aamountto_muxed_id\x00F\x00\x10\x00\x06\x00\x00\x00L\x00\x10\x00\x0b\x00\x00\x00\x0e\xb7\xba\xe2\xb3y\xe7\x00ab\x00\x00p\x00\x10\x00\x01\x00\x00\x00q\x00\x10\x00\x01\x00\x00\x00map_valuesvec_valuessingle_valuesingle_value_void\x00\x87\'\x0econtractspecv0\x00\x00\x00\x05\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x17::test_events::Transfer\x00\x00\x00\x00\x01\x00\x00\x00\x08transfer\x00\x00\x00\x04\x00\x00\x00\x00\x00\x00\x00\x04from\x00\x00\x00\x13\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x02to\x00\x00\x00\x00\x00\x13\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x06amount\x00\x00\x00\x00\x00\x0b\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x0bto_muxed_id\x00\x00\x00\x03\xe8\x00\x00\x00\x06\x00\x00\x00\x00\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x08transfer\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00\x04from\x00\x00\x00\x13\x00\x00\x00\x00\x00\x00\x00\x02to\x00\x00\x00\x00\x00\x14\x00\x00\x00\x00\x00\x00\x00\x06amount\x00\x00\x00\x00\x00\x0b\x00\x00\x00\x00\x00\x00\x00\x05\x00\x00\x003An event whose data is a map, which is the default.\x00\x00\x00\x00\x00\x00\x00\x00\x18::test_events::MapValues\x00\x00\x00\x01\x00\x00\x00\nmap_values\x00\x00\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00\x04from\x00\x00\x00\x13\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x01a\x00\x00\x00\x00\x00\x00\x04\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x01b\x00\x00\x00\x00\x00\x00\x04\x00\x00\x00\x00\x00\x00\x00\x02\x00\x00\x00\x05\x00\x00\x000An event whose data is a vec, rather than a map.\x00\x00\x00\x00\x00\x00\x00\x18::test_events::VecValues\x00\x00\x00\x01\x00\x00\x00\nvec_values\x00\x00\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00\x04from\x00\x00\x00\x13\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x01a\x00\x00\x00\x00\x00\x00\x04\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x01b\x00\x00\x00\x00\x00\x00\x04\x00\x00\x00\x00\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\nmap_values\x00\x00\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00\x04from\x00\x00\x00\x13\x00\x00\x00\x00\x00\x00\x00\x01a\x00\x00\x00\x00\x00\x00\x04\x00\x00\x00\x00\x00\x00\x00\x01b\x00\x00\x00\x00\x00\x00\x04\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\nvec_values\x00\x00\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00\x04from\x00\x00\x00\x13\x00\x00\x00\x00\x00\x00\x00\x01a\x00\x00\x00\x00\x00\x00\x04\x00\x00\x00\x00\x00\x00\x00\x01b\x00\x00\x00\x00\x00\x00\x04\x00\x00\x00\x00\x00\x00\x00\x05\x00\x00\x009An event whose data is a single value, rather than a map.\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x1a::test_events::SingleValue\x00\x00\x00\x00\x00\x01\x00\x00\x00\x0csingle_value\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x04from\x00\x00\x00\x13\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x06amount\x00\x00\x00\x00\x00\x0b\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x0csingle_value\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x04from\x00\x00\x00\x13\x00\x00\x00\x00\x00\x00\x00\x06amount\x00\x00\x00\x00\x00\x0b\x00\x00\x00\x00\x00\x00\x00\x05\x00\x00\x00^An event whose data is a single value, and that has no data fields, and so\nwhose data is void.\x00\x00\x00\x00\x00\x00\x00\x00\x00\x1e::test_events::SingleValueVoid\x00\x00\x00\x00\x00\x01\x00\x00\x00\x11single_value_void\x00\x00\x00\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x04from\x00\x00\x00\x13\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x0ffailed_transfer\x00\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00\x04from\x00\x00\x00\x13\x00\x00\x00\x00\x00\x00\x00\x02to\x00\x00\x00\x00\x00\x13\x00\x00\x00\x00\x00\x00\x00\x06amount\x00\x00\x00\x00\x00\x0b\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x11single_value_void\x00\x00\x00\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x04from\x00\x00\x00\x13\x00\x00\x00\x00\x00\x00\x00\x02\x00\x00\x00_Contract executable used for creating a new contract and used in\n`CreateContractHostFnContext`.\x00\x00\x00\x00\x00\x00\x00\x00!::soroban_sdk::ContractExecutable\x00\x00\x00\x00\x00\x00\x02\x00\x00\x00\x01\x00\x00\x00xExecutable specified by the contract instance as a specific Wasm contract code entry identified by its Wasm sha256 hash.\x00\x00\x00\x04Wasm\x00\x00\x00\x01\x00\x00\x03\xee\x00\x00\x00 \x00\x00\x00\x01\x00\x00\x00_Executable reference via a persistent storage entry owned by this contract or another contract.\x00\x00\x00\x00\x0bExternalRef\x00\x00\x00\x00\x01\x00\x00\x07\xd0\x00\x00\x00$::soroban_sdk::ContractExecutableRef\x00\x00\x00\x01\x00\x00\x00\xc0Executable referenced via a persistent storage entry owned by a contract,\neither this contract or another contract.\n\nThe persistent storage entry owned by the `owner` has the `tag` as its key.\x00\x00\x00\x00\x00\x00\x00$::soroban_sdk::ContractExecutableRef\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x05owner\x00\x00\x00\x00\x00\x00\x13\x00\x00\x00\x00\x00\x00\x00\x03tag\x00\x00\x00\x00\x10\x00\x00\x00\x02\x00\x00\x00\xe3Context of a single authorized call performed by an address.\n\nCustom account contracts that implement `__check_auth` special function\nreceive a list of `Context` values corresponding to all the calls that\nneed to be authorized.\x00\x00\x00\x00\x00\x00\x00\x00\x1c::soroban_sdk::auth::Context\x00\x00\x00\x03\x00\x00\x00\x01\x00\x00\x00\x14Contract invocation.\x00\x00\x00\x08Contract\x00\x00\x00\x01\x00\x00\x07\xd0\x00\x00\x00$::soroban_sdk::auth::ContractContext\x00\x00\x00\x01\x00\x00\x00=Contract that has a constructor with no arguments is created.\x00\x00\x00\x00\x00\x00\x14CreateContractHostFn\x00\x00\x00\x01\x00\x00\x07\xd0\x00\x00\x000::soroban_sdk::auth::CreateContractHostFnContext\x00\x00\x00\x01\x00\x00\x00DContract that has a constructor with 1 or more arguments is created.\x00\x00\x00\x1cCreateContractWithCtorHostFn\x00\x00\x00\x01\x00\x00\x07\xd0\x00\x00\x00?::soroban_sdk::auth::CreateContractWithConstructorHostFnContext\x00\x00\x00\x00\x01\x00\x00\x00\xbdAuthorization context of a single contract call.\n\nThis struct corresponds to a `require_auth_for_args` call for an address\nfrom `contract` function with `fn_name` name and `args` arguments.\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00$::soroban_sdk::auth::ContractContext\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00\x04args\x00\x00\x03\xea\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x08contract\x00\x00\x00\x13\x00\x00\x00\x00\x00\x00\x00\x07fn_name\x00\x00\x00\x00\x11\x00\x00\x00\x01\x00\x00\x008Value of contract node in InvokerContractAuthEntry tree.\x00\x00\x00\x00\x00\x00\x00*::soroban_sdk::auth::SubContractInvocation\x00\x00\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x07context\x00\x00\x00\x07\xd0\x00\x00\x00$::soroban_sdk::auth::ContractContext\x00\x00\x00\x00\x00\x00\x00\x0fsub_invocations\x00\x00\x00\x03\xea\x00\x00\x07\xd0\x00\x00\x00-::soroban_sdk::auth::InvokerContractAuthEntry\x00\x00\x00\x00\x00\x00\x02\x00\x00\x01/A node in the tree of authorizations performed on behalf of the current\ncontract as invoker of the contracts deeper in the call stack.\n\nThis is used as an argument of `authorize_as_current_contract` host function.\n\nThis tree corresponds `require_auth[_for_args]` calls on behalf of the\ncurrent contract.\x00\x00\x00\x00\x00\x00\x00\x00-::soroban_sdk::auth::InvokerContractAuthEntry\x00\x00\x00\x00\x00\x00\x03\x00\x00\x00\x01\x00\x00\x00\x12Invoke a contract.\x00\x00\x00\x00\x00\x08Contract\x00\x00\x00\x01\x00\x00\x07\xd0\x00\x00\x00*::soroban_sdk::auth::SubContractInvocation\x00\x00\x00\x00\x00\x01\x00\x00\x005Create a contract passing 0 arguments to constructor.\x00\x00\x00\x00\x00\x00\x14CreateContractHostFn\x00\x00\x00\x01\x00\x00\x07\xd0\x00\x00\x000::soroban_sdk::auth::CreateContractHostFnContext\x00\x00\x00\x01\x00\x00\x00=Create a contract passing 0 or more arguments to constructor.\x00\x00\x00\x00\x00\x00\x1cCreateContractWithCtorHostFn\x00\x00\x00\x01\x00\x00\x07\xd0\x00\x00\x00?::soroban_sdk::auth::CreateContractWithConstructorHostFnContext\x00\x00\x00\x00\x01\x00\x00\x00vAuthorization context for `create_contract` host function that creates a\nnew contract on behalf of authorizer address.\x00\x00\x00\x00\x00\x00\x00\x00\x000::soroban_sdk::auth::CreateContractHostFnContext\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\nexecutable\x00\x00\x00\x00\x07\xd0\x00\x00\x00!::soroban_sdk::ContractExecutable\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x04salt\x00\x00\x03\xee\x00\x00\x00 \x00\x00\x00\x01\x00\x00\x00\xd6Authorization context for `create_contract` host function that creates a\nnew contract on behalf of authorizer address.\nThis is the same as `CreateContractHostFnContext`, but also has\ncontract constructor arguments.\x00\x00\x00\x00\x00\x00\x00\x00\x00?::soroban_sdk::auth::CreateContractWithConstructorHostFnContext\x00\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00\x10constructor_args\x00\x00\x03\xea\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\nexecutable\x00\x00\x00\x00\x07\xd0\x00\x00\x00!::soroban_sdk::ContractExecutable\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x04salt\x00\x00\x03\xee\x00\x00\x00 \x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\"::soroban_sdk::address::Executable\x00\x00\x00\x00\x00\x03\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x04Wasm\x00\x00\x00\x01\x00\x00\x03\xee\x00\x00\x00 \x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x0cStellarAsset\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x07Account\x00\x00\x1e\x11contractenvmetav0\x00\x00\x00\x00\x00\x00\x00\x1d\x00\x00\x00\x00\x00G\x0econtractmetav0\x00\x00\x00\x00\x00\x00\x00\x05rsver\x00\x00\x00\x00\x00\x00\x061.91.0\x00\x00\x00\x00\x00\x00\x00\x00\x00\x08rssdkver\x00\x00\x00\x0630.0.0\x00\x00";
+    pub const WASM: &[u8] = b"\x00asm\x01\x00\x00\x00\x010\t`\x01~\x01~`\x02~~\x01~`\x03~~~\x01~`\x01\x7f\x00`\x01\x7f\x01~`\x02\x7f\x7f\x01~`\x02\x7f~\x01~`\x02\x7f~\x00`\x00\x00\x02C\x0b\x01i\x01_\x00\x00\x01x\x011\x00\x01\x01a\x014\x00\x00\x01a\x015\x00\x00\x01i\x010\x00\x00\x01v\x01g\x00\x01\x01i\x018\x00\x00\x01i\x017\x00\x00\x01b\x01j\x00\x01\x01i\x016\x00\x01\x01m\x01b\x00\x02\x03\x11\x10\x03\x04\x05\x01\x05\x06\x02\x07\x08\x02\x05\x01\x00\x02\x08\x02\x05\x03\x01\x00\x11\x06!\x04\x7f\x01A\x80\x80\xc0\x00\x0b\x7f\x00A\xb5\x81\xc0\x00\x0b\x7f\x00A\xb5\x81\xc0\x00\x0b\x7f\x00A\xc0\x81\xc0\x00\x0b\x07\x83\x01\n\x06memory\x02\x00\x0ffailed_transfer\x00\x11\nmap_values\x00\x14\x0csingle_value\x00\x16\x11single_value_void\x00\x17\x08transfer\x00\x18\nvec_values\x00\x1a\x01_\x03\x01\n__data_end\x03\x02\x0b__heap_base\x03\x03\n\xe2\r\x10\xb9\x02\x02\x02\x7f\x03~#\x80\x80\x80\x80\x00A0k\"\x01$\x80\x80\x80\x80\x00A\x00!\x02A\x00-\x00\x80\x80\xc0\x80\x00\x1a \x00)\x03 !\x03 \x00)\x03(!\x04A\xe8\x80\xc0\x80\x00\x10\x8c\x80\x80\x80\x00!\x05 \x01 \x047\x03\x10 \x01 \x037\x03\x08 \x01 \x057\x03\x00\x03@\x02@ \x02A\x18G\r\x00A\x00!\x02\x02@\x03@ \x02A\x18F\r\x01 \x01A\x18j \x02j \x01 \x02j)\x03\x007\x03\x00 \x02A\x08j!\x02\x0c\x00\x0b\x0b \x01A\x18jA\x03\x10\x8d\x80\x80\x80\x00!\x04 \x00)\x03\x10 \x00)\x03\x18\x10\x8e\x80\x80\x80\x00!\x05B\x02!\x03\x02@ \x00(\x02\x00A\x01G\r\x00\x02@ \x00)\x03\x08\"\x03B\xff\xff\xff\xff\xff\xff\xff\xff\x00V\r\x00 \x03B\x08\x86B\x06\x84!\x03\x0c\x01\x0b \x03\x10\x80\x80\x80\x80\x00!\x03\x0b \x01 \x037\x03  \x01 \x057\x03\x18 \x04A\xd8\x80\xc0\x80\x00 \x01A\x18j\x10\x8f\x80\x80\x80\x00\x10\x81\x80\x80\x80\x00\x1a \x01A0j$\x80\x80\x80\x80\x00\x0f\x0b \x01A\x18j \x02jB\x027\x03\x00 \x02A\x08j!\x02\x0c\x00\x0b\x0b\x07\x00 \x00)\x03\x00\x0b\x1a\x00 \x00\xadB \x86B\x04\x84 \x01\xadB \x86B\x04\x84\x10\x85\x80\x80\x80\x00\x0bE\x00\x02@ \x00B\x80\x80\x80\x80\x80\x80\x80\xc0\x00|B\xff\xff\xff\xff\xff\xff\xff\xff\x00V\r\x00 \x00 \x00\x85 \x01 \x00B?\x87\x85\x84B\x00R\r\x00 \x00B\x08\x86B\x0b\x84\x0f\x0b \x01 \x00\x10\x89\x80\x80\x80\x00\x0b \x00 \x00\xadB \x86B\x04\x84 \x01\xadB \x86B\x04\x84B\x84\x80\x80\x80 \x10\x8a\x80\x80\x80\x00\x0b\xa0\x01\x02\x01\x7f\x01~#\x80\x80\x80\x80\x00A k\"\x02$\x80\x80\x80\x80\x00 \x00\x10\x8c\x80\x80\x80\x00!\x03 \x02 \x017\x03\x08 \x02 \x037\x03\x00A\x00!\x00\x03~\x02@ \x00A\x10G\r\x00A\x00!\x00\x02@\x03@ \x00A\x10F\r\x01 \x02A\x10j \x00j \x02 \x00j)\x03\x007\x03\x00 \x00A\x08j!\x00\x0c\x00\x0b\x0b \x02A\x10jA\x02\x10\x8d\x80\x80\x80\x00!\x01 \x02A j$\x80\x80\x80\x80\x00 \x01\x0f\x0b \x02A\x10j \x00jB\x027\x03\x00 \x00A\x08j!\x00\x0c\x00\x0b\x0b\x80\x01\x01\x01\x7f#\x80\x80\x80\x80\x00A0k\"\x03$\x80\x80\x80\x80\x00\x02@ \x00B\xff\x01\x83B\xcd\x00R\r\x00 \x01B\xff\x01\x83B\xcd\x00R\r\x00 \x03 \x02\x10\x92\x80\x80\x80\x00 \x03(\x02\x00A\x01F\r\x00 \x03)\x03\x10!\x02 \x03 \x03)\x03\x187\x03\x18 \x03 \x027\x03\x10 \x03 \x017\x03( \x03 \x007\x03  \x03B\x007\x03\x00 \x03\x10\x8b\x80\x80\x80\x00\x10\x93\x80\x80\x80\x00\x0b\x00\x0b}\x02\x01\x7f\x01~\x02@\x02@\x02@\x02@ \x01\xa7A\xff\x01q\"\x02A\xc5\x00F\r\x00 \x02A\x0bG\r\x02 \x00 \x01B?\x877\x03\x18 \x00 \x01B\x08\x877\x03\x10\x0c\x01\x0b \x01\x10\x86\x80\x80\x80\x00!\x03 \x01\x10\x87\x80\x80\x80\x00!\x01 \x00 \x037\x03\x18 \x00 \x017\x03\x10\x0bB\x00!\x01\x0c\x01\x0b \x00B\x83\x90\x80\x80\x80\x017\x03\x08B\x01!\x01\x0b \x00 \x017\x03\x00\x0b\x03\x00\x00\x0b\xa5\x01\x01\x01\x7f#\x80\x80\x80\x80\x00A\x10k\"\x03$\x80\x80\x80\x80\x00\x02@ \x00B\xff\x01\x83B\xcd\x00R\r\x00 \x01B\xff\x01\x83B\x04R\r\x00 \x02B\xff\x01\x83B\x04R\r\x00A\x00-\x00\x8e\x80\xc0\x80\x00\x1a \x03A\x84\x81\xc0\x80\x00A\n\x10\x95\x80\x80\x80\x007\x03\x00 \x03 \x00\x10\x90\x80\x80\x80\x00!\x00 \x03 \x02B\x84\x80\x80\x80p\x837\x03\x08 \x03 \x01B\x84\x80\x80\x80p\x837\x03\x00 \x00A\xf4\x80\xc0\x80\x00 \x03\x10\x8f\x80\x80\x80\x00\x10\x81\x80\x80\x80\x00\x1a \x03A\x10j$\x80\x80\x80\x80\x00B\x02\x0f\x0b\x00\x0b\x1a\x00 \x00\xadB \x86B\x04\x84 \x01\xadB \x86B\x04\x84\x10\x88\x80\x80\x80\x00\x0b\x8f\x01\x02\x01\x7f\x01~#\x80\x80\x80\x80\x00A k\"\x02$\x80\x80\x80\x80\x00\x02@ \x00B\xff\x01\x83B\xcd\x00R\r\x00 \x02 \x01\x10\x92\x80\x80\x80\x00 \x02(\x02\x00A\x01F\r\x00A\x00-\x00\xaa\x80\xc0\x80\x00\x1a \x02)\x03\x18!\x01 \x02)\x03\x10!\x03 \x02A\x98\x81\xc0\x80\x00A\x0c\x10\x95\x80\x80\x80\x007\x03\x00 \x02 \x00\x10\x90\x80\x80\x80\x00 \x03 \x01\x10\x8e\x80\x80\x80\x00\x10\x81\x80\x80\x80\x00\x1a \x02A j$\x80\x80\x80\x80\x00B\x02\x0f\x0b\x00\x0be\x01\x01\x7f#\x80\x80\x80\x80\x00A\x10k\"\x01$\x80\x80\x80\x80\x00\x02@ \x00B\xff\x01\x83B\xcd\x00Q\r\x00\x00\x0bA\x00-\x00\xb8\x80\xc0\x80\x00\x1a \x01A\xa4\x81\xc0\x80\x00A\x11\x10\x95\x80\x80\x80\x007\x03\x08 \x01A\x08j \x00\x10\x90\x80\x80\x80\x00B\x02\x10\x81\x80\x80\x80\x00\x1a \x01A\x10j$\x80\x80\x80\x80\x00B\x02\x0b\x8e\x02\x02\x02\x7f\x04~#\x80\x80\x80\x80\x00A0k\"\x03$\x80\x80\x80\x80\x00\x02@ \x00B\xff\x01\x83B\xcd\x00R\r\x00A\x01!\x04\x02@\x02@ \x01\xa7A\xff\x01qA\xb3\x7fj\x0e\x02\x00\x01\x02\x0bA\x00!\x04\x0b \x03 \x02\x10\x92\x80\x80\x80\x00 \x03(\x02\x00A\x01F\r\x00 \x03)\x03\x18!\x02 \x03)\x03\x10!\x05\x02@\x02@ \x04\r\x00B\x00!\x06\x0c\x01\x0b \x01\x10\x82\x80\x80\x80\x00!\x07\x02@\x02@ \x01\x10\x83\x80\x80\x80\x00\"\x01\xa7A\xff\x01q\"\x04A\x06F\r\x00\x02@ \x04A\xc0\x00G\r\x00B\x01!\x06 \x01\x10\x84\x80\x80\x80\x00!\x08\x0c\x02\x0b\x10\x99\x80\x80\x80\x00\x00\x0b \x01B\x08\x88!\x08B\x01!\x06\x0b \x07!\x01\x0b \x03 \x057\x03\x10 \x03 \x017\x03( \x03 \x007\x03  \x03 \x087\x03\x08 \x03 \x067\x03\x00 \x03 \x027\x03\x18 \x03\x10\x8b\x80\x80\x80\x00 \x03A0j$\x80\x80\x80\x80\x00B\x02\x0f\x0b\x00\x0b\t\x00\x10\x93\x80\x80\x80\x00\x00\x0b\xa1\x01\x01\x01\x7f#\x80\x80\x80\x80\x00A\x10k\"\x03$\x80\x80\x80\x80\x00\x02@ \x00B\xff\x01\x83B\xcd\x00R\r\x00 \x01B\xff\x01\x83B\x04R\r\x00 \x02B\xff\x01\x83B\x04R\r\x00A\x00-\x00\x9c\x80\xc0\x80\x00\x1a \x03A\x8e\x81\xc0\x80\x00A\n\x10\x95\x80\x80\x80\x007\x03\x00 \x03 \x00\x10\x90\x80\x80\x80\x00!\x00 \x03 \x02B\x84\x80\x80\x80p\x837\x03\x08 \x03 \x01B\x84\x80\x80\x80p\x837\x03\x00 \x00 \x03A\x02\x10\x8d\x80\x80\x80\x00\x10\x81\x80\x80\x80\x00\x1a \x03A\x10j$\x80\x80\x80\x80\x00B\x02\x0f\x0b\x00\x0b\x0b\xbf\x01\x01\x00A\x80\x80\xc0\x00\x0b\xb5\x01SpEcV1\xdbTN\xd8\x83:a\xb6SpEcV1@\x04\xf7\xe9\xd8\xae\xab\xfdSpEcV1?\x81\x12\xc9\xc6\x10e\x9fSpEcV1\x03\xf9\xd2\xa7\x88\xc4\xae\x95SpEcV16\x00I`\x18\xd4K\x1aamountto_muxed_id\x00F\x00\x10\x00\x06\x00\x00\x00L\x00\x10\x00\x0b\x00\x00\x00\x0e\xb7\xba\xe2\xb3y\xe7\x00ab\x00\x00p\x00\x10\x00\x01\x00\x00\x00q\x00\x10\x00\x01\x00\x00\x00map_valuesvec_valuessingle_valuesingle_value_void\x00\x87\'\x0econtractspecv0\x00\x00\x00\x05\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x17::test_events::Transfer\x00\x00\x00\x00\x01\x00\x00\x00\x08transfer\x00\x00\x00\x04\x00\x00\x00\x00\x00\x00\x00\x04from\x00\x00\x00\x13\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x02to\x00\x00\x00\x00\x00\x13\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x06amount\x00\x00\x00\x00\x00\x0b\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x0bto_muxed_id\x00\x00\x00\x03\xe8\x00\x00\x00\x06\x00\x00\x00\x00\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x08transfer\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00\x04from\x00\x00\x00\x13\x00\x00\x00\x00\x00\x00\x00\x02to\x00\x00\x00\x00\x00\x14\x00\x00\x00\x00\x00\x00\x00\x06amount\x00\x00\x00\x00\x00\x0b\x00\x00\x00\x00\x00\x00\x00\x05\x00\x00\x003An event whose data is a map, which is the default.\x00\x00\x00\x00\x00\x00\x00\x00\x18::test_events::MapValues\x00\x00\x00\x01\x00\x00\x00\nmap_values\x00\x00\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00\x04from\x00\x00\x00\x13\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x01a\x00\x00\x00\x00\x00\x00\x04\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x01b\x00\x00\x00\x00\x00\x00\x04\x00\x00\x00\x00\x00\x00\x00\x02\x00\x00\x00\x05\x00\x00\x000An event whose data is a vec, rather than a map.\x00\x00\x00\x00\x00\x00\x00\x18::test_events::VecValues\x00\x00\x00\x01\x00\x00\x00\nvec_values\x00\x00\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00\x04from\x00\x00\x00\x13\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x01a\x00\x00\x00\x00\x00\x00\x04\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x01b\x00\x00\x00\x00\x00\x00\x04\x00\x00\x00\x00\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\nmap_values\x00\x00\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00\x04from\x00\x00\x00\x13\x00\x00\x00\x00\x00\x00\x00\x01a\x00\x00\x00\x00\x00\x00\x04\x00\x00\x00\x00\x00\x00\x00\x01b\x00\x00\x00\x00\x00\x00\x04\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\nvec_values\x00\x00\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00\x04from\x00\x00\x00\x13\x00\x00\x00\x00\x00\x00\x00\x01a\x00\x00\x00\x00\x00\x00\x04\x00\x00\x00\x00\x00\x00\x00\x01b\x00\x00\x00\x00\x00\x00\x04\x00\x00\x00\x00\x00\x00\x00\x05\x00\x00\x009An event whose data is a single value, rather than a map.\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x1a::test_events::SingleValue\x00\x00\x00\x00\x00\x01\x00\x00\x00\x0csingle_value\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x04from\x00\x00\x00\x13\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x06amount\x00\x00\x00\x00\x00\x0b\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x0csingle_value\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x04from\x00\x00\x00\x13\x00\x00\x00\x00\x00\x00\x00\x06amount\x00\x00\x00\x00\x00\x0b\x00\x00\x00\x00\x00\x00\x00\x05\x00\x00\x00^An event whose data is a single value, and that has no data fields, and so\nwhose data is void.\x00\x00\x00\x00\x00\x00\x00\x00\x00\x1e::test_events::SingleValueVoid\x00\x00\x00\x00\x00\x01\x00\x00\x00\x11single_value_void\x00\x00\x00\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x04from\x00\x00\x00\x13\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x0ffailed_transfer\x00\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00\x04from\x00\x00\x00\x13\x00\x00\x00\x00\x00\x00\x00\x02to\x00\x00\x00\x00\x00\x13\x00\x00\x00\x00\x00\x00\x00\x06amount\x00\x00\x00\x00\x00\x0b\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x11single_value_void\x00\x00\x00\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x04from\x00\x00\x00\x13\x00\x00\x00\x00\x00\x00\x00\x02\x00\x00\x00_Contract executable used for creating a new contract and used in\n`CreateContractHostFnContext`.\x00\x00\x00\x00\x00\x00\x00\x00!::soroban_sdk::ContractExecutable\x00\x00\x00\x00\x00\x00\x02\x00\x00\x00\x01\x00\x00\x00xExecutable specified by the contract instance as a specific Wasm contract code entry identified by its Wasm sha256 hash.\x00\x00\x00\x04Wasm\x00\x00\x00\x01\x00\x00\x03\xee\x00\x00\x00 \x00\x00\x00\x01\x00\x00\x00_Executable reference via a persistent storage entry owned by this contract or another contract.\x00\x00\x00\x00\x0bExternalRef\x00\x00\x00\x00\x01\x00\x00\x07\xd0\x00\x00\x00$::soroban_sdk::ContractExecutableRef\x00\x00\x00\x01\x00\x00\x00\xc0Executable referenced via a persistent storage entry owned by a contract,\neither this contract or another contract.\n\nThe persistent storage entry owned by the `owner` has the `tag` as its key.\x00\x00\x00\x00\x00\x00\x00$::soroban_sdk::ContractExecutableRef\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x05owner\x00\x00\x00\x00\x00\x00\x13\x00\x00\x00\x00\x00\x00\x00\x03tag\x00\x00\x00\x00\x10\x00\x00\x00\x02\x00\x00\x00\xe3Context of a single authorized call performed by an address.\n\nCustom account contracts that implement `__check_auth` special function\nreceive a list of `Context` values corresponding to all the calls that\nneed to be authorized.\x00\x00\x00\x00\x00\x00\x00\x00\x1c::soroban_sdk::auth::Context\x00\x00\x00\x03\x00\x00\x00\x01\x00\x00\x00\x14Contract invocation.\x00\x00\x00\x08Contract\x00\x00\x00\x01\x00\x00\x07\xd0\x00\x00\x00$::soroban_sdk::auth::ContractContext\x00\x00\x00\x01\x00\x00\x00=Contract that has a constructor with no arguments is created.\x00\x00\x00\x00\x00\x00\x14CreateContractHostFn\x00\x00\x00\x01\x00\x00\x07\xd0\x00\x00\x000::soroban_sdk::auth::CreateContractHostFnContext\x00\x00\x00\x01\x00\x00\x00DContract that has a constructor with 1 or more arguments is created.\x00\x00\x00\x1cCreateContractWithCtorHostFn\x00\x00\x00\x01\x00\x00\x07\xd0\x00\x00\x00?::soroban_sdk::auth::CreateContractWithConstructorHostFnContext\x00\x00\x00\x00\x01\x00\x00\x00\xbdAuthorization context of a single contract call.\n\nThis struct corresponds to a `require_auth_for_args` call for an address\nfrom `contract` function with `fn_name` name and `args` arguments.\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00$::soroban_sdk::auth::ContractContext\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00\x04args\x00\x00\x03\xea\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x08contract\x00\x00\x00\x13\x00\x00\x00\x00\x00\x00\x00\x07fn_name\x00\x00\x00\x00\x11\x00\x00\x00\x01\x00\x00\x008Value of contract node in InvokerContractAuthEntry tree.\x00\x00\x00\x00\x00\x00\x00*::soroban_sdk::auth::SubContractInvocation\x00\x00\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x07context\x00\x00\x00\x07\xd0\x00\x00\x00$::soroban_sdk::auth::ContractContext\x00\x00\x00\x00\x00\x00\x00\x0fsub_invocations\x00\x00\x00\x03\xea\x00\x00\x07\xd0\x00\x00\x00-::soroban_sdk::auth::InvokerContractAuthEntry\x00\x00\x00\x00\x00\x00\x02\x00\x00\x01/A node in the tree of authorizations performed on behalf of the current\ncontract as invoker of the contracts deeper in the call stack.\n\nThis is used as an argument of `authorize_as_current_contract` host function.\n\nThis tree corresponds `require_auth[_for_args]` calls on behalf of the\ncurrent contract.\x00\x00\x00\x00\x00\x00\x00\x00-::soroban_sdk::auth::InvokerContractAuthEntry\x00\x00\x00\x00\x00\x00\x03\x00\x00\x00\x01\x00\x00\x00\x12Invoke a contract.\x00\x00\x00\x00\x00\x08Contract\x00\x00\x00\x01\x00\x00\x07\xd0\x00\x00\x00*::soroban_sdk::auth::SubContractInvocation\x00\x00\x00\x00\x00\x01\x00\x00\x005Create a contract passing 0 arguments to constructor.\x00\x00\x00\x00\x00\x00\x14CreateContractHostFn\x00\x00\x00\x01\x00\x00\x07\xd0\x00\x00\x000::soroban_sdk::auth::CreateContractHostFnContext\x00\x00\x00\x01\x00\x00\x00=Create a contract passing 0 or more arguments to constructor.\x00\x00\x00\x00\x00\x00\x1cCreateContractWithCtorHostFn\x00\x00\x00\x01\x00\x00\x07\xd0\x00\x00\x00?::soroban_sdk::auth::CreateContractWithConstructorHostFnContext\x00\x00\x00\x00\x01\x00\x00\x00vAuthorization context for `create_contract` host function that creates a\nnew contract on behalf of authorizer address.\x00\x00\x00\x00\x00\x00\x00\x00\x000::soroban_sdk::auth::CreateContractHostFnContext\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\nexecutable\x00\x00\x00\x00\x07\xd0\x00\x00\x00!::soroban_sdk::ContractExecutable\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x04salt\x00\x00\x03\xee\x00\x00\x00 \x00\x00\x00\x01\x00\x00\x00\xd6Authorization context for `create_contract` host function that creates a\nnew contract on behalf of authorizer address.\nThis is the same as `CreateContractHostFnContext`, but also has\ncontract constructor arguments.\x00\x00\x00\x00\x00\x00\x00\x00\x00?::soroban_sdk::auth::CreateContractWithConstructorHostFnContext\x00\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00\x10constructor_args\x00\x00\x03\xea\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\nexecutable\x00\x00\x00\x00\x07\xd0\x00\x00\x00!::soroban_sdk::ContractExecutable\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x04salt\x00\x00\x03\xee\x00\x00\x00 \x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\"::soroban_sdk::address::Executable\x00\x00\x00\x00\x00\x03\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x04Wasm\x00\x00\x00\x01\x00\x00\x03\xee\x00\x00\x00 \x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x0cStellarAsset\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x07Account\x00\x00\x1e\x11contractenvmetav0\x00\x00\x00\x00\x00\x00\x00\x1e\x00\x00\x00\x00\x00G\x0econtractmetav0\x00\x00\x00\x00\x00\x00\x00\x05rsver\x00\x00\x00\x00\x00\x00\x061.91.0\x00\x00\x00\x00\x00\x00\x00\x00\x00\x08rssdkver\x00\x00\x00\x0630.0.0\x00\x00";
     pub trait Contract {
         fn transfer(
             env: soroban_sdk::Env,
@@ -6634,6 +6600,13 @@ mod eventscontract {
         }
     }
     impl<'a> Client<'a> {
+        /// Call `transfer` function on the contract.
+        ///
+        /// # Panics
+        ///
+        /// Panics if the invoked contract returns an error or panics.
+        ///
+        /// Use [`Self::try_transfer`] to receive errors instead of panicking.
         pub fn transfer(
             &self,
             from: &soroban_sdk::Address,
@@ -6661,6 +6634,11 @@ mod eventscontract {
             );
             res
         }
+        /// Call `transfer` function on the contract.
+        ///
+        /// # Errors
+        ///
+        /// Returns an error if the invoked contract returns an error or panics. A panic in the invoked contract is caught and returned as an error rather than panicking the caller.
         pub fn try_transfer(
             &self,
             from: &soroban_sdk::Address,
@@ -6691,6 +6669,13 @@ mod eventscontract {
             );
             res
         }
+        /// Call `map_values` function on the contract.
+        ///
+        /// # Panics
+        ///
+        /// Panics if the invoked contract returns an error or panics.
+        ///
+        /// Use [`Self::try_map_values`] to receive errors instead of panicking.
         pub fn map_values(&self, from: &soroban_sdk::Address, a: &u32, b: &u32) -> () {
             let _call_scope =
                 soroban_sdk::testutils::ClientCallScope::enter(&self.env, self.config);
@@ -6709,6 +6694,11 @@ mod eventscontract {
             );
             res
         }
+        /// Call `map_values` function on the contract.
+        ///
+        /// # Errors
+        ///
+        /// Returns an error if the invoked contract returns an error or panics. A panic in the invoked contract is caught and returned as an error rather than panicking the caller.
         pub fn try_map_values(
             &self,
             from: &soroban_sdk::Address,
@@ -6735,6 +6725,13 @@ mod eventscontract {
             );
             res
         }
+        /// Call `vec_values` function on the contract.
+        ///
+        /// # Panics
+        ///
+        /// Panics if the invoked contract returns an error or panics.
+        ///
+        /// Use [`Self::try_vec_values`] to receive errors instead of panicking.
         pub fn vec_values(&self, from: &soroban_sdk::Address, a: &u32, b: &u32) -> () {
             let _call_scope =
                 soroban_sdk::testutils::ClientCallScope::enter(&self.env, self.config);
@@ -6753,6 +6750,11 @@ mod eventscontract {
             );
             res
         }
+        /// Call `vec_values` function on the contract.
+        ///
+        /// # Errors
+        ///
+        /// Returns an error if the invoked contract returns an error or panics. A panic in the invoked contract is caught and returned as an error rather than panicking the caller.
         pub fn try_vec_values(
             &self,
             from: &soroban_sdk::Address,
@@ -6779,6 +6781,13 @@ mod eventscontract {
             );
             res
         }
+        /// Call `single_value` function on the contract.
+        ///
+        /// # Panics
+        ///
+        /// Panics if the invoked contract returns an error or panics.
+        ///
+        /// Use [`Self::try_single_value`] to receive errors instead of panicking.
         pub fn single_value(&self, from: &soroban_sdk::Address, amount: &i128) -> () {
             let _call_scope =
                 soroban_sdk::testutils::ClientCallScope::enter(&self.env, self.config);
@@ -6793,6 +6802,11 @@ mod eventscontract {
             );
             res
         }
+        /// Call `single_value` function on the contract.
+        ///
+        /// # Errors
+        ///
+        /// Returns an error if the invoked contract returns an error or panics. A panic in the invoked contract is caught and returned as an error rather than panicking the caller.
         pub fn try_single_value(
             &self,
             from: &soroban_sdk::Address,
@@ -6814,6 +6828,13 @@ mod eventscontract {
             );
             res
         }
+        /// Call `failed_transfer` function on the contract.
+        ///
+        /// # Panics
+        ///
+        /// Panics if the invoked contract returns an error or panics.
+        ///
+        /// Use [`Self::try_failed_transfer`] to receive errors instead of panicking.
         pub fn failed_transfer(
             &self,
             from: &soroban_sdk::Address,
@@ -6837,6 +6858,11 @@ mod eventscontract {
             );
             res
         }
+        /// Call `failed_transfer` function on the contract.
+        ///
+        /// # Errors
+        ///
+        /// Returns an error if the invoked contract returns an error or panics. A panic in the invoked contract is caught and returned as an error rather than panicking the caller.
         pub fn try_failed_transfer(
             &self,
             from: &soroban_sdk::Address,
@@ -6863,6 +6889,13 @@ mod eventscontract {
             );
             res
         }
+        /// Call `single_value_void` function on the contract.
+        ///
+        /// # Panics
+        ///
+        /// Panics if the invoked contract returns an error or panics.
+        ///
+        /// Use [`Self::try_single_value_void`] to receive errors instead of panicking.
         pub fn single_value_void(&self, from: &soroban_sdk::Address) -> () {
             let _call_scope =
                 soroban_sdk::testutils::ClientCallScope::enter(&self.env, self.config);
@@ -6874,6 +6907,11 @@ mod eventscontract {
             );
             res
         }
+        /// Call `single_value_void` function on the contract.
+        ///
+        /// # Errors
+        ///
+        /// Returns an error if the invoked contract returns an error or panics. A panic in the invoked contract is caught and returned as an error rather than panicking the caller.
         pub fn try_single_value_void(
             &self,
             from: &soroban_sdk::Address,
@@ -7087,17 +7125,12 @@ mod eventscontract {
             const { ContractExecutableRef::__SPEC_XDR_ENTRY.const_to_xdr() }
         }
     }
-    impl soroban_sdk::SpecAnchor for ContractExecutableRef {
-        #[inline(never)]
-        fn spec_anchor() {}
-    }
     impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for ContractExecutableRef {
         type Error = soroban_sdk::ConversionError;
         fn try_from_val(
             env: &soroban_sdk::Env,
             val: &soroban_sdk::Val,
         ) -> Result<Self, soroban_sdk::ConversionError> {
-            <ContractExecutableRef as soroban_sdk::SpecAnchor>::spec_anchor();
             use soroban_sdk::{ConversionError, EnvBase, MapObject, TryIntoVal, Val};
             const KEYS: [&'static str; 2usize] = ["owner", "tag"];
             let mut vals: [Val; 2usize] = [Val::VOID.to_val(); 2usize];
@@ -7120,7 +7153,6 @@ mod eventscontract {
             env: &soroban_sdk::Env,
             val: &ContractExecutableRef,
         ) -> Result<Self, soroban_sdk::ConversionError> {
-            <ContractExecutableRef as soroban_sdk::SpecAnchor>::spec_anchor();
             use soroban_sdk::{ConversionError, EnvBase, TryIntoVal, Val};
             const KEYS: [&'static str; 2usize] = ["owner", "tag"];
             let vals: [Val; 2usize] = [
@@ -7644,17 +7676,12 @@ mod eventscontract {
             const { ContractContext::__SPEC_XDR_ENTRY.const_to_xdr() }
         }
     }
-    impl soroban_sdk::SpecAnchor for ContractContext {
-        #[inline(never)]
-        fn spec_anchor() {}
-    }
     impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for ContractContext {
         type Error = soroban_sdk::ConversionError;
         fn try_from_val(
             env: &soroban_sdk::Env,
             val: &soroban_sdk::Val,
         ) -> Result<Self, soroban_sdk::ConversionError> {
-            <ContractContext as soroban_sdk::SpecAnchor>::spec_anchor();
             use soroban_sdk::{ConversionError, EnvBase, MapObject, TryIntoVal, Val};
             const KEYS: [&'static str; 3usize] = ["args", "contract", "fn_name"];
             let mut vals: [Val; 3usize] = [Val::VOID.to_val(); 3usize];
@@ -7680,7 +7707,6 @@ mod eventscontract {
             env: &soroban_sdk::Env,
             val: &ContractContext,
         ) -> Result<Self, soroban_sdk::ConversionError> {
-            <ContractContext as soroban_sdk::SpecAnchor>::spec_anchor();
             use soroban_sdk::{ConversionError, EnvBase, TryIntoVal, Val};
             const KEYS: [&'static str; 3usize] = ["args", "contract", "fn_name"];
             let vals: [Val; 3usize] = [
@@ -8244,17 +8270,12 @@ mod eventscontract {
             const { SubContractInvocation::__SPEC_XDR_ENTRY.const_to_xdr() }
         }
     }
-    impl soroban_sdk::SpecAnchor for SubContractInvocation {
-        #[inline(never)]
-        fn spec_anchor() {}
-    }
     impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for SubContractInvocation {
         type Error = soroban_sdk::ConversionError;
         fn try_from_val(
             env: &soroban_sdk::Env,
             val: &soroban_sdk::Val,
         ) -> Result<Self, soroban_sdk::ConversionError> {
-            <SubContractInvocation as soroban_sdk::SpecAnchor>::spec_anchor();
             use soroban_sdk::{ConversionError, EnvBase, MapObject, TryIntoVal, Val};
             const KEYS: [&'static str; 2usize] = ["context", "sub_invocations"];
             let mut vals: [Val; 2usize] = [Val::VOID.to_val(); 2usize];
@@ -8277,7 +8298,6 @@ mod eventscontract {
             env: &soroban_sdk::Env,
             val: &SubContractInvocation,
         ) -> Result<Self, soroban_sdk::ConversionError> {
-            <SubContractInvocation as soroban_sdk::SpecAnchor>::spec_anchor();
             use soroban_sdk::{ConversionError, EnvBase, TryIntoVal, Val};
             const KEYS: [&'static str; 2usize] = ["context", "sub_invocations"];
             let vals: [Val; 2usize] = [
@@ -8784,17 +8804,12 @@ mod eventscontract {
             const { CreateContractHostFnContext::__SPEC_XDR_ENTRY.const_to_xdr() }
         }
     }
-    impl soroban_sdk::SpecAnchor for CreateContractHostFnContext {
-        #[inline(never)]
-        fn spec_anchor() {}
-    }
     impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for CreateContractHostFnContext {
         type Error = soroban_sdk::ConversionError;
         fn try_from_val(
             env: &soroban_sdk::Env,
             val: &soroban_sdk::Val,
         ) -> Result<Self, soroban_sdk::ConversionError> {
-            <CreateContractHostFnContext as soroban_sdk::SpecAnchor>::spec_anchor();
             use soroban_sdk::{ConversionError, EnvBase, MapObject, TryIntoVal, Val};
             const KEYS: [&'static str; 2usize] = ["executable", "salt"];
             let mut vals: [Val; 2usize] = [Val::VOID.to_val(); 2usize];
@@ -8817,7 +8832,6 @@ mod eventscontract {
             env: &soroban_sdk::Env,
             val: &CreateContractHostFnContext,
         ) -> Result<Self, soroban_sdk::ConversionError> {
-            <CreateContractHostFnContext as soroban_sdk::SpecAnchor>::spec_anchor();
             use soroban_sdk::{ConversionError, EnvBase, TryIntoVal, Val};
             const KEYS: [&'static str; 2usize] = ["executable", "salt"];
             let vals: [Val; 2usize] = [
@@ -9361,10 +9375,6 @@ mod eventscontract {
             const { CreateContractWithConstructorHostFnContext::__SPEC_XDR_ENTRY.const_to_xdr() }
         }
     }
-    impl soroban_sdk::SpecAnchor for CreateContractWithConstructorHostFnContext {
-        #[inline(never)]
-        fn spec_anchor() {}
-    }
     impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val>
         for CreateContractWithConstructorHostFnContext
     {
@@ -9373,7 +9383,6 @@ mod eventscontract {
             env: &soroban_sdk::Env,
             val: &soroban_sdk::Val,
         ) -> Result<Self, soroban_sdk::ConversionError> {
-            <CreateContractWithConstructorHostFnContext as soroban_sdk::SpecAnchor>::spec_anchor();
             use soroban_sdk::{ConversionError, EnvBase, MapObject, TryIntoVal, Val};
             const KEYS: [&'static str; 3usize] = ["constructor_args", "executable", "salt"];
             let mut vals: [Val; 3usize] = [Val::VOID.to_val(); 3usize];
@@ -9401,7 +9410,6 @@ mod eventscontract {
             env: &soroban_sdk::Env,
             val: &CreateContractWithConstructorHostFnContext,
         ) -> Result<Self, soroban_sdk::ConversionError> {
-            <CreateContractWithConstructorHostFnContext as soroban_sdk::SpecAnchor>::spec_anchor();
             use soroban_sdk::{ConversionError, EnvBase, TryIntoVal, Val};
             const KEYS: [&'static str; 3usize] = ["constructor_args", "executable", "salt"];
             let vals: [Val; 3usize] = [
@@ -10046,10 +10054,6 @@ mod eventscontract {
             const { ContractExecutable::__SPEC_XDR_ENTRY.const_to_xdr() }
         }
     }
-    impl soroban_sdk::SpecAnchor for ContractExecutable {
-        #[inline(never)]
-        fn spec_anchor() {}
-    }
     impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for ContractExecutable {
         type Error = soroban_sdk::ConversionError;
         #[inline(always)]
@@ -10057,7 +10061,6 @@ mod eventscontract {
             env: &soroban_sdk::Env,
             val: &soroban_sdk::Val,
         ) -> Result<Self, soroban_sdk::ConversionError> {
-            <ContractExecutable as soroban_sdk::SpecAnchor>::spec_anchor();
             use soroban_sdk::{EnvBase, TryFromVal, TryIntoVal};
             const CASES: &'static [&'static str] = &["Wasm", "ExternalRef"];
             let vec: soroban_sdk::Vec<soroban_sdk::Val> = val.try_into_val(env)?;
@@ -10103,7 +10106,6 @@ mod eventscontract {
             env: &soroban_sdk::Env,
             val: &ContractExecutable,
         ) -> Result<Self, soroban_sdk::ConversionError> {
-            <ContractExecutable as soroban_sdk::SpecAnchor>::spec_anchor();
             use soroban_sdk::{TryFromVal, TryIntoVal};
             match val {
                 ContractExecutable::Wasm(ref value0) => {
@@ -10759,10 +10761,6 @@ mod eventscontract {
             const { Context::__SPEC_XDR_ENTRY.const_to_xdr() }
         }
     }
-    impl soroban_sdk::SpecAnchor for Context {
-        #[inline(never)]
-        fn spec_anchor() {}
-    }
     impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for Context {
         type Error = soroban_sdk::ConversionError;
         #[inline(always)]
@@ -10770,7 +10768,6 @@ mod eventscontract {
             env: &soroban_sdk::Env,
             val: &soroban_sdk::Val,
         ) -> Result<Self, soroban_sdk::ConversionError> {
-            <Context as soroban_sdk::SpecAnchor>::spec_anchor();
             use soroban_sdk::{EnvBase, TryFromVal, TryIntoVal};
             const CASES: &'static [&'static str] = &[
                 "Contract",
@@ -10830,7 +10827,6 @@ mod eventscontract {
             env: &soroban_sdk::Env,
             val: &Context,
         ) -> Result<Self, soroban_sdk::ConversionError> {
-            <Context as soroban_sdk::SpecAnchor>::spec_anchor();
             use soroban_sdk::{TryFromVal, TryIntoVal};
             match val {
                 Context::Contract(ref value0) => {
@@ -11566,10 +11562,6 @@ mod eventscontract {
             const { InvokerContractAuthEntry::__SPEC_XDR_ENTRY.const_to_xdr() }
         }
     }
-    impl soroban_sdk::SpecAnchor for InvokerContractAuthEntry {
-        #[inline(never)]
-        fn spec_anchor() {}
-    }
     impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for InvokerContractAuthEntry {
         type Error = soroban_sdk::ConversionError;
         #[inline(always)]
@@ -11577,7 +11569,6 @@ mod eventscontract {
             env: &soroban_sdk::Env,
             val: &soroban_sdk::Val,
         ) -> Result<Self, soroban_sdk::ConversionError> {
-            <InvokerContractAuthEntry as soroban_sdk::SpecAnchor>::spec_anchor();
             use soroban_sdk::{EnvBase, TryFromVal, TryIntoVal};
             const CASES: &'static [&'static str] = &[
                 "Contract",
@@ -11637,7 +11628,6 @@ mod eventscontract {
             env: &soroban_sdk::Env,
             val: &InvokerContractAuthEntry,
         ) -> Result<Self, soroban_sdk::ConversionError> {
-            <InvokerContractAuthEntry as soroban_sdk::SpecAnchor>::spec_anchor();
             use soroban_sdk::{TryFromVal, TryIntoVal};
             match val {
                 InvokerContractAuthEntry::Contract(ref value0) => {
@@ -12339,10 +12329,6 @@ mod eventscontract {
             const { Executable::__SPEC_XDR_ENTRY.const_to_xdr() }
         }
     }
-    impl soroban_sdk::SpecAnchor for Executable {
-        #[inline(never)]
-        fn spec_anchor() {}
-    }
     impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for Executable {
         type Error = soroban_sdk::ConversionError;
         #[inline(always)]
@@ -12350,7 +12336,6 @@ mod eventscontract {
             env: &soroban_sdk::Env,
             val: &soroban_sdk::Val,
         ) -> Result<Self, soroban_sdk::ConversionError> {
-            <Executable as soroban_sdk::SpecAnchor>::spec_anchor();
             use soroban_sdk::{EnvBase, TryFromVal, TryIntoVal};
             const CASES: &'static [&'static str] = &["Wasm", "StellarAsset", "Account"];
             let vec: soroban_sdk::Vec<soroban_sdk::Val> = val.try_into_val(env)?;
@@ -12398,7 +12383,6 @@ mod eventscontract {
             env: &soroban_sdk::Env,
             val: &Executable,
         ) -> Result<Self, soroban_sdk::ConversionError> {
-            <Executable as soroban_sdk::SpecAnchor>::spec_anchor();
             use soroban_sdk::{TryFromVal, TryIntoVal};
             match val {
                 Executable::Wasm(ref value0) => {
@@ -13017,13 +13001,8 @@ mod eventscontract {
         #[inline(always)]
         fn spec_shaking_marker() {}
     }
-    impl soroban_sdk::SpecAnchor for Transfer {
-        #[inline(never)]
-        fn spec_anchor() {}
-    }
     impl soroban_sdk::Event for Transfer {
         fn topics(&self, env: &soroban_sdk::Env) -> soroban_sdk::Vec<soroban_sdk::Val> {
-            <Self as soroban_sdk::SpecAnchor>::spec_anchor();
             use soroban_sdk::IntoVal;
             (
                 &{
@@ -13043,7 +13022,6 @@ mod eventscontract {
                 .into_val(env)
         }
         fn data(&self, env: &soroban_sdk::Env) -> soroban_sdk::Val {
-            <Self as soroban_sdk::SpecAnchor>::spec_anchor();
             use soroban_sdk::{unwrap::UnwrapInfallible, EnvBase, IntoVal};
             const KEYS: [&'static str; 2usize] = ["amount", "to_muxed_id"];
             let vals: [soroban_sdk::Val; 2usize] =
@@ -13221,13 +13199,8 @@ mod eventscontract {
         #[inline(always)]
         fn spec_shaking_marker() {}
     }
-    impl soroban_sdk::SpecAnchor for MapValues {
-        #[inline(never)]
-        fn spec_anchor() {}
-    }
     impl soroban_sdk::Event for MapValues {
         fn topics(&self, env: &soroban_sdk::Env) -> soroban_sdk::Vec<soroban_sdk::Val> {
-            <Self as soroban_sdk::SpecAnchor>::spec_anchor();
             use soroban_sdk::IntoVal;
             (&{ soroban_sdk::Symbol::new(env, "map_values") }, {
                 let v: soroban_sdk::Val = self.from.into_val(env);
@@ -13236,7 +13209,6 @@ mod eventscontract {
                 .into_val(env)
         }
         fn data(&self, env: &soroban_sdk::Env) -> soroban_sdk::Val {
-            <Self as soroban_sdk::SpecAnchor>::spec_anchor();
             use soroban_sdk::{unwrap::UnwrapInfallible, EnvBase, IntoVal};
             const KEYS: [&'static str; 2usize] = ["a", "b"];
             let vals: [soroban_sdk::Val; 2usize] = [self.a.into_val(env), self.b.into_val(env)];
@@ -13413,13 +13385,8 @@ mod eventscontract {
         #[inline(always)]
         fn spec_shaking_marker() {}
     }
-    impl soroban_sdk::SpecAnchor for VecValues {
-        #[inline(never)]
-        fn spec_anchor() {}
-    }
     impl soroban_sdk::Event for VecValues {
         fn topics(&self, env: &soroban_sdk::Env) -> soroban_sdk::Vec<soroban_sdk::Val> {
-            <Self as soroban_sdk::SpecAnchor>::spec_anchor();
             use soroban_sdk::IntoVal;
             (&{ soroban_sdk::Symbol::new(env, "vec_values") }, {
                 let v: soroban_sdk::Val = self.from.into_val(env);
@@ -13428,7 +13395,6 @@ mod eventscontract {
                 .into_val(env)
         }
         fn data(&self, env: &soroban_sdk::Env) -> soroban_sdk::Val {
-            <Self as soroban_sdk::SpecAnchor>::spec_anchor();
             use soroban_sdk::IntoVal;
             (
                 {
@@ -13599,13 +13565,8 @@ mod eventscontract {
         #[inline(always)]
         fn spec_shaking_marker() {}
     }
-    impl soroban_sdk::SpecAnchor for SingleValue {
-        #[inline(never)]
-        fn spec_anchor() {}
-    }
     impl soroban_sdk::Event for SingleValue {
         fn topics(&self, env: &soroban_sdk::Env) -> soroban_sdk::Vec<soroban_sdk::Val> {
-            <Self as soroban_sdk::SpecAnchor>::spec_anchor();
             use soroban_sdk::IntoVal;
             (&{ soroban_sdk::Symbol::new(env, "single_value") }, {
                 let v: soroban_sdk::Val = self.from.into_val(env);
@@ -13614,7 +13575,6 @@ mod eventscontract {
                 .into_val(env)
         }
         fn data(&self, env: &soroban_sdk::Env) -> soroban_sdk::Val {
-            <Self as soroban_sdk::SpecAnchor>::spec_anchor();
             use soroban_sdk::IntoVal;
             self.amount.into_val(env)
         }
@@ -13754,13 +13714,8 @@ mod eventscontract {
         #[inline(always)]
         fn spec_shaking_marker() {}
     }
-    impl soroban_sdk::SpecAnchor for SingleValueVoid {
-        #[inline(never)]
-        fn spec_anchor() {}
-    }
     impl soroban_sdk::Event for SingleValueVoid {
         fn topics(&self, env: &soroban_sdk::Env) -> soroban_sdk::Vec<soroban_sdk::Val> {
-            <Self as soroban_sdk::SpecAnchor>::spec_anchor();
             use soroban_sdk::IntoVal;
             (&{ soroban_sdk::Symbol::new(env, "single_value_void") }, {
                 let v: soroban_sdk::Val = self.from.into_val(env);
@@ -13769,7 +13724,6 @@ mod eventscontract {
                 .into_val(env)
         }
         fn data(&self, env: &soroban_sdk::Env) -> soroban_sdk::Val {
-            <Self as soroban_sdk::SpecAnchor>::spec_anchor();
             soroban_sdk::Val::VOID.to_val()
         }
     }
@@ -13870,15 +13824,10 @@ impl soroban_sdk::SpecShakingMarker for Error {
     #[inline(always)]
     fn spec_shaking_marker() {}
 }
-impl soroban_sdk::SpecAnchor for Error {
-    #[inline(never)]
-    fn spec_anchor() {}
-}
 impl TryFrom<soroban_sdk::Error> for Error {
     type Error = soroban_sdk::Error;
     #[inline(always)]
     fn try_from(error: soroban_sdk::Error) -> Result<Self, soroban_sdk::Error> {
-        <Error as soroban_sdk::SpecAnchor>::spec_anchor();
         if error.is_type(soroban_sdk::xdr::ScErrorType::Contract) {
             let discriminant = error.get_code();
             Ok(match discriminant {
@@ -13907,7 +13856,6 @@ impl From<Error> for soroban_sdk::Error {
 impl From<&Error> for soroban_sdk::Error {
     #[inline(always)]
     fn from(val: &Error) -> soroban_sdk::Error {
-        <Error as soroban_sdk::SpecAnchor>::spec_anchor();
         match val {
             Error::Abort => soroban_sdk::Error::from_contract_error(0u32),
             Error::Overflow => soroban_sdk::Error::from_contract_error(1u32),
@@ -13918,7 +13866,6 @@ impl TryFrom<soroban_sdk::InvokeError> for Error {
     type Error = soroban_sdk::InvokeError;
     #[inline(always)]
     fn try_from(error: soroban_sdk::InvokeError) -> Result<Self, soroban_sdk::InvokeError> {
-        <Error as soroban_sdk::SpecAnchor>::spec_anchor();
         match error {
             soroban_sdk::InvokeError::Abort => Err(error),
             soroban_sdk::InvokeError::Contract(code) => Ok(match code {
@@ -13945,7 +13892,6 @@ impl From<Error> for soroban_sdk::InvokeError {
 impl From<&Error> for soroban_sdk::InvokeError {
     #[inline(always)]
     fn from(val: &Error) -> soroban_sdk::InvokeError {
-        <Error as soroban_sdk::SpecAnchor>::spec_anchor();
         match val {
             Error::Abort => soroban_sdk::InvokeError::Contract(0u32),
             Error::Overflow => soroban_sdk::InvokeError::Contract(1u32),
@@ -14266,6 +14212,13 @@ impl Contract {
     }
 }
 impl<'a> ContractClient<'a> {
+    /// Call `add_with` function on the contract.
+    ///
+    /// # Panics
+    ///
+    /// Panics if the invoked contract returns an error or panics.
+    ///
+    /// Use [`Self::try_add_with`] to receive errors instead of panicking.
     pub fn add_with(&self, contract_id: &Address, x: &u64, y: &u64) -> u64 {
         let _call_scope = soroban_sdk::testutils::ClientCallScope::enter(&self.env, self.config);
         use soroban_sdk::{FromVal, IntoVal};
@@ -14287,6 +14240,11 @@ impl<'a> ContractClient<'a> {
         );
         res
     }
+    /// Call `add_with` function on the contract.
+    ///
+    /// # Errors
+    ///
+    /// Returns an error if the invoked contract returns an error or panics. A panic in the invoked contract is caught and returned as an error rather than panicking the caller.
     pub fn try_add_with(
         &self,
         contract_id: &Address,
@@ -14316,6 +14274,13 @@ impl<'a> ContractClient<'a> {
         );
         res
     }
+    /// Call `safe_add_with` function on the contract.
+    ///
+    /// # Panics
+    ///
+    /// Panics if the invoked contract returns an error or panics.
+    ///
+    /// Use [`Self::try_safe_add_with`] to receive errors instead of panicking.
     pub fn safe_add_with(&self, contract_id: &Address, x: &u64, y: &u64) -> u64 {
         let _call_scope = soroban_sdk::testutils::ClientCallScope::enter(&self.env, self.config);
         use soroban_sdk::{FromVal, IntoVal};
@@ -14333,6 +14298,11 @@ impl<'a> ContractClient<'a> {
         );
         res
     }
+    /// Call `safe_add_with` function on the contract.
+    ///
+    /// # Errors
+    ///
+    /// Returns an error if the invoked contract returns an error or panics. A panic in the invoked contract is caught and returned as an error rather than panicking the caller.
     pub fn try_safe_add_with(
         &self,
         contract_id: &Address,
@@ -14358,6 +14328,13 @@ impl<'a> ContractClient<'a> {
         );
         res
     }
+    /// Call `safe_add_with_two` function on the contract.
+    ///
+    /// # Panics
+    ///
+    /// Panics if the invoked contract returns an error or panics.
+    ///
+    /// Use [`Self::try_safe_add_with_two`] to receive errors instead of panicking.
     pub fn safe_add_with_two(&self, contract_id: &Address, x: &u64, y: &u64) -> u64 {
         let _call_scope = soroban_sdk::testutils::ClientCallScope::enter(&self.env, self.config);
         use soroban_sdk::{FromVal, IntoVal};
@@ -14375,6 +14352,11 @@ impl<'a> ContractClient<'a> {
         );
         res
     }
+    /// Call `safe_add_with_two` function on the contract.
+    ///
+    /// # Errors
+    ///
+    /// Returns an error if the invoked contract returns an error or panics. A panic in the invoked contract is caught and returned as an error rather than panicking the caller.
     pub fn try_safe_add_with_two(
         &self,
         contract_id: &Address,

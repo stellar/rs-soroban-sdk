@@ -202,13 +202,8 @@ impl soroban_sdk::SpecShakingMarker for Transfer {
     #[inline(always)]
     fn spec_shaking_marker() {}
 }
-impl soroban_sdk::SpecAnchor for Transfer {
-    #[inline(never)]
-    fn spec_anchor() {}
-}
 impl soroban_sdk::Event for Transfer {
     fn topics(&self, env: &soroban_sdk::Env) -> soroban_sdk::Vec<soroban_sdk::Val> {
-        <Self as soroban_sdk::SpecAnchor>::spec_anchor();
         use soroban_sdk::IntoVal;
         (
             &{
@@ -228,7 +223,6 @@ impl soroban_sdk::Event for Transfer {
             .into_val(env)
     }
     fn data(&self, env: &soroban_sdk::Env) -> soroban_sdk::Val {
-        <Self as soroban_sdk::SpecAnchor>::spec_anchor();
         use soroban_sdk::{unwrap::UnwrapInfallible, EnvBase, IntoVal};
         const KEYS: [&'static str; 2usize] = ["amount", "to_muxed_id"];
         let vals: [soroban_sdk::Val; 2usize] =
@@ -317,13 +311,8 @@ impl soroban_sdk::SpecShakingMarker for SingleValue {
     #[inline(always)]
     fn spec_shaking_marker() {}
 }
-impl soroban_sdk::SpecAnchor for SingleValue {
-    #[inline(never)]
-    fn spec_anchor() {}
-}
 impl soroban_sdk::Event for SingleValue {
     fn topics(&self, env: &soroban_sdk::Env) -> soroban_sdk::Vec<soroban_sdk::Val> {
-        <Self as soroban_sdk::SpecAnchor>::spec_anchor();
         use soroban_sdk::IntoVal;
         (&{ soroban_sdk::Symbol::new(env, "single_value") }, {
             let v: soroban_sdk::Val = self.from.into_val(env);
@@ -332,7 +321,6 @@ impl soroban_sdk::Event for SingleValue {
             .into_val(env)
     }
     fn data(&self, env: &soroban_sdk::Env) -> soroban_sdk::Val {
-        <Self as soroban_sdk::SpecAnchor>::spec_anchor();
         use soroban_sdk::IntoVal;
         self.amount.into_val(env)
     }
@@ -420,13 +408,8 @@ impl soroban_sdk::SpecShakingMarker for SingleValueVoid {
     #[inline(always)]
     fn spec_shaking_marker() {}
 }
-impl soroban_sdk::SpecAnchor for SingleValueVoid {
-    #[inline(never)]
-    fn spec_anchor() {}
-}
 impl soroban_sdk::Event for SingleValueVoid {
     fn topics(&self, env: &soroban_sdk::Env) -> soroban_sdk::Vec<soroban_sdk::Val> {
-        <Self as soroban_sdk::SpecAnchor>::spec_anchor();
         use soroban_sdk::IntoVal;
         (&{ soroban_sdk::Symbol::new(env, "single_value_void") }, {
             let v: soroban_sdk::Val = self.from.into_val(env);
@@ -435,7 +418,6 @@ impl soroban_sdk::Event for SingleValueVoid {
             .into_val(env)
     }
     fn data(&self, env: &soroban_sdk::Env) -> soroban_sdk::Val {
-        <Self as soroban_sdk::SpecAnchor>::spec_anchor();
         soroban_sdk::Val::VOID.to_val()
     }
 }
@@ -525,13 +507,8 @@ impl soroban_sdk::SpecShakingMarker for VecValues {
     #[inline(always)]
     fn spec_shaking_marker() {}
 }
-impl soroban_sdk::SpecAnchor for VecValues {
-    #[inline(never)]
-    fn spec_anchor() {}
-}
 impl soroban_sdk::Event for VecValues {
     fn topics(&self, env: &soroban_sdk::Env) -> soroban_sdk::Vec<soroban_sdk::Val> {
-        <Self as soroban_sdk::SpecAnchor>::spec_anchor();
         use soroban_sdk::IntoVal;
         (&{ soroban_sdk::Symbol::new(env, "vec_values") }, {
             let v: soroban_sdk::Val = self.from.into_val(env);
@@ -540,7 +517,6 @@ impl soroban_sdk::Event for VecValues {
             .into_val(env)
     }
     fn data(&self, env: &soroban_sdk::Env) -> soroban_sdk::Val {
-        <Self as soroban_sdk::SpecAnchor>::spec_anchor();
         use soroban_sdk::IntoVal;
         (
             {
@@ -641,13 +617,8 @@ impl soroban_sdk::SpecShakingMarker for MapValues {
     #[inline(always)]
     fn spec_shaking_marker() {}
 }
-impl soroban_sdk::SpecAnchor for MapValues {
-    #[inline(never)]
-    fn spec_anchor() {}
-}
 impl soroban_sdk::Event for MapValues {
     fn topics(&self, env: &soroban_sdk::Env) -> soroban_sdk::Vec<soroban_sdk::Val> {
-        <Self as soroban_sdk::SpecAnchor>::spec_anchor();
         use soroban_sdk::IntoVal;
         (&{ soroban_sdk::Symbol::new(env, "map_values") }, {
             let v: soroban_sdk::Val = self.from.into_val(env);
@@ -656,7 +627,6 @@ impl soroban_sdk::Event for MapValues {
             .into_val(env)
     }
     fn data(&self, env: &soroban_sdk::Env) -> soroban_sdk::Val {
-        <Self as soroban_sdk::SpecAnchor>::spec_anchor();
         use soroban_sdk::{unwrap::UnwrapInfallible, EnvBase, IntoVal};
         const KEYS: [&'static str; 2usize] = ["a", "b"];
         let vals: [soroban_sdk::Val; 2usize] = [self.a.into_val(env), self.b.into_val(env)];
@@ -974,6 +944,13 @@ impl Contract {
     }
 }
 impl<'a> ContractClient<'a> {
+    /// Call `single_value` function on the contract.
+    ///
+    /// # Panics
+    ///
+    /// Panics if the invoked contract returns an error or panics.
+    ///
+    /// Use [`Self::try_single_value`] to receive errors instead of panicking.
     pub fn single_value(&self, from: &Address, amount: &i128) -> () {
         let _call_scope = soroban_sdk::testutils::ClientCallScope::enter(&self.env, self.config);
         use soroban_sdk::{FromVal, IntoVal};
@@ -987,6 +964,11 @@ impl<'a> ContractClient<'a> {
         );
         res
     }
+    /// Call `single_value` function on the contract.
+    ///
+    /// # Errors
+    ///
+    /// Returns an error if the invoked contract returns an error or panics. A panic in the invoked contract is caught and returned as an error rather than panicking the caller.
     pub fn try_single_value(
         &self,
         from: &Address,
@@ -1007,6 +989,13 @@ impl<'a> ContractClient<'a> {
         );
         res
     }
+    /// Call `single_value_void` function on the contract.
+    ///
+    /// # Panics
+    ///
+    /// Panics if the invoked contract returns an error or panics.
+    ///
+    /// Use [`Self::try_single_value_void`] to receive errors instead of panicking.
     pub fn single_value_void(&self, from: &Address) -> () {
         let _call_scope = soroban_sdk::testutils::ClientCallScope::enter(&self.env, self.config);
         use soroban_sdk::{FromVal, IntoVal};
@@ -1017,6 +1006,11 @@ impl<'a> ContractClient<'a> {
         );
         res
     }
+    /// Call `single_value_void` function on the contract.
+    ///
+    /// # Errors
+    ///
+    /// Returns an error if the invoked contract returns an error or panics. A panic in the invoked contract is caught and returned as an error rather than panicking the caller.
     pub fn try_single_value_void(
         &self,
         from: &Address,
@@ -1033,6 +1027,13 @@ impl<'a> ContractClient<'a> {
         );
         res
     }
+    /// Call `vec_values` function on the contract.
+    ///
+    /// # Panics
+    ///
+    /// Panics if the invoked contract returns an error or panics.
+    ///
+    /// Use [`Self::try_vec_values`] to receive errors instead of panicking.
     pub fn vec_values(&self, from: &Address, a: &u32, b: &u32) -> () {
         let _call_scope = soroban_sdk::testutils::ClientCallScope::enter(&self.env, self.config);
         use soroban_sdk::{FromVal, IntoVal};
@@ -1050,6 +1051,11 @@ impl<'a> ContractClient<'a> {
         );
         res
     }
+    /// Call `vec_values` function on the contract.
+    ///
+    /// # Errors
+    ///
+    /// Returns an error if the invoked contract returns an error or panics. A panic in the invoked contract is caught and returned as an error rather than panicking the caller.
     pub fn try_vec_values(
         &self,
         from: &Address,
@@ -1075,6 +1081,13 @@ impl<'a> ContractClient<'a> {
         );
         res
     }
+    /// Call `map_values` function on the contract.
+    ///
+    /// # Panics
+    ///
+    /// Panics if the invoked contract returns an error or panics.
+    ///
+    /// Use [`Self::try_map_values`] to receive errors instead of panicking.
     pub fn map_values(&self, from: &Address, a: &u32, b: &u32) -> () {
         let _call_scope = soroban_sdk::testutils::ClientCallScope::enter(&self.env, self.config);
         use soroban_sdk::{FromVal, IntoVal};
@@ -1092,6 +1105,11 @@ impl<'a> ContractClient<'a> {
         );
         res
     }
+    /// Call `map_values` function on the contract.
+    ///
+    /// # Errors
+    ///
+    /// Returns an error if the invoked contract returns an error or panics. A panic in the invoked contract is caught and returned as an error rather than panicking the caller.
     pub fn try_map_values(
         &self,
         from: &Address,
@@ -1117,6 +1135,13 @@ impl<'a> ContractClient<'a> {
         );
         res
     }
+    /// Call `transfer` function on the contract.
+    ///
+    /// # Panics
+    ///
+    /// Panics if the invoked contract returns an error or panics.
+    ///
+    /// Use [`Self::try_transfer`] to receive errors instead of panicking.
     pub fn transfer(&self, from: &Address, to: impl Into<MuxedAddress>, amount: &i128) -> () {
         let _call_scope = soroban_sdk::testutils::ClientCallScope::enter(&self.env, self.config);
         use soroban_sdk::{FromVal, IntoVal};
@@ -1138,6 +1163,11 @@ impl<'a> ContractClient<'a> {
         );
         res
     }
+    /// Call `transfer` function on the contract.
+    ///
+    /// # Errors
+    ///
+    /// Returns an error if the invoked contract returns an error or panics. A panic in the invoked contract is caught and returned as an error rather than panicking the caller.
     pub fn try_transfer(
         &self,
         from: &Address,
@@ -1167,6 +1197,13 @@ impl<'a> ContractClient<'a> {
         );
         res
     }
+    /// Call `failed_transfer` function on the contract.
+    ///
+    /// # Panics
+    ///
+    /// Panics if the invoked contract returns an error or panics.
+    ///
+    /// Use [`Self::try_failed_transfer`] to receive errors instead of panicking.
     pub fn failed_transfer(&self, from: &Address, to: &Address, amount: &i128) -> () {
         let _call_scope = soroban_sdk::testutils::ClientCallScope::enter(&self.env, self.config);
         use soroban_sdk::{FromVal, IntoVal};
@@ -1184,6 +1221,11 @@ impl<'a> ContractClient<'a> {
         );
         res
     }
+    /// Call `failed_transfer` function on the contract.
+    ///
+    /// # Errors
+    ///
+    /// Returns an error if the invoked contract returns an error or panics. A panic in the invoked contract is caught and returned as an error rather than panicking the caller.
     pub fn try_failed_transfer(
         &self,
         from: &Address,

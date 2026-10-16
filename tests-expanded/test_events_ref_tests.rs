@@ -202,13 +202,8 @@ impl<'a> soroban_sdk::SpecShakingMarker for Transfer<'a> {
     #[inline(always)]
     fn spec_shaking_marker() {}
 }
-impl<'a> soroban_sdk::SpecAnchor for Transfer<'a> {
-    #[inline(never)]
-    fn spec_anchor() {}
-}
 impl<'a> soroban_sdk::Event for Transfer<'a> {
     fn topics(&self, env: &soroban_sdk::Env) -> soroban_sdk::Vec<soroban_sdk::Val> {
-        <Self as soroban_sdk::SpecAnchor>::spec_anchor();
         use soroban_sdk::IntoVal;
         (
             &{
@@ -228,7 +223,6 @@ impl<'a> soroban_sdk::Event for Transfer<'a> {
             .into_val(env)
     }
     fn data(&self, env: &soroban_sdk::Env) -> soroban_sdk::Val {
-        <Self as soroban_sdk::SpecAnchor>::spec_anchor();
         use soroban_sdk::{unwrap::UnwrapInfallible, EnvBase, IntoVal};
         const KEYS: [&'static str; 2usize] = ["amount", "to_muxed_id"];
         let vals: [soroban_sdk::Val; 2usize] =
@@ -362,6 +356,13 @@ impl Contract {
     }
 }
 impl<'a> ContractClient<'a> {
+    /// Call `transfer` function on the contract.
+    ///
+    /// # Panics
+    ///
+    /// Panics if the invoked contract returns an error or panics.
+    ///
+    /// Use [`Self::try_transfer`] to receive errors instead of panicking.
     pub fn transfer(&self, from: &Address, to: impl Into<MuxedAddress>, amount: &i128) -> () {
         let _call_scope = soroban_sdk::testutils::ClientCallScope::enter(&self.env, self.config);
         use soroban_sdk::{FromVal, IntoVal};
@@ -383,6 +384,11 @@ impl<'a> ContractClient<'a> {
         );
         res
     }
+    /// Call `transfer` function on the contract.
+    ///
+    /// # Errors
+    ///
+    /// Returns an error if the invoked contract returns an error or panics. A panic in the invoked contract is caught and returned as an error rather than panicking the caller.
     pub fn try_transfer(
         &self,
         from: &Address,
@@ -412,6 +418,13 @@ impl<'a> ContractClient<'a> {
         );
         res
     }
+    /// Call `failed_transfer` function on the contract.
+    ///
+    /// # Panics
+    ///
+    /// Panics if the invoked contract returns an error or panics.
+    ///
+    /// Use [`Self::try_failed_transfer`] to receive errors instead of panicking.
     pub fn failed_transfer(&self, from: &Address, to: &Address, amount: &i128) -> () {
         let _call_scope = soroban_sdk::testutils::ClientCallScope::enter(&self.env, self.config);
         use soroban_sdk::{FromVal, IntoVal};
@@ -429,6 +442,11 @@ impl<'a> ContractClient<'a> {
         );
         res
     }
+    /// Call `failed_transfer` function on the contract.
+    ///
+    /// # Errors
+    ///
+    /// Returns an error if the invoked contract returns an error or panics. A panic in the invoked contract is caught and returned as an error rather than panicking the caller.
     pub fn try_failed_transfer(
         &self,
         from: &Address,

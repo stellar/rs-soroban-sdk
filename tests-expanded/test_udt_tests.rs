@@ -105,10 +105,6 @@ impl UdtEnum2 {
         const { UdtEnum2::__SPEC_XDR_ENTRY.const_to_xdr() }
     }
 }
-impl soroban_sdk::SpecAnchor for UdtEnum2 {
-    #[inline(never)]
-    fn spec_anchor() {}
-}
 impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for UdtEnum2 {
     type Error = soroban_sdk::ConversionError;
     #[inline(always)]
@@ -116,7 +112,6 @@ impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for UdtEnum2 {
         env: &soroban_sdk::Env,
         val: &soroban_sdk::Val,
     ) -> Result<Self, soroban_sdk::ConversionError> {
-        <UdtEnum2 as soroban_sdk::SpecAnchor>::spec_anchor();
         use soroban_sdk::TryIntoVal;
         let discriminant: u32 = val.try_into_val(env)?;
         Ok(match discriminant {
@@ -133,7 +128,6 @@ impl soroban_sdk::TryFromVal<soroban_sdk::Env, UdtEnum2> for soroban_sdk::Val {
         env: &soroban_sdk::Env,
         val: &UdtEnum2,
     ) -> Result<Self, soroban_sdk::ConversionError> {
-        <UdtEnum2 as soroban_sdk::SpecAnchor>::spec_anchor();
         Ok(match val {
             UdtEnum2::A => 10u32.into(),
             UdtEnum2::B => 15u32.into(),
@@ -536,10 +530,6 @@ impl UdtEnum {
         const { UdtEnum::__SPEC_XDR_ENTRY.const_to_xdr() }
     }
 }
-impl soroban_sdk::SpecAnchor for UdtEnum {
-    #[inline(never)]
-    fn spec_anchor() {}
-}
 impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for UdtEnum {
     type Error = soroban_sdk::ConversionError;
     #[inline(always)]
@@ -547,7 +537,6 @@ impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for UdtEnum {
         env: &soroban_sdk::Env,
         val: &soroban_sdk::Val,
     ) -> Result<Self, soroban_sdk::ConversionError> {
-        <UdtEnum as soroban_sdk::SpecAnchor>::spec_anchor();
         use soroban_sdk::{EnvBase, TryFromVal, TryIntoVal};
         const CASES: &'static [&'static str] = &["UdtA", "UdtB", "UdtC", "UdtD"];
         let vec: soroban_sdk::Vec<soroban_sdk::Val> = val.try_into_val(env)?;
@@ -608,7 +597,6 @@ impl soroban_sdk::TryFromVal<soroban_sdk::Env, UdtEnum> for soroban_sdk::Val {
         env: &soroban_sdk::Env,
         val: &UdtEnum,
     ) -> Result<Self, soroban_sdk::ConversionError> {
-        <UdtEnum as soroban_sdk::SpecAnchor>::spec_anchor();
         use soroban_sdk::{TryFromVal, TryIntoVal};
         match val {
             UdtEnum::UdtA => {
@@ -1198,10 +1186,6 @@ impl UdtTuple {
         const { UdtTuple::__SPEC_XDR_ENTRY.const_to_xdr() }
     }
 }
-impl soroban_sdk::SpecAnchor for UdtTuple {
-    #[inline(never)]
-    fn spec_anchor() {}
-}
 impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for UdtTuple {
     type Error = soroban_sdk::ConversionError;
     #[inline(always)]
@@ -1209,7 +1193,6 @@ impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for UdtTuple {
         env: &soroban_sdk::Env,
         val: &soroban_sdk::Val,
     ) -> Result<Self, soroban_sdk::ConversionError> {
-        <UdtTuple as soroban_sdk::SpecAnchor>::spec_anchor();
         use soroban_sdk::{ConversionError, EnvBase, TryIntoVal, Val, VecObject};
         let vec: VecObject = (*val).try_into().map_err(|_| ConversionError)?;
         let mut vals: [Val; 2usize] = [Val::VOID.to_val(); 2usize];
@@ -1228,7 +1211,6 @@ impl soroban_sdk::TryFromVal<soroban_sdk::Env, UdtTuple> for soroban_sdk::Val {
         env: &soroban_sdk::Env,
         val: &UdtTuple,
     ) -> Result<Self, soroban_sdk::ConversionError> {
-        <UdtTuple as soroban_sdk::SpecAnchor>::spec_anchor();
         use soroban_sdk::{ConversionError, EnvBase, TryIntoVal, Val};
         let vals: [Val; 2usize] = [
             (&val.0).try_into_val(env).map_err(|_| ConversionError)?,
@@ -1644,17 +1626,12 @@ impl UdtStruct {
         const { UdtStruct::__SPEC_XDR_ENTRY.const_to_xdr() }
     }
 }
-impl soroban_sdk::SpecAnchor for UdtStruct {
-    #[inline(never)]
-    fn spec_anchor() {}
-}
 impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for UdtStruct {
     type Error = soroban_sdk::ConversionError;
     fn try_from_val(
         env: &soroban_sdk::Env,
         val: &soroban_sdk::Val,
     ) -> Result<Self, soroban_sdk::ConversionError> {
-        <UdtStruct as soroban_sdk::SpecAnchor>::spec_anchor();
         use soroban_sdk::{ConversionError, EnvBase, MapObject, TryIntoVal, Val};
         const KEYS: [&'static str; 3usize] = ["a", "b", "c"];
         let mut vals: [Val; 3usize] = [Val::VOID.to_val(); 3usize];
@@ -1680,7 +1657,6 @@ impl soroban_sdk::TryFromVal<soroban_sdk::Env, UdtStruct> for soroban_sdk::Val {
         env: &soroban_sdk::Env,
         val: &UdtStruct,
     ) -> Result<Self, soroban_sdk::ConversionError> {
-        <UdtStruct as soroban_sdk::SpecAnchor>::spec_anchor();
         use soroban_sdk::{ConversionError, EnvBase, TryIntoVal, Val};
         const KEYS: [&'static str; 3usize] = ["a", "b", "c"];
         let vals: [Val; 3usize] = [
@@ -2176,17 +2152,12 @@ impl UdtRecursive {
         const { UdtRecursive::__SPEC_XDR_ENTRY.const_to_xdr() }
     }
 }
-impl soroban_sdk::SpecAnchor for UdtRecursive {
-    #[inline(never)]
-    fn spec_anchor() {}
-}
 impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for UdtRecursive {
     type Error = soroban_sdk::ConversionError;
     fn try_from_val(
         env: &soroban_sdk::Env,
         val: &soroban_sdk::Val,
     ) -> Result<Self, soroban_sdk::ConversionError> {
-        <UdtRecursive as soroban_sdk::SpecAnchor>::spec_anchor();
         use soroban_sdk::{ConversionError, EnvBase, MapObject, TryIntoVal, Val};
         const KEYS: [&'static str; 2usize] = ["a", "b"];
         let mut vals: [Val; 2usize] = [Val::VOID.to_val(); 2usize];
@@ -2209,7 +2180,6 @@ impl soroban_sdk::TryFromVal<soroban_sdk::Env, UdtRecursive> for soroban_sdk::Va
         env: &soroban_sdk::Env,
         val: &UdtRecursive,
     ) -> Result<Self, soroban_sdk::ConversionError> {
-        <UdtRecursive as soroban_sdk::SpecAnchor>::spec_anchor();
         use soroban_sdk::{ConversionError, EnvBase, TryIntoVal, Val};
         const KEYS: [&'static str; 2usize] = ["a", "b"];
         let vals: [Val; 2usize] = [
@@ -2659,17 +2629,12 @@ impl RecursiveToEnum {
         const { RecursiveToEnum::__SPEC_XDR_ENTRY.const_to_xdr() }
     }
 }
-impl soroban_sdk::SpecAnchor for RecursiveToEnum {
-    #[inline(never)]
-    fn spec_anchor() {}
-}
 impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for RecursiveToEnum {
     type Error = soroban_sdk::ConversionError;
     fn try_from_val(
         env: &soroban_sdk::Env,
         val: &soroban_sdk::Val,
     ) -> Result<Self, soroban_sdk::ConversionError> {
-        <RecursiveToEnum as soroban_sdk::SpecAnchor>::spec_anchor();
         use soroban_sdk::{ConversionError, EnvBase, MapObject, TryIntoVal, Val};
         const KEYS: [&'static str; 2usize] = ["a", "b"];
         let mut vals: [Val; 2usize] = [Val::VOID.to_val(); 2usize];
@@ -2692,7 +2657,6 @@ impl soroban_sdk::TryFromVal<soroban_sdk::Env, RecursiveToEnum> for soroban_sdk:
         env: &soroban_sdk::Env,
         val: &RecursiveToEnum,
     ) -> Result<Self, soroban_sdk::ConversionError> {
-        <RecursiveToEnum as soroban_sdk::SpecAnchor>::spec_anchor();
         use soroban_sdk::{ConversionError, EnvBase, TryIntoVal, Val};
         const KEYS: [&'static str; 2usize] = ["a", "b"];
         let vals: [Val; 2usize] = [
@@ -3165,10 +3129,6 @@ impl RecursiveEnum {
         const { RecursiveEnum::__SPEC_XDR_ENTRY.const_to_xdr() }
     }
 }
-impl soroban_sdk::SpecAnchor for RecursiveEnum {
-    #[inline(never)]
-    fn spec_anchor() {}
-}
 impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for RecursiveEnum {
     type Error = soroban_sdk::ConversionError;
     #[inline(always)]
@@ -3176,7 +3136,6 @@ impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for RecursiveEn
         env: &soroban_sdk::Env,
         val: &soroban_sdk::Val,
     ) -> Result<Self, soroban_sdk::ConversionError> {
-        <RecursiveEnum as soroban_sdk::SpecAnchor>::spec_anchor();
         use soroban_sdk::{EnvBase, TryFromVal, TryIntoVal};
         const CASES: &'static [&'static str] = &["NotRecursive", "Recursive"];
         let vec: soroban_sdk::Vec<soroban_sdk::Val> = val.try_into_val(env)?;
@@ -3217,7 +3176,6 @@ impl soroban_sdk::TryFromVal<soroban_sdk::Env, RecursiveEnum> for soroban_sdk::V
         env: &soroban_sdk::Env,
         val: &RecursiveEnum,
     ) -> Result<Self, soroban_sdk::ConversionError> {
-        <RecursiveEnum as soroban_sdk::SpecAnchor>::spec_anchor();
         use soroban_sdk::{TryFromVal, TryIntoVal};
         match val {
             RecursiveEnum::NotRecursive => {
@@ -3863,6 +3821,13 @@ impl Contract {
     }
 }
 impl<'a> ContractClient<'a> {
+    /// Call `add` function on the contract.
+    ///
+    /// # Panics
+    ///
+    /// Panics if the invoked contract returns an error or panics.
+    ///
+    /// Use [`Self::try_add`] to receive errors instead of panicking.
     pub fn add(&self, a: &UdtEnum, b: &UdtEnum) -> i64 {
         let _call_scope = soroban_sdk::testutils::ClientCallScope::enter(&self.env, self.config);
         use soroban_sdk::{FromVal, IntoVal};
@@ -3880,6 +3845,11 @@ impl<'a> ContractClient<'a> {
         );
         res
     }
+    /// Call `add` function on the contract.
+    ///
+    /// # Errors
+    ///
+    /// Returns an error if the invoked contract returns an error or panics. A panic in the invoked contract is caught and returned as an error rather than panicking the caller.
     pub fn try_add(
         &self,
         a: &UdtEnum,
@@ -3904,6 +3874,13 @@ impl<'a> ContractClient<'a> {
         );
         res
     }
+    /// Call `recursive` function on the contract.
+    ///
+    /// # Panics
+    ///
+    /// Panics if the invoked contract returns an error or panics.
+    ///
+    /// Use [`Self::try_recursive`] to receive errors instead of panicking.
     pub fn recursive(&self, a: &UdtRecursive) -> Option<UdtRecursive> {
         let _call_scope = soroban_sdk::testutils::ClientCallScope::enter(&self.env, self.config);
         use soroban_sdk::{FromVal, IntoVal};
@@ -3918,6 +3895,11 @@ impl<'a> ContractClient<'a> {
         );
         res
     }
+    /// Call `recursive` function on the contract.
+    ///
+    /// # Errors
+    ///
+    /// Returns an error if the invoked contract returns an error or panics. A panic in the invoked contract is caught and returned as an error rather than panicking the caller.
     pub fn try_recursive(
         &self,
         a: &UdtRecursive,
@@ -3943,6 +3925,13 @@ impl<'a> ContractClient<'a> {
         );
         res
     }
+    /// Call `recursive_enum` function on the contract.
+    ///
+    /// # Panics
+    ///
+    /// Panics if the invoked contract returns an error or panics.
+    ///
+    /// Use [`Self::try_recursive_enum`] to receive errors instead of panicking.
     pub fn recursive_enum(&self, a: &RecursiveEnum, key: &u32) -> Option<RecursiveEnum> {
         let _call_scope = soroban_sdk::testutils::ClientCallScope::enter(&self.env, self.config);
         use soroban_sdk::{FromVal, IntoVal};
@@ -3956,6 +3945,11 @@ impl<'a> ContractClient<'a> {
         );
         res
     }
+    /// Call `recursive_enum` function on the contract.
+    ///
+    /// # Errors
+    ///
+    /// Returns an error if the invoked contract returns an error or panics. A panic in the invoked contract is caught and returned as an error rather than panicking the caller.
     pub fn try_recursive_enum(
         &self,
         a: &RecursiveEnum,
@@ -4527,7 +4521,7 @@ mod test {
 mod test_with_wasm {
     use soroban_sdk::{symbol_short, vec, Env, Map};
     mod contract {
-        pub const WASM: &[u8] = b"\x00asm\x01\x00\x00\x00\x01N\r`\x01~\x01~`\x03~~~\x01~`\x02~~\x01~`\x04~~~~\x01~`\x02\x7f~\x00`\x02\x7f\x7f\x00`\x03~\x7f\x7f\x01~`\x02\x7f\x7f\x01\x7f`\x05~\x7f\x7f\x7f\x7f\x00`\x00\x00`\x01\x7f\x01~`\x03\x7f\x7f\x7f\x00`\x02\x7f\x7f\x01~\x02O\r\x01v\x013\x00\x00\x01v\x01h\x00\x01\x01i\x012\x00\x00\x01v\x011\x00\x02\x01i\x011\x00\x00\x01v\x018\x00\x00\x01m\x014\x00\x02\x01m\x011\x00\x02\x01v\x01g\x00\x02\x01b\x01j\x00\x02\x01m\x019\x00\x01\x01b\x01m\x00\x01\x01m\x01c\x00\x03\x03\x12\x11\x04\x05\x06\x07\x08\x04\x04\x04\x05\x02\t\x00\n\x02\x0b\x0c\t\x05\x03\x01\x00\x11\x06!\x04\x7f\x01A\x80\x80\xc0\x00\x0b\x7f\x00A\x84\x81\xc0\x00\x0b\x7f\x00A\x84\x81\xc0\x00\x0b\x7f\x00A\x90\x81\xc0\x00\x0b\x07L\x07\x06memory\x02\x00\x03add\x00\x16\trecursive\x00\x18\x0erecursive_enum\x00\x1a\x01_\x03\x01\n__data_end\x03\x02\x0b__heap_base\x03\x03\n\xaa\x1a\x11\xb6\x06\x04\x01\x7f\x01~\x02\x7f\x01~#\x80\x80\x80\x80\x00A\xc0\x00k\"\x02$\x80\x80\x80\x80\x00\x02@\x02@ \x01B\xff\x01\x83B\xcb\x00Q\r\x00 \x00A\x04:\x00\x00\x0c\x01\x0b \x01\x10\x80\x80\x80\x80\x00!\x03 \x02A\x006\x02\x10 \x02 \x017\x03\x08 \x02 \x03B \x88>\x02\x14 \x02A\x18j \x02A\x08j\x10\x8e\x80\x80\x80\x00\x02@\x02@\x02@\x02@ \x02)\x03\x18\"\x01B\x02Q\r\x00 \x01\xa7A\x01q\r\x00\x02@ \x02)\x03 \"\x01\xa7A\xff\x01q\"\x04A\xca\x00F\r\x00 \x04A\x0eG\r\x01\x0b\x02@\x02@\x02@\x02@ \x01A\x90\x80\xc0\x80\x00A\x04\x10\x8f\x80\x80\x80\x00B \x88\xa7\x0e\x04\x00\x01\x02\x03\x05\x0b \x02(\x02\x10 \x02(\x02\x14\x10\x90\x80\x80\x80\x00\r\x04A\x00!\x05\x0c\x05\x0b \x02(\x02\x10 \x02(\x02\x14\x10\x90\x80\x80\x80\x00A\x01K\r\x03 \x02A\x18j \x02A\x08j\x10\x8e\x80\x80\x80\x00 \x02)\x03\x18\"\x01B\x02Q\r\x03 \x01\xa7A\x01q\r\x03 \x02)\x03 !\x01A\x00!\x04\x02@\x03@ \x04A\x18F\r\x01 \x02A\x18j \x04jB\x027\x03\x00 \x04A\x08j!\x04\x0c\x00\x0b\x0b \x01B\xff\x01\x83B\xcc\x00R\r\x03 \x01A\xb4\x80\xc0\x80\x00A\x03 \x02A\x18jA\x03\x10\x91\x80\x80\x80\x00 \x02A0j \x02)\x03\x18\x10\x92\x80\x80\x80\x00 \x02(\x020\r\x03 \x02)\x038!\x03 \x02A0j \x02)\x03 \x10\x92\x80\x80\x80\x00 \x02(\x020\r\x03 \x02)\x03(\"\x06B\xff\x01\x83B\xcb\x00R\r\x03 \x02)\x038!\x01A\x01!\x05\x0c\x04\x0b \x02(\x02\x10 \x02(\x02\x14\x10\x90\x80\x80\x80\x00A\x01K\r\x02 \x02A\x18j \x02A\x08j\x10\x8e\x80\x80\x80\x00 \x02)\x03\x18\"\x01B\x02Q\r\x02 \x01\xa7A\x01q\r\x02 \x02)\x03 \"\x01B\xff\x01\x83B\x04R\r\x02A\nA\x0fA\t \x01B \x88\xa7\"\x04A\x0fF\x1b \x04A\nF\x1b\"\x04A\tF\r\x02A\x02!\x05\x0c\x04\x0b \x02(\x02\x10 \x02(\x02\x14\x10\x90\x80\x80\x80\x00A\x01K\r\x01 \x02A\x18j \x02A\x08j\x10\x8e\x80\x80\x80\x00 \x02)\x03\x18\"\x01B\x02Q\r\x01 \x01\xa7A\x01q\r\x01 \x02)\x03 \"\x01B\xff\x01\x83B\xcb\x00R\r\x01A\x00!\x04\x02@\x03@ \x04A\x10F\r\x01 \x02A0j \x04jB\x027\x03\x00 \x04A\x08j!\x04\x0c\x00\x0b\x0b \x01 \x02A0j\xadB \x86B\x04\x84B\x84\x80\x80\x80 \x10\x81\x80\x80\x80\x00\x1a \x02A\x18j \x02)\x030\x10\x92\x80\x80\x80\x00 \x02(\x02\x18A\x01F\r\x01 \x02)\x038\"\x01B\xff\x01\x83B\xcb\x00R\r\x01 \x02)\x03 !\x03A\x03!\x05\x0c\x02\x0b \x00A\x04:\x00\x00\x0c\x03\x0b \x00A\x04:\x00\x00\x0c\x02\x0b\x0b \x00 \x067\x03\x18 \x00 \x017\x03\x10 \x00 \x037\x03\x08 \x00 \x04:\x00\x01 \x00 \x05:\x00\x00\x0b \x02A\xc0\x00j$\x80\x80\x80\x80\x00\x0bJ\x02\x01~\x01\x7fB\x02!\x02\x02@ \x01(\x02\x08\"\x03 \x01(\x02\x0cO\r\x00 \x00 \x01)\x03\x00 \x03\xadB \x86B\x04\x84\x10\x83\x80\x80\x80\x007\x03\x08 \x01 \x03A\x01j6\x02\x08B\x00!\x02\x0b \x00 \x027\x03\x00\x0b\x1c\x00 \x00 \x01\xadB \x86B\x04\x84 \x02\xadB \x86B\x04\x84\x10\x8b\x80\x80\x80\x00\x0b\x19\x00\x02@ \x01 \x00I\r\x00 \x01 \x00k\x0f\x0b\x10\x97\x80\x80\x80\x00\x00\x0b1\x00\x02@ \x02 \x04F\r\x00\x00\x0b \x00 \x01\xadB \x86B\x04\x84 \x03\xadB \x86B\x04\x84 \x02\xadB \x86B\x04\x84\x10\x8c\x80\x80\x80\x00\x1a\x0b]\x02\x01\x7f\x01~\x02@\x02@ \x01\xa7A\xff\x01q\"\x02A\xc1\x00F\r\x00\x02@ \x02A\x07F\r\x00B\x01!\x03B\x83\x90\x80\x80\x80\x01!\x01\x0c\x02\x0b \x01B\x08\x87!\x01B\x00!\x03\x0c\x01\x0bB\x00!\x03 \x01\x10\x82\x80\x80\x80\x00!\x01\x0b \x00 \x037\x03\x00 \x00 \x017\x03\x08\x0b\xb5\x01\x02\x02\x7f\x02~#\x80\x80\x80\x80\x00A\x10k\"\x02$\x80\x80\x80\x80\x00A\x00!\x03\x02@\x03@ \x03A\x10F\r\x01 \x02 \x03jB\x027\x03\x00 \x03A\x08j!\x03\x0c\x00\x0b\x0bB\x01!\x04\x02@ \x01B\xff\x01\x83B\xcc\x00R\r\x00 \x01A\xcc\x80\xc0\x80\x00A\x02 \x02A\x02\x10\x91\x80\x80\x80\x00\x02@ \x02)\x03\x00\"\x01\xa7A\xff\x01q\"\x03A\xca\x00F\r\x00 \x03A\x0eG\r\x01\x0b \x02)\x03\x08\"\x05B\xff\x01\x83B\xcb\x00R\r\x00 \x00 \x057\x03\x10 \x00 \x017\x03\x08B\x00!\x04\x0b \x00 \x047\x03\x00 \x02A\x10j$\x80\x80\x80\x80\x00\x0b\xb5\x01\x02\x02\x7f\x02~#\x80\x80\x80\x80\x00A\x10k\"\x02$\x80\x80\x80\x80\x00A\x00!\x03\x02@\x03@ \x03A\x10F\r\x01 \x02 \x03jB\x027\x03\x00 \x03A\x08j!\x03\x0c\x00\x0b\x0bB\x01!\x04\x02@ \x01B\xff\x01\x83B\xcc\x00R\r\x00 \x01A\xcc\x80\xc0\x80\x00A\x02 \x02A\x02\x10\x91\x80\x80\x80\x00\x02@ \x02)\x03\x00\"\x01\xa7A\xff\x01q\"\x03A\xca\x00F\r\x00 \x03A\x0eG\r\x01\x0b \x02)\x03\x08\"\x05B\xff\x01\x83B\xcc\x00R\r\x00 \x00 \x057\x03\x10 \x00 \x017\x03\x08B\x00!\x04\x0b \x00 \x047\x03\x00 \x02A\x10j$\x80\x80\x80\x80\x00\x0bx\x03\x01\x7f\x01~\x01\x7f#\x80\x80\x80\x80\x00A\x10k\"\x02$\x80\x80\x80\x80\x00B\x02!\x03\x02@ \x01(\x02\x08\"\x04 \x01(\x02\x0cO\r\x00 \x02 \x01)\x03\x00 \x04\xadB \x86B\x04\x84\x10\x83\x80\x80\x80\x00\x10\x92\x80\x80\x80\x00 \x02)\x03\x00!\x03 \x00 \x02)\x03\x087\x03\x08 \x01 \x04A\x01j6\x02\x08\x0b \x00 \x037\x03\x00 \x02A\x10j$\x80\x80\x80\x80\x00\x0b\xb7\x04\x04\x02\x7f\x02~\x01\x7f\x05~#\x80\x80\x80\x80\x00A0k\"\x02$\x80\x80\x80\x80\x00 \x02 \x00\x10\x8d\x80\x80\x80\x00\x02@\x02@\x02@ \x02-\x00\x00\"\x03A\x04F\r\x00 \x02)\x03\x10!\x00 \x02)\x03\x08!\x04 \x021\x00\x01!\x05 \x02 \x01\x10\x8d\x80\x80\x80\x00 \x02-\x00\x00\"\x06A\x04F\r\x00 \x02)\x03\x10!\x07 \x02)\x03\x08!\x08 \x021\x00\x01!\tB\x00!\nB\x00!\x0b\x02@\x02@\x02@\x02@ \x03\x0e\x04\x05\x02\x01\x00\x05\x0b \x00\x10\x80\x80\x80\x80\x00!\x01 \x02A\x006\x02( \x02 \x007\x03  \x02 \x01B \x88>\x02,B\x00!\x00\x03@ \x02 \x02A j\x10\x95\x80\x80\x80\x00 \x02)\x03\x00\"\x01B\x02Q\r\x03 \x01\xa7A\x01q\r\x06 \x02)\x03\x08\"\x01B\x00S \x00 \x01|\"\x01 \x00SG\r\x06 \x01!\x00\x0c\x00\x0b\x0b \x05!\x0b\x0c\x03\x0b \x00B\x00S \x04 \x00|\"\x0b \x04SsE\r\x02\x0c\x03\x0b \x00B\x00S \x04 \x00|\"\x0b \x04SsE\r\x01\x0c\x02\x0b\x00\x0b\x02@\x02@\x02@\x02@\x02@ \x06\x0e\x04\x04\x02\x01\x00\x04\x0b \x07\x10\x80\x80\x80\x80\x00!\x00 \x02A\x006\x02( \x02 \x077\x03  \x02 \x00B \x88>\x02,B\x00!\x00\x03@ \x02 \x02A j\x10\x95\x80\x80\x80\x00 \x02)\x03\x00\"\x01B\x02Q\r\x03 \x01\xa7A\x01q\r\x05 \x02)\x03\x08\"\x01B\x00S \x00 \x01|\"\x01 \x00SG\r\x05 \x01!\x00\x0c\x00\x0b\x0b \t!\n\x0c\x02\x0b \x07B\x00S \x08 \x07|\"\n \x08Ss\r\x02\x0c\x01\x0b \x00B\x00S \x08 \x00|\"\n \x08Ss\r\x01\x0b \nB\x00S \x0b \n|\"\x00 \x0bSs\r\x00\x02@\x02@ \x00B\x80\x80\x80\x80\x80\x80\x80\xc0\x00|B\xff\xff\xff\xff\xff\xff\xff\xff\x00V\r\x00 \x00B\x08\x86B\x07\x84!\x00\x0c\x01\x0b \x00\x10\x84\x80\x80\x80\x00!\x00\x0b \x02A0j$\x80\x80\x80\x80\x00 \x00\x0f\x0b\x10\x97\x80\x80\x80\x00\x00\x0b\t\x00\x10\x9d\x80\x80\x80\x00\x00\x0b\x9f\x01\x02\x01\x7f\x01~#\x80\x80\x80\x80\x00A k\"\x01$\x80\x80\x80\x80\x00 \x01A\x08j \x00\x10\x93\x80\x80\x80\x00\x02@ \x01(\x02\x08A\x01F\r\x00B\x02!\x00\x02@ \x01)\x03\x18\"\x02\x10\x80\x80\x80\x80\x00B\x80\x80\x80\x80\x10T\r\x00 \x01A\x08j \x02\x10\x85\x80\x80\x80\x00\x10\x93\x80\x80\x80\x00 \x01(\x02\x08A\x01F\r\x01 \x01)\x03\x10!\x00 \x01 \x01)\x03\x187\x03\x10 \x01 \x007\x03\x08 \x01A\x08j\x10\x99\x80\x80\x80\x00!\x00\x0b \x01A j$\x80\x80\x80\x80\x00 \x00\x0f\x0b\x00\x0b$\x00A\xcc\x80\xc0\x80\x00\xadB \x86B\x04\x84 \x00\xadB \x86B\x04\x84B\x84\x80\x80\x80 \x10\x8a\x80\x80\x80\x00\x0b\xf6\x05\x03\x01\x7f\x01~\x01\x7f#\x80\x80\x80\x80\x00A\xc0\x00k\"\x02$\x80\x80\x80\x80\x00\x02@ \x00B\xff\x01\x83B\xcb\x00R\r\x00 \x00\x10\x80\x80\x80\x80\x00!\x03 \x02A\x006\x02\x10 \x02 \x007\x03\x08 \x02 \x03B \x88>\x02\x14 \x02A\x18j \x02A\x08j\x10\x8e\x80\x80\x80\x00 \x02)\x03\x18\"\x00B\x02Q\r\x00 \x00\xa7A\x01q\r\x00\x02@ \x02)\x03 \"\x00\xa7A\xff\x01q\"\x04A\xca\x00F\r\x00 \x04A\x0eG\r\x01\x0b\x02@\x02@\x02@\x02@\x02@\x02@ \x00A\xf4\x80\xc0\x80\x00A\x02\x10\x8f\x80\x80\x80\x00B \x88\xa7\x0e\x02\x01\x00\x06\x0b \x02(\x02\x10 \x02(\x02\x14\x10\x90\x80\x80\x80\x00A\x01K\r\x05 \x02A0j \x02A\x08j\x10\x8e\x80\x80\x80\x00 \x02)\x030\"\x00B\x02Q\r\x05 \x00\xa7A\x01q\r\x05 \x02A\x18j \x02)\x038\x10\x94\x80\x80\x80\x00 \x02(\x02\x18A\x01F\r\x05 \x01B\xff\x01\x83B\x04R\r\x05 \x02)\x03(\"\x00 \x01B\x84\x80\x80\x80p\x83\"\x01\x10\x86\x80\x80\x80\x00B\x01R\r\x01 \x00 \x01\x10\x87\x80\x80\x80\x00\"\x00B\xff\x01\x83B\xcb\x00R\r\x05 \x00\x10\x80\x80\x80\x80\x00!\x01 \x02A\x006\x02\x10 \x02 \x007\x03\x08 \x02 \x01B \x88>\x02\x14 \x02A\x18j \x02A\x08j\x10\x8e\x80\x80\x80\x00 \x02)\x03\x18\"\x00B\x02Q\r\x05 \x00\xa7A\x01q\r\x05\x02@ \x02)\x03 \"\x00\xa7A\xff\x01q\"\x04A\xca\x00F\r\x00 \x04A\x0eG\r\x06\x0b \x00A\xf4\x80\xc0\x80\x00A\x02\x10\x8f\x80\x80\x80\x00B \x88\xa7\x0e\x02\x03\x02\x05\x0b \x02(\x02\x10 \x02(\x02\x14\x10\x90\x80\x80\x80\x00\r\x04 \x01B\xff\x01\x83B\x04R\r\x04\x0bB\x02!\x00\x0c\x02\x0b \x02(\x02\x10 \x02(\x02\x14\x10\x90\x80\x80\x80\x00A\x01K\r\x02 \x02A0j \x02A\x08j\x10\x8e\x80\x80\x80\x00 \x02)\x030\"\x00B\x02Q\r\x02 \x00\xa7A\x01q\r\x02 \x02A\x18j \x02)\x038\x10\x94\x80\x80\x80\x00 \x02(\x02\x18A\x01F\r\x02 \x02)\x03(!\x00 \x02)\x03 !\x01 \x02A\x18jA\xe8\x80\xc0\x80\x00A\t\x10\x9b\x80\x80\x80\x00 \x02(\x02\x18\r\x02 \x02)\x03 !\x03 \x02 \x007\x03  \x02 \x017\x03\x18 \x02 \x02A\x18j\x10\x99\x80\x80\x80\x007\x03  \x02 \x037\x03\x18 \x02A\x18jA\x02\x10\x9c\x80\x80\x80\x00!\x00\x0c\x01\x0b \x02(\x02\x10 \x02(\x02\x14\x10\x90\x80\x80\x80\x00\r\x01 \x02A\x18jA\xdc\x80\xc0\x80\x00A\x0c\x10\x9b\x80\x80\x80\x00 \x02(\x02\x18\r\x01 \x02 \x02)\x03 7\x03\x18 \x02A\x18jA\x01\x10\x9c\x80\x80\x80\x00!\x00\x0b \x02A\xc0\x00j$\x80\x80\x80\x80\x00 \x00\x0f\x0b\x00\x0b\xd6\x01\x02\x01~\x03\x7f\x02@\x02@ \x02A\tK\r\x00B\x00!\x03A\x00!\x04\x03@\x02@ \x04A\tG\r\x00 \x03B\x08\x86B\x0e\x84!\x03\x0c\x03\x0bA\x01!\x05\x02@ \x01 \x04j-\x00\x00\"\x06A\xdf\x00F\r\x00\x02@\x02@ \x06APjA\xff\x01qA\nI\r\x00 \x06A\xbf\x7fjA\xff\x01qA\x1aI\r\x01 \x06A\x9f\x7fjA\xff\x01qA\x1aO\r\x04 \x06AEj!\x05\x0c\x02\x0b \x06ARj!\x05\x0c\x01\x0b \x06AKj!\x05\x0b \x03B\x06\x86 \x05\xadB\xff\x01\x83\x84!\x03 \x04A\x01j!\x04\x0c\x00\x0b\x0b \x01\xadB \x86B\x04\x84 \x02\xadB \x86B\x04\x84\x10\x89\x80\x80\x80\x00!\x03\x0b \x00B\x007\x03\x00 \x00 \x037\x03\x08\x0b\x1a\x00 \x00\xadB \x86B\x04\x84 \x01\xadB \x86B\x04\x84\x10\x88\x80\x80\x80\x00\x0b\x03\x00\x00\x0b\x0b\x8e\x01\x01\x00A\x80\x80\xc0\x00\x0b\x84\x01UdtAUdtBUdtCUdtD\x00\x00\x10\x00\x04\x00\x00\x00\x04\x00\x10\x00\x04\x00\x00\x00\x08\x00\x10\x00\x04\x00\x00\x00\x0c\x00\x10\x00\x04\x00\x00\x00abc\x000\x00\x10\x00\x01\x00\x00\x001\x00\x10\x00\x01\x00\x00\x002\x00\x10\x00\x01\x00\x00\x000\x00\x10\x00\x01\x00\x00\x001\x00\x10\x00\x01\x00\x00\x00NotRecursiveRecursive\x00\x00\x00\\\x00\x10\x00\x0c\x00\x00\x00h\x00\x10\x00\t\x00\x00\x00\x00\xe3%\x0econtractspecv0\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x03add\x00\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x01a\x00\x00\x00\x00\x00\x07\xd0\x00\x00\x00\x13::test_udt::UdtEnum\x00\x00\x00\x00\x00\x00\x00\x00\x01b\x00\x00\x00\x00\x00\x07\xd0\x00\x00\x00\x13::test_udt::UdtEnum\x00\x00\x00\x00\x01\x00\x00\x00\x07\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x13::test_udt::UdtEnum\x00\x00\x00\x00\x04\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x04UdtA\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x04UdtB\x00\x00\x00\x01\x00\x00\x07\xd0\x00\x00\x00\x15::test_udt::UdtStruct\x00\x00\x00\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x04UdtC\x00\x00\x00\x01\x00\x00\x07\xd0\x00\x00\x00\x14::test_udt::UdtEnum2\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x04UdtD\x00\x00\x00\x01\x00\x00\x07\xd0\x00\x00\x00\x14::test_udt::UdtTuple\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x14::test_udt::UdtEnum2\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x01A\x00\x00\x00\x00\x00\x00\n\x00\x00\x00\x00\x00\x00\x00\x01B\x00\x00\x00\x00\x00\x00\x0f\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x14::test_udt::UdtTuple\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x010\x00\x00\x00\x00\x00\x00\x07\x00\x00\x00\x00\x00\x00\x00\x011\x00\x00\x00\x00\x00\x03\xea\x00\x00\x00\x07\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x15::test_udt::UdtStruct\x00\x00\x00\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00\x01a\x00\x00\x00\x00\x00\x00\x07\x00\x00\x00\x00\x00\x00\x00\x01b\x00\x00\x00\x00\x00\x00\x07\x00\x00\x00\x00\x00\x00\x00\x01c\x00\x00\x00\x00\x00\x03\xea\x00\x00\x00\x07\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\trecursive\x00\x00\x00\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x01a\x00\x00\x00\x00\x00\x07\xd0\x00\x00\x00\x18::test_udt::UdtRecursive\x00\x00\x00\x01\x00\x00\x03\xe8\x00\x00\x07\xd0\x00\x00\x00\x18::test_udt::UdtRecursive\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x18::test_udt::UdtRecursive\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x01a\x00\x00\x00\x00\x00\x00\x11\x00\x00\x00\x00\x00\x00\x00\x01b\x00\x00\x00\x00\x00\x03\xea\x00\x00\x07\xd0\x00\x00\x00\x18::test_udt::UdtRecursive\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x19::test_udt::RecursiveEnum\x00\x00\x00\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x0cNotRecursive\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\tRecursive\x00\x00\x00\x00\x00\x00\x01\x00\x00\x07\xd0\x00\x00\x00\x1b::test_udt::RecursiveToEnum\x00\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x1b::test_udt::RecursiveToEnum\x00\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x01a\x00\x00\x00\x00\x00\x00\x11\x00\x00\x00\x00\x00\x00\x00\x01b\x00\x00\x00\x00\x00\x03\xec\x00\x00\x00\x04\x00\x00\x07\xd0\x00\x00\x00\x19::test_udt::RecursiveEnum\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x0erecursive_enum\x00\x00\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x01a\x00\x00\x00\x00\x00\x07\xd0\x00\x00\x00\x19::test_udt::RecursiveEnum\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x03key\x00\x00\x00\x00\x04\x00\x00\x00\x01\x00\x00\x03\xe9\x00\x00\x03\xe8\x00\x00\x07\xd0\x00\x00\x00\x19::test_udt::RecursiveEnum\x00\x00\x00\x00\x00\x00\x03\x00\x00\x00\x02\x00\x00\x00_Contract executable used for creating a new contract and used in\n`CreateContractHostFnContext`.\x00\x00\x00\x00\x00\x00\x00\x00!::soroban_sdk::ContractExecutable\x00\x00\x00\x00\x00\x00\x02\x00\x00\x00\x01\x00\x00\x00xExecutable specified by the contract instance as a specific Wasm contract code entry identified by its Wasm sha256 hash.\x00\x00\x00\x04Wasm\x00\x00\x00\x01\x00\x00\x03\xee\x00\x00\x00 \x00\x00\x00\x01\x00\x00\x00_Executable reference via a persistent storage entry owned by this contract or another contract.\x00\x00\x00\x00\x0bExternalRef\x00\x00\x00\x00\x01\x00\x00\x07\xd0\x00\x00\x00$::soroban_sdk::ContractExecutableRef\x00\x00\x00\x01\x00\x00\x00\xc0Executable referenced via a persistent storage entry owned by a contract,\neither this contract or another contract.\n\nThe persistent storage entry owned by the `owner` has the `tag` as its key.\x00\x00\x00\x00\x00\x00\x00$::soroban_sdk::ContractExecutableRef\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x05owner\x00\x00\x00\x00\x00\x00\x13\x00\x00\x00\x00\x00\x00\x00\x03tag\x00\x00\x00\x00\x10\x00\x00\x00\x02\x00\x00\x00\xe3Context of a single authorized call performed by an address.\n\nCustom account contracts that implement `__check_auth` special function\nreceive a list of `Context` values corresponding to all the calls that\nneed to be authorized.\x00\x00\x00\x00\x00\x00\x00\x00\x1c::soroban_sdk::auth::Context\x00\x00\x00\x03\x00\x00\x00\x01\x00\x00\x00\x14Contract invocation.\x00\x00\x00\x08Contract\x00\x00\x00\x01\x00\x00\x07\xd0\x00\x00\x00$::soroban_sdk::auth::ContractContext\x00\x00\x00\x01\x00\x00\x00=Contract that has a constructor with no arguments is created.\x00\x00\x00\x00\x00\x00\x14CreateContractHostFn\x00\x00\x00\x01\x00\x00\x07\xd0\x00\x00\x000::soroban_sdk::auth::CreateContractHostFnContext\x00\x00\x00\x01\x00\x00\x00DContract that has a constructor with 1 or more arguments is created.\x00\x00\x00\x1cCreateContractWithCtorHostFn\x00\x00\x00\x01\x00\x00\x07\xd0\x00\x00\x00?::soroban_sdk::auth::CreateContractWithConstructorHostFnContext\x00\x00\x00\x00\x01\x00\x00\x00\xbdAuthorization context of a single contract call.\n\nThis struct corresponds to a `require_auth_for_args` call for an address\nfrom `contract` function with `fn_name` name and `args` arguments.\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00$::soroban_sdk::auth::ContractContext\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00\x04args\x00\x00\x03\xea\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x08contract\x00\x00\x00\x13\x00\x00\x00\x00\x00\x00\x00\x07fn_name\x00\x00\x00\x00\x11\x00\x00\x00\x01\x00\x00\x008Value of contract node in InvokerContractAuthEntry tree.\x00\x00\x00\x00\x00\x00\x00*::soroban_sdk::auth::SubContractInvocation\x00\x00\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x07context\x00\x00\x00\x07\xd0\x00\x00\x00$::soroban_sdk::auth::ContractContext\x00\x00\x00\x00\x00\x00\x00\x0fsub_invocations\x00\x00\x00\x03\xea\x00\x00\x07\xd0\x00\x00\x00-::soroban_sdk::auth::InvokerContractAuthEntry\x00\x00\x00\x00\x00\x00\x02\x00\x00\x01/A node in the tree of authorizations performed on behalf of the current\ncontract as invoker of the contracts deeper in the call stack.\n\nThis is used as an argument of `authorize_as_current_contract` host function.\n\nThis tree corresponds `require_auth[_for_args]` calls on behalf of the\ncurrent contract.\x00\x00\x00\x00\x00\x00\x00\x00-::soroban_sdk::auth::InvokerContractAuthEntry\x00\x00\x00\x00\x00\x00\x03\x00\x00\x00\x01\x00\x00\x00\x12Invoke a contract.\x00\x00\x00\x00\x00\x08Contract\x00\x00\x00\x01\x00\x00\x07\xd0\x00\x00\x00*::soroban_sdk::auth::SubContractInvocation\x00\x00\x00\x00\x00\x01\x00\x00\x005Create a contract passing 0 arguments to constructor.\x00\x00\x00\x00\x00\x00\x14CreateContractHostFn\x00\x00\x00\x01\x00\x00\x07\xd0\x00\x00\x000::soroban_sdk::auth::CreateContractHostFnContext\x00\x00\x00\x01\x00\x00\x00=Create a contract passing 0 or more arguments to constructor.\x00\x00\x00\x00\x00\x00\x1cCreateContractWithCtorHostFn\x00\x00\x00\x01\x00\x00\x07\xd0\x00\x00\x00?::soroban_sdk::auth::CreateContractWithConstructorHostFnContext\x00\x00\x00\x00\x01\x00\x00\x00vAuthorization context for `create_contract` host function that creates a\nnew contract on behalf of authorizer address.\x00\x00\x00\x00\x00\x00\x00\x00\x000::soroban_sdk::auth::CreateContractHostFnContext\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\nexecutable\x00\x00\x00\x00\x07\xd0\x00\x00\x00!::soroban_sdk::ContractExecutable\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x04salt\x00\x00\x03\xee\x00\x00\x00 \x00\x00\x00\x01\x00\x00\x00\xd6Authorization context for `create_contract` host function that creates a\nnew contract on behalf of authorizer address.\nThis is the same as `CreateContractHostFnContext`, but also has\ncontract constructor arguments.\x00\x00\x00\x00\x00\x00\x00\x00\x00?::soroban_sdk::auth::CreateContractWithConstructorHostFnContext\x00\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00\x10constructor_args\x00\x00\x03\xea\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\nexecutable\x00\x00\x00\x00\x07\xd0\x00\x00\x00!::soroban_sdk::ContractExecutable\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x04salt\x00\x00\x03\xee\x00\x00\x00 \x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\"::soroban_sdk::address::Executable\x00\x00\x00\x00\x00\x03\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x04Wasm\x00\x00\x00\x01\x00\x00\x03\xee\x00\x00\x00 \x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x0cStellarAsset\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x07Account\x00\x00\x1e\x11contractenvmetav0\x00\x00\x00\x00\x00\x00\x00\x1d\x00\x00\x00\x00\x00G\x0econtractmetav0\x00\x00\x00\x00\x00\x00\x00\x05rsver\x00\x00\x00\x00\x00\x00\x061.91.0\x00\x00\x00\x00\x00\x00\x00\x00\x00\x08rssdkver\x00\x00\x00\x0630.0.0\x00\x00";
+        pub const WASM: &[u8] = b"\x00asm\x01\x00\x00\x00\x01N\r`\x01~\x01~`\x03~~~\x01~`\x02~~\x01~`\x04~~~~\x01~`\x02\x7f~\x00`\x02\x7f\x7f\x00`\x03~\x7f\x7f\x01~`\x02\x7f\x7f\x01\x7f`\x05~\x7f\x7f\x7f\x7f\x00`\x00\x00`\x01\x7f\x01~`\x03\x7f\x7f\x7f\x00`\x02\x7f\x7f\x01~\x02O\r\x01v\x013\x00\x00\x01v\x01h\x00\x01\x01i\x012\x00\x00\x01v\x011\x00\x02\x01i\x011\x00\x00\x01v\x018\x00\x00\x01m\x014\x00\x02\x01m\x011\x00\x02\x01v\x01g\x00\x02\x01b\x01j\x00\x02\x01m\x019\x00\x01\x01b\x01m\x00\x01\x01m\x01c\x00\x03\x03\x12\x11\x04\x05\x06\x07\x08\x04\x04\x04\x05\x02\t\x00\n\x02\x0b\x0c\t\x05\x03\x01\x00\x11\x06!\x04\x7f\x01A\x80\x80\xc0\x00\x0b\x7f\x00A\x84\x81\xc0\x00\x0b\x7f\x00A\x84\x81\xc0\x00\x0b\x7f\x00A\x90\x81\xc0\x00\x0b\x07L\x07\x06memory\x02\x00\x03add\x00\x16\trecursive\x00\x18\x0erecursive_enum\x00\x1a\x01_\x03\x01\n__data_end\x03\x02\x0b__heap_base\x03\x03\n\xaa\x1a\x11\xb6\x06\x04\x01\x7f\x01~\x02\x7f\x01~#\x80\x80\x80\x80\x00A\xc0\x00k\"\x02$\x80\x80\x80\x80\x00\x02@\x02@ \x01B\xff\x01\x83B\xcb\x00Q\r\x00 \x00A\x04:\x00\x00\x0c\x01\x0b \x01\x10\x80\x80\x80\x80\x00!\x03 \x02A\x006\x02\x10 \x02 \x017\x03\x08 \x02 \x03B \x88>\x02\x14 \x02A\x18j \x02A\x08j\x10\x8e\x80\x80\x80\x00\x02@\x02@\x02@\x02@ \x02)\x03\x18\"\x01B\x02Q\r\x00 \x01\xa7A\x01q\r\x00\x02@ \x02)\x03 \"\x01\xa7A\xff\x01q\"\x04A\xca\x00F\r\x00 \x04A\x0eG\r\x01\x0b\x02@\x02@\x02@\x02@ \x01A\x90\x80\xc0\x80\x00A\x04\x10\x8f\x80\x80\x80\x00B \x88\xa7\x0e\x04\x00\x01\x02\x03\x05\x0b \x02(\x02\x10 \x02(\x02\x14\x10\x90\x80\x80\x80\x00\r\x04A\x00!\x05\x0c\x05\x0b \x02(\x02\x10 \x02(\x02\x14\x10\x90\x80\x80\x80\x00A\x01K\r\x03 \x02A\x18j \x02A\x08j\x10\x8e\x80\x80\x80\x00 \x02)\x03\x18\"\x01B\x02Q\r\x03 \x01\xa7A\x01q\r\x03 \x02)\x03 !\x01A\x00!\x04\x02@\x03@ \x04A\x18F\r\x01 \x02A\x18j \x04jB\x027\x03\x00 \x04A\x08j!\x04\x0c\x00\x0b\x0b \x01B\xff\x01\x83B\xcc\x00R\r\x03 \x01A\xb4\x80\xc0\x80\x00A\x03 \x02A\x18jA\x03\x10\x91\x80\x80\x80\x00 \x02A0j \x02)\x03\x18\x10\x92\x80\x80\x80\x00 \x02(\x020\r\x03 \x02)\x038!\x03 \x02A0j \x02)\x03 \x10\x92\x80\x80\x80\x00 \x02(\x020\r\x03 \x02)\x03(\"\x06B\xff\x01\x83B\xcb\x00R\r\x03 \x02)\x038!\x01A\x01!\x05\x0c\x04\x0b \x02(\x02\x10 \x02(\x02\x14\x10\x90\x80\x80\x80\x00A\x01K\r\x02 \x02A\x18j \x02A\x08j\x10\x8e\x80\x80\x80\x00 \x02)\x03\x18\"\x01B\x02Q\r\x02 \x01\xa7A\x01q\r\x02 \x02)\x03 \"\x01B\xff\x01\x83B\x04R\r\x02A\nA\x0fA\t \x01B \x88\xa7\"\x04A\x0fF\x1b \x04A\nF\x1b\"\x04A\tF\r\x02A\x02!\x05\x0c\x04\x0b \x02(\x02\x10 \x02(\x02\x14\x10\x90\x80\x80\x80\x00A\x01K\r\x01 \x02A\x18j \x02A\x08j\x10\x8e\x80\x80\x80\x00 \x02)\x03\x18\"\x01B\x02Q\r\x01 \x01\xa7A\x01q\r\x01 \x02)\x03 \"\x01B\xff\x01\x83B\xcb\x00R\r\x01A\x00!\x04\x02@\x03@ \x04A\x10F\r\x01 \x02A0j \x04jB\x027\x03\x00 \x04A\x08j!\x04\x0c\x00\x0b\x0b \x01 \x02A0j\xadB \x86B\x04\x84B\x84\x80\x80\x80 \x10\x81\x80\x80\x80\x00\x1a \x02A\x18j \x02)\x030\x10\x92\x80\x80\x80\x00 \x02(\x02\x18A\x01F\r\x01 \x02)\x038\"\x01B\xff\x01\x83B\xcb\x00R\r\x01 \x02)\x03 !\x03A\x03!\x05\x0c\x02\x0b \x00A\x04:\x00\x00\x0c\x03\x0b \x00A\x04:\x00\x00\x0c\x02\x0b\x0b \x00 \x067\x03\x18 \x00 \x017\x03\x10 \x00 \x037\x03\x08 \x00 \x04:\x00\x01 \x00 \x05:\x00\x00\x0b \x02A\xc0\x00j$\x80\x80\x80\x80\x00\x0bJ\x02\x01~\x01\x7fB\x02!\x02\x02@ \x01(\x02\x08\"\x03 \x01(\x02\x0cO\r\x00 \x00 \x01)\x03\x00 \x03\xadB \x86B\x04\x84\x10\x83\x80\x80\x80\x007\x03\x08 \x01 \x03A\x01j6\x02\x08B\x00!\x02\x0b \x00 \x027\x03\x00\x0b\x1c\x00 \x00 \x01\xadB \x86B\x04\x84 \x02\xadB \x86B\x04\x84\x10\x8b\x80\x80\x80\x00\x0b\x19\x00\x02@ \x01 \x00I\r\x00 \x01 \x00k\x0f\x0b\x10\x97\x80\x80\x80\x00\x00\x0b1\x00\x02@ \x02 \x04F\r\x00\x00\x0b \x00 \x01\xadB \x86B\x04\x84 \x03\xadB \x86B\x04\x84 \x02\xadB \x86B\x04\x84\x10\x8c\x80\x80\x80\x00\x1a\x0b]\x02\x01\x7f\x01~\x02@\x02@ \x01\xa7A\xff\x01q\"\x02A\xc1\x00F\r\x00\x02@ \x02A\x07F\r\x00B\x01!\x03B\x83\x90\x80\x80\x80\x01!\x01\x0c\x02\x0b \x01B\x08\x87!\x01B\x00!\x03\x0c\x01\x0bB\x00!\x03 \x01\x10\x82\x80\x80\x80\x00!\x01\x0b \x00 \x037\x03\x00 \x00 \x017\x03\x08\x0b\xb5\x01\x02\x02\x7f\x02~#\x80\x80\x80\x80\x00A\x10k\"\x02$\x80\x80\x80\x80\x00A\x00!\x03\x02@\x03@ \x03A\x10F\r\x01 \x02 \x03jB\x027\x03\x00 \x03A\x08j!\x03\x0c\x00\x0b\x0bB\x01!\x04\x02@ \x01B\xff\x01\x83B\xcc\x00R\r\x00 \x01A\xcc\x80\xc0\x80\x00A\x02 \x02A\x02\x10\x91\x80\x80\x80\x00\x02@ \x02)\x03\x00\"\x01\xa7A\xff\x01q\"\x03A\xca\x00F\r\x00 \x03A\x0eG\r\x01\x0b \x02)\x03\x08\"\x05B\xff\x01\x83B\xcb\x00R\r\x00 \x00 \x057\x03\x10 \x00 \x017\x03\x08B\x00!\x04\x0b \x00 \x047\x03\x00 \x02A\x10j$\x80\x80\x80\x80\x00\x0b\xb5\x01\x02\x02\x7f\x02~#\x80\x80\x80\x80\x00A\x10k\"\x02$\x80\x80\x80\x80\x00A\x00!\x03\x02@\x03@ \x03A\x10F\r\x01 \x02 \x03jB\x027\x03\x00 \x03A\x08j!\x03\x0c\x00\x0b\x0bB\x01!\x04\x02@ \x01B\xff\x01\x83B\xcc\x00R\r\x00 \x01A\xcc\x80\xc0\x80\x00A\x02 \x02A\x02\x10\x91\x80\x80\x80\x00\x02@ \x02)\x03\x00\"\x01\xa7A\xff\x01q\"\x03A\xca\x00F\r\x00 \x03A\x0eG\r\x01\x0b \x02)\x03\x08\"\x05B\xff\x01\x83B\xcc\x00R\r\x00 \x00 \x057\x03\x10 \x00 \x017\x03\x08B\x00!\x04\x0b \x00 \x047\x03\x00 \x02A\x10j$\x80\x80\x80\x80\x00\x0bx\x03\x01\x7f\x01~\x01\x7f#\x80\x80\x80\x80\x00A\x10k\"\x02$\x80\x80\x80\x80\x00B\x02!\x03\x02@ \x01(\x02\x08\"\x04 \x01(\x02\x0cO\r\x00 \x02 \x01)\x03\x00 \x04\xadB \x86B\x04\x84\x10\x83\x80\x80\x80\x00\x10\x92\x80\x80\x80\x00 \x02)\x03\x00!\x03 \x00 \x02)\x03\x087\x03\x08 \x01 \x04A\x01j6\x02\x08\x0b \x00 \x037\x03\x00 \x02A\x10j$\x80\x80\x80\x80\x00\x0b\xb7\x04\x04\x02\x7f\x02~\x01\x7f\x05~#\x80\x80\x80\x80\x00A0k\"\x02$\x80\x80\x80\x80\x00 \x02 \x00\x10\x8d\x80\x80\x80\x00\x02@\x02@\x02@ \x02-\x00\x00\"\x03A\x04F\r\x00 \x02)\x03\x10!\x00 \x02)\x03\x08!\x04 \x021\x00\x01!\x05 \x02 \x01\x10\x8d\x80\x80\x80\x00 \x02-\x00\x00\"\x06A\x04F\r\x00 \x02)\x03\x10!\x07 \x02)\x03\x08!\x08 \x021\x00\x01!\tB\x00!\nB\x00!\x0b\x02@\x02@\x02@\x02@ \x03\x0e\x04\x05\x02\x01\x00\x05\x0b \x00\x10\x80\x80\x80\x80\x00!\x01 \x02A\x006\x02( \x02 \x007\x03  \x02 \x01B \x88>\x02,B\x00!\x00\x03@ \x02 \x02A j\x10\x95\x80\x80\x80\x00 \x02)\x03\x00\"\x01B\x02Q\r\x03 \x01\xa7A\x01q\r\x06 \x02)\x03\x08\"\x01B\x00S \x00 \x01|\"\x01 \x00SG\r\x06 \x01!\x00\x0c\x00\x0b\x0b \x05!\x0b\x0c\x03\x0b \x00B\x00S \x04 \x00|\"\x0b \x04SsE\r\x02\x0c\x03\x0b \x00B\x00S \x04 \x00|\"\x0b \x04SsE\r\x01\x0c\x02\x0b\x00\x0b\x02@\x02@\x02@\x02@\x02@ \x06\x0e\x04\x04\x02\x01\x00\x04\x0b \x07\x10\x80\x80\x80\x80\x00!\x00 \x02A\x006\x02( \x02 \x077\x03  \x02 \x00B \x88>\x02,B\x00!\x00\x03@ \x02 \x02A j\x10\x95\x80\x80\x80\x00 \x02)\x03\x00\"\x01B\x02Q\r\x03 \x01\xa7A\x01q\r\x05 \x02)\x03\x08\"\x01B\x00S \x00 \x01|\"\x01 \x00SG\r\x05 \x01!\x00\x0c\x00\x0b\x0b \t!\n\x0c\x02\x0b \x07B\x00S \x08 \x07|\"\n \x08Ss\r\x02\x0c\x01\x0b \x00B\x00S \x08 \x00|\"\n \x08Ss\r\x01\x0b \nB\x00S \x0b \n|\"\x00 \x0bSs\r\x00\x02@\x02@ \x00B\x80\x80\x80\x80\x80\x80\x80\xc0\x00|B\xff\xff\xff\xff\xff\xff\xff\xff\x00V\r\x00 \x00B\x08\x86B\x07\x84!\x00\x0c\x01\x0b \x00\x10\x84\x80\x80\x80\x00!\x00\x0b \x02A0j$\x80\x80\x80\x80\x00 \x00\x0f\x0b\x10\x97\x80\x80\x80\x00\x00\x0b\t\x00\x10\x9d\x80\x80\x80\x00\x00\x0b\x9f\x01\x02\x01\x7f\x01~#\x80\x80\x80\x80\x00A k\"\x01$\x80\x80\x80\x80\x00 \x01A\x08j \x00\x10\x93\x80\x80\x80\x00\x02@ \x01(\x02\x08A\x01F\r\x00B\x02!\x00\x02@ \x01)\x03\x18\"\x02\x10\x80\x80\x80\x80\x00B\x80\x80\x80\x80\x10T\r\x00 \x01A\x08j \x02\x10\x85\x80\x80\x80\x00\x10\x93\x80\x80\x80\x00 \x01(\x02\x08A\x01F\r\x01 \x01)\x03\x10!\x00 \x01 \x01)\x03\x187\x03\x10 \x01 \x007\x03\x08 \x01A\x08j\x10\x99\x80\x80\x80\x00!\x00\x0b \x01A j$\x80\x80\x80\x80\x00 \x00\x0f\x0b\x00\x0b$\x00A\xcc\x80\xc0\x80\x00\xadB \x86B\x04\x84 \x00\xadB \x86B\x04\x84B\x84\x80\x80\x80 \x10\x8a\x80\x80\x80\x00\x0b\xf6\x05\x03\x01\x7f\x01~\x01\x7f#\x80\x80\x80\x80\x00A\xc0\x00k\"\x02$\x80\x80\x80\x80\x00\x02@ \x00B\xff\x01\x83B\xcb\x00R\r\x00 \x00\x10\x80\x80\x80\x80\x00!\x03 \x02A\x006\x02\x10 \x02 \x007\x03\x08 \x02 \x03B \x88>\x02\x14 \x02A\x18j \x02A\x08j\x10\x8e\x80\x80\x80\x00 \x02)\x03\x18\"\x00B\x02Q\r\x00 \x00\xa7A\x01q\r\x00\x02@ \x02)\x03 \"\x00\xa7A\xff\x01q\"\x04A\xca\x00F\r\x00 \x04A\x0eG\r\x01\x0b\x02@\x02@\x02@\x02@\x02@\x02@ \x00A\xf4\x80\xc0\x80\x00A\x02\x10\x8f\x80\x80\x80\x00B \x88\xa7\x0e\x02\x01\x00\x06\x0b \x02(\x02\x10 \x02(\x02\x14\x10\x90\x80\x80\x80\x00A\x01K\r\x05 \x02A0j \x02A\x08j\x10\x8e\x80\x80\x80\x00 \x02)\x030\"\x00B\x02Q\r\x05 \x00\xa7A\x01q\r\x05 \x02A\x18j \x02)\x038\x10\x94\x80\x80\x80\x00 \x02(\x02\x18A\x01F\r\x05 \x01B\xff\x01\x83B\x04R\r\x05 \x02)\x03(\"\x00 \x01B\x84\x80\x80\x80p\x83\"\x01\x10\x86\x80\x80\x80\x00B\x01R\r\x01 \x00 \x01\x10\x87\x80\x80\x80\x00\"\x00B\xff\x01\x83B\xcb\x00R\r\x05 \x00\x10\x80\x80\x80\x80\x00!\x01 \x02A\x006\x02\x10 \x02 \x007\x03\x08 \x02 \x01B \x88>\x02\x14 \x02A\x18j \x02A\x08j\x10\x8e\x80\x80\x80\x00 \x02)\x03\x18\"\x00B\x02Q\r\x05 \x00\xa7A\x01q\r\x05\x02@ \x02)\x03 \"\x00\xa7A\xff\x01q\"\x04A\xca\x00F\r\x00 \x04A\x0eG\r\x06\x0b \x00A\xf4\x80\xc0\x80\x00A\x02\x10\x8f\x80\x80\x80\x00B \x88\xa7\x0e\x02\x03\x02\x05\x0b \x02(\x02\x10 \x02(\x02\x14\x10\x90\x80\x80\x80\x00\r\x04 \x01B\xff\x01\x83B\x04R\r\x04\x0bB\x02!\x00\x0c\x02\x0b \x02(\x02\x10 \x02(\x02\x14\x10\x90\x80\x80\x80\x00A\x01K\r\x02 \x02A0j \x02A\x08j\x10\x8e\x80\x80\x80\x00 \x02)\x030\"\x00B\x02Q\r\x02 \x00\xa7A\x01q\r\x02 \x02A\x18j \x02)\x038\x10\x94\x80\x80\x80\x00 \x02(\x02\x18A\x01F\r\x02 \x02)\x03(!\x00 \x02)\x03 !\x01 \x02A\x18jA\xe8\x80\xc0\x80\x00A\t\x10\x9b\x80\x80\x80\x00 \x02(\x02\x18\r\x02 \x02)\x03 !\x03 \x02 \x007\x03  \x02 \x017\x03\x18 \x02 \x02A\x18j\x10\x99\x80\x80\x80\x007\x03  \x02 \x037\x03\x18 \x02A\x18jA\x02\x10\x9c\x80\x80\x80\x00!\x00\x0c\x01\x0b \x02(\x02\x10 \x02(\x02\x14\x10\x90\x80\x80\x80\x00\r\x01 \x02A\x18jA\xdc\x80\xc0\x80\x00A\x0c\x10\x9b\x80\x80\x80\x00 \x02(\x02\x18\r\x01 \x02 \x02)\x03 7\x03\x18 \x02A\x18jA\x01\x10\x9c\x80\x80\x80\x00!\x00\x0b \x02A\xc0\x00j$\x80\x80\x80\x80\x00 \x00\x0f\x0b\x00\x0b\xd6\x01\x02\x01~\x03\x7f\x02@\x02@ \x02A\tK\r\x00B\x00!\x03A\x00!\x04\x03@\x02@ \x04A\tG\r\x00 \x03B\x08\x86B\x0e\x84!\x03\x0c\x03\x0bA\x01!\x05\x02@ \x01 \x04j-\x00\x00\"\x06A\xdf\x00F\r\x00\x02@\x02@ \x06APjA\xff\x01qA\nI\r\x00 \x06A\xbf\x7fjA\xff\x01qA\x1aI\r\x01 \x06A\x9f\x7fjA\xff\x01qA\x1aO\r\x04 \x06AEj!\x05\x0c\x02\x0b \x06ARj!\x05\x0c\x01\x0b \x06AKj!\x05\x0b \x03B\x06\x86 \x05\xadB\xff\x01\x83\x84!\x03 \x04A\x01j!\x04\x0c\x00\x0b\x0b \x01\xadB \x86B\x04\x84 \x02\xadB \x86B\x04\x84\x10\x89\x80\x80\x80\x00!\x03\x0b \x00B\x007\x03\x00 \x00 \x037\x03\x08\x0b\x1a\x00 \x00\xadB \x86B\x04\x84 \x01\xadB \x86B\x04\x84\x10\x88\x80\x80\x80\x00\x0b\x03\x00\x00\x0b\x0b\x8e\x01\x01\x00A\x80\x80\xc0\x00\x0b\x84\x01UdtAUdtBUdtCUdtD\x00\x00\x10\x00\x04\x00\x00\x00\x04\x00\x10\x00\x04\x00\x00\x00\x08\x00\x10\x00\x04\x00\x00\x00\x0c\x00\x10\x00\x04\x00\x00\x00abc\x000\x00\x10\x00\x01\x00\x00\x001\x00\x10\x00\x01\x00\x00\x002\x00\x10\x00\x01\x00\x00\x000\x00\x10\x00\x01\x00\x00\x001\x00\x10\x00\x01\x00\x00\x00NotRecursiveRecursive\x00\x00\x00\\\x00\x10\x00\x0c\x00\x00\x00h\x00\x10\x00\t\x00\x00\x00\x00\xe3%\x0econtractspecv0\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x03add\x00\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x01a\x00\x00\x00\x00\x00\x07\xd0\x00\x00\x00\x13::test_udt::UdtEnum\x00\x00\x00\x00\x00\x00\x00\x00\x01b\x00\x00\x00\x00\x00\x07\xd0\x00\x00\x00\x13::test_udt::UdtEnum\x00\x00\x00\x00\x01\x00\x00\x00\x07\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x13::test_udt::UdtEnum\x00\x00\x00\x00\x04\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x04UdtA\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x04UdtB\x00\x00\x00\x01\x00\x00\x07\xd0\x00\x00\x00\x15::test_udt::UdtStruct\x00\x00\x00\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x04UdtC\x00\x00\x00\x01\x00\x00\x07\xd0\x00\x00\x00\x14::test_udt::UdtEnum2\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x04UdtD\x00\x00\x00\x01\x00\x00\x07\xd0\x00\x00\x00\x14::test_udt::UdtTuple\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x14::test_udt::UdtEnum2\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x01A\x00\x00\x00\x00\x00\x00\n\x00\x00\x00\x00\x00\x00\x00\x01B\x00\x00\x00\x00\x00\x00\x0f\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x14::test_udt::UdtTuple\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x010\x00\x00\x00\x00\x00\x00\x07\x00\x00\x00\x00\x00\x00\x00\x011\x00\x00\x00\x00\x00\x03\xea\x00\x00\x00\x07\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x15::test_udt::UdtStruct\x00\x00\x00\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00\x01a\x00\x00\x00\x00\x00\x00\x07\x00\x00\x00\x00\x00\x00\x00\x01b\x00\x00\x00\x00\x00\x00\x07\x00\x00\x00\x00\x00\x00\x00\x01c\x00\x00\x00\x00\x00\x03\xea\x00\x00\x00\x07\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\trecursive\x00\x00\x00\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x01a\x00\x00\x00\x00\x00\x07\xd0\x00\x00\x00\x18::test_udt::UdtRecursive\x00\x00\x00\x01\x00\x00\x03\xe8\x00\x00\x07\xd0\x00\x00\x00\x18::test_udt::UdtRecursive\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x18::test_udt::UdtRecursive\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x01a\x00\x00\x00\x00\x00\x00\x11\x00\x00\x00\x00\x00\x00\x00\x01b\x00\x00\x00\x00\x00\x03\xea\x00\x00\x07\xd0\x00\x00\x00\x18::test_udt::UdtRecursive\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x19::test_udt::RecursiveEnum\x00\x00\x00\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x0cNotRecursive\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\tRecursive\x00\x00\x00\x00\x00\x00\x01\x00\x00\x07\xd0\x00\x00\x00\x1b::test_udt::RecursiveToEnum\x00\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x1b::test_udt::RecursiveToEnum\x00\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x01a\x00\x00\x00\x00\x00\x00\x11\x00\x00\x00\x00\x00\x00\x00\x01b\x00\x00\x00\x00\x00\x03\xec\x00\x00\x00\x04\x00\x00\x07\xd0\x00\x00\x00\x19::test_udt::RecursiveEnum\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x0erecursive_enum\x00\x00\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x01a\x00\x00\x00\x00\x00\x07\xd0\x00\x00\x00\x19::test_udt::RecursiveEnum\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x03key\x00\x00\x00\x00\x04\x00\x00\x00\x01\x00\x00\x03\xe9\x00\x00\x03\xe8\x00\x00\x07\xd0\x00\x00\x00\x19::test_udt::RecursiveEnum\x00\x00\x00\x00\x00\x00\x03\x00\x00\x00\x02\x00\x00\x00_Contract executable used for creating a new contract and used in\n`CreateContractHostFnContext`.\x00\x00\x00\x00\x00\x00\x00\x00!::soroban_sdk::ContractExecutable\x00\x00\x00\x00\x00\x00\x02\x00\x00\x00\x01\x00\x00\x00xExecutable specified by the contract instance as a specific Wasm contract code entry identified by its Wasm sha256 hash.\x00\x00\x00\x04Wasm\x00\x00\x00\x01\x00\x00\x03\xee\x00\x00\x00 \x00\x00\x00\x01\x00\x00\x00_Executable reference via a persistent storage entry owned by this contract or another contract.\x00\x00\x00\x00\x0bExternalRef\x00\x00\x00\x00\x01\x00\x00\x07\xd0\x00\x00\x00$::soroban_sdk::ContractExecutableRef\x00\x00\x00\x01\x00\x00\x00\xc0Executable referenced via a persistent storage entry owned by a contract,\neither this contract or another contract.\n\nThe persistent storage entry owned by the `owner` has the `tag` as its key.\x00\x00\x00\x00\x00\x00\x00$::soroban_sdk::ContractExecutableRef\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x05owner\x00\x00\x00\x00\x00\x00\x13\x00\x00\x00\x00\x00\x00\x00\x03tag\x00\x00\x00\x00\x10\x00\x00\x00\x02\x00\x00\x00\xe3Context of a single authorized call performed by an address.\n\nCustom account contracts that implement `__check_auth` special function\nreceive a list of `Context` values corresponding to all the calls that\nneed to be authorized.\x00\x00\x00\x00\x00\x00\x00\x00\x1c::soroban_sdk::auth::Context\x00\x00\x00\x03\x00\x00\x00\x01\x00\x00\x00\x14Contract invocation.\x00\x00\x00\x08Contract\x00\x00\x00\x01\x00\x00\x07\xd0\x00\x00\x00$::soroban_sdk::auth::ContractContext\x00\x00\x00\x01\x00\x00\x00=Contract that has a constructor with no arguments is created.\x00\x00\x00\x00\x00\x00\x14CreateContractHostFn\x00\x00\x00\x01\x00\x00\x07\xd0\x00\x00\x000::soroban_sdk::auth::CreateContractHostFnContext\x00\x00\x00\x01\x00\x00\x00DContract that has a constructor with 1 or more arguments is created.\x00\x00\x00\x1cCreateContractWithCtorHostFn\x00\x00\x00\x01\x00\x00\x07\xd0\x00\x00\x00?::soroban_sdk::auth::CreateContractWithConstructorHostFnContext\x00\x00\x00\x00\x01\x00\x00\x00\xbdAuthorization context of a single contract call.\n\nThis struct corresponds to a `require_auth_for_args` call for an address\nfrom `contract` function with `fn_name` name and `args` arguments.\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00$::soroban_sdk::auth::ContractContext\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00\x04args\x00\x00\x03\xea\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x08contract\x00\x00\x00\x13\x00\x00\x00\x00\x00\x00\x00\x07fn_name\x00\x00\x00\x00\x11\x00\x00\x00\x01\x00\x00\x008Value of contract node in InvokerContractAuthEntry tree.\x00\x00\x00\x00\x00\x00\x00*::soroban_sdk::auth::SubContractInvocation\x00\x00\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x07context\x00\x00\x00\x07\xd0\x00\x00\x00$::soroban_sdk::auth::ContractContext\x00\x00\x00\x00\x00\x00\x00\x0fsub_invocations\x00\x00\x00\x03\xea\x00\x00\x07\xd0\x00\x00\x00-::soroban_sdk::auth::InvokerContractAuthEntry\x00\x00\x00\x00\x00\x00\x02\x00\x00\x01/A node in the tree of authorizations performed on behalf of the current\ncontract as invoker of the contracts deeper in the call stack.\n\nThis is used as an argument of `authorize_as_current_contract` host function.\n\nThis tree corresponds `require_auth[_for_args]` calls on behalf of the\ncurrent contract.\x00\x00\x00\x00\x00\x00\x00\x00-::soroban_sdk::auth::InvokerContractAuthEntry\x00\x00\x00\x00\x00\x00\x03\x00\x00\x00\x01\x00\x00\x00\x12Invoke a contract.\x00\x00\x00\x00\x00\x08Contract\x00\x00\x00\x01\x00\x00\x07\xd0\x00\x00\x00*::soroban_sdk::auth::SubContractInvocation\x00\x00\x00\x00\x00\x01\x00\x00\x005Create a contract passing 0 arguments to constructor.\x00\x00\x00\x00\x00\x00\x14CreateContractHostFn\x00\x00\x00\x01\x00\x00\x07\xd0\x00\x00\x000::soroban_sdk::auth::CreateContractHostFnContext\x00\x00\x00\x01\x00\x00\x00=Create a contract passing 0 or more arguments to constructor.\x00\x00\x00\x00\x00\x00\x1cCreateContractWithCtorHostFn\x00\x00\x00\x01\x00\x00\x07\xd0\x00\x00\x00?::soroban_sdk::auth::CreateContractWithConstructorHostFnContext\x00\x00\x00\x00\x01\x00\x00\x00vAuthorization context for `create_contract` host function that creates a\nnew contract on behalf of authorizer address.\x00\x00\x00\x00\x00\x00\x00\x00\x000::soroban_sdk::auth::CreateContractHostFnContext\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\nexecutable\x00\x00\x00\x00\x07\xd0\x00\x00\x00!::soroban_sdk::ContractExecutable\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x04salt\x00\x00\x03\xee\x00\x00\x00 \x00\x00\x00\x01\x00\x00\x00\xd6Authorization context for `create_contract` host function that creates a\nnew contract on behalf of authorizer address.\nThis is the same as `CreateContractHostFnContext`, but also has\ncontract constructor arguments.\x00\x00\x00\x00\x00\x00\x00\x00\x00?::soroban_sdk::auth::CreateContractWithConstructorHostFnContext\x00\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00\x10constructor_args\x00\x00\x03\xea\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\nexecutable\x00\x00\x00\x00\x07\xd0\x00\x00\x00!::soroban_sdk::ContractExecutable\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x04salt\x00\x00\x03\xee\x00\x00\x00 \x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\"::soroban_sdk::address::Executable\x00\x00\x00\x00\x00\x03\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x04Wasm\x00\x00\x00\x01\x00\x00\x03\xee\x00\x00\x00 \x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x0cStellarAsset\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x07Account\x00\x00\x1e\x11contractenvmetav0\x00\x00\x00\x00\x00\x00\x00\x1e\x00\x00\x00\x00\x00G\x0econtractmetav0\x00\x00\x00\x00\x00\x00\x00\x05rsver\x00\x00\x00\x00\x00\x00\x061.91.0\x00\x00\x00\x00\x00\x00\x00\x00\x00\x08rssdkver\x00\x00\x00\x0630.0.0\x00\x00";
         pub trait Contract {
             fn add(env: soroban_sdk::Env, a: UdtEnum, b: UdtEnum) -> i64;
             fn recursive(env: soroban_sdk::Env, a: UdtRecursive) -> Option<UdtRecursive>;
@@ -4616,6 +4610,13 @@ mod test_with_wasm {
             }
         }
         impl<'a> Client<'a> {
+            /// Call `add` function on the contract.
+            ///
+            /// # Panics
+            ///
+            /// Panics if the invoked contract returns an error or panics.
+            ///
+            /// Use [`Self::try_add`] to receive errors instead of panicking.
             pub fn add(&self, a: &UdtEnum, b: &UdtEnum) -> i64 {
                 let _call_scope =
                     soroban_sdk::testutils::ClientCallScope::enter(&self.env, self.config);
@@ -4634,6 +4635,11 @@ mod test_with_wasm {
                 );
                 res
             }
+            /// Call `add` function on the contract.
+            ///
+            /// # Errors
+            ///
+            /// Returns an error if the invoked contract returns an error or panics. A panic in the invoked contract is caught and returned as an error rather than panicking the caller.
             pub fn try_add(
                 &self,
                 a: &UdtEnum,
@@ -4662,6 +4668,13 @@ mod test_with_wasm {
                 );
                 res
             }
+            /// Call `recursive` function on the contract.
+            ///
+            /// # Panics
+            ///
+            /// Panics if the invoked contract returns an error or panics.
+            ///
+            /// Use [`Self::try_recursive`] to receive errors instead of panicking.
             pub fn recursive(&self, a: &UdtRecursive) -> Option<UdtRecursive> {
                 let _call_scope =
                     soroban_sdk::testutils::ClientCallScope::enter(&self.env, self.config);
@@ -4677,6 +4690,11 @@ mod test_with_wasm {
                 );
                 res
             }
+            /// Call `recursive` function on the contract.
+            ///
+            /// # Errors
+            ///
+            /// Returns an error if the invoked contract returns an error or panics. A panic in the invoked contract is caught and returned as an error rather than panicking the caller.
             pub fn try_recursive(
                 &self,
                 a: &UdtRecursive,
@@ -4704,6 +4722,13 @@ mod test_with_wasm {
                 );
                 res
             }
+            /// Call `recursive_enum` function on the contract.
+            ///
+            /// # Panics
+            ///
+            /// Panics if the invoked contract returns an error or panics.
+            ///
+            /// Use [`Self::try_recursive_enum`] to receive errors instead of panicking.
             pub fn recursive_enum(&self, a: &RecursiveEnum, key: &u32) -> Option<RecursiveEnum> {
                 let _call_scope =
                     soroban_sdk::testutils::ClientCallScope::enter(&self.env, self.config);
@@ -4718,6 +4743,11 @@ mod test_with_wasm {
                 );
                 res
             }
+            /// Call `recursive_enum` function on the contract.
+            ///
+            /// # Errors
+            ///
+            /// Returns an error if the invoked contract returns an error or panics. A panic in the invoked contract is caught and returned as an error rather than panicking the caller.
             pub fn try_recursive_enum(
                 &self,
                 a: &RecursiveEnum,
@@ -4897,10 +4927,6 @@ mod test_with_wasm {
                 const { UdtTuple::__SPEC_XDR_ENTRY.const_to_xdr() }
             }
         }
-        impl soroban_sdk::SpecAnchor for UdtTuple {
-            #[inline(never)]
-            fn spec_anchor() {}
-        }
         impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for UdtTuple {
             type Error = soroban_sdk::ConversionError;
             #[inline(always)]
@@ -4908,7 +4934,6 @@ mod test_with_wasm {
                 env: &soroban_sdk::Env,
                 val: &soroban_sdk::Val,
             ) -> Result<Self, soroban_sdk::ConversionError> {
-                <UdtTuple as soroban_sdk::SpecAnchor>::spec_anchor();
                 use soroban_sdk::{ConversionError, EnvBase, TryIntoVal, Val, VecObject};
                 let vec: VecObject = (*val).try_into().map_err(|_| ConversionError)?;
                 let mut vals: [Val; 2usize] = [Val::VOID.to_val(); 2usize];
@@ -4927,7 +4952,6 @@ mod test_with_wasm {
                 env: &soroban_sdk::Env,
                 val: &UdtTuple,
             ) -> Result<Self, soroban_sdk::ConversionError> {
-                <UdtTuple as soroban_sdk::SpecAnchor>::spec_anchor();
                 use soroban_sdk::{ConversionError, EnvBase, TryIntoVal, Val};
                 let vals: [Val; 2usize] = [
                     (&val.0).try_into_val(env).map_err(|_| ConversionError)?,
@@ -5403,17 +5427,12 @@ mod test_with_wasm {
                 const { UdtStruct::__SPEC_XDR_ENTRY.const_to_xdr() }
             }
         }
-        impl soroban_sdk::SpecAnchor for UdtStruct {
-            #[inline(never)]
-            fn spec_anchor() {}
-        }
         impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for UdtStruct {
             type Error = soroban_sdk::ConversionError;
             fn try_from_val(
                 env: &soroban_sdk::Env,
                 val: &soroban_sdk::Val,
             ) -> Result<Self, soroban_sdk::ConversionError> {
-                <UdtStruct as soroban_sdk::SpecAnchor>::spec_anchor();
                 use soroban_sdk::{ConversionError, EnvBase, MapObject, TryIntoVal, Val};
                 const KEYS: [&'static str; 3usize] = ["a", "b", "c"];
                 let mut vals: [Val; 3usize] = [Val::VOID.to_val(); 3usize];
@@ -5439,7 +5458,6 @@ mod test_with_wasm {
                 env: &soroban_sdk::Env,
                 val: &UdtStruct,
             ) -> Result<Self, soroban_sdk::ConversionError> {
-                <UdtStruct as soroban_sdk::SpecAnchor>::spec_anchor();
                 use soroban_sdk::{ConversionError, EnvBase, TryIntoVal, Val};
                 const KEYS: [&'static str; 3usize] = ["a", "b", "c"];
                 let vals: [Val; 3usize] = [
@@ -5983,17 +6001,12 @@ mod test_with_wasm {
                 const { UdtRecursive::__SPEC_XDR_ENTRY.const_to_xdr() }
             }
         }
-        impl soroban_sdk::SpecAnchor for UdtRecursive {
-            #[inline(never)]
-            fn spec_anchor() {}
-        }
         impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for UdtRecursive {
             type Error = soroban_sdk::ConversionError;
             fn try_from_val(
                 env: &soroban_sdk::Env,
                 val: &soroban_sdk::Val,
             ) -> Result<Self, soroban_sdk::ConversionError> {
-                <UdtRecursive as soroban_sdk::SpecAnchor>::spec_anchor();
                 use soroban_sdk::{ConversionError, EnvBase, MapObject, TryIntoVal, Val};
                 const KEYS: [&'static str; 2usize] = ["a", "b"];
                 let mut vals: [Val; 2usize] = [Val::VOID.to_val(); 2usize];
@@ -6016,7 +6029,6 @@ mod test_with_wasm {
                 env: &soroban_sdk::Env,
                 val: &UdtRecursive,
             ) -> Result<Self, soroban_sdk::ConversionError> {
-                <UdtRecursive as soroban_sdk::SpecAnchor>::spec_anchor();
                 use soroban_sdk::{ConversionError, EnvBase, TryIntoVal, Val};
                 const KEYS: [&'static str; 2usize] = ["a", "b"];
                 let vals: [Val; 2usize] = [
@@ -6511,17 +6523,12 @@ mod test_with_wasm {
                 const { RecursiveToEnum::__SPEC_XDR_ENTRY.const_to_xdr() }
             }
         }
-        impl soroban_sdk::SpecAnchor for RecursiveToEnum {
-            #[inline(never)]
-            fn spec_anchor() {}
-        }
         impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for RecursiveToEnum {
             type Error = soroban_sdk::ConversionError;
             fn try_from_val(
                 env: &soroban_sdk::Env,
                 val: &soroban_sdk::Val,
             ) -> Result<Self, soroban_sdk::ConversionError> {
-                <RecursiveToEnum as soroban_sdk::SpecAnchor>::spec_anchor();
                 use soroban_sdk::{ConversionError, EnvBase, MapObject, TryIntoVal, Val};
                 const KEYS: [&'static str; 2usize] = ["a", "b"];
                 let mut vals: [Val; 2usize] = [Val::VOID.to_val(); 2usize];
@@ -6544,7 +6551,6 @@ mod test_with_wasm {
                 env: &soroban_sdk::Env,
                 val: &RecursiveToEnum,
             ) -> Result<Self, soroban_sdk::ConversionError> {
-                <RecursiveToEnum as soroban_sdk::SpecAnchor>::spec_anchor();
                 use soroban_sdk::{ConversionError, EnvBase, TryIntoVal, Val};
                 const KEYS: [&'static str; 2usize] = ["a", "b"];
                 let vals: [Val; 2usize] = [
@@ -7040,17 +7046,12 @@ mod test_with_wasm {
                 const { ContractExecutableRef::__SPEC_XDR_ENTRY.const_to_xdr() }
             }
         }
-        impl soroban_sdk::SpecAnchor for ContractExecutableRef {
-            #[inline(never)]
-            fn spec_anchor() {}
-        }
         impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for ContractExecutableRef {
             type Error = soroban_sdk::ConversionError;
             fn try_from_val(
                 env: &soroban_sdk::Env,
                 val: &soroban_sdk::Val,
             ) -> Result<Self, soroban_sdk::ConversionError> {
-                <ContractExecutableRef as soroban_sdk::SpecAnchor>::spec_anchor();
                 use soroban_sdk::{ConversionError, EnvBase, MapObject, TryIntoVal, Val};
                 const KEYS: [&'static str; 2usize] = ["owner", "tag"];
                 let mut vals: [Val; 2usize] = [Val::VOID.to_val(); 2usize];
@@ -7073,7 +7074,6 @@ mod test_with_wasm {
                 env: &soroban_sdk::Env,
                 val: &ContractExecutableRef,
             ) -> Result<Self, soroban_sdk::ConversionError> {
-                <ContractExecutableRef as soroban_sdk::SpecAnchor>::spec_anchor();
                 use soroban_sdk::{ConversionError, EnvBase, TryIntoVal, Val};
                 const KEYS: [&'static str; 2usize] = ["owner", "tag"];
                 let vals: [Val; 2usize] = [
@@ -7601,17 +7601,12 @@ mod test_with_wasm {
                 const { ContractContext::__SPEC_XDR_ENTRY.const_to_xdr() }
             }
         }
-        impl soroban_sdk::SpecAnchor for ContractContext {
-            #[inline(never)]
-            fn spec_anchor() {}
-        }
         impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for ContractContext {
             type Error = soroban_sdk::ConversionError;
             fn try_from_val(
                 env: &soroban_sdk::Env,
                 val: &soroban_sdk::Val,
             ) -> Result<Self, soroban_sdk::ConversionError> {
-                <ContractContext as soroban_sdk::SpecAnchor>::spec_anchor();
                 use soroban_sdk::{ConversionError, EnvBase, MapObject, TryIntoVal, Val};
                 const KEYS: [&'static str; 3usize] = ["args", "contract", "fn_name"];
                 let mut vals: [Val; 3usize] = [Val::VOID.to_val(); 3usize];
@@ -7637,7 +7632,6 @@ mod test_with_wasm {
                 env: &soroban_sdk::Env,
                 val: &ContractContext,
             ) -> Result<Self, soroban_sdk::ConversionError> {
-                <ContractContext as soroban_sdk::SpecAnchor>::spec_anchor();
                 use soroban_sdk::{ConversionError, EnvBase, TryIntoVal, Val};
                 const KEYS: [&'static str; 3usize] = ["args", "contract", "fn_name"];
                 let vals: [Val; 3usize] = [
@@ -8207,17 +8201,12 @@ mod test_with_wasm {
                 const { SubContractInvocation::__SPEC_XDR_ENTRY.const_to_xdr() }
             }
         }
-        impl soroban_sdk::SpecAnchor for SubContractInvocation {
-            #[inline(never)]
-            fn spec_anchor() {}
-        }
         impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for SubContractInvocation {
             type Error = soroban_sdk::ConversionError;
             fn try_from_val(
                 env: &soroban_sdk::Env,
                 val: &soroban_sdk::Val,
             ) -> Result<Self, soroban_sdk::ConversionError> {
-                <SubContractInvocation as soroban_sdk::SpecAnchor>::spec_anchor();
                 use soroban_sdk::{ConversionError, EnvBase, MapObject, TryIntoVal, Val};
                 const KEYS: [&'static str; 2usize] = ["context", "sub_invocations"];
                 let mut vals: [Val; 2usize] = [Val::VOID.to_val(); 2usize];
@@ -8240,7 +8229,6 @@ mod test_with_wasm {
                 env: &soroban_sdk::Env,
                 val: &SubContractInvocation,
             ) -> Result<Self, soroban_sdk::ConversionError> {
-                <SubContractInvocation as soroban_sdk::SpecAnchor>::spec_anchor();
                 use soroban_sdk::{ConversionError, EnvBase, TryIntoVal, Val};
                 const KEYS: [&'static str; 2usize] = ["context", "sub_invocations"];
                 let vals: [Val; 2usize] = [
@@ -8753,17 +8741,12 @@ mod test_with_wasm {
                 const { CreateContractHostFnContext::__SPEC_XDR_ENTRY.const_to_xdr() }
             }
         }
-        impl soroban_sdk::SpecAnchor for CreateContractHostFnContext {
-            #[inline(never)]
-            fn spec_anchor() {}
-        }
         impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for CreateContractHostFnContext {
             type Error = soroban_sdk::ConversionError;
             fn try_from_val(
                 env: &soroban_sdk::Env,
                 val: &soroban_sdk::Val,
             ) -> Result<Self, soroban_sdk::ConversionError> {
-                <CreateContractHostFnContext as soroban_sdk::SpecAnchor>::spec_anchor();
                 use soroban_sdk::{ConversionError, EnvBase, MapObject, TryIntoVal, Val};
                 const KEYS: [&'static str; 2usize] = ["executable", "salt"];
                 let mut vals: [Val; 2usize] = [Val::VOID.to_val(); 2usize];
@@ -8786,7 +8769,6 @@ mod test_with_wasm {
                 env: &soroban_sdk::Env,
                 val: &CreateContractHostFnContext,
             ) -> Result<Self, soroban_sdk::ConversionError> {
-                <CreateContractHostFnContext as soroban_sdk::SpecAnchor>::spec_anchor();
                 use soroban_sdk::{ConversionError, EnvBase, TryIntoVal, Val};
                 const KEYS: [&'static str; 2usize] = ["executable", "salt"];
                 let vals: [Val; 2usize] = [
@@ -9344,10 +9326,6 @@ mod test_with_wasm {
                 const { CreateContractWithConstructorHostFnContext::__SPEC_XDR_ENTRY.const_to_xdr() }
             }
         }
-        impl soroban_sdk::SpecAnchor for CreateContractWithConstructorHostFnContext {
-            #[inline(never)]
-            fn spec_anchor() {}
-        }
         impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val>
             for CreateContractWithConstructorHostFnContext
         {
@@ -9356,7 +9334,6 @@ mod test_with_wasm {
                 env: &soroban_sdk::Env,
                 val: &soroban_sdk::Val,
             ) -> Result<Self, soroban_sdk::ConversionError> {
-                <CreateContractWithConstructorHostFnContext as soroban_sdk::SpecAnchor>::spec_anchor();
                 use soroban_sdk::{ConversionError, EnvBase, MapObject, TryIntoVal, Val};
                 const KEYS: [&'static str; 3usize] = ["constructor_args", "executable", "salt"];
                 let mut vals: [Val; 3usize] = [Val::VOID.to_val(); 3usize];
@@ -9384,7 +9361,6 @@ mod test_with_wasm {
                 env: &soroban_sdk::Env,
                 val: &CreateContractWithConstructorHostFnContext,
             ) -> Result<Self, soroban_sdk::ConversionError> {
-                <CreateContractWithConstructorHostFnContext as soroban_sdk::SpecAnchor>::spec_anchor();
                 use soroban_sdk::{ConversionError, EnvBase, TryIntoVal, Val};
                 const KEYS: [&'static str; 3usize] = ["constructor_args", "executable", "salt"];
                 let vals: [Val; 3usize] = [
@@ -10059,10 +10035,6 @@ mod test_with_wasm {
                 const { UdtEnum::__SPEC_XDR_ENTRY.const_to_xdr() }
             }
         }
-        impl soroban_sdk::SpecAnchor for UdtEnum {
-            #[inline(never)]
-            fn spec_anchor() {}
-        }
         impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for UdtEnum {
             type Error = soroban_sdk::ConversionError;
             #[inline(always)]
@@ -10070,7 +10042,6 @@ mod test_with_wasm {
                 env: &soroban_sdk::Env,
                 val: &soroban_sdk::Val,
             ) -> Result<Self, soroban_sdk::ConversionError> {
-                <UdtEnum as soroban_sdk::SpecAnchor>::spec_anchor();
                 use soroban_sdk::{EnvBase, TryFromVal, TryIntoVal};
                 const CASES: &'static [&'static str] = &["UdtA", "UdtB", "UdtC", "UdtD"];
                 let vec: soroban_sdk::Vec<soroban_sdk::Val> = val.try_into_val(env)?;
@@ -10132,7 +10103,6 @@ mod test_with_wasm {
                 env: &soroban_sdk::Env,
                 val: &UdtEnum,
             ) -> Result<Self, soroban_sdk::ConversionError> {
-                <UdtEnum as soroban_sdk::SpecAnchor>::spec_anchor();
                 use soroban_sdk::{TryFromVal, TryIntoVal};
                 match val {
                     UdtEnum::UdtA => {
@@ -10809,10 +10779,6 @@ mod test_with_wasm {
                 const { RecursiveEnum::__SPEC_XDR_ENTRY.const_to_xdr() }
             }
         }
-        impl soroban_sdk::SpecAnchor for RecursiveEnum {
-            #[inline(never)]
-            fn spec_anchor() {}
-        }
         impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for RecursiveEnum {
             type Error = soroban_sdk::ConversionError;
             #[inline(always)]
@@ -10820,7 +10786,6 @@ mod test_with_wasm {
                 env: &soroban_sdk::Env,
                 val: &soroban_sdk::Val,
             ) -> Result<Self, soroban_sdk::ConversionError> {
-                <RecursiveEnum as soroban_sdk::SpecAnchor>::spec_anchor();
                 use soroban_sdk::{EnvBase, TryFromVal, TryIntoVal};
                 const CASES: &'static [&'static str] = &["NotRecursive", "Recursive"];
                 let vec: soroban_sdk::Vec<soroban_sdk::Val> = val.try_into_val(env)?;
@@ -10862,7 +10827,6 @@ mod test_with_wasm {
                 env: &soroban_sdk::Env,
                 val: &RecursiveEnum,
             ) -> Result<Self, soroban_sdk::ConversionError> {
-                <RecursiveEnum as soroban_sdk::SpecAnchor>::spec_anchor();
                 use soroban_sdk::{TryFromVal, TryIntoVal};
                 match val {
                     RecursiveEnum::NotRecursive => {
@@ -11442,10 +11406,6 @@ mod test_with_wasm {
                 const { ContractExecutable::__SPEC_XDR_ENTRY.const_to_xdr() }
             }
         }
-        impl soroban_sdk::SpecAnchor for ContractExecutable {
-            #[inline(never)]
-            fn spec_anchor() {}
-        }
         impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for ContractExecutable {
             type Error = soroban_sdk::ConversionError;
             #[inline(always)]
@@ -11453,7 +11413,6 @@ mod test_with_wasm {
                 env: &soroban_sdk::Env,
                 val: &soroban_sdk::Val,
             ) -> Result<Self, soroban_sdk::ConversionError> {
-                <ContractExecutable as soroban_sdk::SpecAnchor>::spec_anchor();
                 use soroban_sdk::{EnvBase, TryFromVal, TryIntoVal};
                 const CASES: &'static [&'static str] = &["Wasm", "ExternalRef"];
                 let vec: soroban_sdk::Vec<soroban_sdk::Val> = val.try_into_val(env)?;
@@ -11499,7 +11458,6 @@ mod test_with_wasm {
                 env: &soroban_sdk::Env,
                 val: &ContractExecutable,
             ) -> Result<Self, soroban_sdk::ConversionError> {
-                <ContractExecutable as soroban_sdk::SpecAnchor>::spec_anchor();
                 use soroban_sdk::{TryFromVal, TryIntoVal};
                 match val {
                     ContractExecutable::Wasm(ref value0) => {
@@ -12159,10 +12117,6 @@ mod test_with_wasm {
                 const { Context::__SPEC_XDR_ENTRY.const_to_xdr() }
             }
         }
-        impl soroban_sdk::SpecAnchor for Context {
-            #[inline(never)]
-            fn spec_anchor() {}
-        }
         impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for Context {
             type Error = soroban_sdk::ConversionError;
             #[inline(always)]
@@ -12170,7 +12124,6 @@ mod test_with_wasm {
                 env: &soroban_sdk::Env,
                 val: &soroban_sdk::Val,
             ) -> Result<Self, soroban_sdk::ConversionError> {
-                <Context as soroban_sdk::SpecAnchor>::spec_anchor();
                 use soroban_sdk::{EnvBase, TryFromVal, TryIntoVal};
                 const CASES: &'static [&'static str] = &[
                     "Contract",
@@ -12230,7 +12183,6 @@ mod test_with_wasm {
                 env: &soroban_sdk::Env,
                 val: &Context,
             ) -> Result<Self, soroban_sdk::ConversionError> {
-                <Context as soroban_sdk::SpecAnchor>::spec_anchor();
                 use soroban_sdk::{TryFromVal, TryIntoVal};
                 match val {
                     Context::Contract(ref value0) => {
@@ -12978,10 +12930,6 @@ mod test_with_wasm {
                 const { InvokerContractAuthEntry::__SPEC_XDR_ENTRY.const_to_xdr() }
             }
         }
-        impl soroban_sdk::SpecAnchor for InvokerContractAuthEntry {
-            #[inline(never)]
-            fn spec_anchor() {}
-        }
         impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for InvokerContractAuthEntry {
             type Error = soroban_sdk::ConversionError;
             #[inline(always)]
@@ -12989,7 +12937,6 @@ mod test_with_wasm {
                 env: &soroban_sdk::Env,
                 val: &soroban_sdk::Val,
             ) -> Result<Self, soroban_sdk::ConversionError> {
-                <InvokerContractAuthEntry as soroban_sdk::SpecAnchor>::spec_anchor();
                 use soroban_sdk::{EnvBase, TryFromVal, TryIntoVal};
                 const CASES: &'static [&'static str] = &[
                     "Contract",
@@ -13049,7 +12996,6 @@ mod test_with_wasm {
                 env: &soroban_sdk::Env,
                 val: &InvokerContractAuthEntry,
             ) -> Result<Self, soroban_sdk::ConversionError> {
-                <InvokerContractAuthEntry as soroban_sdk::SpecAnchor>::spec_anchor();
                 use soroban_sdk::{TryFromVal, TryIntoVal};
                 match val {
                     InvokerContractAuthEntry::Contract(ref value0) => {
@@ -13781,10 +13727,6 @@ mod test_with_wasm {
                 const { Executable::__SPEC_XDR_ENTRY.const_to_xdr() }
             }
         }
-        impl soroban_sdk::SpecAnchor for Executable {
-            #[inline(never)]
-            fn spec_anchor() {}
-        }
         impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for Executable {
             type Error = soroban_sdk::ConversionError;
             #[inline(always)]
@@ -13792,7 +13734,6 @@ mod test_with_wasm {
                 env: &soroban_sdk::Env,
                 val: &soroban_sdk::Val,
             ) -> Result<Self, soroban_sdk::ConversionError> {
-                <Executable as soroban_sdk::SpecAnchor>::spec_anchor();
                 use soroban_sdk::{EnvBase, TryFromVal, TryIntoVal};
                 const CASES: &'static [&'static str] = &["Wasm", "StellarAsset", "Account"];
                 let vec: soroban_sdk::Vec<soroban_sdk::Val> = val.try_into_val(env)?;
@@ -13840,7 +13781,6 @@ mod test_with_wasm {
                 env: &soroban_sdk::Env,
                 val: &Executable,
             ) -> Result<Self, soroban_sdk::ConversionError> {
-                <Executable as soroban_sdk::SpecAnchor>::spec_anchor();
                 use soroban_sdk::{TryFromVal, TryIntoVal};
                 match val {
                     Executable::Wasm(ref value0) => {
@@ -14395,10 +14335,6 @@ mod test_with_wasm {
                 const { UdtEnum2::__SPEC_XDR_ENTRY.const_to_xdr() }
             }
         }
-        impl soroban_sdk::SpecAnchor for UdtEnum2 {
-            #[inline(never)]
-            fn spec_anchor() {}
-        }
         impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for UdtEnum2 {
             type Error = soroban_sdk::ConversionError;
             #[inline(always)]
@@ -14406,7 +14342,6 @@ mod test_with_wasm {
                 env: &soroban_sdk::Env,
                 val: &soroban_sdk::Val,
             ) -> Result<Self, soroban_sdk::ConversionError> {
-                <UdtEnum2 as soroban_sdk::SpecAnchor>::spec_anchor();
                 use soroban_sdk::TryIntoVal;
                 let discriminant: u32 = val.try_into_val(env)?;
                 Ok(match discriminant {
@@ -14423,7 +14358,6 @@ mod test_with_wasm {
                 env: &soroban_sdk::Env,
                 val: &UdtEnum2,
             ) -> Result<Self, soroban_sdk::ConversionError> {
-                <UdtEnum2 as soroban_sdk::SpecAnchor>::spec_anchor();
                 Ok(match val {
                     UdtEnum2::A => 10u32.into(),
                     UdtEnum2::B => 15u32.into(),

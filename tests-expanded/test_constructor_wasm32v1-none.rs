@@ -109,10 +109,6 @@ impl DataKey {
         const { DataKey::__SPEC_XDR_ENTRY.const_to_xdr() }
     }
 }
-impl soroban_sdk::SpecAnchor for DataKey {
-    #[inline(never)]
-    fn spec_anchor() {}
-}
 impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for DataKey {
     type Error = soroban_sdk::ConversionError;
     #[inline(always)]
@@ -120,7 +116,6 @@ impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for DataKey {
         env: &soroban_sdk::Env,
         val: &soroban_sdk::Val,
     ) -> Result<Self, soroban_sdk::ConversionError> {
-        <DataKey as soroban_sdk::SpecAnchor>::spec_anchor();
         use soroban_sdk::{EnvBase, TryFromVal, TryIntoVal};
         const CASES: &'static [&'static str] = &["Persistent", "Temp", "Instance"];
         let vec: soroban_sdk::Vec<soroban_sdk::Val> = val.try_into_val(env)?;
@@ -175,7 +170,6 @@ impl soroban_sdk::TryFromVal<soroban_sdk::Env, DataKey> for soroban_sdk::Val {
         env: &soroban_sdk::Env,
         val: &DataKey,
     ) -> Result<Self, soroban_sdk::ConversionError> {
-        <DataKey as soroban_sdk::SpecAnchor>::spec_anchor();
         use soroban_sdk::{TryFromVal, TryIntoVal};
         match val {
             DataKey::Persistent(ref value0) => {
@@ -317,6 +311,13 @@ impl Contract {
     }
 }
 impl<'a> ContractClient<'a> {
+    /// Call `get_data` function on the contract.
+    ///
+    /// # Panics
+    ///
+    /// Panics if the invoked contract returns an error or panics.
+    ///
+    /// Use [`Self::try_get_data`] to receive errors instead of panicking.
     pub fn get_data(&self, key: &DataKey) -> Option<i64> {
         use core::ops::Not;
         use soroban_sdk::{FromVal, IntoVal};
@@ -331,6 +332,11 @@ impl<'a> ContractClient<'a> {
         );
         res
     }
+    /// Call `get_data` function on the contract.
+    ///
+    /// # Errors
+    ///
+    /// Returns an error if the invoked contract returns an error or panics. A panic in the invoked contract is caught and returned as an error rather than panicking the caller.
     pub fn try_get_data(
         &self,
         key: &DataKey,

@@ -159,6 +159,13 @@ impl ContractA {
     }
 }
 impl<'a> ContractAClient<'a> {
+    /// Call `fn1` function on the contract.
+    ///
+    /// # Panics
+    ///
+    /// Panics if the invoked contract returns an error or panics.
+    ///
+    /// Use [`Self::try_fn1`] to receive errors instead of panicking.
     pub fn fn1(&self, a: &Address) -> u64 {
         let _call_scope = soroban_sdk::testutils::ClientCallScope::enter(&self.env, self.config);
         use soroban_sdk::{FromVal, IntoVal};
@@ -173,6 +180,11 @@ impl<'a> ContractAClient<'a> {
         );
         res
     }
+    /// Call `fn1` function on the contract.
+    ///
+    /// # Errors
+    ///
+    /// Returns an error if the invoked contract returns an error or panics. A panic in the invoked contract is caught and returned as an error rather than panicking the caller.
     pub fn try_fn1(
         &self,
         a: &Address,
@@ -1143,15 +1155,10 @@ mod test_a {
             #[inline(always)]
             fn spec_shaking_marker() {}
         }
-        impl soroban_sdk::SpecAnchor for Error {
-            #[inline(never)]
-            fn spec_anchor() {}
-        }
         impl TryFrom<soroban_sdk::Error> for Error {
             type Error = soroban_sdk::Error;
             #[inline(always)]
             fn try_from(error: soroban_sdk::Error) -> Result<Self, soroban_sdk::Error> {
-                <Error as soroban_sdk::SpecAnchor>::spec_anchor();
                 if error.is_type(soroban_sdk::xdr::ScErrorType::Contract) {
                     let discriminant = error.get_code();
                     Ok(match discriminant {
@@ -1179,7 +1186,6 @@ mod test_a {
         impl From<&Error> for soroban_sdk::Error {
             #[inline(always)]
             fn from(val: &Error) -> soroban_sdk::Error {
-                <Error as soroban_sdk::SpecAnchor>::spec_anchor();
                 match val {
                     Error::Decline => soroban_sdk::Error::from_contract_error(1u32),
                 }
@@ -1189,7 +1195,6 @@ mod test_a {
             type Error = soroban_sdk::InvokeError;
             #[inline(always)]
             fn try_from(error: soroban_sdk::InvokeError) -> Result<Self, soroban_sdk::InvokeError> {
-                <Error as soroban_sdk::SpecAnchor>::spec_anchor();
                 match error {
                     soroban_sdk::InvokeError::Abort => Err(error),
                     soroban_sdk::InvokeError::Contract(code) => Ok(match code {
@@ -1217,7 +1222,6 @@ mod test_a {
         impl From<&Error> for soroban_sdk::InvokeError {
             #[inline(always)]
             fn from(val: &Error) -> soroban_sdk::InvokeError {
-                <Error as soroban_sdk::SpecAnchor>::spec_anchor();
                 match val {
                     Error::Decline => soroban_sdk::InvokeError::Contract(1u32),
                 }
@@ -1606,6 +1610,13 @@ impl ContractB {
     }
 }
 impl<'a> ContractBClient<'a> {
+    /// Call `fn2` function on the contract.
+    ///
+    /// # Panics
+    ///
+    /// Panics if the invoked contract returns an error or panics.
+    ///
+    /// Use [`Self::try_fn2`] to receive errors instead of panicking.
     pub fn fn2(&self, a: &Address, sub: &Address) -> u64 {
         let _call_scope = soroban_sdk::testutils::ClientCallScope::enter(&self.env, self.config);
         use soroban_sdk::{FromVal, IntoVal};
@@ -1623,6 +1634,11 @@ impl<'a> ContractBClient<'a> {
         );
         res
     }
+    /// Call `fn2` function on the contract.
+    ///
+    /// # Errors
+    ///
+    /// Returns an error if the invoked contract returns an error or panics. A panic in the invoked contract is caught and returned as an error rather than panicking the caller.
     pub fn try_fn2(
         &self,
         a: &Address,
@@ -2703,15 +2719,10 @@ mod test_b {
             #[inline(always)]
             fn spec_shaking_marker() {}
         }
-        impl soroban_sdk::SpecAnchor for Error {
-            #[inline(never)]
-            fn spec_anchor() {}
-        }
         impl TryFrom<soroban_sdk::Error> for Error {
             type Error = soroban_sdk::Error;
             #[inline(always)]
             fn try_from(error: soroban_sdk::Error) -> Result<Self, soroban_sdk::Error> {
-                <Error as soroban_sdk::SpecAnchor>::spec_anchor();
                 if error.is_type(soroban_sdk::xdr::ScErrorType::Contract) {
                     let discriminant = error.get_code();
                     Ok(match discriminant {
@@ -2739,7 +2750,6 @@ mod test_b {
         impl From<&Error> for soroban_sdk::Error {
             #[inline(always)]
             fn from(val: &Error) -> soroban_sdk::Error {
-                <Error as soroban_sdk::SpecAnchor>::spec_anchor();
                 match val {
                     Error::Decline => soroban_sdk::Error::from_contract_error(1u32),
                 }
@@ -2749,7 +2759,6 @@ mod test_b {
             type Error = soroban_sdk::InvokeError;
             #[inline(always)]
             fn try_from(error: soroban_sdk::InvokeError) -> Result<Self, soroban_sdk::InvokeError> {
-                <Error as soroban_sdk::SpecAnchor>::spec_anchor();
                 match error {
                     soroban_sdk::InvokeError::Abort => Err(error),
                     soroban_sdk::InvokeError::Contract(code) => Ok(match code {
@@ -2777,7 +2786,6 @@ mod test_b {
         impl From<&Error> for soroban_sdk::InvokeError {
             #[inline(always)]
             fn from(val: &Error) -> soroban_sdk::InvokeError {
-                <Error as soroban_sdk::SpecAnchor>::spec_anchor();
                 match val {
                     Error::Decline => soroban_sdk::InvokeError::Contract(1u32),
                 }
