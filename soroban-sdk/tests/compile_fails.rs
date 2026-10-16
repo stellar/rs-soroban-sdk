@@ -11,7 +11,6 @@ fn compile_fails() {
     t.compile_fail("tests/compile_fails/contracttype_lib_removed.rs");
     t.compile_fail("tests/compile_fails/export_arg_errors.rs");
     t.compile_fail("tests/compile_fails/hash_arg_errors.rs");
-    t.compile_fail("tests/compile_fails/hash_return_errors.rs");
     t.compile_fail("tests/compile_fails/spec_name_length_errors.rs");
     t.compile_fail("tests/compile_fails/spec_type_def_bytesn_length_errors.rs");
 }

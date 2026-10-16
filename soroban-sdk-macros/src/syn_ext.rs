@@ -221,12 +221,12 @@ pub struct Fn {
 }
 
 impl Fn {
-    pub fn output(&self) -> Type {
+    pub fn output(&self, crate_path: &Path) -> Type {
         let t = match &self.output {
             ReturnType::Default => quote!(()),
             ReturnType::Type(_, typ) => match unpack_result(typ) {
-                Some((t, _)) => quote!(#t),
-                None => quote!(#typ),
+                Some((t, _)) => client_return_type(&t, crate_path),
+                None => client_return_type(typ, crate_path),
             },
         };
         Type::Verbatim(t)
@@ -235,8 +235,11 @@ impl Fn {
         let (t, e) = match &self.output {
             ReturnType::Default => (quote!(()), quote!(#crate_path::Error)),
             ReturnType::Type(_, typ) => match unpack_result(typ) {
-                Some((t, e)) => (quote!(#t), quote!(#e)),
-                None => (quote!(#typ), quote!(#crate_path::Error)),
+                Some((t, e)) => (client_return_type(&t, crate_path), quote!(#e)),
+                None => (
+                    client_return_type(typ, crate_path),
+                    quote!(#crate_path::Error),
+                ),
             },
         };
         Type::Verbatim(quote! {
@@ -697,16 +700,73 @@ pub fn is_type_named(ty: &Type, name: &str) -> bool {
     }
 }
 
-/// Whether the type is written with the given name as the last segment of its
-/// path and with generic arguments, such as `soroban_sdk::crypto::Hash<32>` for
-/// `Hash`. Requiring generic arguments limits matches to the generic SDK type
-/// of that name, rather than a user's own non-generic type that shares the
-/// name.
-pub fn is_generic_type_named(ty: &Type, name: &str) -> bool {
-    match ty {
-        Type::Path(TypePath { qself: None, path }) => path.segments.last().is_some_and(|s| {
-            s.ident.unraw() == name && matches!(s.arguments, PathArguments::AngleBracketed(_))
-        }),
-        _ => false,
+/// The length argument of the type, if it is written as `Hash` with a single
+/// generic argument that can be a length, such as `32` in `Hash<32>` or `N` in
+/// `soroban_sdk::crypto::Hash<N>`.
+fn hash_type_len(ty: &Type) -> Option<&GenericArgument> {
+    let Type::Path(TypePath { qself: None, path }) = ty else {
+        return None;
+    };
+    let segment = path.segments.last()?;
+    if segment.ident.unraw() != "Hash" {
+        return None;
+    }
+    let PathArguments::AngleBracketed(AngleBracketedGenericArguments { args, .. }) =
+        &segment.arguments
+    else {
+        return None;
+    };
+    match args.iter().collect::<Vec<_>>()[..] {
+        // A length is a const expression, or a const generic parameter, which
+        // parses as a type with a single segment and no arguments.
+        [arg @ GenericArgument::Const(_)] => Some(arg),
+        [arg @ GenericArgument::Type(Type::Path(TypePath { qself: None, path }))]
+            if path.get_ident().is_some() =>
+        {
+            Some(arg)
+        }
+        _ => None,
+    }
+}
+
+/// The type a client returns for a contract function's return type, which is
+/// the type itself, except for a `Hash<N>`, which is returned as a
+/// `BytesN<N>`, because a client can't guarantee the bytes it receives came
+/// from a secure cryptographic hash function.
+fn client_return_type(ty: &Type, crate_path: &Path) -> TokenStream {
+    match hash_type_len(ty) {
+        Some(len) => quote!(#crate_path::BytesN<#len>),
+        None => quote!(#ty),
+    }
+}
+
+#[cfg(test)]
+mod test_hash_type_len {
+    use super::hash_type_len;
+    use quote::quote;
+    use syn::{parse_quote, Type};
+
+    fn len(ty: Type) -> Option<String> {
+        hash_type_len(&ty).map(|arg| quote!(#arg).to_string())
+    }
+
+    #[test]
+    fn test_hash_type_len() {
+        assert_eq!(len(parse_quote!(Hash<32>)), Some("32".to_string()));
+        assert_eq!(len(parse_quote!(Hash<N>)), Some("N".to_string()));
+        assert_eq!(
+            len(parse_quote!(Hash<{ 16 * 2 }>)),
+            Some("{ 16 * 2 }".to_string())
+        );
+        assert_eq!(
+            len(parse_quote!(soroban_sdk::crypto::Hash<32>)),
+            Some("32".to_string())
+        );
+        assert_eq!(len(parse_quote!(Hash)), None);
+        assert_eq!(len(parse_quote!(Hash<32, 32>)), None);
+        assert_eq!(len(parse_quote!(Hash<Vec<u8>>)), None);
+        assert_eq!(len(parse_quote!(Hash<a::B>)), None);
+        assert_eq!(len(parse_quote!(&Hash<32>)), None);
+        assert_eq!(len(parse_quote!(BytesN<32>)), None);
     }
 }
