@@ -1,7 +1,7 @@
 use itertools::Itertools;
 use proc_macro2::TokenStream;
 use quote::{format_ident, quote};
-use syn::{Error, FnArg, LitStr, Path, Type, TypePath, TypeReference};
+use syn::{Error, FnArg, LitStr, Path, ReturnType, Type, TypePath, TypeReference};
 
 use syn::ext::IdentExt as _;
 
@@ -203,6 +203,14 @@ pub fn derive_client_impl(crate_path: &Path, name: &str, fns: &[syn_ext::Fn]) ->
                     (converted_type, conversion)
                 })
                 .multiunzip();
+            if let ReturnType::Type(_, ty) = &f.output {
+                if syn_ext::type_contains_named(ty, "Hash") {
+                    errors.push(Error::new_spanned(
+                        ty,
+                        "`Hash<N>` cannot be used as a contract function return type, use `BytesN<N>` instead",
+                    ));
+                }
+            }
             let fn_output = f.output();
             let fn_try_output = f.try_output(crate_path);
             let (fn_doc_attrs, fn_attrs): (Vec<_>, Vec<_>) = f
@@ -314,3 +322,97 @@ pub fn derive_client_impl(crate_path: &Path, name: &str, fns: &[syn_ext::Fn]) ->
         }
     }
 }
+
+#[cfg(test)]
+mod test {
+    use super::*;
+    use quote::quote;
+    use syn::{parse2, parse_quote};
+
+    #[test]
+    fn test_reject_hash_return_type() {
+        let item = parse2::<syn_ext::HasFnsItem>(quote! {
+            impl MyContract {
+                pub fn get_hash() -> Hash<32> {}
+            }
+        })
+        .unwrap();
+        let crate_path: Path = parse_quote!(soroban_sdk);
+        let res = derive_client_impl(&crate_path, "Client", &item.fns());
+        let s = res.to_string();
+        assert!(
+            s.contains("cannot be used as a contract function return type"),
+            "expected error not found in: {s}"
+        );
+    }
+
+    #[test]
+    fn test_reject_hash_result_return_type() {
+        let item = parse2::<syn_ext::HasFnsItem>(quote! {
+            impl MyContract {
+                pub fn get_hash() -> Result<Hash<32>, Error> {}
+            }
+        })
+        .unwrap();
+        let crate_path: Path = parse_quote!(soroban_sdk);
+        let res = derive_client_impl(&crate_path, "Client", &item.fns());
+        let s = res.to_string();
+        assert!(
+            s.contains("cannot be used as a contract function return type"),
+            "expected error not found in: {s}"
+        );
+    }
+
+    #[test]
+    fn test_reject_hash_vec_return_type() {
+        let item = parse2::<syn_ext::HasFnsItem>(quote! {
+            impl MyContract {
+                pub fn get_hashes() -> Vec<Hash<32>> {}
+            }
+        })
+        .unwrap();
+        let crate_path: Path = parse_quote!(soroban_sdk);
+        let res = derive_client_impl(&crate_path, "Client", &item.fns());
+        let s = res.to_string();
+        assert!(
+            s.contains("cannot be used as a contract function return type"),
+            "expected error not found in: {s}"
+        );
+    }
+
+    #[test]
+    fn test_reject_hash_nested_result_vec_return_type() {
+        let item = parse2::<syn_ext::HasFnsItem>(quote! {
+            impl MyContract {
+                pub fn get_hashes() -> Result<Vec<Hash<32>>, Error> {}
+            }
+        })
+        .unwrap();
+        let crate_path: Path = parse_quote!(soroban_sdk);
+        let res = derive_client_impl(&crate_path, "Client", &item.fns());
+        let s = res.to_string();
+        assert!(
+            s.contains("cannot be used as a contract function return type"),
+            "expected error not found in: {s}"
+        );
+    }
+
+    #[test]
+    fn test_reject_hash_tuple_return_type() {
+        let item = parse2::<syn_ext::HasFnsItem>(quote! {
+            impl MyContract {
+                pub fn get_data() -> (u32, Hash<32>) {}
+            }
+        })
+        .unwrap();
+        let crate_path: Path = parse_quote!(soroban_sdk);
+        let res = derive_client_impl(&crate_path, "Client", &item.fns());
+        let s = res.to_string();
+        assert!(
+            s.contains("cannot be used as a contract function return type"),
+            "expected error not found in: {s}"
+        );
+    }
+}
+
+
