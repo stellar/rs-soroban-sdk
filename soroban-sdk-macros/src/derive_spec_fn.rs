@@ -193,6 +193,8 @@ pub fn derive_fn_spec(
         None
     };
 
+    let spec_xdr_doc = crate::spec::spec_xdr_doc();
+
     // Generated code.
     Ok(quote! {
         #exported
@@ -204,6 +206,7 @@ pub fn derive_fn_spec(
 
             #[allow(non_snake_case)]
             #(#attrs)*
+            #spec_xdr_doc
             pub const fn #spec_fn_ident() -> [u8; #ty::#spec_entry_ident.const_xdr_len()] {
                 const { #ty::#spec_entry_ident.const_to_xdr() }
             }

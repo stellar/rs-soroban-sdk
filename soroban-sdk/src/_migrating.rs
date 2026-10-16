@@ -28,10 +28,17 @@
 //!   shaking. As a result, spec markers are now only included in the contract Wasm for spec entries
 //!   that are events or errors triggered by panics][v30_spec_markers].
 //!
+//! - [The `spec_xdr` fns generated for types, events, errors, and functions return the spec entries
+//!   as the SDK emits them, with fully qualified names, and not as they appear in a built
+//!   contract][v30_spec_xdr_unprocessed]. The `xdr` fns of the `soroban-token-spec` and
+//!   `stellar-asset-spec` crates now return their specs with names reduced, and the unprocessed
+//!   specs are available from their `xdr_unprocessed` fns.
+//!
 //! [v30_cli_version]: v30_cli_version
 //! [v30_duplicate_names]: v30_duplicate_names
 //! [v30_muxed_contracts]: v30_muxed_contracts
 //! [v30_spec_markers]: v30_spec_markers
+//! [v30_spec_xdr_unprocessed]: v30_spec_xdr_unprocessed
 //! [`panic_with_error!`]: crate::panic_with_error
 //! [`Env::panic_with_error`]: crate::Env::panic_with_error
 //!
@@ -490,3 +497,4 @@ pub mod v30_cli_version;
 pub mod v30_duplicate_names;
 pub mod v30_muxed_contracts;
 pub mod v30_spec_markers;
+pub mod v30_spec_xdr_unprocessed;

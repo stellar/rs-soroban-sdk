@@ -1921,6 +1921,7 @@ name = "soroban-token-spec"
 version = "30.0.0"
 dependencies = [
  "soroban-sdk 30.0.0",
+ "soroban-spec 30.0.0",
  "soroban-token-sdk",
 ]
 

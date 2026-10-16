@@ -57,12 +57,12 @@ fn add_sep0011_asset_topic(entry: &mut ScSpecEntry) {
 #[test]
 fn test_stellar_asset_spec_includes_token_spec() -> Result<(), Error> {
     // Read token spec entries, strip docs, and add sep0011_asset to event topics.
-    let token_xdr = soroban_token_spec::xdr();
-    let token_cursor = std::io::Cursor::new(token_xdr);
     // Each spec defines its entries in its own crate, so their fully
     // qualified type and event names differ even where the entries otherwise
-    // match; names are reduced to simple names before comparing.
-    let token_entries: Vec<ScSpecEntry> =
+    // match; the reduced specs are compared.
+    let token_xdr = soroban_token_spec::xdr();
+    let token_cursor = std::io::Cursor::new(token_xdr);
+    let token_entries: HashSet<ScSpecEntry> =
         ScSpecEntry::read_xdr_iter(&mut Limited::new(token_cursor, Limits::none()))
             .map(|e| {
                 e.map(|mut e| {
@@ -73,16 +73,12 @@ fn test_stellar_asset_spec_includes_token_spec() -> Result<(), Error> {
                     e
                 })
             })
-            .collect::<Result<Vec<_>, _>>()?;
-    let token_entries: HashSet<ScSpecEntry> = soroban_spec::reduce::reduce(&token_entries)
-        .unwrap()
-        .into_entries()
-        .collect();
+            .collect::<Result<_, _>>()?;
 
     // Read stellar asset spec entries and strip docs.
     let stellar_asset_xdr = crate::xdr();
     let stellar_asset_cursor = std::io::Cursor::new(stellar_asset_xdr);
-    let stellar_asset_entries: Vec<ScSpecEntry> =
+    let stellar_asset_entries: HashSet<ScSpecEntry> =
         ScSpecEntry::read_xdr_iter(&mut Limited::new(stellar_asset_cursor, Limits::none()))
             .map(|e| {
                 e.map(|mut e| {
@@ -90,12 +86,7 @@ fn test_stellar_asset_spec_includes_token_spec() -> Result<(), Error> {
                     e
                 })
             })
-            .collect::<Result<Vec<_>, _>>()?;
-    let stellar_asset_entries: HashSet<ScSpecEntry> =
-        soroban_spec::reduce::reduce(&stellar_asset_entries)
-            .unwrap()
-            .into_entries()
-            .collect();
+            .collect::<Result<_, _>>()?;
 
     // Check that all token entries (with sep0011_asset added to events) are
     // present in the stellar asset spec (which uses SAC-specific event types
@@ -103,6 +94,68 @@ fn test_stellar_asset_spec_includes_token_spec() -> Result<(), Error> {
     assert!(
         token_entries.is_subset(&stellar_asset_entries),
         "StellarAssetSpec is missing entries from TokenSpec"
+    );
+    Ok(())
+}
+
+#[test]
+fn test_spec_xdr_unprocessed_names() -> Result<(), Error> {
+    let xdr = crate::xdr_unprocessed();
+    let cursor = std::io::Cursor::new(xdr);
+    let mut events = Vec::new();
+    for spec_entry in ScSpecEntry::read_xdr_iter(&mut Limited::new(cursor, Limits::none())) {
+        if let ScSpecEntry::EventV0(e) = spec_entry? {
+            events.push(e.name.to_utf8_string_lossy());
+        }
+    }
+    assert_eq!(
+        events,
+        [
+            "::stellar_asset_spec::Approve",
+            "::stellar_asset_spec::TransferWithAmountOnly",
+            "::stellar_asset_spec::Transfer",
+            "::stellar_asset_spec::TransferWithMuxedString",
+            "::stellar_asset_spec::TransferWithMuxedBytes",
+            "::stellar_asset_spec::Burn",
+            "::stellar_asset_spec::MintWithAmountOnly",
+            "::stellar_asset_spec::Mint",
+            "::stellar_asset_spec::MintWithMuxedString",
+            "::stellar_asset_spec::MintWithMuxedBytes",
+            "::stellar_asset_spec::Clawback",
+            "::stellar_asset_spec::SetAdmin",
+            "::stellar_asset_spec::SetAuthorized",
+        ]
+    );
+    Ok(())
+}
+
+#[test]
+fn test_spec_xdr_reduced_names() -> Result<(), Error> {
+    let xdr = crate::xdr();
+    let cursor = std::io::Cursor::new(xdr);
+    let mut events = Vec::new();
+    for spec_entry in ScSpecEntry::read_xdr_iter(&mut Limited::new(cursor, Limits::none())) {
+        if let ScSpecEntry::EventV0(e) = spec_entry? {
+            events.push(e.name.to_utf8_string_lossy());
+        }
+    }
+    assert_eq!(
+        events,
+        [
+            "Approve",
+            "TransferWithAmountOnly",
+            "Transfer",
+            "TransferWithMuxedString",
+            "TransferWithMuxedBytes",
+            "Burn",
+            "MintWithAmountOnly",
+            "Mint",
+            "MintWithMuxedString",
+            "MintWithMuxedBytes",
+            "Clawback",
+            "SetAdmin",
+            "SetAuthorized",
+        ]
     );
     Ok(())
 }
