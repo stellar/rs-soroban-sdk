@@ -178,7 +178,10 @@ pub(crate) const XDR_INPUT: &[&[u8]] = &[
     &SetAuthorized::spec_xdr(),
 ];
 
-pub(crate) const XDR_LEN: usize = soroban_spec::reduce_const::len(XDR_INPUT);
+pub(crate) const XDR_LEN: usize = match soroban_spec::reduce::reduce(XDR_INPUT, None) {
+    Ok(len) => len,
+    Err(_) => panic!("Stellar Asset contract spec cannot be reduced"),
+};
 
 /// Returns the contract spec for Stellar Asset contract.
 pub const fn xdr() -> &'static [u8] {
@@ -189,4 +192,10 @@ pub const fn xdr() -> &'static [u8] {
 ///
 /// Its type and event names are reduced to simple names, as `stellar contract
 /// build` reduces them for a contract.
-const XDR: [u8; XDR_LEN] = soroban_spec::reduce_const::reduce(XDR_INPUT);
+const XDR: [u8; XDR_LEN] = {
+    let mut out = [0u8; XDR_LEN];
+    if soroban_spec::reduce::reduce(XDR_INPUT, Some(&mut out)).is_err() {
+        panic!("Stellar Asset contract spec cannot be reduced");
+    }
+    out
+};

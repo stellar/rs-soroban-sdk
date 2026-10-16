@@ -1,118 +1,115 @@
+//! Reduce the user-defined type and event names in a contract spec from their
+//! fully qualified form to simple names.
+//!
+//! [`reduce`] is a const fn over the XDR encoding of the spec that needs
+//! neither std nor an allocator, so that it can reduce a spec at compile time,
+//! as the token and Stellar Asset contract spec crates do for the specs they
+//! publish, as well as at runtime, as tools do for a contract's spec.
+
 use crate::names::{GENERATED_NAMES, RESERVED_NAMES};
-use stellar_xdr::{ScSpecEntry, ScSpecTypeDef, ScSpecUdtUnionCaseV0, SC_SPEC_TYPE_NAME_LIMIT};
 
-/// The most bytes a spec type or event name can hold, which bounds the names
-/// the numbering below may produce.
-const NAME_LIMIT: usize = SC_SPEC_TYPE_NAME_LIMIT as usize;
+/// The most bytes a spec type or event name can hold
+/// (`SC_SPEC_TYPE_NAME_LIMIT`), which bounds the names the numbering may
+/// produce.
+const NAME_LIMIT: usize = 1024;
 
-/// A spec with its user-defined type names reduced to simple names. Each
-/// entry is paired with how its own name resolved.
-#[derive(Debug, Clone, PartialEq, Eq)]
-pub struct Reduced(pub Vec<Entry>);
+/// The most type and event names a spec can define for it to be reduced.
+const MAX_NAMES: usize = 1024;
 
-/// A reduced spec entry alongside how its name resolved.
-#[derive(Debug, Clone, PartialEq, Eq)]
-pub struct Entry {
-    /// The spec entry with every user-defined type name reduced.
-    pub entry: ScSpecEntry,
-    /// How the entry's own name resolved, or `None` for an entry that defines
-    /// no user-defined type or event name (a function).
-    pub rename: Option<Rename>,
-}
-
-impl Reduced {
-    /// The reduced spec entries, without their renames.
-    pub fn entries(&self) -> impl Iterator<Item = &ScSpecEntry> + '_ {
-        self.0.iter().map(|e| &e.entry)
-    }
-
-    /// Consumes into the reduced spec entries, without their renames.
-    pub fn into_entries(self) -> impl Iterator<Item = ScSpecEntry> {
-        self.0.into_iter().map(|e| e.entry)
-    }
-
-    /// How each entry that defines a name resolved it, in entry order.
-    pub fn renames(&self) -> impl Iterator<Item = &Rename> + '_ {
-        self.0.iter().filter_map(|e| e.rename.as_ref())
-    }
-}
+/// The deepest types can nest within a spec entry for it to be reduced.
+const DEPTH_LIMIT: u32 = 500;
 
 /// A spec that cannot be reduced.
 ///
 /// The names are byte strings as they appear in the spec.
-#[derive(thiserror::Error, Debug, Clone, PartialEq, Eq)]
-pub enum Error {
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub enum Error<'a> {
     /// The spec defines the same fully qualified user-defined type or event
     /// name more than once, with or without a leading `::`, which never
     /// happens, as a qualified name is the path of the one Rust type that
-    /// defines it. Simple names are not
-    /// checked, as specs from before qualified names can define the same
-    /// simple name more than once.
-    #[error("contract spec defines the name `{}` more than once", String::from_utf8_lossy(.0))]
-    DuplicateName(Vec<u8>),
+    /// defines it. Simple names are not checked, as specs from before
+    /// qualified names can define the same simple name more than once.
+    DuplicateName(&'a [u8]),
     /// The spec defines or refers to a name whose last segment is empty, such
     /// as `mycrate::` or an empty name, which no Rust type has.
-    #[error("contract spec contains the name `{}`, whose last segment is empty", String::from_utf8_lossy(.0))]
-    InvalidName(Vec<u8>),
+    InvalidName(&'a [u8]),
     /// The spec refers to a fully qualified name that it does not define. A
     /// spec defines every type it refers to, and a reference that reduced to
     /// its last segment could not be told apart from another type that shares
     /// it, so it would bind to the wrong type, or to none, in the generated
     /// code. Simple names are not checked, as they are not reduced.
-    #[error("contract spec refers to the name `{}`, which it does not define", String::from_utf8_lossy(.0))]
-    UndefinedName(Vec<u8>),
+    UndefinedName(&'a [u8]),
+    /// The spec defines more names than can be reduced.
+    TooManyNames,
+    /// The spec is not a valid XDR encoding of spec entries, or nests types
+    /// too deeply.
+    InvalidXdr,
+    /// The output is not the length of the reduced spec.
+    OutputLength,
 }
 
-/// How one user-defined type's name resolved during reduction.
+impl core::fmt::Display for Error<'_> {
+    fn fmt(&self, f: &mut core::fmt::Formatter<'_>) -> core::fmt::Result {
+        fn name(f: &mut core::fmt::Formatter<'_>, name: &[u8]) -> core::fmt::Result {
+            for chunk in name.utf8_chunks() {
+                f.write_str(chunk.valid())?;
+                if !chunk.invalid().is_empty() {
+                    f.write_str("\u{FFFD}")?;
+                }
+            }
+            Ok(())
+        }
+        match self {
+            Error::DuplicateName(n) => {
+                f.write_str("contract spec defines the name `")?;
+                name(f, n)?;
+                f.write_str("` more than once")
+            }
+            Error::InvalidName(n) => {
+                f.write_str("contract spec contains the name `")?;
+                name(f, n)?;
+                f.write_str("`, whose last segment is empty")
+            }
+            Error::UndefinedName(n) => {
+                f.write_str("contract spec refers to the name `")?;
+                name(f, n)?;
+                f.write_str("`, which it does not define")
+            }
+            Error::TooManyNames => f.write_str("contract spec defines too many names to reduce"),
+            Error::InvalidXdr => f.write_str("contract spec is not valid spec entry XDR"),
+            Error::OutputLength => {
+                f.write_str("output is not the length of the reduced contract spec")
+            }
+        }
+    }
+}
+
+impl core::error::Error for Error<'_> {}
+
+/// Reduces every user-defined type and event name in the spec from its fully
+/// qualified form (`mycrate::mymod::MyType`) to its simple name (`MyType`),
+/// rewriting every reference to a type to follow the type to its new name.
 ///
-/// Spec names are byte strings that are not guaranteed to be valid UTF-8, so
-/// the names are byte strings here too, preserved exactly as they appear in
-/// the spec. Decode lossily only for display.
-#[derive(Debug, Clone, PartialEq, Eq)]
-pub struct Rename {
-    /// The name as it appears in the input spec.
-    pub from: Vec<u8>,
-    /// The name the type has in the reduced spec.
-    pub to: Vec<u8>,
-}
-
-impl Rename {
-    /// Whether the type's name changed at all.
-    pub fn renamed(&self) -> bool {
-        self.from != self.to
-    }
-
-    /// Whether the type could not keep the last segment of its name because
-    /// another type claimed it first, or because it is the name of an SDK
-    /// type.
-    pub fn collision(&self) -> bool {
-        self.to != last_segment(&self.from)
-    }
-}
-
-/// Whether the name is qualified by a path, and so is reduced.
-fn is_qualified(name: &[u8]) -> bool {
-    name.windows(2).any(|w| w == b"::")
-}
-
-/// The name without a leading `::`, which names are compared by, so that a
-/// path from the crate root, such as `::mycrate::MyType` as the SDK writes
-/// it, and the same path without it, such as `mycrate::MyType` as other tools
-/// may write it, name the same type.
-fn unrooted(name: &[u8]) -> &[u8] {
-    name.strip_prefix(b"::").unwrap_or(name)
-}
-
-/// The last `::`-separated segment of a fully qualified type name.
-fn last_segment(name: &[u8]) -> &[u8] {
-    name.windows(2)
-        .rposition(|w| w == b"::")
-        .map_or(name, |i| &name[i + 2..])
-}
-
-/// Reduces every user-defined type name in the spec from its fully qualified
-/// form (`mycrate::mymod::MyType`) to its simple name (`MyType`), rewriting
-/// every reference to a type to follow the type to its new name.
+/// The spec is the XDR encoding of its entries, split across any number of
+/// slices, each holding zero or more whole entries. With no output, returns
+/// the length of the reduced spec. With an output, which must be exactly that
+/// length, writes the XDR encoding of the reduced entries into it, in the
+/// order of the spec, and returns the length.
+///
+/// ```
+/// # const SPEC: &[&[u8]] = &[];
+/// const LEN: usize = match soroban_spec::reduce::reduce(SPEC, None) {
+///     Ok(len) => len,
+///     Err(_) => panic!("spec cannot be reduced"),
+/// };
+/// const REDUCED: [u8; LEN] = {
+///     let mut out = [0u8; LEN];
+///     if soroban_spec::reduce::reduce(SPEC, Some(&mut out)).is_err() {
+///         panic!("spec cannot be reduced");
+///     }
+///     out
+/// };
+/// ```
 ///
 /// Two types whose names share a last segment stay distinct: the one whose
 /// full name sorts first keeps the simple name, and the rest are numbered
@@ -134,7 +131,7 @@ fn last_segment(name: &[u8]) -> &[u8] {
 /// Names are treated as byte strings throughout and preserved exactly; the
 /// spec does not guarantee valid UTF-8. When a numbered name would exceed the
 /// spec's name limit, the base is trimmed from its end to make room for the
-/// number.
+/// number, at a character boundary if the base is valid UTF-8.
 ///
 /// A simple name, one without `::`, is not reduced: it keeps its name, and
 /// claims it ahead of the qualified names, so specs from before qualified
@@ -155,168 +152,239 @@ fn last_segment(name: &[u8]) -> &[u8] {
 /// - If the spec defines or refers to a name whose last segment is empty.
 /// - If the spec defines the same qualified name more than once.
 /// - If the spec refers to a qualified name that it does not define.
-pub fn reduce(spec: &[ScSpecEntry]) -> Result<Reduced, Error> {
-    validate(spec)?;
-
-    // The names the spec defines, in definition order, each with the most
-    // bytes its entry's name field can hold. Events define a name too: the
-    // generated bindings declare a type for each event, so an event and a
-    // type sharing a simple name are a collision like any other.
-    let defined: Vec<(Vec<u8>, usize)> = spec
-        .iter()
-        .filter_map(|entry| match entry {
-            ScSpecEntry::UdtStructV0(s) => Some((s.name.to_vec(), NAME_LIMIT)),
-            ScSpecEntry::UdtUnionV0(u) => Some((u.name.to_vec(), NAME_LIMIT)),
-            ScSpecEntry::UdtEnumV0(e) => Some((e.name.to_vec(), NAME_LIMIT)),
-            ScSpecEntry::UdtErrorEnumV0(e) => Some((e.name.to_vec(), NAME_LIMIT)),
-            ScSpecEntry::EventV0(e) => Some((e.name.to_vec(), NAME_LIMIT)),
-            ScSpecEntry::FunctionV0(_) => None,
-        })
-        .collect();
-
-    // The names of SDK types are taken before any type claims a name, as code
-    // generated for a type with one of them would be rejected, or mistaken for
-    // the SDK type, and so are the names of the generated items, as a type with
-    // one of them would collide with the item. Simple names keep their names, unless reserved, so they
-    // claim them next. Then the qualified names claim their last segments in
-    // the order of their full names, rather than the order they are defined
-    // in, as the compiler does not guarantee the order it writes spec entries
-    // in. The first to claim a last segment keeps it, so a type only ever
-    // loses its own name to one that sorts before it, never to a number handed
-    // to a type that collided with something else.
-    let reserved = |name: &[u8]| {
-        RESERVED_NAMES
-            .iter()
-            .chain(GENERATED_NAMES)
-            .any(|r| r.as_bytes() == name)
+/// - If the spec defines more than 1024 names.
+/// - If the spec is not a valid encoding of spec entries.
+/// - If the output is not the length of the reduced spec.
+pub const fn reduce<'a>(spec: &[&'a [u8]], out: Option<&mut [u8]>) -> Result<usize, Error<'a>> {
+    let mut empty = [0u8; 0];
+    let (out, mode) = match out {
+        Some(out) => (out, Mode::Write),
+        None => (&mut empty as &mut [u8], Mode::Measure),
     };
-    let mut taken: std::collections::HashSet<Vec<u8>> = RESERVED_NAMES
-        .iter()
-        .chain(GENERATED_NAMES)
-        .map(|r| r.as_bytes().to_vec())
-        .chain(
-            defined
-                .iter()
-                .filter(|(name, _)| !is_qualified(name) && !reserved(name))
-                .map(|(name, _)| name.clone()),
-        )
-        .collect();
-    let mut qualified: Vec<&(Vec<u8>, usize)> = defined
-        .iter()
-        .filter(|(name, _)| is_qualified(name))
-        .collect();
-    qualified.sort_by(|(a, _), (b, _)| unrooted(a).cmp(unrooted(b)));
-    // A simple name can be defined more than once, and each definition is the
-    // same type to a reference, so a reserved simple name is numbered once.
-    let mut colliding: Vec<&(Vec<u8>, usize)> = defined
-        .iter()
-        .filter(|(name, _)| !is_qualified(name) && reserved(name))
-        .collect();
-    colliding.extend(
-        qualified
-            .into_iter()
-            .filter(|(name, _)| !taken.insert(last_segment(name).to_vec())),
-    );
-    colliding.sort_by(|(a, _), (b, _)| unrooted(a).cmp(unrooted(b)));
-    colliding.dedup_by(|(a, _), (b, _)| a == b);
+    let mut ctx = Ctx::new(out);
 
-    let mut numbered = std::collections::HashMap::new();
-    for (name, limit) in colliding {
-        let base = last_segment(name);
-        let mut n = 1u32;
-        let simple = loop {
-            n += 1;
-            let simple = numbered_name(base, n, *limit);
-            if taken.insert(simple.clone()) {
-                break simple;
-            }
-        };
-        numbered.insert(name.clone(), simple);
+    ctx.mode = Mode::Collect;
+    walk_spec(&mut ctx, spec);
+    if ctx.error.is_none() {
+        validate(&mut ctx);
+    }
+    if ctx.error.is_none() {
+        assign(&mut ctx);
+    }
+    if ctx.error.is_none() {
+        ctx.mode = mode;
+        ctx.at = 0;
+        walk_spec(&mut ctx, spec);
     }
 
-    let renames: Vec<Rename> = defined
-        .iter()
-        .map(|(name, _)| Rename {
-            from: name.clone(),
-            to: numbered
-                .get(name)
-                .cloned()
-                .unwrap_or_else(|| last_segment(name).to_vec()),
-        })
-        .collect();
+    if let Some(e) = ctx.error {
+        return Err(e);
+    }
+    if let Mode::Write = mode {
+        if ctx.at != ctx.out.len() {
+            return Err(Error::OutputLength);
+        }
+    }
+    Ok(ctx.at)
+}
 
-    let to: std::collections::HashMap<&[u8], &[u8]> = renames
-        .iter()
-        .map(|r| (unrooted(&r.from), r.to.as_slice()))
-        .collect();
-    let resolve = |name: &[u8]| -> Vec<u8> {
-        to.get(unrooted(name))
-            .map_or_else(|| last_segment(name).to_vec(), |t| t.to_vec())
-    };
+#[derive(Clone, Copy)]
+enum Mode {
+    /// Record the names the spec defines.
+    Collect,
+    /// Count the bytes of the reduced spec.
+    Measure,
+    /// Write the reduced spec.
+    Write,
+}
 
-    // Every resolved name is a fragment of a name that fit the spec, or was
-    // sized to the limit when numbered, so conversion back cannot fail.
-    let mut spec = spec.to_vec();
-    for entry in spec.iter_mut() {
-        match entry {
-            ScSpecEntry::FunctionV0(f) => {
-                for input in f.inputs.iter_mut() {
-                    rewrite_ty(&mut input.type_, &resolve);
-                }
-                for output in f.outputs.iter_mut() {
-                    rewrite_ty(output, &resolve);
-                }
-            }
-            ScSpecEntry::UdtStructV0(s) => {
-                s.name = resolve(&s.name).try_into().unwrap();
-                for field in s.fields.iter_mut() {
-                    rewrite_ty(&mut field.type_, &resolve);
-                }
-            }
-            ScSpecEntry::UdtUnionV0(u) => {
-                u.name = resolve(&u.name).try_into().unwrap();
-                for case in u.cases.iter_mut() {
-                    if let ScSpecUdtUnionCaseV0::TupleV0(t) = case {
-                        for ty in t.type_.iter_mut() {
-                            rewrite_ty(ty, &resolve);
-                        }
-                    }
-                }
-            }
-            ScSpecEntry::UdtEnumV0(e) => {
-                e.name = resolve(&e.name).try_into().unwrap();
-            }
-            ScSpecEntry::UdtErrorEnumV0(e) => {
-                e.name = resolve(&e.name).try_into().unwrap();
-            }
-            ScSpecEntry::EventV0(e) => {
-                e.name = resolve(&e.name).try_into().unwrap();
-                for p in e.params.iter_mut() {
-                    rewrite_ty(&mut p.type_, &resolve);
-                }
-            }
+/// A reduced name: a part of a name in the spec, followed by a number if it
+/// is numbered.
+#[derive(Clone, Copy)]
+struct Name<'a> {
+    base: &'a [u8],
+    /// The number, or zero if the name is not numbered.
+    n: u32,
+}
+
+impl<'a> Name<'a> {
+    const EMPTY: Name<'static> = Name { base: &[], n: 0 };
+
+    const fn new(base: &'a [u8]) -> Self {
+        Name { base, n: 0 }
+    }
+
+    /// The decimal digits of the number, right aligned, and how many there
+    /// are.
+    const fn digits(&self) -> ([u8; 10], usize) {
+        let mut digits = [0u8; 10];
+        let mut count = 0;
+        let mut v = self.n;
+        while v != 0 {
+            digits[digits.len() - 1 - count] = b'0' + (v % 10) as u8;
+            count += 1;
+            v /= 10;
+        }
+        (digits, count)
+    }
+
+    const fn len(&self) -> usize {
+        self.base.len() + self.digits().1
+    }
+
+    /// The byte at the index of the name.
+    const fn byte(&self, i: usize) -> u8 {
+        if i < self.base.len() {
+            self.base[i]
+        } else {
+            let (digits, count) = self.digits();
+            digits[digits.len() - count + i - self.base.len()]
         }
     }
 
-    // Pair each rewritten entry with how its name resolved. Renames were
-    // collected over the named entries in definition order, which is the order
-    // those entries appear here; a function defines no name and so has none.
-    let mut renames = renames.into_iter();
-    let entries = spec
-        .into_iter()
-        .map(|entry| {
-            let rename = match &entry {
-                ScSpecEntry::UdtStructV0(_)
-                | ScSpecEntry::UdtUnionV0(_)
-                | ScSpecEntry::UdtEnumV0(_)
-                | ScSpecEntry::UdtErrorEnumV0(_)
-                | ScSpecEntry::EventV0(_) => renames.next(),
-                ScSpecEntry::FunctionV0(_) => None,
-            };
-            Entry { entry, rename }
-        })
-        .collect();
-    Ok(Reduced(entries))
+    const fn eq(&self, other: &Name) -> bool {
+        let len = self.len();
+        if len != other.len() {
+            return false;
+        }
+        let mut i = 0;
+        while i < len {
+            if self.byte(i) != other.byte(i) {
+                return false;
+            }
+            i += 1;
+        }
+        true
+    }
+}
+
+struct Ctx<'a, 'o> {
+    mode: Mode,
+    /// The first reason the spec cannot be reduced.
+    error: Option<Error<'a>>,
+    /// The first reference whose last segment is empty, reported after the
+    /// definitions are checked.
+    invalid_ref: Option<&'a [u8]>,
+    /// How deeply the type being walked is nested.
+    depth: u32,
+    /// The names the spec defines, in definition order.
+    defined: [&'a [u8]; MAX_NAMES],
+    count: usize,
+    /// What each defined name reduces to.
+    assigned: [Name<'a>; MAX_NAMES],
+    out: &'o mut [u8],
+    at: usize,
+}
+
+impl<'a, 'o> Ctx<'a, 'o> {
+    const fn new(out: &'o mut [u8]) -> Self {
+        Ctx {
+            mode: Mode::Collect,
+            error: None,
+            invalid_ref: None,
+            depth: 0,
+            defined: [&[]; MAX_NAMES],
+            count: 0,
+            assigned: [Name::EMPTY; MAX_NAMES],
+            out,
+            at: 0,
+        }
+    }
+
+    const fn fail(&mut self, e: Error<'a>) {
+        if self.error.is_none() {
+            self.error = Some(e);
+        }
+    }
+
+    const fn ok(&self) -> bool {
+        self.error.is_none()
+    }
+}
+
+// Name helpers.
+
+const fn eq(a: &[u8], b: &[u8]) -> bool {
+    if a.len() != b.len() {
+        return false;
+    }
+    let mut i = 0;
+    while i < a.len() {
+        if a[i] != b[i] {
+            return false;
+        }
+        i += 1;
+    }
+    true
+}
+
+/// Whether `a` sorts before `b`, as byte slices compare.
+const fn less(a: &[u8], b: &[u8]) -> bool {
+    let mut i = 0;
+    while i < a.len() && i < b.len() {
+        if a[i] != b[i] {
+            return a[i] < b[i];
+        }
+        i += 1;
+    }
+    a.len() < b.len()
+}
+
+/// The index of the last `::` in the name.
+const fn last_sep(name: &[u8]) -> Option<usize> {
+    let mut i = name.len();
+    while i >= 2 {
+        i -= 1;
+        if name[i - 1] == b':' && name[i] == b':' {
+            return Some(i - 1);
+        }
+    }
+    None
+}
+
+/// Whether the name is qualified by a path, and so is reduced.
+const fn is_qualified(name: &[u8]) -> bool {
+    last_sep(name).is_some()
+}
+
+/// The name without a leading `::`, which names are compared by, so that a
+/// path from the crate root, such as `::mycrate::MyType` as the SDK writes
+/// it, and the same path without it, such as `mycrate::MyType` as other tools
+/// may write it, name the same type.
+const fn unrooted(name: &[u8]) -> &[u8] {
+    if name.len() >= 2 && name[0] == b':' && name[1] == b':' {
+        name.split_at(2).1
+    } else {
+        name
+    }
+}
+
+/// The last `::`-separated segment of a fully qualified type name.
+pub const fn last_segment(name: &[u8]) -> &[u8] {
+    match last_sep(name) {
+        Some(i) => name.split_at(i + 2).1,
+        None => name,
+    }
+}
+
+/// Whether the name is the name of an SDK type or of an item generated
+/// alongside the types.
+const fn is_reserved(name: &[u8]) -> bool {
+    let mut i = 0;
+    while i < RESERVED_NAMES.len() {
+        if eq(RESERVED_NAMES[i].as_bytes(), name) {
+            return true;
+        }
+        i += 1;
+    }
+    let mut i = 0;
+    while i < GENERATED_NAMES.len() {
+        if eq(GENERATED_NAMES[i].as_bytes(), name) {
+            return true;
+        }
+        i += 1;
+    }
+    false
 }
 
 /// The base followed by the number, keeping as much of the base as leaves room
@@ -324,162 +392,633 @@ pub fn reduce(spec: &[ScSpecEntry]) -> Result<Reduced, Error> {
 /// too long to hold the number too. A base that is valid UTF-8 is trimmed at a
 /// character boundary, so that the name stays valid UTF-8. The limit always
 /// exceeds the number's length, so a fitting name always exists.
-fn numbered_name(base: &[u8], n: u32, limit: usize) -> Vec<u8> {
-    let num = n.to_string();
-    let mut keep = base.len().min(limit.saturating_sub(num.len()));
-    if let Ok(base) = core::str::from_utf8(base) {
-        while !base.is_char_boundary(keep) {
+const fn numbered_name(base: &[u8], n: u32) -> Name<'_> {
+    let digits = Name { base: &[], n }.len();
+    let mut keep = base.len();
+    if keep > NAME_LIMIT - digits {
+        keep = NAME_LIMIT - digits;
+    }
+    if core::str::from_utf8(base).is_ok() {
+        while keep > 0 && keep < base.len() && base[keep] & 0xC0 == 0x80 {
             keep -= 1;
         }
     }
-    let mut name = base[..keep].to_vec();
-    name.extend_from_slice(num.as_bytes());
-    name
+    Name {
+        base: base.split_at(keep).0,
+        n,
+    }
 }
 
-/// Checks that the spec's names can be reduced.
+/// Checks that the defined names can be reduced. References are checked for
+/// an empty last segment as they are collected, and for being defined as they
+/// are resolved.
 ///
 /// The spec can come from an untrusted wasm, so every name is checked before
 /// any is reduced, rather than an invalid name reducing to an empty one that
 /// only fails when something later uses it.
-///
-/// # Errors
-///
-/// - If the spec defines or refers to a name whose last segment is empty,
-///   such as `mycrate::` or an empty name, as no Rust type has such a name.
-/// - If the spec defines the same qualified name more than once.
-/// - If the spec refers to a qualified name that it does not define.
-fn validate(spec: &[ScSpecEntry]) -> Result<(), Error> {
-    let mut defined = Vec::new();
-    let mut referred = Vec::new();
-    for entry in spec {
-        match entry {
-            ScSpecEntry::FunctionV0(f) => {
-                for input in f.inputs.iter() {
-                    udt_names(&input.type_, &mut referred);
-                }
-                for output in f.outputs.iter() {
-                    udt_names(output, &mut referred);
-                }
-            }
-            ScSpecEntry::UdtStructV0(s) => {
-                defined.push(s.name.as_ref());
-                for field in s.fields.iter() {
-                    udt_names(&field.type_, &mut referred);
-                }
-            }
-            ScSpecEntry::UdtUnionV0(u) => {
-                defined.push(u.name.as_ref());
-                for case in u.cases.iter() {
-                    if let ScSpecUdtUnionCaseV0::TupleV0(t) = case {
-                        for ty in t.type_.iter() {
-                            udt_names(ty, &mut referred);
-                        }
-                    }
-                }
-            }
-            ScSpecEntry::UdtEnumV0(e) => defined.push(e.name.as_ref()),
-            ScSpecEntry::UdtErrorEnumV0(e) => defined.push(e.name.as_ref()),
-            ScSpecEntry::EventV0(e) => {
-                defined.push(e.name.as_ref());
-                for p in e.params.iter() {
-                    udt_names(&p.type_, &mut referred);
-                }
-            }
+const fn validate(ctx: &mut Ctx) {
+    let mut i = 0;
+    while i < ctx.count {
+        if last_segment(ctx.defined[i]).is_empty() {
+            ctx.fail(Error::InvalidName(ctx.defined[i]));
+            return;
         }
+        i += 1;
     }
-
-    if let Some(name) = defined
-        .iter()
-        .chain(referred.iter())
-        .find(|name| last_segment(name).is_empty())
-    {
-        return Err(Error::InvalidName(name.to_vec()));
+    if let Some(name) = ctx.invalid_ref {
+        ctx.fail(Error::InvalidName(name));
+        return;
     }
-
     // Simple names can be defined more than once, by specs from before
     // qualified names, but a qualified name cannot, including one that is a
     // simple name once its leading `::` is removed, such as `::MyType` beside
     // `MyType`.
-    let simple: std::collections::HashSet<&[u8]> = defined
-        .iter()
-        .copied()
-        .filter(|name| !is_qualified(name))
-        .collect();
-    let mut qualified = std::collections::HashSet::new();
-    if let Some(name) = defined
-        .iter()
-        .filter(|name| is_qualified(name))
-        .find(|name| simple.contains(unrooted(name)) || !qualified.insert(unrooted(name)))
-    {
-        return Err(Error::DuplicateName(name.to_vec()));
-    }
-
-    if let Some(name) = referred
-        .iter()
-        .filter(|name| is_qualified(name))
-        .find(|name| !qualified.contains(unrooted(name)) && !simple.contains(unrooted(name)))
-    {
-        return Err(Error::UndefinedName(name.to_vec()));
-    }
-
-    Ok(())
-}
-
-/// Collects the name of every user-defined type reference in the type.
-fn udt_names<'a>(t: &'a ScSpecTypeDef, names: &mut Vec<&'a [u8]>) {
-    match t {
-        ScSpecTypeDef::Udt(u) => names.push(u.name.as_ref()),
-        ScSpecTypeDef::Option(o) => udt_names(&o.value_type, names),
-        ScSpecTypeDef::Result(r) => {
-            udt_names(&r.ok_type, names);
-            udt_names(&r.error_type, names);
-        }
-        ScSpecTypeDef::Vec(v) => udt_names(&v.element_type, names),
-        ScSpecTypeDef::Map(m) => {
-            udt_names(&m.key_type, names);
-            udt_names(&m.value_type, names);
-        }
-        ScSpecTypeDef::Tuple(tu) => {
-            for vt in tu.value_types.iter() {
-                udt_names(vt, names);
+    let mut i = 0;
+    while i < ctx.count {
+        let d = ctx.defined[i];
+        if is_qualified(d) {
+            let mut j = 0;
+            while j < ctx.count {
+                let e = ctx.defined[j];
+                let same = if is_qualified(e) {
+                    j < i && eq(unrooted(e), unrooted(d))
+                } else {
+                    eq(e, unrooted(d))
+                };
+                if same {
+                    ctx.fail(Error::DuplicateName(d));
+                    return;
+                }
+                j += 1;
             }
         }
-        _ => {}
+        i += 1;
     }
 }
 
-/// Rewrites the name of every user-defined type reference in the type.
-fn rewrite_ty(t: &mut ScSpecTypeDef, resolve: &dyn Fn(&[u8]) -> Vec<u8>) {
-    match t {
-        ScSpecTypeDef::Udt(u) => {
-            u.name = resolve(&u.name).try_into().unwrap();
+/// Resolves what each defined name reduces to.
+///
+/// The names of SDK types and generated items are taken before any type
+/// claims a name. Simple names keep their names, unless reserved, so they
+/// claim them next. Then the qualified names claim their last segments in the
+/// order of their full names, rather than the order they are defined in, as
+/// the compiler does not guarantee the order it writes spec entries in. The
+/// first to claim a last segment keeps it, so a type only ever loses its own
+/// name to one that sorts before it, never to a number handed to a type that
+/// collided with something else. The names that collided are numbered in the
+/// order of their full names.
+const fn assign(ctx: &mut Ctx) {
+    // Whether each defined name collided and so is numbered.
+    let mut colliding = [false; MAX_NAMES];
+    let mut i = 0;
+    while i < ctx.count {
+        let d = ctx.defined[i];
+        colliding[i] = if is_qualified(d) {
+            let base = last_segment(d);
+            let mut lost = is_reserved(base) || is_kept_simple_name(ctx, base);
+            let mut j = 0;
+            while !lost && j < ctx.count {
+                let e = ctx.defined[j];
+                lost =
+                    is_qualified(e) && less(unrooted(e), unrooted(d)) && eq(last_segment(e), base);
+                j += 1;
+            }
+            lost
+        } else {
+            is_reserved(d)
+        };
+        ctx.assigned[i] = Name::new(last_segment(d));
+        i += 1;
+    }
+
+    // The names numbered so far, which later numbers step over.
+    let mut numbered = [Name::EMPTY; MAX_NAMES];
+    let mut numbered_count = 0;
+    let mut prev: Option<&[u8]> = None;
+    loop {
+        // The colliding name that sorts next. A simple name can be defined
+        // more than once, and each definition is numbered once, the same.
+        let mut next: Option<usize> = None;
+        let mut i = 0;
+        while i < ctx.count {
+            let u = unrooted(ctx.defined[i]);
+            let after_prev = match prev {
+                Some(p) => less(p, u),
+                None => true,
+            };
+            let before_next = match next {
+                Some(n) => less(u, unrooted(ctx.defined[n])),
+                None => true,
+            };
+            if colliding[i] && after_prev && before_next {
+                next = Some(i);
+            }
+            i += 1;
         }
-        ScSpecTypeDef::Option(o) => rewrite_ty(&mut o.value_type, resolve),
-        ScSpecTypeDef::Result(r) => {
-            rewrite_ty(&mut r.ok_type, resolve);
-            rewrite_ty(&mut r.error_type, resolve);
+        let Some(m) = next else { break };
+        let u = unrooted(ctx.defined[m]);
+        let base = last_segment(ctx.defined[m]);
+        let mut n = 2u32;
+        let name = loop {
+            let candidate = numbered_name(base, n);
+            if !is_taken(ctx, &colliding, &numbered, numbered_count, &candidate) {
+                break candidate;
+            }
+            n += 1;
+        };
+        numbered[numbered_count] = name;
+        numbered_count += 1;
+        let mut i = 0;
+        while i < ctx.count {
+            if colliding[i] && eq(unrooted(ctx.defined[i]), u) {
+                ctx.assigned[i] = name;
+            }
+            i += 1;
         }
-        ScSpecTypeDef::Vec(v) => rewrite_ty(&mut v.element_type, resolve),
-        ScSpecTypeDef::Map(m) => {
-            rewrite_ty(&mut m.key_type, resolve);
-            rewrite_ty(&mut m.value_type, resolve);
+        prev = Some(u);
+    }
+}
+
+/// Whether the spec defines the name as a simple name that is not reserved,
+/// which keeps its name.
+const fn is_kept_simple_name(ctx: &Ctx, name: &[u8]) -> bool {
+    let mut i = 0;
+    while i < ctx.count {
+        let d = ctx.defined[i];
+        if !is_qualified(d) && !is_reserved(d) && eq(d, name) {
+            return true;
         }
-        ScSpecTypeDef::Tuple(tu) => {
-            for vt in tu.value_types.iter_mut() {
-                rewrite_ty(vt, resolve);
+        i += 1;
+    }
+    false
+}
+
+/// Whether a numbered name is already taken: by a reserved name, a simple
+/// name, the last segment a qualified name kept, or an earlier number.
+const fn is_taken(
+    ctx: &Ctx,
+    colliding: &[bool; MAX_NAMES],
+    numbered: &[Name; MAX_NAMES],
+    numbered_count: usize,
+    name: &Name,
+) -> bool {
+    let mut i = 0;
+    while i < RESERVED_NAMES.len() {
+        if name.eq(&Name::new(RESERVED_NAMES[i].as_bytes())) {
+            return true;
+        }
+        i += 1;
+    }
+    let mut i = 0;
+    while i < GENERATED_NAMES.len() {
+        if name.eq(&Name::new(GENERATED_NAMES[i].as_bytes())) {
+            return true;
+        }
+        i += 1;
+    }
+    let mut i = 0;
+    while i < ctx.count {
+        let d = ctx.defined[i];
+        let kept = if is_qualified(d) {
+            !colliding[i] && name.eq(&Name::new(last_segment(d)))
+        } else {
+            !is_reserved(d) && name.eq(&Name::new(d))
+        };
+        if kept {
+            return true;
+        }
+        i += 1;
+    }
+    let mut i = 0;
+    while i < numbered_count {
+        if numbered[i].eq(name) {
+            return true;
+        }
+        i += 1;
+    }
+    false
+}
+
+/// What a defined or referenced name reduces to.
+const fn resolve<'a>(ctx: &mut Ctx<'a, '_>, name: &'a [u8]) -> Name<'a> {
+    let mut i = 0;
+    while i < ctx.count {
+        if eq(unrooted(ctx.defined[i]), unrooted(name)) {
+            return ctx.assigned[i];
+        }
+        i += 1;
+    }
+    if is_qualified(name) {
+        ctx.fail(Error::UndefinedName(name));
+    }
+    Name::new(name)
+}
+
+// XDR walking. Each fn takes the offset of a value in `b` and returns the
+// offset after it, copying the value to the output with its names rewritten.
+// On invalid XDR the walk records the error and returns the end of `b`, and
+// the walk stops at the next check.
+
+const fn read_u32(ctx: &mut Ctx, b: &[u8], at: usize) -> u32 {
+    if at > b.len() || b.len() - at < 4 {
+        ctx.fail(Error::InvalidXdr);
+        return 0;
+    }
+    u32::from_be_bytes([b[at], b[at + 1], b[at + 2], b[at + 3]])
+}
+
+const fn padded(len: usize) -> usize {
+    len.div_ceil(4) * 4
+}
+
+const fn copy(ctx: &mut Ctx, b: &[u8], at: usize, n: usize) -> usize {
+    if at > b.len() || b.len() - at < n {
+        ctx.fail(Error::InvalidXdr);
+        return b.len();
+    }
+    if let Mode::Write = ctx.mode {
+        if ctx.at > ctx.out.len() || ctx.out.len() - ctx.at < n {
+            ctx.fail(Error::OutputLength);
+            return b.len();
+        }
+        let mut i = 0;
+        while i < n {
+            ctx.out[ctx.at + i] = b[at + i];
+            i += 1;
+        }
+    }
+    ctx.at += n;
+    at + n
+}
+
+/// The string at the offset, and the offset after it.
+const fn string<'a>(ctx: &mut Ctx<'a, '_>, b: &'a [u8], at: usize) -> (&'a [u8], usize) {
+    let len = read_u32(ctx, b, at) as usize;
+    if !ctx.ok() || b.len() - (at + 4) < len {
+        ctx.fail(Error::InvalidXdr);
+        return (&[], b.len());
+    }
+    let s = b.split_at(at + 4).1.split_at(len).0;
+    let next = at + 4 + padded(len);
+    if next > b.len() {
+        ctx.fail(Error::InvalidXdr);
+        return (&[], b.len());
+    }
+    (s, next)
+}
+
+const fn copy_u32(ctx: &mut Ctx, b: &[u8], at: usize) -> usize {
+    copy(ctx, b, at, 4)
+}
+
+const fn copy_string<'a>(ctx: &mut Ctx<'a, '_>, b: &'a [u8], at: usize) -> usize {
+    let (s, next) = string(ctx, b, at);
+    if !ctx.ok() {
+        return next;
+    }
+    copy(ctx, b, at, 4 + padded(s.len()))
+}
+
+/// Copies the length of an array, returning it and the offset after it.
+const fn copy_len(ctx: &mut Ctx, b: &[u8], at: usize) -> (u32, usize) {
+    let n = read_u32(ctx, b, at);
+    (n, copy_u32(ctx, b, at))
+}
+
+/// Writes a name as an XDR string.
+const fn emit(ctx: &mut Ctx, name: &Name) {
+    let len = name.len();
+    copy(ctx, &(len as u32).to_be_bytes(), 0, 4);
+    copy(ctx, name.base, 0, name.base.len());
+    let (digits, count) = name.digits();
+    copy(ctx, &digits, digits.len() - count, count);
+    copy(ctx, &[0u8; 3], 0, padded(len) - len);
+}
+
+/// A name that an entry defines.
+const fn def_name<'a>(ctx: &mut Ctx<'a, '_>, b: &'a [u8], at: usize) -> usize {
+    let (name, next) = string(ctx, b, at);
+    if !ctx.ok() {
+        return next;
+    }
+    if let Mode::Collect = ctx.mode {
+        if ctx.count == MAX_NAMES {
+            ctx.fail(Error::TooManyNames);
+            return b.len();
+        }
+        ctx.defined[ctx.count] = name;
+        ctx.count += 1;
+    } else {
+        let name = resolve(ctx, name);
+        emit(ctx, &name);
+    }
+    next
+}
+
+/// A name that a type refers to.
+const fn ref_name<'a>(ctx: &mut Ctx<'a, '_>, b: &'a [u8], at: usize) -> usize {
+    let (name, next) = string(ctx, b, at);
+    if !ctx.ok() {
+        return next;
+    }
+    if let Mode::Collect = ctx.mode {
+        if ctx.invalid_ref.is_none() && last_segment(name).is_empty() {
+            ctx.invalid_ref = Some(name);
+        }
+    } else {
+        let name = resolve(ctx, name);
+        emit(ctx, &name);
+    }
+    next
+}
+
+const fn walk_spec<'a>(ctx: &mut Ctx<'a, '_>, spec: &[&'a [u8]]) {
+    let mut i = 0;
+    while i < spec.len() && ctx.ok() {
+        let b = spec[i];
+        let mut at = 0;
+        while at < b.len() && ctx.ok() {
+            at = walk_entry(ctx, b, at);
+        }
+        i += 1;
+    }
+}
+
+/// An `SCSpecEntry`.
+const fn walk_entry<'a>(ctx: &mut Ctx<'a, '_>, b: &'a [u8], at: usize) -> usize {
+    let kind = read_u32(ctx, b, at);
+    let mut at = copy_u32(ctx, b, at);
+    match kind {
+        // SC_SPEC_ENTRY_FUNCTION_V0: doc, name, inputs (doc, name, type),
+        // outputs.
+        0 => {
+            at = copy_string(ctx, b, at);
+            at = copy_string(ctx, b, at);
+            let (n, next) = copy_len(ctx, b, at);
+            at = next;
+            let mut i = 0;
+            while i < n && ctx.ok() {
+                at = copy_string(ctx, b, at);
+                at = copy_string(ctx, b, at);
+                at = walk_type(ctx, b, at);
+                i += 1;
+            }
+            let (n, next) = copy_len(ctx, b, at);
+            at = next;
+            let mut i = 0;
+            while i < n && ctx.ok() {
+                at = walk_type(ctx, b, at);
+                i += 1;
             }
         }
-        _ => {}
+        // SC_SPEC_ENTRY_UDT_STRUCT_V0: doc, lib, name, fields (doc, name,
+        // type).
+        1 => {
+            at = copy_string(ctx, b, at);
+            at = copy_string(ctx, b, at);
+            at = def_name(ctx, b, at);
+            let (n, next) = copy_len(ctx, b, at);
+            at = next;
+            let mut i = 0;
+            while i < n && ctx.ok() {
+                at = copy_string(ctx, b, at);
+                at = copy_string(ctx, b, at);
+                at = walk_type(ctx, b, at);
+                i += 1;
+            }
+        }
+        // SC_SPEC_ENTRY_UDT_UNION_V0: doc, lib, name, cases.
+        2 => {
+            at = copy_string(ctx, b, at);
+            at = copy_string(ctx, b, at);
+            at = def_name(ctx, b, at);
+            let (n, next) = copy_len(ctx, b, at);
+            at = next;
+            let mut i = 0;
+            while i < n && ctx.ok() {
+                let case = read_u32(ctx, b, at);
+                at = copy_u32(ctx, b, at);
+                // Void and tuple cases: doc, name.
+                at = copy_string(ctx, b, at);
+                at = copy_string(ctx, b, at);
+                match case {
+                    0 => {}
+                    // Tuple cases: types.
+                    1 => {
+                        let (n, next) = copy_len(ctx, b, at);
+                        at = next;
+                        let mut j = 0;
+                        while j < n && ctx.ok() {
+                            at = walk_type(ctx, b, at);
+                            j += 1;
+                        }
+                    }
+                    _ => ctx.fail(Error::InvalidXdr),
+                }
+                i += 1;
+            }
+        }
+        // SC_SPEC_ENTRY_UDT_ENUM_V0 and SC_SPEC_ENTRY_UDT_ERROR_ENUM_V0: doc,
+        // lib, name, cases (doc, name, value).
+        3 | 4 => {
+            at = copy_string(ctx, b, at);
+            at = copy_string(ctx, b, at);
+            at = def_name(ctx, b, at);
+            let (n, next) = copy_len(ctx, b, at);
+            at = next;
+            let mut i = 0;
+            while i < n && ctx.ok() {
+                at = copy_string(ctx, b, at);
+                at = copy_string(ctx, b, at);
+                at = copy_u32(ctx, b, at);
+                i += 1;
+            }
+        }
+        // SC_SPEC_ENTRY_EVENT_V0: doc, lib, name, prefix topics, params (doc,
+        // name, type, location), data format.
+        5 => {
+            at = copy_string(ctx, b, at);
+            at = copy_string(ctx, b, at);
+            at = def_name(ctx, b, at);
+            let (n, next) = copy_len(ctx, b, at);
+            at = next;
+            let mut i = 0;
+            while i < n && ctx.ok() {
+                at = copy_string(ctx, b, at);
+                i += 1;
+            }
+            let (n, next) = copy_len(ctx, b, at);
+            at = next;
+            let mut i = 0;
+            while i < n && ctx.ok() {
+                at = copy_string(ctx, b, at);
+                at = copy_string(ctx, b, at);
+                at = walk_type(ctx, b, at);
+                at = copy_u32(ctx, b, at);
+                i += 1;
+            }
+            at = copy_u32(ctx, b, at);
+        }
+        _ => ctx.fail(Error::InvalidXdr),
+    }
+    if ctx.ok() {
+        at
+    } else {
+        b.len()
     }
 }
 
-#[cfg(test)]
+/// An `SCSpecTypeDef`.
+const fn walk_type<'a>(ctx: &mut Ctx<'a, '_>, b: &'a [u8], at: usize) -> usize {
+    if ctx.depth == DEPTH_LIMIT {
+        ctx.fail(Error::InvalidXdr);
+        return b.len();
+    }
+    ctx.depth += 1;
+    let ty = read_u32(ctx, b, at);
+    let mut at = copy_u32(ctx, b, at);
+    match ty {
+        // Types without a payload.
+        0..=14 | 16 | 17 | 19 | 20 => {}
+        // Option and vec: a type.
+        1000 | 1002 => at = walk_type(ctx, b, at),
+        // Result and map: two types.
+        1001 | 1004 => {
+            at = walk_type(ctx, b, at);
+            at = walk_type(ctx, b, at);
+        }
+        // Tuple: types.
+        1005 => {
+            let (n, next) = copy_len(ctx, b, at);
+            at = next;
+            let mut i = 0;
+            while i < n && ctx.ok() {
+                at = walk_type(ctx, b, at);
+                i += 1;
+            }
+        }
+        // BytesN: a length.
+        1006 => at = copy_u32(ctx, b, at),
+        // UDT: a name.
+        2000 => at = ref_name(ctx, b, at),
+        _ => ctx.fail(Error::InvalidXdr),
+    }
+    ctx.depth -= 1;
+    at
+}
+
+#[cfg(all(test, feature = "std"))]
 mod test {
-    use super::{numbered_name, reduce, Error, Rename, NAME_LIMIT};
+    use super::{last_segment, numbered_name, NAME_LIMIT};
+    use stellar_xdr::{Limited, Limits, ReadXdr, WriteXdr};
     use stellar_xdr::{
         ScSpecEntry, ScSpecTypeDef, ScSpecTypeUdt, ScSpecUdtStructFieldV0, ScSpecUdtStructV0,
     };
+
+    // The tests check the reduced entries and how each defined name resolved,
+    // so they reduce through this adapter, which encodes the entries, reduces
+    // the encoding, decodes the result, and pairs each entry's name before
+    // and after.
+
+    #[derive(Debug, Clone, PartialEq, Eq)]
+    enum Error {
+        DuplicateName(Vec<u8>),
+        InvalidName(Vec<u8>),
+        UndefinedName(Vec<u8>),
+        Other(String),
+    }
+
+    impl From<super::Error<'_>> for Error {
+        fn from(e: super::Error<'_>) -> Self {
+            match e {
+                super::Error::DuplicateName(n) => Error::DuplicateName(n.to_vec()),
+                super::Error::InvalidName(n) => Error::InvalidName(n.to_vec()),
+                super::Error::UndefinedName(n) => Error::UndefinedName(n.to_vec()),
+                e => Error::Other(e.to_string()),
+            }
+        }
+    }
+
+    #[derive(Debug, Clone, PartialEq, Eq)]
+    struct Rename {
+        from: Vec<u8>,
+        to: Vec<u8>,
+    }
+
+    impl Rename {
+        fn renamed(&self) -> bool {
+            self.from != self.to
+        }
+
+        fn collision(&self) -> bool {
+            self.to != last_segment(&self.from)
+        }
+    }
+
+    #[derive(Debug, Clone, PartialEq, Eq)]
+    struct Reduced(Vec<ScSpecEntry>, Vec<Rename>);
+
+    impl Reduced {
+        fn entries(&self) -> impl Iterator<Item = &ScSpecEntry> + '_ {
+            self.0.iter()
+        }
+
+        fn renames(&self) -> impl Iterator<Item = &Rename> + '_ {
+            self.1.iter()
+        }
+    }
+
+    fn defined_name(entry: &ScSpecEntry) -> Option<Vec<u8>> {
+        match entry {
+            ScSpecEntry::FunctionV0(_) => None,
+            ScSpecEntry::UdtStructV0(e) => Some(e.name.to_vec()),
+            ScSpecEntry::UdtUnionV0(e) => Some(e.name.to_vec()),
+            ScSpecEntry::UdtEnumV0(e) => Some(e.name.to_vec()),
+            ScSpecEntry::UdtErrorEnumV0(e) => Some(e.name.to_vec()),
+            ScSpecEntry::EventV0(e) => Some(e.name.to_vec()),
+        }
+    }
+
+    fn encode(spec: &[ScSpecEntry]) -> Vec<Vec<u8>> {
+        spec.iter()
+            .map(|e| e.to_xdr(Limits::none()).unwrap())
+            .collect()
+    }
+
+    fn reduce_xdr(xdr: &[Vec<u8>]) -> Result<Vec<u8>, Error> {
+        let slices: Vec<&[u8]> = xdr.iter().map(Vec::as_slice).collect();
+        let mut out = vec![0u8; super::reduce(&slices, None)?];
+        let len = super::reduce(&slices, Some(&mut out))?;
+        assert_eq!(len, out.len());
+        Ok(out)
+    }
+
+    fn reduce(spec: &[ScSpecEntry]) -> Result<Reduced, Error> {
+        let out = reduce_xdr(&encode(spec))?;
+        let entries = ScSpecEntry::read_xdr_iter(&mut Limited::new(
+            std::io::Cursor::new(out),
+            Limits::none(),
+        ))
+        .collect::<Result<Vec<_>, _>>()
+        .unwrap();
+        assert_eq!(entries.len(), spec.len());
+        let renames = spec
+            .iter()
+            .zip(&entries)
+            .filter_map(|(before, after)| {
+                Some(Rename {
+                    from: defined_name(before)?,
+                    to: defined_name(after).unwrap(),
+                })
+            })
+            .collect();
+        Ok(Reduced(entries, renames))
+    }
+
+    fn numbered(base: &[u8], n: u32) -> Vec<u8> {
+        let name = numbered_name(base, n);
+        (0..name.len()).map(|i| name.byte(i)).collect()
+    }
 
     fn struct_entry_bytes(name: &[u8], field_type_names: &[&[u8]]) -> ScSpecEntry {
         ScSpecEntry::UdtStructV0(ScSpecUdtStructV0 {
@@ -1054,7 +1593,7 @@ mod test {
         let base = "x".repeat(1024).into_bytes();
         let mut expected = "x".repeat(1023).into_bytes();
         expected.push(b'2');
-        assert_eq!(numbered_name(&base, 2, NAME_LIMIT), expected);
+        assert_eq!(numbered(&base, 2), expected);
     }
 
     #[test]
@@ -1066,6 +1605,107 @@ mod test {
         assert_eq!(base.len(), 1024);
         let mut expected = "x".repeat(1022).into_bytes();
         expected.push(b'2');
-        assert_eq!(numbered_name(&base, 2, NAME_LIMIT), expected);
+        assert_eq!(numbered(&base, 2), expected);
+    }
+
+    #[test]
+    fn the_name_limit_matches_the_xdr() {
+        assert_eq!(NAME_LIMIT, stellar_xdr::SC_SPEC_TYPE_NAME_LIMIT as usize);
+    }
+
+    #[test]
+    fn a_spec_split_across_slices_reduces_as_one() {
+        let spec = [
+            struct_entry("a::MyType", &["b::MyType"]),
+            struct_entry("b::MyType", &[]),
+            event_entry("c::MyEvent", &["a::MyType"]),
+        ];
+        let whole = encode(&spec).concat();
+        assert_eq!(reduce_xdr(&encode(&spec)), reduce_xdr(&[whole]));
+    }
+
+    #[test]
+    fn an_output_of_the_wrong_length_is_an_error() {
+        let xdr = encode(&[struct_entry("a::MyType", &[])]);
+        let slices: Vec<&[u8]> = xdr.iter().map(Vec::as_slice).collect();
+        let len = super::reduce(&slices, None).unwrap();
+        for wrong in [0, len - 1, len + 1] {
+            let mut out = vec![0u8; wrong];
+            assert_eq!(
+                super::reduce(&slices, Some(&mut out)),
+                Err(super::Error::OutputLength)
+            );
+        }
+    }
+
+    #[test]
+    fn invalid_xdr_is_an_error() {
+        let xdr = encode(&[
+            struct_entry("a::MyType", &["a::MyType"]),
+            event_entry("a::MyEvent", &["a::MyType"]),
+        ])
+        .concat();
+        // Every truncation of a valid spec, other than at an entry boundary.
+        for len in 1..xdr.len() {
+            let truncated = &xdr[..len];
+            let result = super::reduce(&[truncated], None);
+            let boundary = ScSpecEntry::read_xdr_iter(&mut Limited::new(
+                std::io::Cursor::new(truncated),
+                Limits::none(),
+            ))
+            .collect::<Result<Vec<_>, _>>()
+            .is_ok();
+            if !boundary {
+                assert_eq!(result, Err(super::Error::InvalidXdr), "len {len}");
+            }
+        }
+        // An unknown entry kind, type, and union case.
+        assert_eq!(
+            super::reduce(&[&[0, 0, 0, 6]], None),
+            Err(super::Error::InvalidXdr)
+        );
+        // A length far beyond the input.
+        assert_eq!(
+            super::reduce(&[&[0, 0, 0, 1, 0xff, 0xff, 0xff, 0xff]], None),
+            Err(super::Error::InvalidXdr)
+        );
+    }
+
+    #[test]
+    fn types_nested_too_deeply_are_an_error() {
+        // A function whose output is an option of an option of ... of a u32.
+        let mut xdr = vec![0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, b'f', 0, 0, 0];
+        xdr.extend([0, 0, 0, 0, 0, 0, 0, 1]);
+        for _ in 0..100_000 {
+            xdr.extend(1000u32.to_be_bytes());
+        }
+        xdr.extend(4u32.to_be_bytes());
+        assert_eq!(super::reduce(&[&xdr], None), Err(super::Error::InvalidXdr));
+    }
+
+    #[test]
+    fn a_spec_can_be_reduced_in_a_const() {
+        const SPEC: &[&[u8]] = &[&[
+            0, 0, 0, 1, // struct
+            0, 0, 0, 0, // doc
+            0, 0, 0, 0, // lib
+            0, 0, 0, 6, b'a', b':', b':', b'M', b'y', b'T', 0, 0, // name
+            0, 0, 0, 0, // fields
+        ]];
+        const LEN: usize = match super::reduce(SPEC, None) {
+            Ok(len) => len,
+            Err(_) => panic!(),
+        };
+        const REDUCED: [u8; LEN] = {
+            let mut out = [0u8; LEN];
+            if super::reduce(SPEC, Some(&mut out)).is_err() {
+                panic!();
+            }
+            out
+        };
+        assert_eq!(
+            REDUCED,
+            [0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3, b'M', b'y', b'T', 0, 0, 0, 0, 0]
+        );
     }
 }

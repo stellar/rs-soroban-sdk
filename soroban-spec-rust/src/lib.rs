@@ -8,7 +8,10 @@ use std::{fs, io};
 use proc_macro2::TokenStream;
 use quote::quote;
 use sha2::{Digest, Sha256};
-use stellar_xdr::{ScMetaEntry, ScSpecEntry, ScSpecTypeDef, ScSpecTypeUdt, ScSpecUdtUnionCaseV0};
+use stellar_xdr::{
+    Limited, Limits, ReadXdr, ScMetaEntry, ScSpecEntry, ScSpecTypeDef, ScSpecTypeUdt,
+    ScSpecUdtUnionCaseV0, WriteXdr,
+};
 use syn::Error;
 
 use soroban_spec::read::{from_wasm, FromWasmError};
@@ -191,9 +194,7 @@ pub fn generate_without_file_with_options(
     // simple name is within a module path's length of the limit therefore
     // generates code that fails to compile. This is a known limitation, as
     // type names that long are not expected.
-    let specs: Vec<ScSpecEntry> = soroban_spec::reduce::reduce(&specs)?
-        .into_entries()
-        .collect();
+    let specs = reduce(&specs)?;
     let specs: &[ScSpecEntry] = &specs;
 
     let mut spec_fns = Vec::new();
@@ -248,6 +249,22 @@ pub fn generate_without_file_with_options(
         #(#error_enums)*
         #(#events)*
     })
+}
+
+/// Reduces the spec's user-defined type and event names to simple names.
+fn reduce(specs: &[ScSpecEntry]) -> Result<Vec<ScSpecEntry>, GenerateError> {
+    let xdr = specs
+        .iter()
+        .map(|s| s.to_xdr(Limits::none()))
+        .collect::<Result<Vec<_>, _>>()
+        .map_err(|e| GenerateError::Reduce(e.to_string()))?;
+    let xdr: Vec<&[u8]> = xdr.iter().map(Vec::as_slice).collect();
+    let reduce_err = |e: soroban_spec::reduce::Error| GenerateError::Reduce(e.to_string());
+    let mut out = vec![0; soroban_spec::reduce::reduce(&xdr, None).map_err(reduce_err)?];
+    soroban_spec::reduce::reduce(&xdr, Some(&mut out)).map_err(reduce_err)?;
+    ScSpecEntry::read_xdr_iter(&mut Limited::new(io::Cursor::new(out), Limits::none()))
+        .collect::<Result<Vec<_>, _>>()
+        .map_err(|e| GenerateError::Reduce(e.to_string()))
 }
 
 /// Contracts built with earlier SDKs emit any type named `Error` in their

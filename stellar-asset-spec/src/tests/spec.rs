@@ -10,21 +10,30 @@ use std::vec::Vec;
 
 #[test]
 fn test_stellar_asset_spec_xdr_is_reduced() -> Result<(), Error> {
-    // The spec is the entries the macros emit, with their names reduced as
+    // The macros name events by their fully qualified path, and the published
+    // spec is the same entries with those names reduced to simple names, as
     // `stellar contract build` reduces them.
-    let raw = XDR_INPUT.concat();
-    let entries =
-        ScSpecEntry::read_xdr_iter(&mut Limited::new(std::io::Cursor::new(raw), Limits::none()))
-            .collect::<Result<Vec<_>, _>>()?;
-    let reduced = soroban_spec::reduce::reduce(&entries).unwrap();
-    assert!(reduced.renames().any(|r| r.renamed()));
-    let expected: Vec<ScSpecEntry> = reduced.into_entries().collect();
-    let actual = ScSpecEntry::read_xdr_iter(&mut Limited::new(
-        std::io::Cursor::new(crate::xdr()),
-        Limits::none(),
-    ))
-    .collect::<Result<Vec<_>, _>>()?;
-    assert_eq!(actual, expected);
+    let read = |xdr: &[u8]| {
+        ScSpecEntry::read_xdr_iter(&mut Limited::new(std::io::Cursor::new(xdr), Limits::none()))
+            .collect::<Result<Vec<_>, _>>()
+    };
+    let raw = read(&XDR_INPUT.concat())?;
+    let reduced = read(crate::xdr())?;
+    assert_eq!(raw.len(), reduced.len());
+    let mut events = 0;
+    for (raw, reduced) in raw.iter().zip(&reduced) {
+        match (raw, reduced) {
+            (ScSpecEntry::EventV0(raw), ScSpecEntry::EventV0(reduced)) => {
+                let raw_name: &[u8] = raw.name.as_ref();
+                let reduced_name: &[u8] = reduced.name.as_ref();
+                assert!(raw_name.windows(2).any(|w| w == b"::"));
+                assert_eq!(reduced_name, soroban_spec::reduce::last_segment(raw_name));
+                events += 1;
+            }
+            (raw, reduced) => assert_eq!(raw, reduced),
+        }
+    }
+    assert!(events > 0);
     Ok(())
 }
 
