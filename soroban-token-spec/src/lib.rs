@@ -93,24 +93,15 @@ pub(crate) const XDR_LEN: usize = {
 /// path, such as `::soroban_token_sdk::events::Approve`. A contract build
 /// reduces those names, but this spec is never built into a contract, so this
 /// fn reduces them with `soroban_spec::reduce::reduce`.
-pub fn xdr() -> Result<Vec<u8>, Error> {
+pub fn xdr() -> Vec<u8> {
     use soroban_sdk::xdr::{Limits, WriteXdr};
-    let entries = soroban_spec::read::parse_raw(xdr_unprocessed())?;
-    let reduced = soroban_spec::reduce::reduce(&entries)?;
+    let entries = soroban_spec::read::parse_raw(xdr_unprocessed()).expect("token spec decodes");
+    let reduced = soroban_spec::reduce::reduce(&entries).expect("token spec reduces");
     let mut out = Vec::new();
     for entry in reduced.into_entries() {
-        out.extend(entry.to_xdr(Limits::none())?);
+        out.extend(entry.to_xdr(Limits::none()).expect("token spec encodes"));
     }
-    Ok(out)
-}
-
-/// An error reducing the names in the spec.
-#[derive(thiserror::Error, Debug)]
-pub enum Error {
-    #[error(transparent)]
-    Xdr(#[from] soroban_sdk::xdr::Error),
-    #[error(transparent)]
-    Reduce(#[from] soroban_spec::reduce::Error),
+    out
 }
 
 /// Returns the contract spec for a SEP-41 Token contract, with the names of its

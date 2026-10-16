@@ -14,8 +14,7 @@
 //! contract.
 //!
 //! The `soroban-token-spec` and `stellar-asset-spec` crates assemble their specs from these fns.
-//! Their `xdr` fns now return the spec with its names reduced, are no longer `const`, and return a
-//! `Result`. The unprocessed spec is available from their `const` `xdr_unprocessed` fns.
+//! Their `xdr` fns now return the spec with its names reduced, and are no longer `const`. The unprocessed spec is available from their `const` `xdr_unprocessed` fns.
 //!
 //! ## Example
 //!
@@ -46,8 +45,8 @@
 //! and publish it, or give it to other tools, need to reduce its names with
 //! `soroban_spec::reduce::reduce`, as `stellar contract build` does. Tools that need the entries in
 //! a built contract need to read the spec from the built Wasm. Callers of the `xdr` fns of
-//! `soroban-token-spec` and `stellar-asset-spec` need to handle the `Result`, and callers that need
-//! a `const` spec need to use `xdr_unprocessed`.
+//! `soroban-token-spec` and `stellar-asset-spec` that need a `const` spec need to use
+//! `xdr_unprocessed`.
 //!
 //! [v30_spec_markers]: super::v30_spec_markers
 //! [v30_duplicate_names]: super::v30_duplicate_names

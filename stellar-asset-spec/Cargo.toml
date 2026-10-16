@@ -15,7 +15,6 @@ doctest = false
 
 [dependencies]
 soroban-spec = { workspace = true, features = ["std"] }
-thiserror = "1.0.32"
 soroban-sdk = { workspace = true }
 soroban-token-spec = { workspace = true }
 

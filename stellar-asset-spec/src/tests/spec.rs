@@ -140,7 +140,7 @@ fn test_spec_xdr_unprocessed_names() -> Result<(), Error> {
 
 #[test]
 fn test_spec_xdr_reduced_names() -> Result<(), Error> {
-    let xdr = crate::xdr().unwrap();
+    let xdr = crate::xdr();
     let cursor = std::io::Cursor::new(xdr);
     let mut events = Vec::new();
     for spec_entry in ScSpecEntry::read_xdr_iter(&mut Limited::new(cursor, Limits::none())) {
