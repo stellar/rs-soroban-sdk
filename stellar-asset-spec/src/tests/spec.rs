@@ -108,6 +108,37 @@ fn test_stellar_asset_spec_includes_token_spec() -> Result<(), Error> {
 }
 
 #[test]
+fn test_spec_xdr_unprocessed_names() -> Result<(), Error> {
+    let xdr = crate::xdr_unprocessed();
+    let cursor = std::io::Cursor::new(xdr);
+    let mut events = Vec::new();
+    for spec_entry in ScSpecEntry::read_xdr_iter(&mut Limited::new(cursor, Limits::none())) {
+        if let ScSpecEntry::EventV0(e) = spec_entry? {
+            events.push(e.name.to_utf8_string_lossy());
+        }
+    }
+    assert_eq!(
+        events,
+        [
+            "::stellar_asset_spec::Approve",
+            "::stellar_asset_spec::TransferWithAmountOnly",
+            "::stellar_asset_spec::Transfer",
+            "::stellar_asset_spec::TransferWithMuxedString",
+            "::stellar_asset_spec::TransferWithMuxedBytes",
+            "::stellar_asset_spec::Burn",
+            "::stellar_asset_spec::MintWithAmountOnly",
+            "::stellar_asset_spec::Mint",
+            "::stellar_asset_spec::MintWithMuxedString",
+            "::stellar_asset_spec::MintWithMuxedBytes",
+            "::stellar_asset_spec::Clawback",
+            "::stellar_asset_spec::SetAdmin",
+            "::stellar_asset_spec::SetAuthorized",
+        ]
+    );
+    Ok(())
+}
+
+#[test]
 fn test_spec_xdr_reduced_names() -> Result<(), Error> {
     let xdr = crate::xdr().unwrap();
     let cursor = std::io::Cursor::new(xdr);

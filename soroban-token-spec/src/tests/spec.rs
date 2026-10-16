@@ -20,6 +20,35 @@ fn test_spec_xdr_unprocessed() -> Result<(), Error> {
 }
 
 #[test]
+fn test_spec_xdr_unprocessed_names() -> Result<(), Error> {
+    let xdr = crate::xdr_unprocessed();
+    let cursor = std::io::Cursor::new(xdr);
+    let mut events = std::vec::Vec::new();
+    for spec_entry in ScSpecEntry::read_xdr_iter(&mut Limited::new(cursor, Limits::none())) {
+        if let ScSpecEntry::EventV0(e) = spec_entry? {
+            events.push(e.name.to_utf8_string_lossy());
+        }
+    }
+    assert_eq!(
+        events,
+        [
+            "::soroban_token_sdk::events::Approve",
+            "::soroban_token_sdk::events::TransferWithAmountOnly",
+            "::soroban_token_sdk::events::Transfer",
+            "::soroban_token_spec::TransferWithMuxedString",
+            "::soroban_token_spec::TransferWithMuxedBytes",
+            "::soroban_token_sdk::events::Burn",
+            "::soroban_token_sdk::events::MintWithAmountOnly",
+            "::soroban_token_sdk::events::Mint",
+            "::soroban_token_spec::MintWithMuxedString",
+            "::soroban_token_spec::MintWithMuxedBytes",
+            "::soroban_token_sdk::events::Clawback",
+        ]
+    );
+    Ok(())
+}
+
+#[test]
 fn test_spec_xdr_reduced_names() -> Result<(), Error> {
     let xdr = crate::xdr().unwrap();
     let cursor = std::io::Cursor::new(xdr);
