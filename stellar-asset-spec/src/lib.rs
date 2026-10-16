@@ -1,4 +1,4 @@
-#![no_std]
+#![cfg_attr(not(feature = "std"), no_std)]
 
 mod tests;
 
@@ -178,10 +178,40 @@ pub(crate) const XDR_INPUT: &[&[u8]] = &[
     &SetAuthorized::spec_xdr(),
 ];
 
-pub(crate) const XDR_LEN: usize = match soroban_spec::reduce::reduce(XDR_INPUT, None) {
-    Ok(len) => len,
-    Err(_) => panic!("Stellar Asset contract spec cannot be reduced"),
+pub(crate) const XDR_LEN: usize = {
+    let input = XDR_INPUT;
+    let mut len = 0usize;
+    let mut i = 0;
+    while i < input.len() {
+        len += input[i].len();
+        i += 1;
+    }
+    len
 };
+
+/// Returns the contract spec for the Stellar Asset contract, with the names of its types and
+/// events reduced to simple names.
+///
+/// The spec returned by [`xdr`] is assembled from the spec entries the SDK's
+/// macros emit, which name types and events by their fully qualified path,
+/// such as `::stellar_asset_spec::Approve`. A contract build reduces
+/// those names, but this spec is never built into a contract, so this fn
+/// reduces them with `soroban_spec::reduce::reduce`.
+#[cfg(feature = "std")]
+pub fn spec_xdr_reduced() -> std::vec::Vec<u8> {
+    use soroban_sdk::xdr::{Limits, WriteXdr};
+    let entries = soroban_spec::read::parse_raw(xdr()).expect("asset spec is valid xdr");
+    let reduced = soroban_spec::reduce::reduce(&entries).expect("asset spec can be reduced");
+    let mut out = std::vec::Vec::new();
+    for entry in reduced.into_entries() {
+        out.extend(
+            entry
+                .to_xdr(Limits::none())
+                .expect("asset spec entry encodes"),
+        );
+    }
+    out
+}
 
 /// Returns the contract spec for Stellar Asset contract.
 pub const fn xdr() -> &'static [u8] {
@@ -189,13 +219,28 @@ pub const fn xdr() -> &'static [u8] {
 }
 
 /// The contract spec for the Stellar Asset contract.
-///
-/// Its type and event names are reduced to simple names, as `stellar contract
-/// build` reduces them for a contract.
 const XDR: [u8; XDR_LEN] = {
-    let mut out = [0u8; XDR_LEN];
-    if soroban_spec::reduce::reduce(XDR_INPUT, Some(&mut out)).is_err() {
-        panic!("Stellar Asset contract spec cannot be reduced");
+    let input = XDR_INPUT;
+    // Concatenate all XDR for each item that makes up the token spec.
+    let mut output = [0u8; XDR_LEN];
+    let mut input_i = 0;
+    let mut output_i = 0;
+    while input_i < input.len() {
+        let subinput = input[input_i];
+        let mut subinput_i = 0;
+        while subinput_i < subinput.len() {
+            output[output_i] = subinput[subinput_i];
+            output_i += 1;
+            subinput_i += 1;
+        }
+        input_i += 1;
     }
-    out
+
+    // Check that the numbers of bytes written is equal to the number of bytes
+    // expected in the output.
+    if output_i != output.len() {
+        panic!("unexpected output length",);
+    }
+
+    output
 };
