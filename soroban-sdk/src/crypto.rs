@@ -194,9 +194,10 @@ impl Crypto {
     ///
     /// The signature is verified as a valid ML-DSA-44 signature of the message
     /// by the public key, for the given context, using the pure (non-pre-hashed)
-    /// `ML-DSA.Verify` interface of [FIPS 204]. The public key is a 1312-byte
-    /// encoded verifying key and the signature is a 2420-byte encoded signature,
-    /// both as encoded by FIPS 204.
+    /// `ML-DSA.Verify` interface of NIST [FIPS 204]. ML-DSA-44 is the security
+    /// category 2 parameter set of the post-quantum ML-DSA scheme. The public
+    /// key is a 1312-byte encoded verifying key and the signature is a
+    /// 2420-byte encoded signature, both as encoded by FIPS 204.
     ///
     /// The context is a domain separation string of at most 255 bytes chosen by
     /// the signer when producing the signature. Pass empty bytes when the signer
@@ -230,9 +231,10 @@ impl Crypto {
     ///
     /// The signature is verified as a valid ML-DSA-65 signature of the message
     /// by the public key, for the given context, using the pure (non-pre-hashed)
-    /// `ML-DSA.Verify` interface of [FIPS 204]. The public key is a 1952-byte
-    /// encoded verifying key and the signature is a 3309-byte encoded signature,
-    /// both as encoded by FIPS 204.
+    /// `ML-DSA.Verify` interface of NIST [FIPS 204]. ML-DSA-65 is the security
+    /// category 3 parameter set of the post-quantum ML-DSA scheme. The public
+    /// key is a 1952-byte encoded verifying key and the signature is a
+    /// 3309-byte encoded signature, both as encoded by FIPS 204.
     ///
     /// The context is a domain separation string of at most 255 bytes chosen by
     /// the signer when producing the signature. Pass empty bytes when the signer
@@ -266,9 +268,10 @@ impl Crypto {
     ///
     /// The signature is verified as a valid ML-DSA-87 signature of the message
     /// by the public key, for the given context, using the pure (non-pre-hashed)
-    /// `ML-DSA.Verify` interface of [FIPS 204]. The public key is a 2592-byte
-    /// encoded verifying key and the signature is a 4627-byte encoded signature,
-    /// both as encoded by FIPS 204.
+    /// `ML-DSA.Verify` interface of NIST [FIPS 204]. ML-DSA-87 is the security
+    /// category 5 parameter set of the post-quantum ML-DSA scheme. The public
+    /// key is a 2592-byte encoded verifying key and the signature is a
+    /// 4627-byte encoded signature, both as encoded by FIPS 204.
     ///
     /// The context is a domain separation string of at most 255 bytes chosen by
     /// the signer when producing the signature. Pass empty bytes when the signer
