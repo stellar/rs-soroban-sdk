@@ -1,5 +1,3 @@
-#![cfg_attr(not(feature = "std"), no_std)]
-
 mod tests;
 
 use soroban_sdk::{contractevent, Address, BytesN, String};
@@ -87,36 +85,40 @@ pub(crate) const XDR_LEN: usize = {
     len
 };
 
-/// Returns the contract spec for a SEP-41 Token contract, with the names of its types and
-/// events reduced to simple names.
+/// Returns the contract spec for a SEP-41 Token contract, with the names of its
+/// types and events reduced to simple names.
 ///
-/// The spec returned by [`spec_xdr_unprocessed`] is assembled from the spec
-/// entries the SDK's macros emit, which name types and events by their fully qualified path,
-/// such as `::soroban_token_sdk::events::Approve`. A contract build reduces
-/// those names, but this spec is never built into a contract, so this fn
-/// reduces them with `soroban_spec::reduce::reduce`.
-#[cfg(feature = "std")]
-pub fn spec_xdr() -> std::vec::Vec<u8> {
+/// The spec returned by [`xdr_unprocessed`] is assembled from the spec entries
+/// the SDK's macros emit, which name types and events by their fully qualified
+/// path, such as `::soroban_token_sdk::events::Approve`. A contract build
+/// reduces those names, but this spec is never built into a contract, so this
+/// fn reduces them with `soroban_spec::reduce::reduce`.
+pub fn xdr() -> Result<Vec<u8>, Error> {
     use soroban_sdk::xdr::{Limits, WriteXdr};
-    let entries =
-        soroban_spec::read::parse_raw(spec_xdr_unprocessed()).expect("token spec is valid xdr");
-    let reduced = soroban_spec::reduce::reduce(&entries).expect("token spec can be reduced");
-    let mut out = std::vec::Vec::new();
+    let entries = soroban_spec::read::parse_raw(xdr_unprocessed())?;
+    let reduced = soroban_spec::reduce::reduce(&entries)?;
+    let mut out = Vec::new();
     for entry in reduced.into_entries() {
-        out.extend(
-            entry
-                .to_xdr(Limits::none())
-                .expect("token spec entry encodes"),
-        );
+        out.extend(entry.to_xdr(Limits::none())?);
     }
-    out
+    Ok(out)
 }
 
-/// Returns the contract spec for a SEP-41 Token contract, with the names of its types
-/// and events as the SDK's macros emit them, fully qualified and not reduced.
+/// An error reducing the names in the spec.
+#[derive(thiserror::Error, Debug)]
+pub enum Error {
+    #[error(transparent)]
+    Xdr(#[from] soroban_sdk::xdr::Error),
+    #[error(transparent)]
+    Reduce(#[from] soroban_spec::reduce::Error),
+}
+
+/// Returns the contract spec for a SEP-41 Token contract, with the names of its
+/// types and events as the SDK's macros emit them, fully qualified and not
+/// reduced.
 ///
-/// Use [`spec_xdr`] for the spec to publish or give to tools.
-pub const fn spec_xdr_unprocessed() -> &'static [u8] {
+/// Use [`xdr`] for the spec to publish or give to tools.
+pub const fn xdr_unprocessed() -> &'static [u8] {
     &XDR
 }
 

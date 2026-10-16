@@ -1923,6 +1923,7 @@ dependencies = [
  "soroban-sdk 30.0.0",
  "soroban-spec 30.0.0",
  "soroban-token-sdk",
+ "thiserror",
 ]
 
 [[package]]
@@ -1998,6 +1999,7 @@ dependencies = [
  "soroban-sdk 30.0.0",
  "soroban-spec 30.0.0",
  "soroban-token-spec",
+ "thiserror",
 ]
 
 [[package]]

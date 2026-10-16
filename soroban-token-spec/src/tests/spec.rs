@@ -11,7 +11,7 @@ fn test_token_spec_xdr_len() {
 
 #[test]
 fn test_spec_xdr_unprocessed() -> Result<(), Error> {
-    let xdr = crate::spec_xdr_unprocessed();
+    let xdr = crate::xdr_unprocessed();
     let cursor = std::io::Cursor::new(xdr);
     for spec_entry in ScSpecEntry::read_xdr_iter(&mut Limited::new(cursor, Limits::none())) {
         spec_entry?;
@@ -20,9 +20,8 @@ fn test_spec_xdr_unprocessed() -> Result<(), Error> {
 }
 
 #[test]
-#[cfg(feature = "std")]
 fn test_spec_xdr_reduced_names() -> Result<(), Error> {
-    let xdr = crate::spec_xdr();
+    let xdr = crate::xdr().unwrap();
     let cursor = std::io::Cursor::new(xdr);
     let mut events = std::vec::Vec::new();
     for spec_entry in ScSpecEntry::read_xdr_iter(&mut Limited::new(cursor, Limits::none())) {

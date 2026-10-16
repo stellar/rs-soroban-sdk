@@ -13,13 +13,9 @@ rust-version.workspace = true
 [lib]
 doctest = false
 
-[features]
-default = ["std"]
-# Reducing the names in the spec needs std.
-std = ["dep:soroban-spec"]
-
 [dependencies]
-soroban-spec = { workspace = true, features = ["std"], optional = true }
+soroban-spec = { workspace = true, features = ["std"] }
+thiserror = "1.0.32"
 soroban-sdk = { workspace = true }
 soroban-token-spec = { workspace = true }
 

@@ -57,7 +57,7 @@ fn add_sep0011_asset_topic(entry: &mut ScSpecEntry) {
 #[test]
 fn test_stellar_asset_spec_includes_token_spec() -> Result<(), Error> {
     // Read token spec entries, strip docs, and add sep0011_asset to event topics.
-    let token_xdr = soroban_token_spec::spec_xdr_unprocessed();
+    let token_xdr = soroban_token_spec::xdr_unprocessed();
     let token_cursor = std::io::Cursor::new(token_xdr);
     // Each spec defines its entries in its own crate, so their fully
     // qualified type and event names differ even where the entries otherwise
@@ -80,7 +80,7 @@ fn test_stellar_asset_spec_includes_token_spec() -> Result<(), Error> {
         .collect();
 
     // Read stellar asset spec entries and strip docs.
-    let stellar_asset_xdr = crate::spec_xdr_unprocessed();
+    let stellar_asset_xdr = crate::xdr_unprocessed();
     let stellar_asset_cursor = std::io::Cursor::new(stellar_asset_xdr);
     let stellar_asset_entries: Vec<ScSpecEntry> =
         ScSpecEntry::read_xdr_iter(&mut Limited::new(stellar_asset_cursor, Limits::none()))
@@ -108,9 +108,8 @@ fn test_stellar_asset_spec_includes_token_spec() -> Result<(), Error> {
 }
 
 #[test]
-#[cfg(feature = "std")]
 fn test_spec_xdr_reduced_names() -> Result<(), Error> {
-    let xdr = crate::spec_xdr();
+    let xdr = crate::xdr().unwrap();
     let cursor = std::io::Cursor::new(xdr);
     let mut events = Vec::new();
     for spec_entry in ScSpecEntry::read_xdr_iter(&mut Limited::new(cursor, Limits::none())) {
