@@ -8,6 +8,21 @@ use syn::{
 
 use soroban_spec::names::RESERVED_NAMES;
 
+/// The doc comment of a generated fn that returns the XDR of a spec entry.
+pub fn spec_xdr_doc() -> TokenStream2 {
+    quote! {
+        /// Returns the XDR of this item's contract spec entry, as it is
+        /// embedded in the contract.
+        ///
+        /// The entry names user-defined types and events by their fully
+        /// qualified path, such as `::mycrate::MyType`, which `stellar contract
+        /// build` reduces to simple names in the spec of a built contract. A
+        /// spec assembled from this entry outside of a contract build must be
+        /// reduced with `soroban_spec::reduce::reduce` before it is published or
+        /// given to tools.
+    }
+}
+
 /// Checks that an `ident` and `generics` can be a user-defined type.
 ///
 /// ### Errors

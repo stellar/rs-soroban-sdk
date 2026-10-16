@@ -98,6 +98,7 @@ pub fn derive_type_enum_int(
                 cases: #path::xdr::r#const::VecM::try_from_slice_or_panic(&[#(#cases),*]),
             })
         };
+        let spec_xdr_doc = crate::spec::spec_xdr_doc();
         let spec_ident = format_ident!(
             "__SPEC_XDR_TYPE_{}",
             enum_ident.unraw().to_string().to_uppercase()
@@ -110,6 +111,8 @@ pub fn derive_type_enum_int(
 
             impl #enum_ident {
                 const __SPEC_XDR_ENTRY: #path::xdr::r#const::ScSpecEntry = #spec_entry;
+
+                #spec_xdr_doc
 
                 pub const fn spec_xdr() -> [u8; #enum_ident::__SPEC_XDR_ENTRY.const_xdr_len()] {
                     const { #enum_ident::__SPEC_XDR_ENTRY.const_to_xdr() }

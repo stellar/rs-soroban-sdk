@@ -270,6 +270,7 @@ fn derive_impls(args: &ContractEventArgs, input: &DeriveInput) -> Result<TokenSt
     };
 
     // Generated code spec.
+    let spec_xdr_doc = crate::spec::spec_xdr_doc();
     let spec_gen = quote! {
         #[doc(hidden)]
         #[allow(dead_code)]
@@ -278,6 +279,8 @@ fn derive_impls(args: &ContractEventArgs, input: &DeriveInput) -> Result<TokenSt
 
         impl #gen_impl #ident #gen_types #gen_where {
             const __SPEC_XDR_ENTRY: #path::xdr::r#const::ScSpecEntry = #spec_entry;
+
+            #spec_xdr_doc
 
             pub const fn spec_xdr() -> [u8; #ident::__SPEC_XDR_ENTRY.const_xdr_len()] {
                 const { #ident::__SPEC_XDR_ENTRY.const_to_xdr() }

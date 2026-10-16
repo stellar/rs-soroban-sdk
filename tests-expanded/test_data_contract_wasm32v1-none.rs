@@ -59,6 +59,15 @@ impl Wrapper {
                 ]),
             },
         );
+    /// Returns the XDR of this item's contract spec entry, as it is
+    /// embedded in the contract.
+    ///
+    /// The entry names user-defined types and events by their fully
+    /// qualified path, such as `::mycrate::MyType`, which `stellar contract
+    /// build` reduces to simple names in the spec of a built contract. A
+    /// spec assembled from this entry outside of a contract build must be
+    /// reduced with `soroban_spec::reduce::reduce` before it is published or
+    /// given to tools.
     pub const fn spec_xdr() -> [u8; Wrapper::__SPEC_XDR_ENTRY.const_xdr_len()] {
         const { Wrapper::__SPEC_XDR_ENTRY.const_to_xdr() }
     }
@@ -186,6 +195,15 @@ impl Contract {
             },
         );
     #[allow(non_snake_case)]
+    /// Returns the XDR of this item's contract spec entry, as it is
+    /// embedded in the contract.
+    ///
+    /// The entry names user-defined types and events by their fully
+    /// qualified path, such as `::mycrate::MyType`, which `stellar contract
+    /// build` reduces to simple names in the spec of a built contract. A
+    /// spec assembled from this entry outside of a contract build must be
+    /// reduced with `soroban_spec::reduce::reduce` before it is published or
+    /// given to tools.
     pub const fn spec_xdr_int_enum() -> [u8; Contract::__SPEC_XDR_ENTRY_int_enum.const_xdr_len()] {
         const { Contract::__SPEC_XDR_ENTRY_int_enum.const_to_xdr() }
     }
@@ -224,6 +242,15 @@ impl Contract {
             },
         );
     #[allow(non_snake_case)]
+    /// Returns the XDR of this item's contract spec entry, as it is
+    /// embedded in the contract.
+    ///
+    /// The entry names user-defined types and events by their fully
+    /// qualified path, such as `::mycrate::MyType`, which `stellar contract
+    /// build` reduces to simple names in the spec of a built contract. A
+    /// spec assembled from this entry outside of a contract build must be
+    /// reduced with `soroban_spec::reduce::reduce` before it is published or
+    /// given to tools.
     pub const fn spec_xdr_enum_() -> [u8; Contract::__SPEC_XDR_ENTRY_enum_.const_xdr_len()] {
         const { Contract::__SPEC_XDR_ENTRY_enum_.const_to_xdr() }
     }
@@ -262,6 +289,15 @@ impl Contract {
             },
         );
     #[allow(non_snake_case)]
+    /// Returns the XDR of this item's contract spec entry, as it is
+    /// embedded in the contract.
+    ///
+    /// The entry names user-defined types and events by their fully
+    /// qualified path, such as `::mycrate::MyType`, which `stellar contract
+    /// build` reduces to simple names in the spec of a built contract. A
+    /// spec assembled from this entry outside of a contract build must be
+    /// reduced with `soroban_spec::reduce::reduce` before it is published or
+    /// given to tools.
     pub const fn spec_xdr_tuple() -> [u8; Contract::__SPEC_XDR_ENTRY_tuple.const_xdr_len()] {
         const { Contract::__SPEC_XDR_ENTRY_tuple.const_to_xdr() }
     }
@@ -300,6 +336,15 @@ impl Contract {
             },
         );
     #[allow(non_snake_case)]
+    /// Returns the XDR of this item's contract spec entry, as it is
+    /// embedded in the contract.
+    ///
+    /// The entry names user-defined types and events by their fully
+    /// qualified path, such as `::mycrate::MyType`, which `stellar contract
+    /// build` reduces to simple names in the spec of a built contract. A
+    /// spec assembled from this entry outside of a contract build must be
+    /// reduced with `soroban_spec::reduce::reduce` before it is published or
+    /// given to tools.
     pub const fn spec_xdr_outer() -> [u8; Contract::__SPEC_XDR_ENTRY_outer.const_xdr_len()] {
         const { Contract::__SPEC_XDR_ENTRY_outer.const_to_xdr() }
     }
@@ -338,6 +383,15 @@ impl Contract {
             },
         );
     #[allow(non_snake_case)]
+    /// Returns the XDR of this item's contract spec entry, as it is
+    /// embedded in the contract.
+    ///
+    /// The entry names user-defined types and events by their fully
+    /// qualified path, such as `::mycrate::MyType`, which `stellar contract
+    /// build` reduces to simple names in the spec of a built contract. A
+    /// spec assembled from this entry outside of a contract build must be
+    /// reduced with `soroban_spec::reduce::reduce` before it is published or
+    /// given to tools.
     pub const fn spec_xdr_wrapper() -> [u8; Contract::__SPEC_XDR_ENTRY_wrapper.const_xdr_len()] {
         const { Contract::__SPEC_XDR_ENTRY_wrapper.const_to_xdr() }
     }
