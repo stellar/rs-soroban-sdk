@@ -143,6 +143,42 @@ This proc macro:
    - **Args variants:** Enum variants for function arguments via `derive_args_impl`
    - **Test hooks:** Function registration for test environment via `derive_contract_function_registration_ctor`
 
+### Resolving the types in default function signatures
+
+The default function signatures are carried to the implementing crate as strings, so the type names in them are resolved where the trait is implemented, not where it is defined. A name there may resolve to a different type, or not at all. To keep the types the trait names, `#[contractimpl_trait_macro]` also adds a hidden supertrait to the trait, with an associated type for each type in the default function signatures, implemented for every implementor of the trait:
+
+```rust
+#[doc(hidden)]
+pub trait __PauseFnTypes {
+    type __f2__arg_0;
+    type __f2__arg_1;
+    type __f2__ret;
+}
+impl<T: Pause + ?Sized> __PauseFnTypes for T {
+    type __f2__arg_0 = Env;   // resolved where the trait is defined
+    type __f2__arg_1 = Value;
+    type __f2__ret = u32;
+}
+pub trait Pause: __PauseFnTypes { ... }
+```
+
+A `Result` output has its ok and error types captured separately, as `__f2__ok` and `__f2__err`.
+
+The supertrait's associated types can only be named through the trait in a generic context, so Stage 5 generates, for each type, a local trait implemented for every implementor of the trait that projects it, and rewrites the types in the signatures to name them through those traits. Each local trait's associated type keeps the name of the type it replaces, because the generated code recognizes some types by name, such as `Env` and `MuxedAddress`:
+
+```rust
+#[doc(hidden)]
+pub trait __Contract__Pause__f2__arg_1 {
+    type Value;
+}
+impl<T: Pause + ?Sized> __Contract__Pause__f2__arg_1 for T {
+    type Value = T::__f2__arg_1;
+}
+// e.g. fn f2(env: <Contract as __Contract__Pause__f2__arg_0>::Env, v: <Contract as __Contract__Pause__f2__arg_1>::Value) -> ...
+```
+
+A type without a name, such as a tuple, is projected as `Type`.
+
 ## Why the `macro_rules!` Generated Helper Macro?
 
 The two-stage approach with a declarative generated helper macro is necessary because:

@@ -290,7 +290,27 @@ impl<'a> ContractClient<'a> {
 pub struct AttributeTraitSpec;
 /// Macro for `contractimpl`ing the default functions of the trait that are not overridden.
 pub use __contractimpl_for_attribute_trait as AttributeTrait;
-pub trait AttributeTrait {
+#[doc(hidden)]
+#[allow(non_camel_case_types)]
+pub trait __AttributeTraitFnTypes {
+    type __trait_override__ret;
+    type __trait_default__ret;
+    type __trait_default_stacked_cfg__ret;
+    type __trait_override_stacked_cfg__ret;
+    type __trait_override_negated_cfg__ret;
+    type __trait_override_dual_cfg__ret;
+    type __trait_default_dual_cfg__ret;
+}
+impl<T: AttributeTrait + ?Sized> __AttributeTraitFnTypes for T {
+    type __trait_override__ret = u32;
+    type __trait_default__ret = u32;
+    type __trait_default_stacked_cfg__ret = u32;
+    type __trait_override_stacked_cfg__ret = u32;
+    type __trait_override_negated_cfg__ret = u32;
+    type __trait_override_dual_cfg__ret = u32;
+    type __trait_default_dual_cfg__ret = u32;
+}
+pub trait AttributeTrait: __AttributeTraitFnTypes {
     fn trait_override() -> u32 {
         1
     }
@@ -1704,6 +1724,62 @@ pub extern "C" fn __Contract__trait_override_dual_cfg__invoke_raw_extern() -> so
     __Contract__trait_override_dual_cfg__invoke_raw(soroban_sdk::Env::default())
 }
 #[doc(hidden)]
+#[allow(non_camel_case_types)]
+pub trait __Contract__AttributeTrait__trait_override__ret {
+    type u32;
+}
+impl<T: AttributeTrait + ?Sized> __Contract__AttributeTrait__trait_override__ret for T {
+    type u32 = T::__trait_override__ret;
+}
+#[doc(hidden)]
+#[allow(non_camel_case_types)]
+pub trait __Contract__AttributeTrait__trait_default__ret {
+    type u32;
+}
+impl<T: AttributeTrait + ?Sized> __Contract__AttributeTrait__trait_default__ret for T {
+    type u32 = T::__trait_default__ret;
+}
+#[doc(hidden)]
+#[allow(non_camel_case_types)]
+pub trait __Contract__AttributeTrait__trait_default_stacked_cfg__ret {
+    type u32;
+}
+impl<T: AttributeTrait + ?Sized> __Contract__AttributeTrait__trait_default_stacked_cfg__ret for T {
+    type u32 = T::__trait_default_stacked_cfg__ret;
+}
+#[doc(hidden)]
+#[allow(non_camel_case_types)]
+pub trait __Contract__AttributeTrait__trait_override_stacked_cfg__ret {
+    type u32;
+}
+impl<T: AttributeTrait + ?Sized> __Contract__AttributeTrait__trait_override_stacked_cfg__ret for T {
+    type u32 = T::__trait_override_stacked_cfg__ret;
+}
+#[doc(hidden)]
+#[allow(non_camel_case_types)]
+pub trait __Contract__AttributeTrait__trait_override_negated_cfg__ret {
+    type u32;
+}
+impl<T: AttributeTrait + ?Sized> __Contract__AttributeTrait__trait_override_negated_cfg__ret for T {
+    type u32 = T::__trait_override_negated_cfg__ret;
+}
+#[doc(hidden)]
+#[allow(non_camel_case_types)]
+pub trait __Contract__AttributeTrait__trait_override_dual_cfg__ret {
+    type u32;
+}
+impl<T: AttributeTrait + ?Sized> __Contract__AttributeTrait__trait_override_dual_cfg__ret for T {
+    type u32 = T::__trait_override_dual_cfg__ret;
+}
+#[doc(hidden)]
+#[allow(non_camel_case_types)]
+pub trait __Contract__AttributeTrait__trait_default_dual_cfg__ret {
+    type u32;
+}
+impl<T: AttributeTrait + ?Sized> __Contract__AttributeTrait__trait_default_dual_cfg__ret for T {
+    type u32 = T::__trait_default_dual_cfg__ret;
+}
+#[doc(hidden)]
 #[allow(non_snake_case)]
 #[deprecated(note = "use `ContractClient::new(&env, &contract_id).trait_default` instead")]
 #[allow(deprecated)]
@@ -1778,19 +1854,18 @@ mod __Contract__trait_default__spec {
 }
 impl Contract {
     #[allow(non_upper_case_globals)]
-    const __SPEC_XDR_ENTRY_trait_default: soroban_sdk::xdr::r#const::ScSpecEntry =
-        soroban_sdk::xdr::r#const::ScSpecEntry::FunctionV0(
-            soroban_sdk::xdr::r#const::ScSpecFunctionV0 {
-                doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
-                name: soroban_sdk::xdr::r#const::ScSymbol(
-                    soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b"trait_default"),
-                ),
-                inputs: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[]),
-                outputs: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[
-                    <u32 as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
-                ]),
-            },
-        );
+    const __SPEC_XDR_ENTRY_trait_default: soroban_sdk::xdr::r#const::ScSpecEntry = soroban_sdk::xdr::r#const::ScSpecEntry::FunctionV0(soroban_sdk::xdr::r#const::ScSpecFunctionV0 {
+        doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
+        name: soroban_sdk::xdr::r#const::ScSymbol(
+            soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b"trait_default"),
+        ),
+        inputs: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[]),
+        outputs: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(
+            &[
+                <<Contract as __Contract__AttributeTrait__trait_default__ret>::u32 as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
+            ],
+        ),
+    });
     #[allow(non_snake_case)]
     /// Returns the XDR of this item's contract spec entry, as it is
     /// embedded in the contract.
@@ -1821,21 +1896,20 @@ mod __Contract__trait_default_stacked_cfg__spec {
 }
 impl Contract {
     #[allow(non_upper_case_globals)]
-    const __SPEC_XDR_ENTRY_trait_default_stacked_cfg: soroban_sdk::xdr::r#const::ScSpecEntry =
-        soroban_sdk::xdr::r#const::ScSpecEntry::FunctionV0(
-            soroban_sdk::xdr::r#const::ScSpecFunctionV0 {
-                doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
-                name: soroban_sdk::xdr::r#const::ScSymbol(
-                    soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(
-                        b"trait_default_stacked_cfg",
-                    ),
-                ),
-                inputs: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[]),
-                outputs: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[
-                    <u32 as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
-                ]),
-            },
-        );
+    const __SPEC_XDR_ENTRY_trait_default_stacked_cfg: soroban_sdk::xdr::r#const::ScSpecEntry = soroban_sdk::xdr::r#const::ScSpecEntry::FunctionV0(soroban_sdk::xdr::r#const::ScSpecFunctionV0 {
+        doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
+        name: soroban_sdk::xdr::r#const::ScSymbol(
+            soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(
+                b"trait_default_stacked_cfg",
+            ),
+        ),
+        inputs: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[]),
+        outputs: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(
+            &[
+                <<Contract as __Contract__AttributeTrait__trait_default_stacked_cfg__ret>::u32 as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
+            ],
+        ),
+    });
     #[allow(non_snake_case)]
     /// Returns the XDR of this item's contract spec entry, as it is
     /// embedded in the contract.
@@ -1869,21 +1943,20 @@ mod __Contract__trait_default_dual_cfg__spec {
 }
 impl Contract {
     #[allow(non_upper_case_globals)]
-    const __SPEC_XDR_ENTRY_trait_default_dual_cfg: soroban_sdk::xdr::r#const::ScSpecEntry =
-        soroban_sdk::xdr::r#const::ScSpecEntry::FunctionV0(
-            soroban_sdk::xdr::r#const::ScSpecFunctionV0 {
-                doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
-                name: soroban_sdk::xdr::r#const::ScSymbol(
-                    soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(
-                        b"trait_default_dual_cfg",
-                    ),
-                ),
-                inputs: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[]),
-                outputs: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[
-                    <u32 as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
-                ]),
-            },
-        );
+    const __SPEC_XDR_ENTRY_trait_default_dual_cfg: soroban_sdk::xdr::r#const::ScSpecEntry = soroban_sdk::xdr::r#const::ScSpecEntry::FunctionV0(soroban_sdk::xdr::r#const::ScSpecFunctionV0 {
+        doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
+        name: soroban_sdk::xdr::r#const::ScSymbol(
+            soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(
+                b"trait_default_dual_cfg",
+            ),
+        ),
+        inputs: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[]),
+        outputs: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(
+            &[
+                <<Contract as __Contract__AttributeTrait__trait_default_dual_cfg__ret>::u32 as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
+            ],
+        ),
+    });
     #[allow(non_snake_case)]
     /// Returns the XDR of this item's contract spec entry, as it is
     /// embedded in the contract.
@@ -1907,7 +1980,9 @@ impl<'a> ContractClient<'a> {
     /// Panics if the invoked contract returns an error or panics.
     ///
     /// Use [`Self::try_trait_default`] to receive errors instead of panicking.
-    pub fn trait_default(&self) -> u32 {
+    pub fn trait_default(
+        &self,
+    ) -> <Contract as __Contract__AttributeTrait__trait_default__ret>::u32 {
         use core::ops::Not;
         use soroban_sdk::{FromVal, IntoVal};
         let res = self.env.invoke_contract(
@@ -1925,9 +2000,15 @@ impl<'a> ContractClient<'a> {
     pub fn try_trait_default(
         &self,
     ) -> Result<
-        Result<u32, <u32 as soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val>>::Error>,
+        Result<
+            <Contract as __Contract__AttributeTrait__trait_default__ret>::u32,
+            <<Contract as __Contract__AttributeTrait__trait_default__ret>::u32 as soroban_sdk::TryFromVal<
+                soroban_sdk::Env,
+                soroban_sdk::Val,
+            >>::Error,
+        >,
         Result<soroban_sdk::Error, soroban_sdk::InvokeError>,
-    > {
+    >{
         use soroban_sdk::{FromVal, IntoVal};
         let res = self.env.try_invoke_contract(
             &self.address,
@@ -1943,7 +2024,9 @@ impl<'a> ContractClient<'a> {
     /// Panics if the invoked contract returns an error or panics.
     ///
     /// Use [`Self::try_trait_default_stacked_cfg`] to receive errors instead of panicking.
-    pub fn trait_default_stacked_cfg(&self) -> u32 {
+    pub fn trait_default_stacked_cfg(
+        &self,
+    ) -> <Contract as __Contract__AttributeTrait__trait_default_stacked_cfg__ret>::u32 {
         use core::ops::Not;
         use soroban_sdk::{FromVal, IntoVal};
         let res = self.env.invoke_contract(
@@ -1961,9 +2044,15 @@ impl<'a> ContractClient<'a> {
     pub fn try_trait_default_stacked_cfg(
         &self,
     ) -> Result<
-        Result<u32, <u32 as soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val>>::Error>,
+        Result<
+            <Contract as __Contract__AttributeTrait__trait_default_stacked_cfg__ret>::u32,
+            <<Contract as __Contract__AttributeTrait__trait_default_stacked_cfg__ret>::u32 as soroban_sdk::TryFromVal<
+                soroban_sdk::Env,
+                soroban_sdk::Val,
+            >>::Error,
+        >,
         Result<soroban_sdk::Error, soroban_sdk::InvokeError>,
-    > {
+    >{
         use soroban_sdk::{FromVal, IntoVal};
         let res = self.env.try_invoke_contract(
             &self.address,
@@ -1979,7 +2068,9 @@ impl<'a> ContractClient<'a> {
     /// Panics if the invoked contract returns an error or panics.
     ///
     /// Use [`Self::try_trait_default_dual_cfg`] to receive errors instead of panicking.
-    pub fn trait_default_dual_cfg(&self) -> u32 {
+    pub fn trait_default_dual_cfg(
+        &self,
+    ) -> <Contract as __Contract__AttributeTrait__trait_default_dual_cfg__ret>::u32 {
         use core::ops::Not;
         use soroban_sdk::{FromVal, IntoVal};
         let res = self.env.invoke_contract(
@@ -1997,9 +2088,15 @@ impl<'a> ContractClient<'a> {
     pub fn try_trait_default_dual_cfg(
         &self,
     ) -> Result<
-        Result<u32, <u32 as soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val>>::Error>,
+        Result<
+            <Contract as __Contract__AttributeTrait__trait_default_dual_cfg__ret>::u32,
+            <<Contract as __Contract__AttributeTrait__trait_default_dual_cfg__ret>::u32 as soroban_sdk::TryFromVal<
+                soroban_sdk::Env,
+                soroban_sdk::Val,
+            >>::Error,
+        >,
         Result<soroban_sdk::Error, soroban_sdk::InvokeError>,
-    > {
+    >{
         use soroban_sdk::{FromVal, IntoVal};
         let res = self.env.try_invoke_contract(
             &self.address,

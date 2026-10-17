@@ -8,7 +8,17 @@ use soroban_sdk::{contracttrait, Env};
 pub struct SuperPathTraitSpec;
 /// Macro for `contractimpl`ing the default functions of the trait that are not overridden.
 pub use __contractimpl_for_super_path_trait as SuperPathTrait;
-pub trait SuperPathTrait {
+#[doc(hidden)]
+#[allow(non_camel_case_types)]
+pub trait __SuperPathTraitFnTypes {
+    type __super_path_method__arg_0;
+    type __super_path_method__ret;
+}
+impl<T: SuperPathTrait + ?Sized> __SuperPathTraitFnTypes for T {
+    type __super_path_method__arg_0 = Env;
+    type __super_path_method__ret = u32;
+}
+pub trait SuperPathTrait: __SuperPathTraitFnTypes {
     fn super_path_method(env: &Env) -> u32 {
         let _ = env;
         300
@@ -282,6 +292,26 @@ pub mod submodule {
     impl<'a> ContractSuperPathClient<'a> {}
     impl ContractSuperPathArgs {}
     #[doc(hidden)]
+    #[allow(non_camel_case_types)]
+    pub trait __ContractSuperPath__super_SuperPathTrait__super_path_method__arg_0 {
+        type Env;
+    }
+    impl<T: super::SuperPathTrait + ?Sized>
+        __ContractSuperPath__super_SuperPathTrait__super_path_method__arg_0 for T
+    {
+        type Env = T::__super_path_method__arg_0;
+    }
+    #[doc(hidden)]
+    #[allow(non_camel_case_types)]
+    pub trait __ContractSuperPath__super_SuperPathTrait__super_path_method__ret {
+        type u32;
+    }
+    impl<T: super::SuperPathTrait + ?Sized>
+        __ContractSuperPath__super_SuperPathTrait__super_path_method__ret for T
+    {
+        type u32 = T::__super_path_method__ret;
+    }
+    #[doc(hidden)]
     #[allow(non_snake_case)]
     #[deprecated(
         note = "use `ContractSuperPathClient::new(&env, &contract_id).super_path_method` instead"
@@ -340,21 +370,20 @@ pub mod submodule {
     }
     impl ContractSuperPath {
         #[allow(non_upper_case_globals)]
-        const __SPEC_XDR_ENTRY_super_path_method: soroban_sdk::xdr::r#const::ScSpecEntry =
-            soroban_sdk::xdr::r#const::ScSpecEntry::FunctionV0(
-                soroban_sdk::xdr::r#const::ScSpecFunctionV0 {
-                    doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
-                    name: soroban_sdk::xdr::r#const::ScSymbol(
-                        soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(
-                            b"super_path_method",
-                        ),
-                    ),
-                    inputs: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[]),
-                    outputs: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[
-                        <u32 as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
-                    ]),
-                },
-            );
+        const __SPEC_XDR_ENTRY_super_path_method: soroban_sdk::xdr::r#const::ScSpecEntry = soroban_sdk::xdr::r#const::ScSpecEntry::FunctionV0(soroban_sdk::xdr::r#const::ScSpecFunctionV0 {
+            doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
+            name: soroban_sdk::xdr::r#const::ScSymbol(
+                soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(
+                    b"super_path_method",
+                ),
+            ),
+            inputs: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[]),
+            outputs: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(
+                &[
+                    <<ContractSuperPath as __ContractSuperPath__super_SuperPathTrait__super_path_method__ret>::u32 as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
+                ],
+            ),
+        });
         #[allow(non_snake_case)]
         /// Returns the XDR of this item's contract spec entry, as it is
         /// embedded in the contract.
@@ -378,7 +407,9 @@ pub mod submodule {
         /// Panics if the invoked contract returns an error or panics.
         ///
         /// Use [`Self::try_super_path_method`] to receive errors instead of panicking.
-        pub fn super_path_method(&self) -> u32 {
+        pub fn super_path_method(
+            &self,
+        ) -> <ContractSuperPath as __ContractSuperPath__super_SuperPathTrait__super_path_method__ret>::u32{
             let _call_scope =
                 soroban_sdk::testutils::ClientCallScope::enter(&self.env, self.config);
             use soroban_sdk::{FromVal, IntoVal};
@@ -398,11 +429,14 @@ pub mod submodule {
             &self,
         ) -> Result<
             Result<
-                u32,
-                <u32 as soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val>>::Error,
+                <ContractSuperPath as __ContractSuperPath__super_SuperPathTrait__super_path_method__ret>::u32,
+                <<ContractSuperPath as __ContractSuperPath__super_SuperPathTrait__super_path_method__ret>::u32 as soroban_sdk::TryFromVal<
+                    soroban_sdk::Env,
+                    soroban_sdk::Val,
+                >>::Error,
             >,
             Result<soroban_sdk::Error, soroban_sdk::InvokeError>,
-        > {
+        >{
             let _call_scope =
                 soroban_sdk::testutils::ClientCallScope::enter(&self.env, self.config);
             use soroban_sdk::{FromVal, IntoVal};

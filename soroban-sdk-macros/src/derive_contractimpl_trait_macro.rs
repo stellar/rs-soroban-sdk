@@ -1,13 +1,16 @@
 use crate::{
     attribute::{is_attr_cfg, is_attr_cfg_attr, is_attr_doc, reject_items},
-    default_crate_path,
+    default_crate_path, syn_ext,
 };
 use darling::{ast::NestedMeta, Error, FromMeta};
 use heck::ToSnakeCase;
 use proc_macro2::{Ident, TokenStream as TokenStream2};
 use quote::ToTokens;
 use quote::{format_ident, quote};
-use syn::{ext::IdentExt as _, parse2, ImplItemFn, ItemTrait, Path, TraitItem, TraitItemFn, Type};
+use syn::{
+    ext::IdentExt as _, parse2, parse_quote, FnArg, GenericArgument, ImplItemFn, ItemTrait, Path,
+    PathArguments, ReturnType, TraitItem, TraitItemFn, Type, TypePath, TypeReference,
+};
 
 // See soroban-sdk/docs/contracttrait.md for documentation on how this works.
 
@@ -33,14 +36,134 @@ pub fn derive_contractimpl_trait_macro(
 fn derive_or_err(metadata: TokenStream2, input: TokenStream2) -> Result<TokenStream2, Error> {
     let args = NestedMeta::parse_meta_list(metadata.into())?;
     Args::from_list(&args)?;
-    let input = parse2(input)?;
+    let mut input = parse2(input)?;
     let trait_macro = derive(&input);
+    let fn_types = derive_fn_types(&mut input);
 
     Ok(quote! {
         #trait_macro
+        #fn_types
         #input
     }
     .into())
+}
+
+/// Generates a hidden supertrait of the trait whose associated types are the
+/// types named in the signatures of the trait's default fns, as the trait
+/// resolves them where it is defined. The code generated for the default fns
+/// where the trait is implemented names the types through these associated
+/// types, because the type names written in the signatures may resolve to
+/// different types, or not at all, where the trait is implemented.
+fn derive_fn_types(input: &mut ItemTrait) -> TokenStream2 {
+    let types: Vec<_> = input
+        .items
+        .iter()
+        .filter_map(|i| match i {
+            TraitItem::Fn(TraitItemFn {
+                default: Some(_),
+                sig,
+                ..
+            }) => Some(sig),
+            _ => None,
+        })
+        .flat_map(|sig| {
+            let mut f = syn_ext::Fn {
+                ident: sig.ident.clone(),
+                attrs: vec![],
+                inputs: sig.inputs.clone(),
+                output: sig.output.clone(),
+            };
+            fn_types(&mut f)
+                .into_iter()
+                .map(|(ident, ty)| (ident, ty.clone()))
+                .collect::<Vec<_>>()
+        })
+        .collect();
+    if types.is_empty() {
+        return quote! {};
+    }
+
+    let trait_ident = &input.ident;
+    let vis = &input.vis;
+    let types_ident = format_ident!("__{}FnTypes", trait_ident.unraw());
+    let (idents, tys): (Vec<_>, Vec<_>) = types.into_iter().unzip();
+
+    input.colon_token.get_or_insert_with(Default::default);
+    input.supertraits.push(parse_quote!(#types_ident));
+
+    quote! {
+        #[doc(hidden)]
+        #[allow(non_camel_case_types)]
+        #vis trait #types_ident {
+            #(type #idents;)*
+        }
+
+        impl<T: #trait_ident + ?Sized> #types_ident for T {
+            #(type #idents = #tys;)*
+        }
+    }
+}
+
+/// The types in the fn's signature that are captured as associated types of
+/// the trait's fn types supertrait, with the associated type each is captured
+/// as. The types are those behind any references, so that replacing them keeps
+/// inputs passed by reference.
+pub fn fn_types(f: &mut syn_ext::Fn) -> Vec<(Ident, &mut Type)> {
+    let fn_name = f.ident.unraw();
+    let mut types = Vec::new();
+
+    for (i, input) in f.inputs.iter_mut().enumerate() {
+        if let FnArg::Typed(pat_type) = input {
+            types.push((
+                format_ident!("__{fn_name}__arg_{i}"),
+                unref_mut(&mut pat_type.ty),
+            ));
+        }
+    }
+
+    if let ReturnType::Type(_, ty) = &mut f.output {
+        // Checked before borrowing the ok and error types, because the borrow
+        // checker would otherwise hold that borrow over the fallback too.
+        if result_types_mut(ty).is_none() {
+            types.push((format_ident!("__{fn_name}__ret"), unref_mut(ty)));
+        } else if let Some((ok, err)) = result_types_mut(ty) {
+            types.push((format_ident!("__{fn_name}__ok"), unref_mut(ok)));
+            types.push((format_ident!("__{fn_name}__err"), unref_mut(err)));
+        }
+    }
+
+    types
+}
+
+/// The Rust type behind any number of references.
+fn unref_mut(t: &mut Type) -> &mut Type {
+    match t {
+        Type::Reference(TypeReference { elem, .. }) => unref_mut(elem),
+        t => t,
+    }
+}
+
+/// The ok and error types of a `Result`, identified the same way that the
+/// client identifies them, by name.
+fn result_types_mut(t: &mut Type) -> Option<(&mut Type, &mut Type)> {
+    let Type::Path(TypePath { qself: None, path }) = t else {
+        return None;
+    };
+    let segment = path.segments.last_mut()?;
+    if segment.ident.unraw() != "Result" {
+        return None;
+    }
+    let PathArguments::AngleBracketed(args) = &mut segment.arguments else {
+        return None;
+    };
+    if args.args.len() != 2 {
+        return None;
+    }
+    let mut args = args.args.iter_mut();
+    match (args.next()?, args.next()?) {
+        (GenericArgument::Type(ok), GenericArgument::Type(err)) => Some((ok, err)),
+        _ => None,
+    }
 }
 
 /// Generates the trait machinery unconditionally, rolling any errors into the

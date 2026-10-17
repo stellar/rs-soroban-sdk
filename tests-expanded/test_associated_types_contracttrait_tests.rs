@@ -119,7 +119,17 @@ pub struct DefaultImpl;
 pub struct TraitSpec;
 /// Macro for `contractimpl`ing the default functions of the trait that are not overridden.
 pub use __contractimpl_for_trait as Trait;
-pub trait Trait {
+#[doc(hidden)]
+#[allow(non_camel_case_types)]
+pub trait __TraitFnTypes {
+    type __exec__arg_0;
+    type __exec__ret;
+}
+impl<T: Trait + ?Sized> __TraitFnTypes for T {
+    type __exec__arg_0 = Env;
+    type __exec__ret = String;
+}
+pub trait Trait: __TraitFnTypes {
     type Impl: Trait;
     fn exec(env: &Env) -> String {
         Self::Impl::exec(env)
@@ -297,6 +307,22 @@ impl Trait for Contract {
 impl<'a> ContractClient<'a> {}
 impl ContractArgs {}
 #[doc(hidden)]
+#[allow(non_camel_case_types)]
+pub trait __Contract__Trait__exec__arg_0 {
+    type Env;
+}
+impl<T: Trait + ?Sized> __Contract__Trait__exec__arg_0 for T {
+    type Env = T::__exec__arg_0;
+}
+#[doc(hidden)]
+#[allow(non_camel_case_types)]
+pub trait __Contract__Trait__exec__ret {
+    type String;
+}
+impl<T: Trait + ?Sized> __Contract__Trait__exec__ret for T {
+    type String = T::__exec__ret;
+}
+#[doc(hidden)]
 #[allow(non_snake_case)]
 #[deprecated(note = "use `ContractClient::new(&env, &contract_id).exec` instead")]
 #[allow(deprecated)]
@@ -345,19 +371,18 @@ mod __Contract__exec__spec {
 }
 impl Contract {
     #[allow(non_upper_case_globals)]
-    const __SPEC_XDR_ENTRY_exec: soroban_sdk::xdr::r#const::ScSpecEntry =
-        soroban_sdk::xdr::r#const::ScSpecEntry::FunctionV0(
-            soroban_sdk::xdr::r#const::ScSpecFunctionV0 {
-                doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
-                name: soroban_sdk::xdr::r#const::ScSymbol(
-                    soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b"exec"),
-                ),
-                inputs: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[]),
-                outputs: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[
-                    <String as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
-                ]),
-            },
-        );
+    const __SPEC_XDR_ENTRY_exec: soroban_sdk::xdr::r#const::ScSpecEntry = soroban_sdk::xdr::r#const::ScSpecEntry::FunctionV0(soroban_sdk::xdr::r#const::ScSpecFunctionV0 {
+        doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
+        name: soroban_sdk::xdr::r#const::ScSymbol(
+            soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b"exec"),
+        ),
+        inputs: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[]),
+        outputs: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(
+            &[
+                <<Contract as __Contract__Trait__exec__ret>::String as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
+            ],
+        ),
+    });
     #[allow(non_snake_case)]
     /// Returns the XDR of this item's contract spec entry, as it is
     /// embedded in the contract.
@@ -380,7 +405,7 @@ impl<'a> ContractClient<'a> {
     /// Panics if the invoked contract returns an error or panics.
     ///
     /// Use [`Self::try_exec`] to receive errors instead of panicking.
-    pub fn exec(&self) -> String {
+    pub fn exec(&self) -> <Contract as __Contract__Trait__exec__ret>::String {
         let _call_scope = soroban_sdk::testutils::ClientCallScope::enter(&self.env, self.config);
         use soroban_sdk::{FromVal, IntoVal};
         let res = self.env.invoke_contract(
@@ -403,8 +428,11 @@ impl<'a> ContractClient<'a> {
         &self,
     ) -> Result<
         Result<
-            String,
-            <String as soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val>>::Error,
+            <Contract as __Contract__Trait__exec__ret>::String,
+            <<Contract as __Contract__Trait__exec__ret>::String as soroban_sdk::TryFromVal<
+                soroban_sdk::Env,
+                soroban_sdk::Val,
+            >>::Error,
         >,
         Result<soroban_sdk::Error, soroban_sdk::InvokeError>,
     > {
