@@ -37,6 +37,11 @@ impl soroban_sdk::SpecTypeDef for Enum {
             ),
         });
 }
+impl soroban_sdk::ContractClientReturn for Enum {
+    type Output = Self;
+    type Ok = Self;
+    type Err = soroban_sdk::Error;
+}
 #[doc(hidden)]
 #[allow(dead_code)]
 static __SPEC_XDR_TYPE_ENUM: [u8; Enum::spec_xdr().len()] = Enum::spec_xdr();

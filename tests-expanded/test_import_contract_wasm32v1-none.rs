@@ -36,7 +36,7 @@ mod addcontract {
         /// Panics if the invoked contract returns an error or panics.
         ///
         /// Use [`Self::try_add`] to receive errors instead of panicking.
-        pub fn add(&self, a: &u64, b: &u64) -> <u64 as soroban_sdk::ContractClientReturn>::Output {
+        pub fn add(&self, a: &u64, b: &u64) -> <u64 as soroban_sdk::ContractClientReturn>::Ok {
             use core::ops::Not;
             use soroban_sdk::{FromVal, IntoVal};
             let res = self.env.invoke_contract(
@@ -64,13 +64,13 @@ mod addcontract {
             b: &u64,
         ) -> Result<
             Result<
-                <u64 as soroban_sdk::ContractClientReturn>::Output,
-                <<u64 as soroban_sdk::ContractClientReturn>::Output as soroban_sdk::TryFromVal<
+                <u64 as soroban_sdk::ContractClientReturn>::Ok,
+                <<u64 as soroban_sdk::ContractClientReturn>::Ok as soroban_sdk::TryFromVal<
                     soroban_sdk::Env,
                     soroban_sdk::Val,
                 >>::Error,
             >,
-            Result<soroban_sdk::Error, soroban_sdk::InvokeError>,
+            Result<<u64 as soroban_sdk::ContractClientReturn>::Err, soroban_sdk::InvokeError>,
         > {
             use soroban_sdk::{FromVal, IntoVal};
             let res = self.env.try_invoke_contract(
@@ -98,7 +98,7 @@ mod addcontract {
             &self,
             a: &u64,
             b: &u64,
-        ) -> <u64 as soroban_sdk::ContractClientReturn>::Output {
+        ) -> <Result<u64, Error> as soroban_sdk::ContractClientReturn>::Ok {
             use core::ops::Not;
             use soroban_sdk::{FromVal, IntoVal};
             let res = self.env.invoke_contract(
@@ -126,14 +126,20 @@ mod addcontract {
             b: &u64,
         ) -> Result<
             Result<
-                <u64 as soroban_sdk::ContractClientReturn>::Output,
-                <<u64 as soroban_sdk::ContractClientReturn>::Output as soroban_sdk::TryFromVal<
+                <Result<u64, Error> as soroban_sdk::ContractClientReturn>::Ok,
+                <<Result<
+                    u64,
+                    Error,
+                > as soroban_sdk::ContractClientReturn>::Ok as soroban_sdk::TryFromVal<
                     soroban_sdk::Env,
                     soroban_sdk::Val,
                 >>::Error,
             >,
-            Result<Error, soroban_sdk::InvokeError>,
-        > {
+            Result<
+                <Result<u64, Error> as soroban_sdk::ContractClientReturn>::Err,
+                soroban_sdk::InvokeError,
+            >,
+        >{
             use soroban_sdk::{FromVal, IntoVal};
             let res = self.env.try_invoke_contract(
                 &self.address,
@@ -160,7 +166,7 @@ mod addcontract {
             &self,
             a: &u64,
             b: &u64,
-        ) -> <u64 as soroban_sdk::ContractClientReturn>::Output {
+        ) -> <Result<u64, MyError> as soroban_sdk::ContractClientReturn>::Ok {
             use core::ops::Not;
             use soroban_sdk::{FromVal, IntoVal};
             let res = self.env.invoke_contract(
@@ -184,14 +190,20 @@ mod addcontract {
             b: &u64,
         ) -> Result<
             Result<
-                <u64 as soroban_sdk::ContractClientReturn>::Output,
-                <<u64 as soroban_sdk::ContractClientReturn>::Output as soroban_sdk::TryFromVal<
+                <Result<u64, MyError> as soroban_sdk::ContractClientReturn>::Ok,
+                <<Result<
+                    u64,
+                    MyError,
+                > as soroban_sdk::ContractClientReturn>::Ok as soroban_sdk::TryFromVal<
                     soroban_sdk::Env,
                     soroban_sdk::Val,
                 >>::Error,
             >,
-            Result<MyError, soroban_sdk::InvokeError>,
-        > {
+            Result<
+                <Result<u64, MyError> as soroban_sdk::ContractClientReturn>::Err,
+                soroban_sdk::InvokeError,
+            >,
+        >{
             use soroban_sdk::{FromVal, IntoVal};
             let res = self.env.try_invoke_contract(
                 &self.address,
@@ -322,6 +334,11 @@ mod addcontract {
                     ),
                 },
             );
+    }
+    impl soroban_sdk::ContractClientReturn for ContractExecutableRef {
+        type Output = Self;
+        type Ok = Self;
+        type Err = soroban_sdk::Error;
     }
     #[doc(hidden)]
     #[allow(dead_code)]
@@ -538,6 +555,11 @@ mod addcontract {
                     ),
                 },
             );
+    }
+    impl soroban_sdk::ContractClientReturn for ContractContext {
+        type Output = Self;
+        type Ok = Self;
+        type Err = soroban_sdk::Error;
     }
     #[doc(hidden)]
     #[allow(dead_code)]
@@ -760,6 +782,11 @@ mod addcontract {
                 },
             );
     }
+    impl soroban_sdk::ContractClientReturn for SubContractInvocation {
+        type Output = Self;
+        type Ok = Self;
+        type Err = soroban_sdk::Error;
+    }
     #[doc(hidden)]
     #[allow(dead_code)]
     #[link_section = "contractspecv0"]
@@ -962,6 +989,11 @@ mod addcontract {
                     ),
                 },
             );
+    }
+    impl soroban_sdk::ContractClientReturn for CreateContractHostFnContext {
+        type Output = Self;
+        type Ok = Self;
+        type Err = soroban_sdk::Error;
     }
     #[doc(hidden)]
     #[allow(dead_code)]
@@ -1185,6 +1217,11 @@ mod addcontract {
                     ),
                 },
             );
+    }
+    impl soroban_sdk::ContractClientReturn for CreateContractWithConstructorHostFnContext {
+        type Output = Self;
+        type Ok = Self;
+        type Err = soroban_sdk::Error;
     }
     #[doc(hidden)]
     #[allow(dead_code)]
@@ -1446,6 +1483,11 @@ mod addcontract {
                     ),
                 },
             );
+    }
+    impl soroban_sdk::ContractClientReturn for ContractExecutable {
+        type Output = Self;
+        type Ok = Self;
+        type Err = soroban_sdk::Error;
     }
     #[doc(hidden)]
     #[allow(dead_code)]
@@ -1742,6 +1784,11 @@ mod addcontract {
                     ),
                 },
             );
+    }
+    impl soroban_sdk::ContractClientReturn for Context {
+        type Output = Self;
+        type Ok = Self;
+        type Err = soroban_sdk::Error;
     }
     #[doc(hidden)]
     #[allow(dead_code)]
@@ -2079,6 +2126,11 @@ mod addcontract {
                 },
             );
     }
+    impl soroban_sdk::ContractClientReturn for InvokerContractAuthEntry {
+        type Output = Self;
+        type Ok = Self;
+        type Err = soroban_sdk::Error;
+    }
     #[doc(hidden)]
     #[allow(dead_code)]
     #[link_section = "contractspecv0"]
@@ -2367,6 +2419,11 @@ mod addcontract {
                 },
             );
     }
+    impl soroban_sdk::ContractClientReturn for Executable {
+        type Output = Self;
+        type Ok = Self;
+        type Err = soroban_sdk::Error;
+    }
     #[doc(hidden)]
     #[allow(dead_code)]
     #[link_section = "contractspecv0"]
@@ -2586,6 +2643,11 @@ mod addcontract {
                     ),
                 },
             );
+    }
+    impl soroban_sdk::ContractClientReturn for Error {
+        type Output = Self;
+        type Ok = Self;
+        type Err = soroban_sdk::Error;
     }
     #[doc(hidden)]
     #[allow(dead_code)]
@@ -2814,6 +2876,11 @@ mod addcontract {
                     ),
                 },
             );
+    }
+    impl soroban_sdk::ContractClientReturn for MyError {
+        type Output = Self;
+        type Ok = Self;
+        type Err = soroban_sdk::Error;
     }
     #[doc(hidden)]
     #[allow(dead_code)]
@@ -3475,6 +3542,11 @@ mod eventscontract {
                 },
             );
     }
+    impl soroban_sdk::ContractClientReturn for ContractExecutableRef {
+        type Output = Self;
+        type Ok = Self;
+        type Err = soroban_sdk::Error;
+    }
     #[doc(hidden)]
     #[allow(dead_code)]
     #[link_section = "contractspecv0"]
@@ -3690,6 +3762,11 @@ mod eventscontract {
                     ),
                 },
             );
+    }
+    impl soroban_sdk::ContractClientReturn for ContractContext {
+        type Output = Self;
+        type Ok = Self;
+        type Err = soroban_sdk::Error;
     }
     #[doc(hidden)]
     #[allow(dead_code)]
@@ -3912,6 +3989,11 @@ mod eventscontract {
                 },
             );
     }
+    impl soroban_sdk::ContractClientReturn for SubContractInvocation {
+        type Output = Self;
+        type Ok = Self;
+        type Err = soroban_sdk::Error;
+    }
     #[doc(hidden)]
     #[allow(dead_code)]
     #[link_section = "contractspecv0"]
@@ -4115,6 +4197,11 @@ mod eventscontract {
                     ),
                 },
             );
+    }
+    impl soroban_sdk::ContractClientReturn for CreateContractHostFnContext {
+        type Output = Self;
+        type Ok = Self;
+        type Err = soroban_sdk::Error;
     }
     #[doc(hidden)]
     #[allow(dead_code)]
@@ -4337,6 +4424,11 @@ mod eventscontract {
                     ),
                 },
             );
+    }
+    impl soroban_sdk::ContractClientReturn for CreateContractWithConstructorHostFnContext {
+        type Output = Self;
+        type Ok = Self;
+        type Err = soroban_sdk::Error;
     }
     #[doc(hidden)]
     #[allow(dead_code)]
@@ -4598,6 +4690,11 @@ mod eventscontract {
                     ),
                 },
             );
+    }
+    impl soroban_sdk::ContractClientReturn for ContractExecutable {
+        type Output = Self;
+        type Ok = Self;
+        type Err = soroban_sdk::Error;
     }
     #[doc(hidden)]
     #[allow(dead_code)]
@@ -4894,6 +4991,11 @@ mod eventscontract {
                     ),
                 },
             );
+    }
+    impl soroban_sdk::ContractClientReturn for Context {
+        type Output = Self;
+        type Ok = Self;
+        type Err = soroban_sdk::Error;
     }
     #[doc(hidden)]
     #[allow(dead_code)]
@@ -5231,6 +5333,11 @@ mod eventscontract {
                 },
             );
     }
+    impl soroban_sdk::ContractClientReturn for InvokerContractAuthEntry {
+        type Output = Self;
+        type Ok = Self;
+        type Err = soroban_sdk::Error;
+    }
     #[doc(hidden)]
     #[allow(dead_code)]
     #[link_section = "contractspecv0"]
@@ -5518,6 +5625,11 @@ mod eventscontract {
                     ),
                 },
             );
+    }
+    impl soroban_sdk::ContractClientReturn for Executable {
+        type Output = Self;
+        type Ok = Self;
+        type Err = soroban_sdk::Error;
     }
     #[doc(hidden)]
     #[allow(dead_code)]
@@ -6719,6 +6831,11 @@ impl soroban_sdk::SpecTypeDef for Error {
             ),
         });
 }
+impl soroban_sdk::ContractClientReturn for Error {
+    type Output = Self;
+    type Ok = Self;
+    type Err = soroban_sdk::Error;
+}
 #[doc(hidden)]
 #[allow(dead_code)]
 #[link_section = "contractspecv0"]
@@ -7085,7 +7202,7 @@ impl<'a> ContractClient<'a> {
         contract_id: &Address,
         x: &u64,
         y: &u64,
-    ) -> <u64 as soroban_sdk::ContractClientReturn>::Output {
+    ) -> <u64 as soroban_sdk::ContractClientReturn>::Ok {
         use core::ops::Not;
         use soroban_sdk::{FromVal, IntoVal};
         let res = self.env.invoke_contract(
@@ -7118,13 +7235,13 @@ impl<'a> ContractClient<'a> {
         y: &u64,
     ) -> Result<
         Result<
-            <u64 as soroban_sdk::ContractClientReturn>::Output,
-            <<u64 as soroban_sdk::ContractClientReturn>::Output as soroban_sdk::TryFromVal<
+            <u64 as soroban_sdk::ContractClientReturn>::Ok,
+            <<u64 as soroban_sdk::ContractClientReturn>::Ok as soroban_sdk::TryFromVal<
                 soroban_sdk::Env,
                 soroban_sdk::Val,
             >>::Error,
         >,
-        Result<soroban_sdk::Error, soroban_sdk::InvokeError>,
+        Result<<u64 as soroban_sdk::ContractClientReturn>::Err, soroban_sdk::InvokeError>,
     > {
         use soroban_sdk::{FromVal, IntoVal};
         let res = self.env.try_invoke_contract(
@@ -7157,7 +7274,7 @@ impl<'a> ContractClient<'a> {
         contract_id: &Address,
         x: &u64,
         y: &u64,
-    ) -> <u64 as soroban_sdk::ContractClientReturn>::Output {
+    ) -> <Result<u64, Error> as soroban_sdk::ContractClientReturn>::Ok {
         use core::ops::Not;
         use soroban_sdk::{FromVal, IntoVal};
         let res = self.env.invoke_contract(
@@ -7186,14 +7303,20 @@ impl<'a> ContractClient<'a> {
         y: &u64,
     ) -> Result<
         Result<
-            <u64 as soroban_sdk::ContractClientReturn>::Output,
-            <<u64 as soroban_sdk::ContractClientReturn>::Output as soroban_sdk::TryFromVal<
+            <Result<u64, Error> as soroban_sdk::ContractClientReturn>::Ok,
+            <<Result<
+                u64,
+                Error,
+            > as soroban_sdk::ContractClientReturn>::Ok as soroban_sdk::TryFromVal<
                 soroban_sdk::Env,
                 soroban_sdk::Val,
             >>::Error,
         >,
-        Result<Error, soroban_sdk::InvokeError>,
-    > {
+        Result<
+            <Result<u64, Error> as soroban_sdk::ContractClientReturn>::Err,
+            soroban_sdk::InvokeError,
+        >,
+    >{
         use soroban_sdk::{FromVal, IntoVal};
         let res = self.env.try_invoke_contract(
             &self.address,
@@ -7221,7 +7344,7 @@ impl<'a> ContractClient<'a> {
         contract_id: &Address,
         x: &u64,
         y: &u64,
-    ) -> <u64 as soroban_sdk::ContractClientReturn>::Output {
+    ) -> <Result<u64, Error> as soroban_sdk::ContractClientReturn>::Ok {
         use core::ops::Not;
         use soroban_sdk::{FromVal, IntoVal};
         let res = self.env.invoke_contract(
@@ -7250,14 +7373,20 @@ impl<'a> ContractClient<'a> {
         y: &u64,
     ) -> Result<
         Result<
-            <u64 as soroban_sdk::ContractClientReturn>::Output,
-            <<u64 as soroban_sdk::ContractClientReturn>::Output as soroban_sdk::TryFromVal<
+            <Result<u64, Error> as soroban_sdk::ContractClientReturn>::Ok,
+            <<Result<
+                u64,
+                Error,
+            > as soroban_sdk::ContractClientReturn>::Ok as soroban_sdk::TryFromVal<
                 soroban_sdk::Env,
                 soroban_sdk::Val,
             >>::Error,
         >,
-        Result<Error, soroban_sdk::InvokeError>,
-    > {
+        Result<
+            <Result<u64, Error> as soroban_sdk::ContractClientReturn>::Err,
+            soroban_sdk::InvokeError,
+        >,
+    >{
         use soroban_sdk::{FromVal, IntoVal};
         let res = self.env.try_invoke_contract(
             &self.address,

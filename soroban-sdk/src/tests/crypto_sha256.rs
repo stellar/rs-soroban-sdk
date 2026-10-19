@@ -20,6 +20,7 @@ fn test_sha256() {
 pub struct Contract;
 
 type Digest = Hash<32>;
+type DigestResult = Result<Hash<32>, Error>;
 
 #[contractimpl]
 impl Contract {
@@ -37,6 +38,14 @@ impl Contract {
 
     pub fn sha256_option(env: Env, data: Bytes) -> Option<Hash<32>> {
         Some(env.crypto().sha256(&data))
+    }
+
+    pub fn sha256_result_aliased(env: Env, data: Bytes) -> DigestResult {
+        Ok(env.crypto().sha256(&data))
+    }
+
+    pub fn sha256_tuple(env: Env, data: Bytes) -> (Hash<32>, u32) {
+        (env.crypto().sha256(&data), data.len())
     }
 }
 
@@ -66,7 +75,14 @@ fn test_sha256_returned_from_contract_fn() {
     let hash: Option<BytesN<32>> = client.sha256_option(&input);
     assert_eq!(hash, Some(expect.clone()));
     let hash: Option<BytesN<32>> = client.try_sha256_option(&input).unwrap().unwrap();
-    assert_eq!(hash, Some(expect));
+    assert_eq!(hash, Some(expect.clone()));
+    // An aliased Result is split into its ok and error types like any Result.
+    let hash: BytesN<32> = client.sha256_result_aliased(&input);
+    assert_eq!(hash, expect);
+    let hash: BytesN<32> = client.try_sha256_result_aliased(&input).unwrap().unwrap();
+    assert_eq!(hash, expect);
+    let hash: (BytesN<32>, u32) = client.sha256_tuple(&input);
+    assert_eq!(hash, (expect, 1));
 }
 
 /// The output types of the function's spec entry.
@@ -104,9 +120,19 @@ fn test_sha256_returned_from_contract_fn_spec() {
         spec_outputs(&Contract::spec_xdr_sha256_option()),
         [xdr::ScSpecTypeDef::Option(Box::new(
             xdr::ScSpecTypeOption {
-                value_type: Box::new(bytes_n_32),
+                value_type: Box::new(bytes_n_32.clone()),
             }
         ))]
+    );
+    assert_eq!(
+        spec_outputs(&Contract::spec_xdr_sha256_result_aliased()),
+        spec_outputs(&Contract::spec_xdr_sha256_result())
+    );
+    assert_eq!(
+        spec_outputs(&Contract::spec_xdr_sha256_tuple()),
+        [xdr::ScSpecTypeDef::Tuple(Box::new(xdr::ScSpecTypeTuple {
+            value_types: [bytes_n_32, xdr::ScSpecTypeDef::U32].try_into().unwrap(),
+        }))]
     );
 }
 

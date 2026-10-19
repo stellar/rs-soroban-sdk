@@ -35,6 +35,11 @@ impl soroban_sdk::SpecTypeDef for Inner {
             ),
         });
 }
+impl soroban_sdk::ContractClientReturn for Inner {
+    type Output = Self;
+    type Ok = Self;
+    type Err = soroban_sdk::Error;
+}
 #[doc(hidden)]
 #[allow(dead_code)]
 #[link_section = "contractspecv0"]
@@ -135,6 +140,11 @@ impl soroban_sdk::SpecTypeDef for Outer {
                 <Self as soroban_sdk::SpecName>::SPEC_NAME,
             ),
         });
+}
+impl soroban_sdk::ContractClientReturn for Outer {
+    type Output = Self;
+    type Ok = Self;
+    type Err = soroban_sdk::Error;
 }
 #[doc(hidden)]
 #[allow(dead_code)]

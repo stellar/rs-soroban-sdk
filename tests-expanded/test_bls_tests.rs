@@ -42,6 +42,11 @@ impl soroban_sdk::SpecTypeDef for DummyProof {
             ),
         });
 }
+impl soroban_sdk::ContractClientReturn for DummyProof {
+    type Output = Self;
+    type Ok = Self;
+    type Err = soroban_sdk::Error;
+}
 #[doc(hidden)]
 #[allow(dead_code)]
 static __SPEC_XDR_TYPE_DUMMYPROOF: [u8; DummyProof::spec_xdr().len()] = DummyProof::spec_xdr();
@@ -968,7 +973,7 @@ impl<'a> ContractClient<'a> {
         &self,
         p: &Bls12381G1Affine,
         s: &Bls12381Fr,
-    ) -> <Bls12381G1Affine as soroban_sdk::ContractClientReturn>::Output {
+    ) -> <Bls12381G1Affine as soroban_sdk::ContractClientReturn>::Ok {
         let _call_scope = soroban_sdk::testutils::ClientCallScope::enter(&self.env, self.config);
         use soroban_sdk::{FromVal, IntoVal};
         let res = self.env.invoke_contract(
@@ -996,13 +1001,16 @@ impl<'a> ContractClient<'a> {
         s: &Bls12381Fr,
     ) -> Result<
         Result<
-            <Bls12381G1Affine as soroban_sdk::ContractClientReturn>::Output,
-            <<Bls12381G1Affine as soroban_sdk::ContractClientReturn>::Output as soroban_sdk::TryFromVal<
+            <Bls12381G1Affine as soroban_sdk::ContractClientReturn>::Ok,
+            <<Bls12381G1Affine as soroban_sdk::ContractClientReturn>::Ok as soroban_sdk::TryFromVal<
                 soroban_sdk::Env,
                 soroban_sdk::Val,
             >>::Error,
         >,
-        Result<soroban_sdk::Error, soroban_sdk::InvokeError>,
+        Result<
+            <Bls12381G1Affine as soroban_sdk::ContractClientReturn>::Err,
+            soroban_sdk::InvokeError,
+        >,
     >{
         let _call_scope = soroban_sdk::testutils::ClientCallScope::enter(&self.env, self.config);
         use soroban_sdk::{FromVal, IntoVal};
@@ -1031,7 +1039,7 @@ impl<'a> ContractClient<'a> {
         &self,
         p: &Bls12381G2Affine,
         s: &Bls12381Fr,
-    ) -> <Bls12381G2Affine as soroban_sdk::ContractClientReturn>::Output {
+    ) -> <Bls12381G2Affine as soroban_sdk::ContractClientReturn>::Ok {
         let _call_scope = soroban_sdk::testutils::ClientCallScope::enter(&self.env, self.config);
         use soroban_sdk::{FromVal, IntoVal};
         let res = self.env.invoke_contract(
@@ -1059,13 +1067,16 @@ impl<'a> ContractClient<'a> {
         s: &Bls12381Fr,
     ) -> Result<
         Result<
-            <Bls12381G2Affine as soroban_sdk::ContractClientReturn>::Output,
-            <<Bls12381G2Affine as soroban_sdk::ContractClientReturn>::Output as soroban_sdk::TryFromVal<
+            <Bls12381G2Affine as soroban_sdk::ContractClientReturn>::Ok,
+            <<Bls12381G2Affine as soroban_sdk::ContractClientReturn>::Ok as soroban_sdk::TryFromVal<
                 soroban_sdk::Env,
                 soroban_sdk::Val,
             >>::Error,
         >,
-        Result<soroban_sdk::Error, soroban_sdk::InvokeError>,
+        Result<
+            <Bls12381G2Affine as soroban_sdk::ContractClientReturn>::Err,
+            soroban_sdk::InvokeError,
+        >,
     >{
         let _call_scope = soroban_sdk::testutils::ClientCallScope::enter(&self.env, self.config);
         use soroban_sdk::{FromVal, IntoVal};
@@ -1093,7 +1104,7 @@ impl<'a> ContractClient<'a> {
     pub fn dummy_verify(
         &self,
         proof: &DummyProof,
-    ) -> <bool as soroban_sdk::ContractClientReturn>::Output {
+    ) -> <bool as soroban_sdk::ContractClientReturn>::Ok {
         let _call_scope = soroban_sdk::testutils::ClientCallScope::enter(&self.env, self.config);
         use soroban_sdk::{FromVal, IntoVal};
         let res = self.env.invoke_contract(
@@ -1113,13 +1124,13 @@ impl<'a> ContractClient<'a> {
         proof: &DummyProof,
     ) -> Result<
         Result<
-            <bool as soroban_sdk::ContractClientReturn>::Output,
-            <<bool as soroban_sdk::ContractClientReturn>::Output as soroban_sdk::TryFromVal<
+            <bool as soroban_sdk::ContractClientReturn>::Ok,
+            <<bool as soroban_sdk::ContractClientReturn>::Ok as soroban_sdk::TryFromVal<
                 soroban_sdk::Env,
                 soroban_sdk::Val,
             >>::Error,
         >,
-        Result<soroban_sdk::Error, soroban_sdk::InvokeError>,
+        Result<<bool as soroban_sdk::ContractClientReturn>::Err, soroban_sdk::InvokeError>,
     > {
         let _call_scope = soroban_sdk::testutils::ClientCallScope::enter(&self.env, self.config);
         use soroban_sdk::{FromVal, IntoVal};
@@ -1141,7 +1152,7 @@ impl<'a> ContractClient<'a> {
         &self,
         values: &Vec<Bls12381Fr>,
         index: &u32,
-    ) -> <Bls12381Fr as soroban_sdk::ContractClientReturn>::Output {
+    ) -> <Bls12381Fr as soroban_sdk::ContractClientReturn>::Ok {
         let _call_scope = soroban_sdk::testutils::ClientCallScope::enter(&self.env, self.config);
         use soroban_sdk::{FromVal, IntoVal};
         let res = self.env.invoke_contract(
@@ -1165,14 +1176,14 @@ impl<'a> ContractClient<'a> {
         index: &u32,
     ) -> Result<
         Result<
-            <Bls12381Fr as soroban_sdk::ContractClientReturn>::Output,
-            <<Bls12381Fr as soroban_sdk::ContractClientReturn>::Output as soroban_sdk::TryFromVal<
+            <Bls12381Fr as soroban_sdk::ContractClientReturn>::Ok,
+            <<Bls12381Fr as soroban_sdk::ContractClientReturn>::Ok as soroban_sdk::TryFromVal<
                 soroban_sdk::Env,
                 soroban_sdk::Val,
             >>::Error,
         >,
-        Result<soroban_sdk::Error, soroban_sdk::InvokeError>,
-    >{
+        Result<<Bls12381Fr as soroban_sdk::ContractClientReturn>::Err, soroban_sdk::InvokeError>,
+    > {
         let _call_scope = soroban_sdk::testutils::ClientCallScope::enter(&self.env, self.config);
         use soroban_sdk::{FromVal, IntoVal};
         let res = self.env.try_invoke_contract(

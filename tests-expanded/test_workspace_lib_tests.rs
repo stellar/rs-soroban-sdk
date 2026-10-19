@@ -59,6 +59,11 @@ impl soroban_sdk::SpecTypeDef for Value {
             ),
         });
 }
+impl soroban_sdk::ContractClientReturn for Value {
+    type Output = Self;
+    type Ok = Self;
+    type Err = soroban_sdk::Error;
+}
 #[doc(hidden)]
 #[allow(dead_code)]
 static __SPEC_XDR_TYPE_VALUE: [u8; Value::spec_xdr().len()] = Value::spec_xdr();

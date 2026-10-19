@@ -59,6 +59,11 @@ impl soroban_sdk::SpecTypeDef for Value {
             ),
         });
 }
+impl soroban_sdk::ContractClientReturn for Value {
+    type Output = Self;
+    type Ok = Self;
+    type Err = soroban_sdk::Error;
+}
 #[doc(hidden)]
 #[allow(dead_code)]
 #[link_section = "contractspecv0"]

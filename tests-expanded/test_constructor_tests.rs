@@ -146,6 +146,11 @@ impl soroban_sdk::SpecTypeDef for DataKey {
             ),
         });
 }
+impl soroban_sdk::ContractClientReturn for DataKey {
+    type Output = Self;
+    type Ok = Self;
+    type Err = soroban_sdk::Error;
+}
 #[doc(hidden)]
 #[allow(dead_code)]
 static __SPEC_XDR_TYPE_DATAKEY: [u8; DataKey::spec_xdr().len()] = DataKey::spec_xdr();
@@ -853,7 +858,7 @@ impl<'a> ContractClient<'a> {
     pub fn get_data(
         &self,
         key: &DataKey,
-    ) -> <Option<i64> as soroban_sdk::ContractClientReturn>::Output {
+    ) -> <Option<i64> as soroban_sdk::ContractClientReturn>::Ok {
         let _call_scope = soroban_sdk::testutils::ClientCallScope::enter(&self.env, self.config);
         use soroban_sdk::{FromVal, IntoVal};
         let res = self.env.invoke_contract(
@@ -877,16 +882,14 @@ impl<'a> ContractClient<'a> {
         key: &DataKey,
     ) -> Result<
         Result<
-            <Option<i64> as soroban_sdk::ContractClientReturn>::Output,
-            <<Option<
-                i64,
-            > as soroban_sdk::ContractClientReturn>::Output as soroban_sdk::TryFromVal<
+            <Option<i64> as soroban_sdk::ContractClientReturn>::Ok,
+            <<Option<i64> as soroban_sdk::ContractClientReturn>::Ok as soroban_sdk::TryFromVal<
                 soroban_sdk::Env,
                 soroban_sdk::Val,
             >>::Error,
         >,
-        Result<soroban_sdk::Error, soroban_sdk::InvokeError>,
-    >{
+        Result<<Option<i64> as soroban_sdk::ContractClientReturn>::Err, soroban_sdk::InvokeError>,
+    > {
         let _call_scope = soroban_sdk::testutils::ClientCallScope::enter(&self.env, self.config);
         use soroban_sdk::{FromVal, IntoVal};
         let res = self.env.try_invoke_contract(

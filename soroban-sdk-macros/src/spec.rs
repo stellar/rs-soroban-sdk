@@ -164,6 +164,18 @@ pub fn spec_type_def_gen(
     }
 }
 
+/// Generates the `ContractClientReturn` impl for a user-defined type that
+/// converts from a `Val`, which a client returns as itself.
+pub fn contract_client_return_gen(path: &Path, ident: &Ident) -> TokenStream2 {
+    quote! {
+        impl #path::ContractClientReturn for #ident {
+            type Output = Self;
+            type Ok = Self;
+            type Err = #path::Error;
+        }
+    }
+}
+
 /// Renders a [StringM] as a const expression of type `#path::xdr::r#const::StringM`.
 /// The `MAX` of the `const::StringM` is inferred from the field it is assigned to.
 pub fn const_view_string<const MAX: u32>(path: &Path, s: &StringM<MAX>) -> TokenStream2 {

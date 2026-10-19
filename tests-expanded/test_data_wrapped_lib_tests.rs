@@ -35,6 +35,11 @@ impl soroban_sdk::SpecTypeDef for Wrapped {
             ),
         });
 }
+impl soroban_sdk::ContractClientReturn for Wrapped {
+    type Output = Self;
+    type Ok = Self;
+    type Err = soroban_sdk::Error;
+}
 #[doc(hidden)]
 #[allow(dead_code)]
 static __SPEC_XDR_TYPE_WRAPPED: [u8; Wrapped::spec_xdr().len()] = Wrapped::spec_xdr();

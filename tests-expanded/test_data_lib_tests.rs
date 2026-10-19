@@ -48,6 +48,11 @@ impl soroban_sdk::SpecTypeDef for Error {
             ),
         });
 }
+impl soroban_sdk::ContractClientReturn for Error {
+    type Output = Self;
+    type Ok = Self;
+    type Err = soroban_sdk::Error;
+}
 #[doc(hidden)]
 #[allow(dead_code)]
 static __SPEC_XDR_TYPE_ERROR: [u8; Error::spec_xdr().len()] = Error::spec_xdr();

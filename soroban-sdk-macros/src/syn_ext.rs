@@ -10,8 +10,8 @@ use syn::{
     parse::{Parse, ParseStream},
     punctuated::Punctuated,
     token::Comma,
-    AngleBracketedGenericArguments, Attribute, GenericArgument, LitStr, Path, PathArguments,
-    PathSegment, ReturnType, Signature, Token, TypePath,
+    Attribute, GenericArgument, LitStr, Path, PathArguments, PathSegment, ReturnType, Signature,
+    Token, TypePath,
 };
 
 /// Gets methods from the implementation that have public visibility. For
@@ -222,25 +222,18 @@ pub struct Fn {
 
 impl Fn {
     pub fn output(&self, crate_path: &Path) -> Type {
-        let t = match &self.output {
+        Type::Verbatim(match &self.output {
             ReturnType::Default => quote!(()),
-            ReturnType::Type(_, typ) => match unpack_result(typ) {
-                Some((t, _)) => client_return_type(&t, crate_path),
-                None => client_return_type(typ, crate_path),
-            },
-        };
-        Type::Verbatim(t)
+            ReturnType::Type(_, typ) => quote!(<#typ as #crate_path::ContractClientReturn>::Ok),
+        })
     }
     pub fn try_output(&self, crate_path: &Path) -> Type {
         let (t, e) = match &self.output {
             ReturnType::Default => (quote!(()), quote!(#crate_path::Error)),
-            ReturnType::Type(_, typ) => match unpack_result(typ) {
-                Some((t, e)) => (client_return_type(&t, crate_path), quote!(#e)),
-                None => (
-                    client_return_type(typ, crate_path),
-                    quote!(#crate_path::Error),
-                ),
-            },
+            ReturnType::Type(_, typ) => (
+                quote!(<#typ as #crate_path::ContractClientReturn>::Ok),
+                quote!(<#typ as #crate_path::ContractClientReturn>::Err),
+            ),
         };
         Type::Verbatim(quote! {
             Result<
@@ -284,30 +277,6 @@ pub fn strs_to_fns(fn_strs: &[LitStr]) -> Result<Vec<Fn>, Error> {
                 .map_err(|e| Error::new(f.span(), format!("failed to parse function: {e}")))
         })
         .collect()
-}
-
-fn unpack_result(typ: &Type) -> Option<(Type, Type)> {
-    match &typ {
-        Type::Path(TypePath { path, .. }) => {
-            if let Some(PathSegment {
-                ident,
-                arguments:
-                    PathArguments::AngleBracketed(AngleBracketedGenericArguments { args, .. }),
-            }) = path.segments.last()
-            {
-                let args = args.iter().collect::<Vec<_>>();
-                match (&ident.unraw().to_string()[..], args.as_slice()) {
-                    ("Result", [GenericArgument::Type(t), GenericArgument::Type(e)]) => {
-                        Some((t.clone(), e.clone()))
-                    }
-                    _ => None,
-                }
-            } else {
-                None
-            }
-        }
-        _ => None,
-    }
 }
 
 fn flatten_associated_items_in_impl_fns(imp: &mut ItemImpl) -> Result<(), Error> {
@@ -698,11 +667,4 @@ pub fn is_type_named(ty: &Type, name: &str) -> bool {
             .is_some_and(|s| s.ident.unraw() == name),
         _ => false,
     }
-}
-
-/// The type a client returns for a contract function's return type, which is
-/// resolved by the compiler, so that a type alias returns the same as the type
-/// it aliases.
-fn client_return_type(ty: &Type, crate_path: &Path) -> TokenStream {
-    quote!(<#ty as #crate_path::ContractClientReturn>::Output)
 }

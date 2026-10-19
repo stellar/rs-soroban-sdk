@@ -191,6 +191,11 @@ impl soroban_sdk::SpecTypeDef for UsedParamStruct {
             ),
         });
 }
+impl soroban_sdk::ContractClientReturn for UsedParamStruct {
+    type Output = Self;
+    type Ok = Self;
+    type Err = soroban_sdk::Error;
+}
 #[doc(hidden)]
 #[allow(dead_code)]
 static __SPEC_XDR_TYPE_USEDPARAMSTRUCT: [u8; UsedParamStruct::spec_xdr().len()] =
@@ -685,6 +690,11 @@ impl soroban_sdk::SpecTypeDef for UsedReturnEnum {
                 <Self as soroban_sdk::SpecName>::SPEC_NAME,
             ),
         });
+}
+impl soroban_sdk::ContractClientReturn for UsedReturnEnum {
+    type Output = Self;
+    type Ok = Self;
+    type Err = soroban_sdk::Error;
 }
 #[doc(hidden)]
 #[allow(dead_code)]
@@ -1259,6 +1269,11 @@ impl soroban_sdk::SpecTypeDef for UsedParamIntEnum {
             ),
         });
 }
+impl soroban_sdk::ContractClientReturn for UsedParamIntEnum {
+    type Output = Self;
+    type Ok = Self;
+    type Err = soroban_sdk::Error;
+}
 #[doc(hidden)]
 #[allow(dead_code)]
 static __SPEC_XDR_TYPE_USEDPARAMINTENUM: [u8; UsedParamIntEnum::spec_xdr().len()] =
@@ -1642,6 +1657,11 @@ impl soroban_sdk::SpecTypeDef for UsedErrorEnum {
             ),
         });
 }
+impl soroban_sdk::ContractClientReturn for UsedErrorEnum {
+    type Output = Self;
+    type Ok = Self;
+    type Err = soroban_sdk::Error;
+}
 #[doc(hidden)]
 #[allow(dead_code)]
 static __SPEC_XDR_TYPE_USEDERRORENUM: [u8; UsedErrorEnum::spec_xdr().len()] =
@@ -1858,6 +1878,11 @@ impl soroban_sdk::SpecTypeDef for UsedPanicErrorEnum {
             ),
         });
 }
+impl soroban_sdk::ContractClientReturn for UsedPanicErrorEnum {
+    type Output = Self;
+    type Ok = Self;
+    type Err = soroban_sdk::Error;
+}
 #[doc(hidden)]
 #[allow(dead_code)]
 static __SPEC_XDR_TYPE_USEDPANICERRORENUM: [u8; UsedPanicErrorEnum::spec_xdr().len()] =
@@ -2062,6 +2087,11 @@ impl soroban_sdk::SpecTypeDef for UsedAssertErrorEnum {
                 <Self as soroban_sdk::SpecName>::SPEC_NAME,
             ),
         });
+}
+impl soroban_sdk::ContractClientReturn for UsedAssertErrorEnum {
+    type Output = Self;
+    type Ok = Self;
+    type Err = soroban_sdk::Error;
 }
 #[doc(hidden)]
 #[allow(dead_code)]
@@ -2274,6 +2304,11 @@ impl soroban_sdk::SpecTypeDef for UsedNestedInStruct {
                 <Self as soroban_sdk::SpecName>::SPEC_NAME,
             ),
         });
+}
+impl soroban_sdk::ContractClientReturn for UsedNestedInStruct {
+    type Output = Self;
+    type Ok = Self;
+    type Err = soroban_sdk::Error;
 }
 #[doc(hidden)]
 #[allow(dead_code)]
@@ -2691,6 +2726,11 @@ impl soroban_sdk::SpecTypeDef for UsedVecElement {
                 <Self as soroban_sdk::SpecName>::SPEC_NAME,
             ),
         });
+}
+impl soroban_sdk::ContractClientReturn for UsedVecElement {
+    type Output = Self;
+    type Ok = Self;
+    type Err = soroban_sdk::Error;
 }
 #[doc(hidden)]
 #[allow(dead_code)]
@@ -3114,6 +3154,11 @@ impl soroban_sdk::SpecTypeDef for UsedMapKey {
             ),
         });
 }
+impl soroban_sdk::ContractClientReturn for UsedMapKey {
+    type Output = Self;
+    type Ok = Self;
+    type Err = soroban_sdk::Error;
+}
 #[doc(hidden)]
 #[allow(dead_code)]
 static __SPEC_XDR_TYPE_USEDMAPKEY: [u8; UsedMapKey::spec_xdr().len()] = UsedMapKey::spec_xdr();
@@ -3486,6 +3531,11 @@ impl soroban_sdk::SpecTypeDef for UsedMapVal {
                 <Self as soroban_sdk::SpecName>::SPEC_NAME,
             ),
         });
+}
+impl soroban_sdk::ContractClientReturn for UsedMapVal {
+    type Output = Self;
+    type Ok = Self;
+    type Err = soroban_sdk::Error;
 }
 #[doc(hidden)]
 #[allow(dead_code)]
@@ -3902,6 +3952,11 @@ impl soroban_sdk::SpecTypeDef for UsedOptionElement {
             ),
         });
 }
+impl soroban_sdk::ContractClientReturn for UsedOptionElement {
+    type Output = Self;
+    type Ok = Self;
+    type Err = soroban_sdk::Error;
+}
 #[doc(hidden)]
 #[allow(dead_code)]
 static __SPEC_XDR_TYPE_USEDOPTIONELEMENT: [u8; UsedOptionElement::spec_xdr().len()] =
@@ -4316,6 +4371,11 @@ impl soroban_sdk::SpecTypeDef for UsedResultOk {
                 <Self as soroban_sdk::SpecName>::SPEC_NAME,
             ),
         });
+}
+impl soroban_sdk::ContractClientReturn for UsedResultOk {
+    type Output = Self;
+    type Ok = Self;
+    type Err = soroban_sdk::Error;
 }
 #[doc(hidden)]
 #[allow(dead_code)]
@@ -4883,6 +4943,11 @@ impl soroban_sdk::SpecTypeDef for UsedEventTopicType {
             ),
         });
 }
+impl soroban_sdk::ContractClientReturn for UsedEventTopicType {
+    type Output = Self;
+    type Ok = Self;
+    type Err = soroban_sdk::Error;
+}
 #[doc(hidden)]
 #[allow(dead_code)]
 static __SPEC_XDR_TYPE_USEDEVENTTOPICTYPE: [u8; UsedEventTopicType::spec_xdr().len()] =
@@ -5420,6 +5485,11 @@ impl soroban_sdk::SpecTypeDef for UsedEventDataType {
                 <Self as soroban_sdk::SpecName>::SPEC_NAME,
             ),
         });
+}
+impl soroban_sdk::ContractClientReturn for UsedEventDataType {
+    type Output = Self;
+    type Ok = Self;
+    type Err = soroban_sdk::Error;
 }
 #[doc(hidden)]
 #[allow(dead_code)]
@@ -6046,6 +6116,11 @@ impl soroban_sdk::SpecTypeDef for UsedEventTopicOuter {
             ),
         });
 }
+impl soroban_sdk::ContractClientReturn for UsedEventTopicOuter {
+    type Output = Self;
+    type Ok = Self;
+    type Err = soroban_sdk::Error;
+}
 #[doc(hidden)]
 #[allow(dead_code)]
 static __SPEC_XDR_TYPE_USEDEVENTTOPICOUTER: [u8; UsedEventTopicOuter::spec_xdr().len()] =
@@ -6472,6 +6547,11 @@ impl soroban_sdk::SpecTypeDef for UsedEventTopicInner {
                 <Self as soroban_sdk::SpecName>::SPEC_NAME,
             ),
         });
+}
+impl soroban_sdk::ContractClientReturn for UsedEventTopicInner {
+    type Output = Self;
+    type Ok = Self;
+    type Err = soroban_sdk::Error;
 }
 #[doc(hidden)]
 #[allow(dead_code)]
@@ -7046,6 +7126,11 @@ impl soroban_sdk::SpecTypeDef for UsedEventDataOuter {
             ),
         });
 }
+impl soroban_sdk::ContractClientReturn for UsedEventDataOuter {
+    type Output = Self;
+    type Ok = Self;
+    type Err = soroban_sdk::Error;
+}
 #[doc(hidden)]
 #[allow(dead_code)]
 static __SPEC_XDR_TYPE_USEDEVENTDATAOUTER: [u8; UsedEventDataOuter::spec_xdr().len()] =
@@ -7470,6 +7555,11 @@ impl soroban_sdk::SpecTypeDef for UsedEventDataInner {
                 <Self as soroban_sdk::SpecName>::SPEC_NAME,
             ),
         });
+}
+impl soroban_sdk::ContractClientReturn for UsedEventDataInner {
+    type Output = Self;
+    type Ok = Self;
+    type Err = soroban_sdk::Error;
 }
 #[doc(hidden)]
 #[allow(dead_code)]
@@ -8044,6 +8134,11 @@ impl soroban_sdk::SpecTypeDef for UsedRefTopicType {
             ),
         });
 }
+impl soroban_sdk::ContractClientReturn for UsedRefTopicType {
+    type Output = Self;
+    type Ok = Self;
+    type Err = soroban_sdk::Error;
+}
 #[doc(hidden)]
 #[allow(dead_code)]
 static __SPEC_XDR_TYPE_USEDREFTOPICTYPE: [u8; UsedRefTopicType::spec_xdr().len()] =
@@ -8424,6 +8519,11 @@ impl soroban_sdk::SpecTypeDef for UsedRefDataType {
                 <Self as soroban_sdk::SpecName>::SPEC_NAME,
             ),
         });
+}
+impl soroban_sdk::ContractClientReturn for UsedRefDataType {
+    type Output = Self;
+    type Ok = Self;
+    type Err = soroban_sdk::Error;
 }
 #[doc(hidden)]
 #[allow(dead_code)]
@@ -8844,6 +8944,11 @@ impl soroban_sdk::SpecTypeDef for UsedRefDataInner {
                 <Self as soroban_sdk::SpecName>::SPEC_NAME,
             ),
         });
+}
+impl soroban_sdk::ContractClientReturn for UsedRefDataInner {
+    type Output = Self;
+    type Ok = Self;
+    type Err = soroban_sdk::Error;
 }
 #[doc(hidden)]
 #[allow(dead_code)]
@@ -9414,6 +9519,11 @@ impl soroban_sdk::SpecTypeDef for UsedPublishEventDataType {
             ),
         });
 }
+impl soroban_sdk::ContractClientReturn for UsedPublishEventDataType {
+    type Output = Self;
+    type Ok = Self;
+    type Err = soroban_sdk::Error;
+}
 #[doc(hidden)]
 #[allow(dead_code)]
 static __SPEC_XDR_TYPE_USEDPUBLISHEVENTDATATYPE: [u8; UsedPublishEventDataType::spec_xdr().len()] =
@@ -9973,6 +10083,11 @@ impl soroban_sdk::SpecTypeDef for UsedTraitPublishDataType {
             ),
         });
 }
+impl soroban_sdk::ContractClientReturn for UsedTraitPublishDataType {
+    type Output = Self;
+    type Ok = Self;
+    type Err = soroban_sdk::Error;
+}
 #[doc(hidden)]
 #[allow(dead_code)]
 static __SPEC_XDR_TYPE_USEDTRAITPUBLISHDATATYPE: [u8; UsedTraitPublishDataType::spec_xdr().len()] =
@@ -10527,6 +10642,11 @@ impl soroban_sdk::SpecTypeDef for UsedTupleElement {
             ),
         });
 }
+impl soroban_sdk::ContractClientReturn for UsedTupleElement {
+    type Output = Self;
+    type Ok = Self;
+    type Err = soroban_sdk::Error;
+}
 #[doc(hidden)]
 #[allow(dead_code)]
 static __SPEC_XDR_TYPE_USEDTUPLEELEMENT: [u8; UsedTupleElement::spec_xdr().len()] =
@@ -10946,6 +11066,11 @@ impl soroban_sdk::SpecTypeDef for UsedTupleReturnElement {
                 <Self as soroban_sdk::SpecName>::SPEC_NAME,
             ),
         });
+}
+impl soroban_sdk::ContractClientReturn for UsedTupleReturnElement {
+    type Output = Self;
+    type Ok = Self;
+    type Err = soroban_sdk::Error;
 }
 #[doc(hidden)]
 #[allow(dead_code)]
@@ -11371,6 +11496,11 @@ impl soroban_sdk::SpecTypeDef for UsedVecInnerVecElement {
             ),
         });
 }
+impl soroban_sdk::ContractClientReturn for UsedVecInnerVecElement {
+    type Output = Self;
+    type Ok = Self;
+    type Err = soroban_sdk::Error;
+}
 #[doc(hidden)]
 #[allow(dead_code)]
 static __SPEC_XDR_TYPE_USEDVECINNERVECELEMENT: [u8; UsedVecInnerVecElement::spec_xdr().len()] =
@@ -11794,6 +11924,11 @@ impl soroban_sdk::SpecTypeDef for UsedVecInnerElement {
                 <Self as soroban_sdk::SpecName>::SPEC_NAME,
             ),
         });
+}
+impl soroban_sdk::ContractClientReturn for UsedVecInnerElement {
+    type Output = Self;
+    type Ok = Self;
+    type Err = soroban_sdk::Error;
 }
 #[doc(hidden)]
 #[allow(dead_code)]
@@ -12228,6 +12363,11 @@ impl soroban_sdk::SpecTypeDef for UsedVecElementNested {
                 <Self as soroban_sdk::SpecName>::SPEC_NAME,
             ),
         });
+}
+impl soroban_sdk::ContractClientReturn for UsedVecElementNested {
+    type Output = Self;
+    type Ok = Self;
+    type Err = soroban_sdk::Error;
 }
 #[doc(hidden)]
 #[allow(dead_code)]
@@ -12783,6 +12923,11 @@ impl soroban_sdk::SpecTypeDef for UsedNonPubStruct {
             ),
         });
 }
+impl soroban_sdk::ContractClientReturn for UsedNonPubStruct {
+    type Output = Self;
+    type Ok = Self;
+    type Err = soroban_sdk::Error;
+}
 #[doc(hidden)]
 #[allow(dead_code)]
 static __SPEC_XDR_TYPE_USEDNONPUBSTRUCT: [u8; UsedNonPubStruct::spec_xdr().len()] =
@@ -13196,6 +13341,11 @@ impl soroban_sdk::SpecTypeDef for UsedNonPubError {
             ),
         });
 }
+impl soroban_sdk::ContractClientReturn for UsedNonPubError {
+    type Output = Self;
+    type Ok = Self;
+    type Err = soroban_sdk::Error;
+}
 #[doc(hidden)]
 #[allow(dead_code)]
 static __SPEC_XDR_TYPE_USEDNONPUBERROR: [u8; UsedNonPubError::spec_xdr().len()] =
@@ -13405,6 +13555,11 @@ impl soroban_sdk::SpecTypeDef for UsedRecursiveRoot {
                 <Self as soroban_sdk::SpecName>::SPEC_NAME,
             ),
         });
+}
+impl soroban_sdk::ContractClientReturn for UsedRecursiveRoot {
+    type Output = Self;
+    type Ok = Self;
+    type Err = soroban_sdk::Error;
 }
 #[doc(hidden)]
 #[allow(dead_code)]
@@ -13847,6 +14002,11 @@ impl soroban_sdk::SpecTypeDef for UsedRecursiveNode {
                 <Self as soroban_sdk::SpecName>::SPEC_NAME,
             ),
         });
+}
+impl soroban_sdk::ContractClientReturn for UsedRecursiveNode {
+    type Output = Self;
+    type Ok = Self;
+    type Err = soroban_sdk::Error;
 }
 #[doc(hidden)]
 #[allow(dead_code)]
@@ -14433,6 +14593,11 @@ impl soroban_sdk::SpecTypeDef for UsedRecursiveLeaf {
             ),
         });
 }
+impl soroban_sdk::ContractClientReturn for UsedRecursiveLeaf {
+    type Output = Self;
+    type Ok = Self;
+    type Err = soroban_sdk::Error;
+}
 #[doc(hidden)]
 #[allow(dead_code)]
 static __SPEC_XDR_TYPE_USEDRECURSIVELEAF: [u8; UsedRecursiveLeaf::spec_xdr().len()] =
@@ -14854,6 +15019,11 @@ impl soroban_sdk::SpecTypeDef for UsedLeaf {
             ),
         });
 }
+impl soroban_sdk::ContractClientReturn for UsedLeaf {
+    type Output = Self;
+    type Ok = Self;
+    type Err = soroban_sdk::Error;
+}
 #[doc(hidden)]
 #[allow(dead_code)]
 static __SPEC_XDR_TYPE_USEDLEAF: [u8; UsedLeaf::spec_xdr().len()] = UsedLeaf::spec_xdr();
@@ -15270,6 +15440,11 @@ impl soroban_sdk::SpecTypeDef for UsedSelfRef {
                 <Self as soroban_sdk::SpecName>::SPEC_NAME,
             ),
         });
+}
+impl soroban_sdk::ContractClientReturn for UsedSelfRef {
+    type Output = Self;
+    type Ok = Self;
+    type Err = soroban_sdk::Error;
 }
 #[doc(hidden)]
 #[allow(dead_code)]
@@ -15720,7 +15895,7 @@ mod wasm_imported {
         /// Panics if the invoked contract returns an error or panics.
         ///
         /// Use [`Self::try_fn_enum_a`] to receive errors instead of panicking.
-        pub fn fn_enum_a(&self) -> <EnumA as soroban_sdk::ContractClientReturn>::Output {
+        pub fn fn_enum_a(&self) -> <EnumA as soroban_sdk::ContractClientReturn>::Ok {
             let _call_scope =
                 soroban_sdk::testutils::ClientCallScope::enter(&self.env, self.config);
             use soroban_sdk::{FromVal, IntoVal};
@@ -15744,13 +15919,13 @@ mod wasm_imported {
             &self,
         ) -> Result<
             Result<
-                <EnumA as soroban_sdk::ContractClientReturn>::Output,
-                <<EnumA as soroban_sdk::ContractClientReturn>::Output as soroban_sdk::TryFromVal<
+                <EnumA as soroban_sdk::ContractClientReturn>::Ok,
+                <<EnumA as soroban_sdk::ContractClientReturn>::Ok as soroban_sdk::TryFromVal<
                     soroban_sdk::Env,
                     soroban_sdk::Val,
                 >>::Error,
             >,
-            Result<soroban_sdk::Error, soroban_sdk::InvokeError>,
+            Result<<EnumA as soroban_sdk::ContractClientReturn>::Err, soroban_sdk::InvokeError>,
         > {
             let _call_scope =
                 soroban_sdk::testutils::ClientCallScope::enter(&self.env, self.config);
@@ -15776,7 +15951,7 @@ mod wasm_imported {
         pub fn fn_error_a(
             &self,
             input: &u32,
-        ) -> <u32 as soroban_sdk::ContractClientReturn>::Output {
+        ) -> <Result<u32, ErrorA> as soroban_sdk::ContractClientReturn>::Ok {
             let _call_scope =
                 soroban_sdk::testutils::ClientCallScope::enter(&self.env, self.config);
             use soroban_sdk::{FromVal, IntoVal};
@@ -15797,14 +15972,20 @@ mod wasm_imported {
             input: &u32,
         ) -> Result<
             Result<
-                <u32 as soroban_sdk::ContractClientReturn>::Output,
-                <<u32 as soroban_sdk::ContractClientReturn>::Output as soroban_sdk::TryFromVal<
+                <Result<u32, ErrorA> as soroban_sdk::ContractClientReturn>::Ok,
+                <<Result<
+                    u32,
+                    ErrorA,
+                > as soroban_sdk::ContractClientReturn>::Ok as soroban_sdk::TryFromVal<
                     soroban_sdk::Env,
                     soroban_sdk::Val,
                 >>::Error,
             >,
-            Result<ErrorA, soroban_sdk::InvokeError>,
-        > {
+            Result<
+                <Result<u32, ErrorA> as soroban_sdk::ContractClientReturn>::Err,
+                soroban_sdk::InvokeError,
+            >,
+        >{
             let _call_scope =
                 soroban_sdk::testutils::ClientCallScope::enter(&self.env, self.config);
             use soroban_sdk::{FromVal, IntoVal};
@@ -15912,7 +16093,7 @@ mod wasm_imported {
             &self,
             f1: &u32,
             f2: &bool,
-        ) -> <StructA as soroban_sdk::ContractClientReturn>::Output {
+        ) -> <StructA as soroban_sdk::ContractClientReturn>::Ok {
             let _call_scope =
                 soroban_sdk::testutils::ClientCallScope::enter(&self.env, self.config);
             use soroban_sdk::{FromVal, IntoVal};
@@ -15937,14 +16118,14 @@ mod wasm_imported {
             f2: &bool,
         ) -> Result<
             Result<
-                <StructA as soroban_sdk::ContractClientReturn>::Output,
-                <<StructA as soroban_sdk::ContractClientReturn>::Output as soroban_sdk::TryFromVal<
+                <StructA as soroban_sdk::ContractClientReturn>::Ok,
+                <<StructA as soroban_sdk::ContractClientReturn>::Ok as soroban_sdk::TryFromVal<
                     soroban_sdk::Env,
                     soroban_sdk::Val,
                 >>::Error,
             >,
-            Result<soroban_sdk::Error, soroban_sdk::InvokeError>,
-        >{
+            Result<<StructA as soroban_sdk::ContractClientReturn>::Err, soroban_sdk::InvokeError>,
+        > {
             let _call_scope =
                 soroban_sdk::testutils::ClientCallScope::enter(&self.env, self.config);
             use soroban_sdk::{FromVal, IntoVal};
@@ -15965,7 +16146,7 @@ mod wasm_imported {
         /// Panics if the invoked contract returns an error or panics.
         ///
         /// Use [`Self::try_fn_enum_int_a`] to receive errors instead of panicking.
-        pub fn fn_enum_int_a(&self) -> <EnumIntA as soroban_sdk::ContractClientReturn>::Output {
+        pub fn fn_enum_int_a(&self) -> <EnumIntA as soroban_sdk::ContractClientReturn>::Ok {
             let _call_scope =
                 soroban_sdk::testutils::ClientCallScope::enter(&self.env, self.config);
             use soroban_sdk::{FromVal, IntoVal};
@@ -15985,14 +16166,14 @@ mod wasm_imported {
             &self,
         ) -> Result<
             Result<
-                <EnumIntA as soroban_sdk::ContractClientReturn>::Output,
-                <<EnumIntA as soroban_sdk::ContractClientReturn>::Output as soroban_sdk::TryFromVal<
+                <EnumIntA as soroban_sdk::ContractClientReturn>::Ok,
+                <<EnumIntA as soroban_sdk::ContractClientReturn>::Ok as soroban_sdk::TryFromVal<
                     soroban_sdk::Env,
                     soroban_sdk::Val,
                 >>::Error,
             >,
-            Result<soroban_sdk::Error, soroban_sdk::InvokeError>,
-        >{
+            Result<<EnumIntA as soroban_sdk::ContractClientReturn>::Err, soroban_sdk::InvokeError>,
+        > {
             let _call_scope =
                 soroban_sdk::testutils::ClientCallScope::enter(&self.env, self.config);
             use soroban_sdk::{FromVal, IntoVal};
@@ -16014,7 +16195,7 @@ mod wasm_imported {
             &self,
             f1: &i64,
             f2: &i64,
-        ) -> <StructTupleA as soroban_sdk::ContractClientReturn>::Output {
+        ) -> <StructTupleA as soroban_sdk::ContractClientReturn>::Ok {
             let _call_scope =
                 soroban_sdk::testutils::ClientCallScope::enter(&self.env, self.config);
             use soroban_sdk::{FromVal, IntoVal};
@@ -16039,13 +16220,16 @@ mod wasm_imported {
             f2: &i64,
         ) -> Result<
             Result<
-                <StructTupleA as soroban_sdk::ContractClientReturn>::Output,
-                <<StructTupleA as soroban_sdk::ContractClientReturn>::Output as soroban_sdk::TryFromVal<
+                <StructTupleA as soroban_sdk::ContractClientReturn>::Ok,
+                <<StructTupleA as soroban_sdk::ContractClientReturn>::Ok as soroban_sdk::TryFromVal<
                     soroban_sdk::Env,
                     soroban_sdk::Val,
                 >>::Error,
             >,
-            Result<soroban_sdk::Error, soroban_sdk::InvokeError>,
+            Result<
+                <StructTupleA as soroban_sdk::ContractClientReturn>::Err,
+                soroban_sdk::InvokeError,
+            >,
         >{
             let _call_scope =
                 soroban_sdk::testutils::ClientCallScope::enter(&self.env, self.config);
@@ -16202,6 +16386,11 @@ mod wasm_imported {
                     ),
                 },
             );
+    }
+    impl soroban_sdk::ContractClientReturn for ContractExecutableRef {
+        type Output = Self;
+        type Ok = Self;
+        type Err = soroban_sdk::Error;
     }
     #[doc(hidden)]
     #[allow(dead_code)]
@@ -16746,6 +16935,11 @@ mod wasm_imported {
                     ),
                 },
             );
+    }
+    impl soroban_sdk::ContractClientReturn for ContractContext {
+        type Output = Self;
+        type Ok = Self;
+        type Err = soroban_sdk::Error;
     }
     #[doc(hidden)]
     #[allow(dead_code)]
@@ -17356,6 +17550,11 @@ mod wasm_imported {
                 },
             );
     }
+    impl soroban_sdk::ContractClientReturn for SubContractInvocation {
+        type Output = Self;
+        type Ok = Self;
+        type Err = soroban_sdk::Error;
+    }
     #[doc(hidden)]
     #[allow(dead_code)]
     static __SPEC_XDR_TYPE_SUBCONTRACTINVOCATION: [u8; SubContractInvocation::spec_xdr().len()] =
@@ -17897,6 +18096,11 @@ mod wasm_imported {
                     ),
                 },
             );
+    }
+    impl soroban_sdk::ContractClientReturn for CreateContractHostFnContext {
+        type Output = Self;
+        type Ok = Self;
+        type Err = soroban_sdk::Error;
     }
     #[doc(hidden)]
     #[allow(dead_code)]
@@ -18458,6 +18662,11 @@ mod wasm_imported {
                     ),
                 },
             );
+    }
+    impl soroban_sdk::ContractClientReturn for CreateContractWithConstructorHostFnContext {
+        type Output = Self;
+        type Ok = Self;
+        type Err = soroban_sdk::Error;
     }
     #[doc(hidden)]
     #[allow(dead_code)]
@@ -19109,6 +19318,11 @@ mod wasm_imported {
                 },
             );
     }
+    impl soroban_sdk::ContractClientReturn for StructA {
+        type Output = Self;
+        type Ok = Self;
+        type Err = soroban_sdk::Error;
+    }
     #[doc(hidden)]
     #[allow(dead_code)]
     static __SPEC_XDR_TYPE_STRUCTA: [u8; StructA::spec_xdr().len()] = StructA::spec_xdr();
@@ -19612,6 +19826,11 @@ mod wasm_imported {
                 },
             );
     }
+    impl soroban_sdk::ContractClientReturn for StructB {
+        type Output = Self;
+        type Ok = Self;
+        type Err = soroban_sdk::Error;
+    }
     #[doc(hidden)]
     #[allow(dead_code)]
     static __SPEC_XDR_TYPE_STRUCTB: [u8; StructB::spec_xdr().len()] = StructB::spec_xdr();
@@ -20114,6 +20333,11 @@ mod wasm_imported {
                     ),
                 },
             );
+    }
+    impl soroban_sdk::ContractClientReturn for StructC {
+        type Output = Self;
+        type Ok = Self;
+        type Err = soroban_sdk::Error;
     }
     #[doc(hidden)]
     #[allow(dead_code)]
@@ -20623,6 +20847,11 @@ mod wasm_imported {
                 },
             );
     }
+    impl soroban_sdk::ContractClientReturn for StructTupleA {
+        type Output = Self;
+        type Ok = Self;
+        type Err = soroban_sdk::Error;
+    }
     #[doc(hidden)]
     #[allow(dead_code)]
     static __SPEC_XDR_TYPE_STRUCTTUPLEA: [u8; StructTupleA::spec_xdr().len()] =
@@ -21078,6 +21307,11 @@ mod wasm_imported {
                     ),
                 },
             );
+    }
+    impl soroban_sdk::ContractClientReturn for StructTupleB {
+        type Output = Self;
+        type Ok = Self;
+        type Err = soroban_sdk::Error;
     }
     #[doc(hidden)]
     #[allow(dead_code)]
@@ -21535,6 +21769,11 @@ mod wasm_imported {
                     ),
                 },
             );
+    }
+    impl soroban_sdk::ContractClientReturn for StructTupleC {
+        type Output = Self;
+        type Ok = Self;
+        type Err = soroban_sdk::Error;
     }
     #[doc(hidden)]
     #[allow(dead_code)]
@@ -22036,6 +22275,11 @@ mod wasm_imported {
                     ),
                 },
             );
+    }
+    impl soroban_sdk::ContractClientReturn for ContractExecutable {
+        type Output = Self;
+        type Ok = Self;
+        type Err = soroban_sdk::Error;
     }
     #[doc(hidden)]
     #[allow(dead_code)]
@@ -22739,6 +22983,11 @@ mod wasm_imported {
                     ),
                 },
             );
+    }
+    impl soroban_sdk::ContractClientReturn for Context {
+        type Output = Self;
+        type Ok = Self;
+        type Err = soroban_sdk::Error;
     }
     #[doc(hidden)]
     #[allow(dead_code)]
@@ -23545,6 +23794,11 @@ mod wasm_imported {
                 },
             );
     }
+    impl soroban_sdk::ContractClientReturn for InvokerContractAuthEntry {
+        type Output = Self;
+        type Ok = Self;
+        type Err = soroban_sdk::Error;
+    }
     #[doc(hidden)]
     #[allow(dead_code)]
     static __SPEC_XDR_TYPE_INVOKERCONTRACTAUTHENTRY: [u8; InvokerContractAuthEntry::spec_xdr()
@@ -24328,6 +24582,11 @@ mod wasm_imported {
                 },
             );
     }
+    impl soroban_sdk::ContractClientReturn for Executable {
+        type Output = Self;
+        type Ok = Self;
+        type Err = soroban_sdk::Error;
+    }
     #[doc(hidden)]
     #[allow(dead_code)]
     static __SPEC_XDR_TYPE_EXECUTABLE: [u8; Executable::spec_xdr().len()] = Executable::spec_xdr();
@@ -24949,6 +25208,11 @@ mod wasm_imported {
                 },
             );
     }
+    impl soroban_sdk::ContractClientReturn for EnumA {
+        type Output = Self;
+        type Ok = Self;
+        type Err = soroban_sdk::Error;
+    }
     #[doc(hidden)]
     #[allow(dead_code)]
     static __SPEC_XDR_TYPE_ENUMA: [u8; EnumA::spec_xdr().len()] = EnumA::spec_xdr();
@@ -25543,6 +25807,11 @@ mod wasm_imported {
                     ),
                 },
             );
+    }
+    impl soroban_sdk::ContractClientReturn for EnumB {
+        type Output = Self;
+        type Ok = Self;
+        type Err = soroban_sdk::Error;
     }
     #[doc(hidden)]
     #[allow(dead_code)]
@@ -26262,6 +26531,11 @@ mod wasm_imported {
                 },
             );
     }
+    impl soroban_sdk::ContractClientReturn for EnumC {
+        type Output = Self;
+        type Ok = Self;
+        type Err = soroban_sdk::Error;
+    }
     #[doc(hidden)]
     #[allow(dead_code)]
     static __SPEC_XDR_TYPE_ENUMC: [u8; EnumC::spec_xdr().len()] = EnumC::spec_xdr();
@@ -26907,6 +27181,11 @@ mod wasm_imported {
                 },
             );
     }
+    impl soroban_sdk::ContractClientReturn for EnumIntA {
+        type Output = Self;
+        type Ok = Self;
+        type Err = soroban_sdk::Error;
+    }
     #[doc(hidden)]
     #[allow(dead_code)]
     static __SPEC_XDR_TYPE_ENUMINTA: [u8; EnumIntA::spec_xdr().len()] = EnumIntA::spec_xdr();
@@ -27335,6 +27614,11 @@ mod wasm_imported {
                     ),
                 },
             );
+    }
+    impl soroban_sdk::ContractClientReturn for EnumIntB {
+        type Output = Self;
+        type Ok = Self;
+        type Err = soroban_sdk::Error;
     }
     #[doc(hidden)]
     #[allow(dead_code)]
@@ -27765,6 +28049,11 @@ mod wasm_imported {
                 },
             );
     }
+    impl soroban_sdk::ContractClientReturn for EnumIntC {
+        type Output = Self;
+        type Ok = Self;
+        type Err = soroban_sdk::Error;
+    }
     #[doc(hidden)]
     #[allow(dead_code)]
     static __SPEC_XDR_TYPE_ENUMINTC: [u8; EnumIntC::spec_xdr().len()] = EnumIntC::spec_xdr();
@@ -28194,6 +28483,11 @@ mod wasm_imported {
                 },
             );
     }
+    impl soroban_sdk::ContractClientReturn for ErrorA {
+        type Output = Self;
+        type Ok = Self;
+        type Err = soroban_sdk::Error;
+    }
     #[doc(hidden)]
     #[allow(dead_code)]
     static __SPEC_XDR_TYPE_ERRORA: [u8; ErrorA::spec_xdr().len()] = ErrorA::spec_xdr();
@@ -28451,6 +28745,11 @@ mod wasm_imported {
                 },
             );
     }
+    impl soroban_sdk::ContractClientReturn for ErrorB {
+        type Output = Self;
+        type Ok = Self;
+        type Err = soroban_sdk::Error;
+    }
     #[doc(hidden)]
     #[allow(dead_code)]
     static __SPEC_XDR_TYPE_ERRORB: [u8; ErrorB::spec_xdr().len()] = ErrorB::spec_xdr();
@@ -28707,6 +29006,11 @@ mod wasm_imported {
                     ),
                 },
             );
+    }
+    impl soroban_sdk::ContractClientReturn for ErrorC {
+        type Output = Self;
+        type Ok = Self;
+        type Err = soroban_sdk::Error;
     }
     #[doc(hidden)]
     #[allow(dead_code)]
@@ -29639,6 +29943,11 @@ impl soroban_sdk::SpecTypeDef for UnusedStruct {
             ),
         });
 }
+impl soroban_sdk::ContractClientReturn for UnusedStruct {
+    type Output = Self;
+    type Ok = Self;
+    type Err = soroban_sdk::Error;
+}
 #[doc(hidden)]
 #[allow(dead_code)]
 static __SPEC_XDR_TYPE_UNUSEDSTRUCT: [u8; UnusedStruct::spec_xdr().len()] =
@@ -30062,6 +30371,11 @@ impl soroban_sdk::SpecTypeDef for UnusedEnum {
                 <Self as soroban_sdk::SpecName>::SPEC_NAME,
             ),
         });
+}
+impl soroban_sdk::ContractClientReturn for UnusedEnum {
+    type Output = Self;
+    type Ok = Self;
+    type Err = soroban_sdk::Error;
 }
 #[doc(hidden)]
 #[allow(dead_code)]
@@ -30587,6 +30901,11 @@ impl soroban_sdk::SpecTypeDef for UnusedIntEnum {
             ),
         });
 }
+impl soroban_sdk::ContractClientReturn for UnusedIntEnum {
+    type Output = Self;
+    type Ok = Self;
+    type Err = soroban_sdk::Error;
+}
 #[doc(hidden)]
 #[allow(dead_code)]
 static __SPEC_XDR_TYPE_UNUSEDINTENUM: [u8; UnusedIntEnum::spec_xdr().len()] =
@@ -31105,6 +31424,11 @@ impl soroban_sdk::SpecTypeDef for UnusedEventDataType {
                 <Self as soroban_sdk::SpecName>::SPEC_NAME,
             ),
         });
+}
+impl soroban_sdk::ContractClientReturn for UnusedEventDataType {
+    type Output = Self;
+    type Ok = Self;
+    type Err = soroban_sdk::Error;
 }
 #[doc(hidden)]
 #[allow(dead_code)]
@@ -31672,6 +31996,11 @@ impl soroban_sdk::SpecTypeDef for UnusedOuter {
             ),
         });
 }
+impl soroban_sdk::ContractClientReturn for UnusedOuter {
+    type Output = Self;
+    type Ok = Self;
+    type Err = soroban_sdk::Error;
+}
 #[doc(hidden)]
 #[allow(dead_code)]
 static __SPEC_XDR_TYPE_UNUSEDOUTER: [u8; UnusedOuter::spec_xdr().len()] = UnusedOuter::spec_xdr();
@@ -32086,6 +32415,11 @@ impl soroban_sdk::SpecTypeDef for UnusedInner {
             ),
         });
 }
+impl soroban_sdk::ContractClientReturn for UnusedInner {
+    type Output = Self;
+    type Ok = Self;
+    type Err = soroban_sdk::Error;
+}
 #[doc(hidden)]
 #[allow(dead_code)]
 static __SPEC_XDR_TYPE_UNUSEDINNER: [u8; UnusedInner::spec_xdr().len()] = UnusedInner::spec_xdr();
@@ -32495,6 +32829,11 @@ impl soroban_sdk::SpecTypeDef for UnusedCycleA {
                 <Self as soroban_sdk::SpecName>::SPEC_NAME,
             ),
         });
+}
+impl soroban_sdk::ContractClientReturn for UnusedCycleA {
+    type Output = Self;
+    type Ok = Self;
+    type Err = soroban_sdk::Error;
 }
 #[doc(hidden)]
 #[allow(dead_code)]
@@ -32906,6 +33245,11 @@ impl soroban_sdk::SpecTypeDef for UnusedCycleB {
                 <Self as soroban_sdk::SpecName>::SPEC_NAME,
             ),
         });
+}
+impl soroban_sdk::ContractClientReturn for UnusedCycleB {
+    type Output = Self;
+    type Ok = Self;
+    type Err = soroban_sdk::Error;
 }
 #[doc(hidden)]
 #[allow(dead_code)]
@@ -33326,6 +33670,11 @@ impl soroban_sdk::SpecTypeDef for UnusedSelfRef {
                 <Self as soroban_sdk::SpecName>::SPEC_NAME,
             ),
         });
+}
+impl soroban_sdk::ContractClientReturn for UnusedSelfRef {
+    type Output = Self;
+    type Ok = Self;
+    type Err = soroban_sdk::Error;
 }
 #[doc(hidden)]
 #[allow(dead_code)]
@@ -33749,6 +34098,11 @@ impl soroban_sdk::SpecTypeDef for UnusedPubError {
             ),
         });
 }
+impl soroban_sdk::ContractClientReturn for UnusedPubError {
+    type Output = Self;
+    type Ok = Self;
+    type Err = soroban_sdk::Error;
+}
 #[doc(hidden)]
 #[allow(dead_code)]
 static __SPEC_XDR_TYPE_UNUSEDPUBERROR: [u8; UnusedPubError::spec_xdr().len()] =
@@ -33958,6 +34312,11 @@ impl soroban_sdk::SpecTypeDef for UnusedNonContractFnParam {
                 <Self as soroban_sdk::SpecName>::SPEC_NAME,
             ),
         });
+}
+impl soroban_sdk::ContractClientReturn for UnusedNonContractFnParam {
+    type Output = Self;
+    type Ok = Self;
+    type Err = soroban_sdk::Error;
 }
 #[doc(hidden)]
 #[allow(dead_code)]
@@ -34385,6 +34744,11 @@ impl soroban_sdk::SpecTypeDef for UnusedNonContractFnReturn {
             ),
         });
 }
+impl soroban_sdk::ContractClientReturn for UnusedNonContractFnReturn {
+    type Output = Self;
+    type Ok = Self;
+    type Err = soroban_sdk::Error;
+}
 #[doc(hidden)]
 #[allow(dead_code)]
 static __SPEC_XDR_TYPE_UNUSEDNONCONTRACTFNRETURN: [u8; UnusedNonContractFnReturn::spec_xdr()
@@ -34806,6 +35170,11 @@ impl soroban_sdk::SpecTypeDef for UnusedNonPubStruct {
             ),
         });
 }
+impl soroban_sdk::ContractClientReturn for UnusedNonPubStruct {
+    type Output = Self;
+    type Ok = Self;
+    type Err = soroban_sdk::Error;
+}
 #[doc(hidden)]
 #[allow(dead_code)]
 static __SPEC_XDR_TYPE_UNUSEDNONPUBSTRUCT: [u8; UnusedNonPubStruct::spec_xdr().len()] =
@@ -35218,6 +35587,11 @@ impl soroban_sdk::SpecTypeDef for UnusedNonPubError {
                 <Self as soroban_sdk::SpecName>::SPEC_NAME,
             ),
         });
+}
+impl soroban_sdk::ContractClientReturn for UnusedNonPubError {
+    type Output = Self;
+    type Ok = Self;
+    type Err = soroban_sdk::Error;
 }
 #[doc(hidden)]
 #[allow(dead_code)]
@@ -36596,7 +36970,7 @@ impl<'a> ContractClient<'a> {
     /// Panics if the invoked contract returns an error or panics.
     ///
     /// Use [`Self::try_with_return`] to receive errors instead of panicking.
-    pub fn with_return(&self) -> <UsedReturnEnum as soroban_sdk::ContractClientReturn>::Output {
+    pub fn with_return(&self) -> <UsedReturnEnum as soroban_sdk::ContractClientReturn>::Ok {
         let _call_scope = soroban_sdk::testutils::ClientCallScope::enter(&self.env, self.config);
         use soroban_sdk::{FromVal, IntoVal};
         let res = self.env.invoke_contract(
@@ -36615,13 +36989,16 @@ impl<'a> ContractClient<'a> {
         &self,
     ) -> Result<
         Result<
-            <UsedReturnEnum as soroban_sdk::ContractClientReturn>::Output,
-            <<UsedReturnEnum as soroban_sdk::ContractClientReturn>::Output as soroban_sdk::TryFromVal<
+            <UsedReturnEnum as soroban_sdk::ContractClientReturn>::Ok,
+            <<UsedReturnEnum as soroban_sdk::ContractClientReturn>::Ok as soroban_sdk::TryFromVal<
                 soroban_sdk::Env,
                 soroban_sdk::Val,
             >>::Error,
         >,
-        Result<soroban_sdk::Error, soroban_sdk::InvokeError>,
+        Result<
+            <UsedReturnEnum as soroban_sdk::ContractClientReturn>::Err,
+            soroban_sdk::InvokeError,
+        >,
     >{
         let _call_scope = soroban_sdk::testutils::ClientCallScope::enter(&self.env, self.config);
         use soroban_sdk::{FromVal, IntoVal};
@@ -36639,7 +37016,9 @@ impl<'a> ContractClient<'a> {
     /// Panics if the invoked contract returns an error or panics.
     ///
     /// Use [`Self::try_with_error`] to receive errors instead of panicking.
-    pub fn with_error(&self) -> <u32 as soroban_sdk::ContractClientReturn>::Output {
+    pub fn with_error(
+        &self,
+    ) -> <Result<u32, UsedErrorEnum> as soroban_sdk::ContractClientReturn>::Ok {
         let _call_scope = soroban_sdk::testutils::ClientCallScope::enter(&self.env, self.config);
         use soroban_sdk::{FromVal, IntoVal};
         let res = self.env.invoke_contract(
@@ -36658,14 +37037,20 @@ impl<'a> ContractClient<'a> {
         &self,
     ) -> Result<
         Result<
-            <u32 as soroban_sdk::ContractClientReturn>::Output,
-            <<u32 as soroban_sdk::ContractClientReturn>::Output as soroban_sdk::TryFromVal<
+            <Result<u32, UsedErrorEnum> as soroban_sdk::ContractClientReturn>::Ok,
+            <<Result<
+                u32,
+                UsedErrorEnum,
+            > as soroban_sdk::ContractClientReturn>::Ok as soroban_sdk::TryFromVal<
                 soroban_sdk::Env,
                 soroban_sdk::Val,
             >>::Error,
         >,
-        Result<UsedErrorEnum, soroban_sdk::InvokeError>,
-    > {
+        Result<
+            <Result<u32, UsedErrorEnum> as soroban_sdk::ContractClientReturn>::Err,
+            soroban_sdk::InvokeError,
+        >,
+    >{
         let _call_scope = soroban_sdk::testutils::ClientCallScope::enter(&self.env, self.config);
         use soroban_sdk::{FromVal, IntoVal};
         let res = self.env.try_invoke_contract(
@@ -36964,7 +37349,9 @@ impl<'a> ContractClient<'a> {
     /// Panics if the invoked contract returns an error or panics.
     ///
     /// Use [`Self::try_with_result`] to receive errors instead of panicking.
-    pub fn with_result(&self) -> <UsedResultOk as soroban_sdk::ContractClientReturn>::Output {
+    pub fn with_result(
+        &self,
+    ) -> <Result<UsedResultOk, UsedErrorEnum> as soroban_sdk::ContractClientReturn>::Ok {
         let _call_scope = soroban_sdk::testutils::ClientCallScope::enter(&self.env, self.config);
         use soroban_sdk::{FromVal, IntoVal};
         let res = self.env.invoke_contract(
@@ -36983,13 +37370,25 @@ impl<'a> ContractClient<'a> {
         &self,
     ) -> Result<
         Result<
-            <UsedResultOk as soroban_sdk::ContractClientReturn>::Output,
-            <<UsedResultOk as soroban_sdk::ContractClientReturn>::Output as soroban_sdk::TryFromVal<
+            <Result<
+                UsedResultOk,
+                UsedErrorEnum,
+            > as soroban_sdk::ContractClientReturn>::Ok,
+            <<Result<
+                UsedResultOk,
+                UsedErrorEnum,
+            > as soroban_sdk::ContractClientReturn>::Ok as soroban_sdk::TryFromVal<
                 soroban_sdk::Env,
                 soroban_sdk::Val,
             >>::Error,
         >,
-        Result<UsedErrorEnum, soroban_sdk::InvokeError>,
+        Result<
+            <Result<
+                UsedResultOk,
+                UsedErrorEnum,
+            > as soroban_sdk::ContractClientReturn>::Err,
+            soroban_sdk::InvokeError,
+        >,
     >{
         let _call_scope = soroban_sdk::testutils::ClientCallScope::enter(&self.env, self.config);
         use soroban_sdk::{FromVal, IntoVal};
@@ -37496,7 +37895,9 @@ impl<'a> ContractClient<'a> {
     /// Panics if the invoked contract returns an error or panics.
     ///
     /// Use [`Self::try_with_non_pub_error`] to receive errors instead of panicking.
-    pub fn with_non_pub_error(&self) -> <u32 as soroban_sdk::ContractClientReturn>::Output {
+    pub fn with_non_pub_error(
+        &self,
+    ) -> <Result<u32, UsedNonPubError> as soroban_sdk::ContractClientReturn>::Ok {
         let _call_scope = soroban_sdk::testutils::ClientCallScope::enter(&self.env, self.config);
         use soroban_sdk::{FromVal, IntoVal};
         let res = self.env.invoke_contract(
@@ -37515,14 +37916,20 @@ impl<'a> ContractClient<'a> {
         &self,
     ) -> Result<
         Result<
-            <u32 as soroban_sdk::ContractClientReturn>::Output,
-            <<u32 as soroban_sdk::ContractClientReturn>::Output as soroban_sdk::TryFromVal<
+            <Result<u32, UsedNonPubError> as soroban_sdk::ContractClientReturn>::Ok,
+            <<Result<
+                u32,
+                UsedNonPubError,
+            > as soroban_sdk::ContractClientReturn>::Ok as soroban_sdk::TryFromVal<
                 soroban_sdk::Env,
                 soroban_sdk::Val,
             >>::Error,
         >,
-        Result<UsedNonPubError, soroban_sdk::InvokeError>,
-    > {
+        Result<
+            <Result<u32, UsedNonPubError> as soroban_sdk::ContractClientReturn>::Err,
+            soroban_sdk::InvokeError,
+        >,
+    >{
         let _call_scope = soroban_sdk::testutils::ClientCallScope::enter(&self.env, self.config);
         use soroban_sdk::{FromVal, IntoVal};
         let res = self.env.try_invoke_contract(
@@ -37579,7 +37986,7 @@ impl<'a> ContractClient<'a> {
     /// Use [`Self::try_with_tuple_return`] to receive errors instead of panicking.
     pub fn with_tuple_return(
         &self,
-    ) -> <(UsedTupleReturnElement, u32) as soroban_sdk::ContractClientReturn>::Output {
+    ) -> <(UsedTupleReturnElement, u32) as soroban_sdk::ContractClientReturn>::Ok {
         let _call_scope = soroban_sdk::testutils::ClientCallScope::enter(&self.env, self.config);
         use soroban_sdk::{FromVal, IntoVal};
         let res = self.env.invoke_contract(
@@ -37598,16 +38005,19 @@ impl<'a> ContractClient<'a> {
         &self,
     ) -> Result<
         Result<
-            <(UsedTupleReturnElement, u32) as soroban_sdk::ContractClientReturn>::Output,
+            <(UsedTupleReturnElement, u32) as soroban_sdk::ContractClientReturn>::Ok,
             <<(
                 UsedTupleReturnElement,
                 u32,
-            ) as soroban_sdk::ContractClientReturn>::Output as soroban_sdk::TryFromVal<
+            ) as soroban_sdk::ContractClientReturn>::Ok as soroban_sdk::TryFromVal<
                 soroban_sdk::Env,
                 soroban_sdk::Val,
             >>::Error,
         >,
-        Result<soroban_sdk::Error, soroban_sdk::InvokeError>,
+        Result<
+            <(UsedTupleReturnElement, u32) as soroban_sdk::ContractClientReturn>::Err,
+            soroban_sdk::InvokeError,
+        >,
     >{
         let _call_scope = soroban_sdk::testutils::ClientCallScope::enter(&self.env, self.config);
         use soroban_sdk::{FromVal, IntoVal};

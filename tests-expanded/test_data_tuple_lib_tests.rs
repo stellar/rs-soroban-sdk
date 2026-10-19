@@ -34,6 +34,11 @@ impl soroban_sdk::SpecTypeDef for Tuple {
             ),
         });
 }
+impl soroban_sdk::ContractClientReturn for Tuple {
+    type Output = Self;
+    type Ok = Self;
+    type Err = soroban_sdk::Error;
+}
 #[doc(hidden)]
 #[allow(dead_code)]
 static __SPEC_XDR_TYPE_TUPLE: [u8; Tuple::spec_xdr().len()] = Tuple::spec_xdr();

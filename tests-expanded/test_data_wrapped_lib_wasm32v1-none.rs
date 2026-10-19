@@ -35,6 +35,11 @@ impl soroban_sdk::SpecTypeDef for Wrapped {
             ),
         });
 }
+impl soroban_sdk::ContractClientReturn for Wrapped {
+    type Output = Self;
+    type Ok = Self;
+    type Err = soroban_sdk::Error;
+}
 #[doc(hidden)]
 #[allow(dead_code)]
 #[link_section = "contractspecv0"]

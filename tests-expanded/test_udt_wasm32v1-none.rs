@@ -75,6 +75,11 @@ impl soroban_sdk::SpecTypeDef for UdtEnum2 {
             ),
         });
 }
+impl soroban_sdk::ContractClientReturn for UdtEnum2 {
+    type Output = Self;
+    type Ok = Self;
+    type Err = soroban_sdk::Error;
+}
 #[doc(hidden)]
 #[allow(dead_code)]
 #[link_section = "contractspecv0"]
@@ -240,6 +245,11 @@ impl soroban_sdk::SpecTypeDef for UdtEnum {
                 <Self as soroban_sdk::SpecName>::SPEC_NAME,
             ),
         });
+}
+impl soroban_sdk::ContractClientReturn for UdtEnum {
+    type Output = Self;
+    type Ok = Self;
+    type Err = soroban_sdk::Error;
 }
 #[doc(hidden)]
 #[allow(dead_code)]
@@ -480,6 +490,11 @@ impl soroban_sdk::SpecTypeDef for UdtTuple {
             ),
         });
 }
+impl soroban_sdk::ContractClientReturn for UdtTuple {
+    type Output = Self;
+    type Ok = Self;
+    type Err = soroban_sdk::Error;
+}
 #[doc(hidden)]
 #[allow(dead_code)]
 #[link_section = "contractspecv0"]
@@ -639,6 +654,11 @@ impl soroban_sdk::SpecTypeDef for UdtStruct {
                 <Self as soroban_sdk::SpecName>::SPEC_NAME,
             ),
         });
+}
+impl soroban_sdk::ContractClientReturn for UdtStruct {
+    type Output = Self;
+    type Ok = Self;
+    type Err = soroban_sdk::Error;
 }
 #[doc(hidden)]
 #[allow(dead_code)]
@@ -809,6 +829,11 @@ impl soroban_sdk::SpecTypeDef for UdtRecursive {
             ),
         });
 }
+impl soroban_sdk::ContractClientReturn for UdtRecursive {
+    type Output = Self;
+    type Ok = Self;
+    type Err = soroban_sdk::Error;
+}
 #[doc(hidden)]
 #[allow(dead_code)]
 #[link_section = "contractspecv0"]
@@ -969,6 +994,11 @@ impl soroban_sdk::SpecTypeDef for RecursiveToEnum {
                 <Self as soroban_sdk::SpecName>::SPEC_NAME,
             ),
         });
+}
+impl soroban_sdk::ContractClientReturn for RecursiveToEnum {
+    type Output = Self;
+    type Ok = Self;
+    type Err = soroban_sdk::Error;
 }
 #[doc(hidden)]
 #[allow(dead_code)]
@@ -1137,6 +1167,11 @@ impl soroban_sdk::SpecTypeDef for RecursiveEnum {
                 <Self as soroban_sdk::SpecName>::SPEC_NAME,
             ),
         });
+}
+impl soroban_sdk::ContractClientReturn for RecursiveEnum {
+    type Output = Self;
+    type Ok = Self;
+    type Err = soroban_sdk::Error;
 }
 #[doc(hidden)]
 #[allow(dead_code)]
@@ -1444,11 +1479,7 @@ impl<'a> ContractClient<'a> {
     /// Panics if the invoked contract returns an error or panics.
     ///
     /// Use [`Self::try_add`] to receive errors instead of panicking.
-    pub fn add(
-        &self,
-        a: &UdtEnum,
-        b: &UdtEnum,
-    ) -> <i64 as soroban_sdk::ContractClientReturn>::Output {
+    pub fn add(&self, a: &UdtEnum, b: &UdtEnum) -> <i64 as soroban_sdk::ContractClientReturn>::Ok {
         use core::ops::Not;
         use soroban_sdk::{FromVal, IntoVal};
         let res = self.env.invoke_contract(
@@ -1476,13 +1507,13 @@ impl<'a> ContractClient<'a> {
         b: &UdtEnum,
     ) -> Result<
         Result<
-            <i64 as soroban_sdk::ContractClientReturn>::Output,
-            <<i64 as soroban_sdk::ContractClientReturn>::Output as soroban_sdk::TryFromVal<
+            <i64 as soroban_sdk::ContractClientReturn>::Ok,
+            <<i64 as soroban_sdk::ContractClientReturn>::Ok as soroban_sdk::TryFromVal<
                 soroban_sdk::Env,
                 soroban_sdk::Val,
             >>::Error,
         >,
-        Result<soroban_sdk::Error, soroban_sdk::InvokeError>,
+        Result<<i64 as soroban_sdk::ContractClientReturn>::Err, soroban_sdk::InvokeError>,
     > {
         use soroban_sdk::{FromVal, IntoVal};
         let res = self.env.try_invoke_contract(
@@ -1509,7 +1540,7 @@ impl<'a> ContractClient<'a> {
     pub fn recursive(
         &self,
         a: &UdtRecursive,
-    ) -> <Option<UdtRecursive> as soroban_sdk::ContractClientReturn>::Output {
+    ) -> <Option<UdtRecursive> as soroban_sdk::ContractClientReturn>::Ok {
         use core::ops::Not;
         use soroban_sdk::{FromVal, IntoVal};
         let res = self.env.invoke_contract(
@@ -1533,15 +1564,18 @@ impl<'a> ContractClient<'a> {
         a: &UdtRecursive,
     ) -> Result<
         Result<
-            <Option<UdtRecursive> as soroban_sdk::ContractClientReturn>::Output,
+            <Option<UdtRecursive> as soroban_sdk::ContractClientReturn>::Ok,
             <<Option<
                 UdtRecursive,
-            > as soroban_sdk::ContractClientReturn>::Output as soroban_sdk::TryFromVal<
+            > as soroban_sdk::ContractClientReturn>::Ok as soroban_sdk::TryFromVal<
                 soroban_sdk::Env,
                 soroban_sdk::Val,
             >>::Error,
         >,
-        Result<soroban_sdk::Error, soroban_sdk::InvokeError>,
+        Result<
+            <Option<UdtRecursive> as soroban_sdk::ContractClientReturn>::Err,
+            soroban_sdk::InvokeError,
+        >,
     >{
         use soroban_sdk::{FromVal, IntoVal};
         let res = self.env.try_invoke_contract(
@@ -1566,7 +1600,7 @@ impl<'a> ContractClient<'a> {
         &self,
         a: &RecursiveEnum,
         key: &u32,
-    ) -> <Option<RecursiveEnum> as soroban_sdk::ContractClientReturn>::Output {
+    ) -> <Result<Option<RecursiveEnum>, Error> as soroban_sdk::ContractClientReturn>::Ok {
         use core::ops::Not;
         use soroban_sdk::{FromVal, IntoVal};
         let res = self.env.invoke_contract(
@@ -1590,15 +1624,25 @@ impl<'a> ContractClient<'a> {
         key: &u32,
     ) -> Result<
         Result<
-            <Option<RecursiveEnum> as soroban_sdk::ContractClientReturn>::Output,
-            <<Option<
-                RecursiveEnum,
-            > as soroban_sdk::ContractClientReturn>::Output as soroban_sdk::TryFromVal<
+            <Result<
+                Option<RecursiveEnum>,
+                Error,
+            > as soroban_sdk::ContractClientReturn>::Ok,
+            <<Result<
+                Option<RecursiveEnum>,
+                Error,
+            > as soroban_sdk::ContractClientReturn>::Ok as soroban_sdk::TryFromVal<
                 soroban_sdk::Env,
                 soroban_sdk::Val,
             >>::Error,
         >,
-        Result<Error, soroban_sdk::InvokeError>,
+        Result<
+            <Result<
+                Option<RecursiveEnum>,
+                Error,
+            > as soroban_sdk::ContractClientReturn>::Err,
+            soroban_sdk::InvokeError,
+        >,
     >{
         use soroban_sdk::{FromVal, IntoVal};
         let res = self.env.try_invoke_contract(

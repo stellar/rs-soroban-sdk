@@ -37,6 +37,11 @@ impl soroban_sdk::SpecTypeDef for IntEnum {
             ),
         });
 }
+impl soroban_sdk::ContractClientReturn for IntEnum {
+    type Output = Self;
+    type Ok = Self;
+    type Err = soroban_sdk::Error;
+}
 #[doc(hidden)]
 #[allow(dead_code)]
 static __SPEC_XDR_TYPE_INTENUM: [u8; IntEnum::spec_xdr().len()] = IntEnum::spec_xdr();

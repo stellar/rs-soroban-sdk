@@ -71,6 +71,11 @@ impl soroban_sdk::SpecTypeDef for Flag {
             ),
         });
 }
+impl soroban_sdk::ContractClientReturn for Flag {
+    type Output = Self;
+    type Ok = Self;
+    type Err = soroban_sdk::Error;
+}
 #[doc(hidden)]
 #[allow(dead_code)]
 #[link_section = "contractspecv0"]
@@ -219,6 +224,11 @@ impl soroban_sdk::SpecTypeDef for Error {
                 <Self as soroban_sdk::SpecName>::SPEC_NAME,
             ),
         });
+}
+impl soroban_sdk::ContractClientReturn for Error {
+    type Output = Self;
+    type Ok = Self;
+    type Err = soroban_sdk::Error;
 }
 #[doc(hidden)]
 #[allow(dead_code)]
@@ -454,7 +464,10 @@ impl<'a> ContractClient<'a> {
     /// Panics if the invoked contract returns an error or panics.
     ///
     /// Use [`Self::try_hello`] to receive errors instead of panicking.
-    pub fn hello(&self, flag: &Flag) -> <Symbol as soroban_sdk::ContractClientReturn>::Output {
+    pub fn hello(
+        &self,
+        flag: &Flag,
+    ) -> <Result<Symbol, Error> as soroban_sdk::ContractClientReturn>::Ok {
         use core::ops::Not;
         use soroban_sdk::{FromVal, IntoVal};
         let res = self.env.invoke_contract(
@@ -478,14 +491,20 @@ impl<'a> ContractClient<'a> {
         flag: &Flag,
     ) -> Result<
         Result<
-            <Symbol as soroban_sdk::ContractClientReturn>::Output,
-            <<Symbol as soroban_sdk::ContractClientReturn>::Output as soroban_sdk::TryFromVal<
+            <Result<Symbol, Error> as soroban_sdk::ContractClientReturn>::Ok,
+            <<Result<
+                Symbol,
+                Error,
+            > as soroban_sdk::ContractClientReturn>::Ok as soroban_sdk::TryFromVal<
                 soroban_sdk::Env,
                 soroban_sdk::Val,
             >>::Error,
         >,
-        Result<Error, soroban_sdk::InvokeError>,
-    > {
+        Result<
+            <Result<Symbol, Error> as soroban_sdk::ContractClientReturn>::Err,
+            soroban_sdk::InvokeError,
+        >,
+    >{
         use soroban_sdk::{FromVal, IntoVal};
         let res = self.env.try_invoke_contract(
             &self.address,

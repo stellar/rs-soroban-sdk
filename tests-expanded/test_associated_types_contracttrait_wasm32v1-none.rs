@@ -68,7 +68,7 @@ impl<'a> TraitClient<'a> {
     /// Panics if the invoked contract returns an error or panics.
     ///
     /// Use [`Self::try_exec`] to receive errors instead of panicking.
-    pub fn exec(&self) -> <String as soroban_sdk::ContractClientReturn>::Output {
+    pub fn exec(&self) -> <String as soroban_sdk::ContractClientReturn>::Ok {
         use core::ops::Not;
         use soroban_sdk::{FromVal, IntoVal};
         let res = self.env.invoke_contract(
@@ -91,13 +91,13 @@ impl<'a> TraitClient<'a> {
         &self,
     ) -> Result<
         Result<
-            <String as soroban_sdk::ContractClientReturn>::Output,
-            <<String as soroban_sdk::ContractClientReturn>::Output as soroban_sdk::TryFromVal<
+            <String as soroban_sdk::ContractClientReturn>::Ok,
+            <<String as soroban_sdk::ContractClientReturn>::Ok as soroban_sdk::TryFromVal<
                 soroban_sdk::Env,
                 soroban_sdk::Val,
             >>::Error,
         >,
-        Result<soroban_sdk::Error, soroban_sdk::InvokeError>,
+        Result<<String as soroban_sdk::ContractClientReturn>::Err, soroban_sdk::InvokeError>,
     > {
         use soroban_sdk::{FromVal, IntoVal};
         let res = self.env.try_invoke_contract(
@@ -227,7 +227,8 @@ impl<'a> ContractClient<'a> {
     /// Use [`Self::try_exec`] to receive errors instead of panicking.
     pub fn exec(
         &self,
-    ) -> <<Contract as __Contract__Trait__exec__ret>::String as soroban_sdk::ContractClientReturn>::Output{
+    ) -> <<Contract as __Contract__Trait__exec__ret>::String as soroban_sdk::ContractClientReturn>::Ok
+    {
         use core::ops::Not;
         use soroban_sdk::{FromVal, IntoVal};
         let res = self.env.invoke_contract(
@@ -250,13 +251,16 @@ impl<'a> ContractClient<'a> {
         &self,
     ) -> Result<
         Result<
-            <<Contract as __Contract__Trait__exec__ret>::String as soroban_sdk::ContractClientReturn>::Output,
-            <<<Contract as __Contract__Trait__exec__ret>::String as soroban_sdk::ContractClientReturn>::Output as soroban_sdk::TryFromVal<
+            <<Contract as __Contract__Trait__exec__ret>::String as soroban_sdk::ContractClientReturn>::Ok,
+            <<<Contract as __Contract__Trait__exec__ret>::String as soroban_sdk::ContractClientReturn>::Ok as soroban_sdk::TryFromVal<
                 soroban_sdk::Env,
                 soroban_sdk::Val,
             >>::Error,
         >,
-        Result<soroban_sdk::Error, soroban_sdk::InvokeError>,
+        Result<
+            <<Contract as __Contract__Trait__exec__ret>::String as soroban_sdk::ContractClientReturn>::Err,
+            soroban_sdk::InvokeError,
+        >,
     >{
         use soroban_sdk::{FromVal, IntoVal};
         let res = self.env.try_invoke_contract(
@@ -336,7 +340,7 @@ impl<'a> ContractClient<'a> {
     /// Panics if the invoked contract returns an error or panics.
     ///
     /// Use [`Self::try_exec2`] to receive errors instead of panicking.
-    pub fn exec2(&self) -> <String as soroban_sdk::ContractClientReturn>::Output {
+    pub fn exec2(&self) -> <String as soroban_sdk::ContractClientReturn>::Ok {
         use core::ops::Not;
         use soroban_sdk::{FromVal, IntoVal};
         let res = self.env.invoke_contract(
@@ -359,13 +363,13 @@ impl<'a> ContractClient<'a> {
         &self,
     ) -> Result<
         Result<
-            <String as soroban_sdk::ContractClientReturn>::Output,
-            <<String as soroban_sdk::ContractClientReturn>::Output as soroban_sdk::TryFromVal<
+            <String as soroban_sdk::ContractClientReturn>::Ok,
+            <<String as soroban_sdk::ContractClientReturn>::Ok as soroban_sdk::TryFromVal<
                 soroban_sdk::Env,
                 soroban_sdk::Val,
             >>::Error,
         >,
-        Result<soroban_sdk::Error, soroban_sdk::InvokeError>,
+        Result<<String as soroban_sdk::ContractClientReturn>::Err, soroban_sdk::InvokeError>,
     > {
         use soroban_sdk::{FromVal, IntoVal};
         let res = self.env.try_invoke_contract(

@@ -55,6 +55,11 @@ impl soroban_sdk::SpecTypeDef for DataKey {
             ),
         });
 }
+impl soroban_sdk::ContractClientReturn for DataKey {
+    type Output = Self;
+    type Ok = Self;
+    type Err = soroban_sdk::Error;
+}
 #[doc(hidden)]
 #[allow(dead_code)]
 #[link_section = "contractspecv0"]
@@ -327,7 +332,7 @@ impl<'a> ContractClient<'a> {
     pub fn get_data(
         &self,
         key: &DataKey,
-    ) -> <Option<i64> as soroban_sdk::ContractClientReturn>::Output {
+    ) -> <Option<i64> as soroban_sdk::ContractClientReturn>::Ok {
         use core::ops::Not;
         use soroban_sdk::{FromVal, IntoVal};
         let res = self.env.invoke_contract(
@@ -351,16 +356,14 @@ impl<'a> ContractClient<'a> {
         key: &DataKey,
     ) -> Result<
         Result<
-            <Option<i64> as soroban_sdk::ContractClientReturn>::Output,
-            <<Option<
-                i64,
-            > as soroban_sdk::ContractClientReturn>::Output as soroban_sdk::TryFromVal<
+            <Option<i64> as soroban_sdk::ContractClientReturn>::Ok,
+            <<Option<i64> as soroban_sdk::ContractClientReturn>::Ok as soroban_sdk::TryFromVal<
                 soroban_sdk::Env,
                 soroban_sdk::Val,
             >>::Error,
         >,
-        Result<soroban_sdk::Error, soroban_sdk::InvokeError>,
-    >{
+        Result<<Option<i64> as soroban_sdk::ContractClientReturn>::Err, soroban_sdk::InvokeError>,
+    > {
         use soroban_sdk::{FromVal, IntoVal};
         let res = self.env.try_invoke_contract(
             &self.address,
