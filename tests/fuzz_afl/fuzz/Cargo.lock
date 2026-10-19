@@ -232,15 +232,6 @@ dependencies = [
 ]
 
 [[package]]
-name = "block-buffer"
-version = "0.12.1"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "d2f6c7dbe95a6ed67ad9f18e57daf93a2f034c524b99fd2b76d18fdfeb6660aa"
-dependencies = [
- "hybrid-array",
-]
-
-[[package]]
 name = "bs58"
 version = "0.5.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -431,25 +422,10 @@ dependencies = [
  "cpufeatures 0.2.17",
  "curve25519-dalek-derive",
  "digest 0.10.7",
- "fiat-crypto 0.2.9",
+ "fiat-crypto",
  "rustc_version",
  "subtle",
  "zeroize",
-]
-
-[[package]]
-name = "curve25519-dalek"
-version = "5.0.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "b5eed333089e2e1c1ac8c6c0398e5e2497b4c9926ca6d0365ed1e099afa5bc23"
-dependencies = [
- "cfg-if",
- "cpufeatures 0.3.0",
- "curve25519-dalek-derive",
- "digest 0.11.3",
- "fiat-crypto 0.3.0",
- "rustc_version",
- "subtle",
 ]
 
 [[package]]
@@ -615,7 +591,7 @@ version = "0.10.7"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "9ed9a281f7bc9b7576e61468ba615a66a5c8cfdff42420a70aa82701a3b1e292"
 dependencies = [
- "block-buffer 0.10.4",
+ "block-buffer",
  "const-oid 0.9.6",
  "crypto-common 0.1.6",
  "subtle",
@@ -627,7 +603,6 @@ version = "0.11.3"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "f1dd6dbb5841937940781866fa1281a1ff7bd3bf827091440879f9994983d5c2"
 dependencies = [
- "block-buffer 0.12.1",
  "crypto-common 0.2.2",
 ]
 
@@ -687,7 +662,7 @@ version = "2.2.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "70e796c081cee67dc755e1a36a0a172b897fab85fc3f6bc48307991f64e4eca9"
 dependencies = [
- "curve25519-dalek 4.1.3",
+ "curve25519-dalek",
  "ed25519",
  "rand_core",
  "serde",
@@ -785,12 +760,6 @@ name = "fiat-crypto"
 version = "0.2.9"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "28dea519a9695b9977216879a3ebfddf92f1c08c05d984f8996aecd6ecdc811d"
-
-[[package]]
-name = "fiat-crypto"
-version = "0.3.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "64cd1e32ddd350061ae6edb1b082d7c54915b5c672c389143b9a63403a109f24"
 
 [[package]]
 name = "find-msvc-tools"
@@ -1623,7 +1592,7 @@ checksum = "8ed6a63f02c8539c91a8685a86f4099661ba3da017932f6ebbea6de3f0fa7c90"
 [[package]]
 name = "soroban-builtin-sdk-macros"
 version = "30.0.0"
-source = "git+https://github.com/stellar/rs-soroban-env?rev=6e6c4a87f46c7fdab0c2e2be82901b1e32378223#6e6c4a87f46c7fdab0c2e2be82901b1e32378223"
+source = "git+https://github.com/stellar/rs-soroban-env?rev=0c99950e96128beba3319aa96b116646ce974e69#0c99950e96128beba3319aa96b116646ce974e69"
 dependencies = [
  "itertools",
  "proc-macro2",
@@ -1634,7 +1603,7 @@ dependencies = [
 [[package]]
 name = "soroban-env-common"
 version = "30.0.0"
-source = "git+https://github.com/stellar/rs-soroban-env?rev=6e6c4a87f46c7fdab0c2e2be82901b1e32378223#6e6c4a87f46c7fdab0c2e2be82901b1e32378223"
+source = "git+https://github.com/stellar/rs-soroban-env?rev=0c99950e96128beba3319aa96b116646ce974e69#0c99950e96128beba3319aa96b116646ce974e69"
 dependencies = [
  "arbitrary",
  "crate-git-revision",
@@ -1652,7 +1621,7 @@ dependencies = [
 [[package]]
 name = "soroban-env-guest"
 version = "30.0.0"
-source = "git+https://github.com/stellar/rs-soroban-env?rev=6e6c4a87f46c7fdab0c2e2be82901b1e32378223#6e6c4a87f46c7fdab0c2e2be82901b1e32378223"
+source = "git+https://github.com/stellar/rs-soroban-env?rev=0c99950e96128beba3319aa96b116646ce974e69#0c99950e96128beba3319aa96b116646ce974e69"
 dependencies = [
  "soroban-env-common",
  "static_assertions",
@@ -1661,14 +1630,14 @@ dependencies = [
 [[package]]
 name = "soroban-env-host"
 version = "30.0.0"
-source = "git+https://github.com/stellar/rs-soroban-env?rev=6e6c4a87f46c7fdab0c2e2be82901b1e32378223#6e6c4a87f46c7fdab0c2e2be82901b1e32378223"
+source = "git+https://github.com/stellar/rs-soroban-env?rev=0c99950e96128beba3319aa96b116646ce974e69#0c99950e96128beba3319aa96b116646ce974e69"
 dependencies = [
  "ark-bls12-381",
  "ark-bn254",
  "ark-ec",
  "ark-ff",
  "ark-serialize",
- "curve25519-dalek 5.0.0",
+ "curve25519-dalek",
  "ecdsa",
  "ed25519-dalek",
  "elliptic-curve",
@@ -1698,7 +1667,7 @@ dependencies = [
 [[package]]
 name = "soroban-env-macros"
 version = "30.0.0"
-source = "git+https://github.com/stellar/rs-soroban-env?rev=6e6c4a87f46c7fdab0c2e2be82901b1e32378223#6e6c4a87f46c7fdab0c2e2be82901b1e32378223"
+source = "git+https://github.com/stellar/rs-soroban-env?rev=0c99950e96128beba3319aa96b116646ce974e69#0c99950e96128beba3319aa96b116646ce974e69"
 dependencies = [
  "itertools",
  "proc-macro2",
@@ -1800,9 +1769,9 @@ dependencies = [
 
 [[package]]
 name = "soroban-wasmi"
-version = "0.31.1-soroban.29.0.0"
+version = "29.0.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "3c596eadd9cbbbef8a33972972bd3c482de5ad44f42a3e8f2c69be21ec8e6d00"
+checksum = "7c0a869066f1f4718289c1d5fb2a7ed0f459a15a5df176b7083babc01814962c"
 dependencies = [
  "smallvec",
  "spin",
