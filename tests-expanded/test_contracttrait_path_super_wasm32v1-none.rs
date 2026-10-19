@@ -48,7 +48,7 @@ impl<'a> SuperPathTraitClient<'a> {
     /// Panics if the invoked contract returns an error or panics.
     ///
     /// Use [`Self::try_super_path_method`] to receive errors instead of panicking.
-    pub fn super_path_method(&self) -> u32 {
+    pub fn super_path_method(&self) -> <u32 as soroban_sdk::ContractClientReturn>::Output {
         use core::ops::Not;
         use soroban_sdk::{FromVal, IntoVal};
         let res = self.env.invoke_contract(
@@ -66,7 +66,13 @@ impl<'a> SuperPathTraitClient<'a> {
     pub fn try_super_path_method(
         &self,
     ) -> Result<
-        Result<u32, <u32 as soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val>>::Error>,
+        Result<
+            <u32 as soroban_sdk::ContractClientReturn>::Output,
+            <<u32 as soroban_sdk::ContractClientReturn>::Output as soroban_sdk::TryFromVal<
+                soroban_sdk::Env,
+                soroban_sdk::Val,
+            >>::Error,
+        >,
         Result<soroban_sdk::Error, soroban_sdk::InvokeError>,
     > {
         use soroban_sdk::{FromVal, IntoVal};
@@ -224,7 +230,7 @@ pub mod submodule {
         /// Use [`Self::try_super_path_method`] to receive errors instead of panicking.
         pub fn super_path_method(
             &self,
-        ) -> <ContractSuperPath as __ContractSuperPath__super_SuperPathTrait__super_path_method__ret>::u32{
+        ) -> <<ContractSuperPath as __ContractSuperPath__super_SuperPathTrait__super_path_method__ret>::u32 as soroban_sdk::ContractClientReturn>::Output{
             use core::ops::Not;
             use soroban_sdk::{FromVal, IntoVal};
             let res = self.env.invoke_contract(
@@ -243,8 +249,8 @@ pub mod submodule {
             &self,
         ) -> Result<
             Result<
-                <ContractSuperPath as __ContractSuperPath__super_SuperPathTrait__super_path_method__ret>::u32,
-                <<ContractSuperPath as __ContractSuperPath__super_SuperPathTrait__super_path_method__ret>::u32 as soroban_sdk::TryFromVal<
+                <<ContractSuperPath as __ContractSuperPath__super_SuperPathTrait__super_path_method__ret>::u32 as soroban_sdk::ContractClientReturn>::Output,
+                <<<ContractSuperPath as __ContractSuperPath__super_SuperPathTrait__super_path_method__ret>::u32 as soroban_sdk::ContractClientReturn>::Output as soroban_sdk::TryFromVal<
                     soroban_sdk::Env,
                     soroban_sdk::Val,
                 >>::Error,

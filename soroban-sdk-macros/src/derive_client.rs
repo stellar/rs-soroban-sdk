@@ -203,7 +203,7 @@ pub fn derive_client_impl(crate_path: &Path, name: &str, fns: &[syn_ext::Fn]) ->
                     (converted_type, conversion)
                 })
                 .multiunzip();
-            let fn_output = f.output();
+            let fn_output = f.output(crate_path);
             let fn_try_output = f.try_output(crate_path);
             let (fn_doc_attrs, fn_attrs): (Vec<_>, Vec<_>) = f
                 .attrs

@@ -1,0 +1,12 @@
+error[E0277]: the trait bound `NotAReturnType: TryFromVal<Env, soroban_sdk::Val>` is not satisfied
+  --> tests/compile_fails/contract_client_return_errors.rs:27:1
+   |
+27 | #[contractimpl]
+   | ^^^^^^^^^^^^^^^ unsatisfied trait bound
+   |
+help: the trait `soroban_sdk::ContractClientReturn` is not implemented for `NotAReturnType`
+  --> tests/compile_fails/contract_client_return_errors.rs:11:1
+   |
+11 | pub struct NotAReturnType;
+   | ^^^^^^^^^^^^^^^^^^^^^^^^^
+   = note: this error originates in the attribute macro `soroban_sdk::contractclient` (in Nightly builds, run with -Z macro-backtrace for more info)

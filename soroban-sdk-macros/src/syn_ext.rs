@@ -221,12 +221,12 @@ pub struct Fn {
 }
 
 impl Fn {
-    pub fn output(&self) -> Type {
+    pub fn output(&self, crate_path: &Path) -> Type {
         let t = match &self.output {
             ReturnType::Default => quote!(()),
             ReturnType::Type(_, typ) => match unpack_result(typ) {
-                Some((t, _)) => quote!(#t),
-                None => quote!(#typ),
+                Some((t, _)) => client_return_type(&t, crate_path),
+                None => client_return_type(typ, crate_path),
             },
         };
         Type::Verbatim(t)
@@ -235,8 +235,11 @@ impl Fn {
         let (t, e) = match &self.output {
             ReturnType::Default => (quote!(()), quote!(#crate_path::Error)),
             ReturnType::Type(_, typ) => match unpack_result(typ) {
-                Some((t, e)) => (quote!(#t), quote!(#e)),
-                None => (quote!(#typ), quote!(#crate_path::Error)),
+                Some((t, e)) => (client_return_type(&t, crate_path), quote!(#e)),
+                None => (
+                    client_return_type(typ, crate_path),
+                    quote!(#crate_path::Error),
+                ),
             },
         };
         Type::Verbatim(quote! {
@@ -695,4 +698,11 @@ pub fn is_type_named(ty: &Type, name: &str) -> bool {
             .is_some_and(|s| s.ident.unraw() == name),
         _ => false,
     }
+}
+
+/// The type a client returns for a contract function's return type, which is
+/// resolved by the compiler, so that a type alias returns the same as the type
+/// it aliases.
+fn client_return_type(ty: &Type, crate_path: &Path) -> TokenStream {
+    quote!(<#ty as #crate_path::ContractClientReturn>::Output)
 }

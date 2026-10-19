@@ -104,7 +104,7 @@ impl<'a> SelfPathTraitClient<'a> {
     /// Panics if the invoked contract returns an error or panics.
     ///
     /// Use [`Self::try_self_path_method`] to receive errors instead of panicking.
-    pub fn self_path_method(&self) -> u32 {
+    pub fn self_path_method(&self) -> <u32 as soroban_sdk::ContractClientReturn>::Output {
         let _call_scope = soroban_sdk::testutils::ClientCallScope::enter(&self.env, self.config);
         use soroban_sdk::{FromVal, IntoVal};
         let res = self.env.invoke_contract(
@@ -122,7 +122,13 @@ impl<'a> SelfPathTraitClient<'a> {
     pub fn try_self_path_method(
         &self,
     ) -> Result<
-        Result<u32, <u32 as soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val>>::Error>,
+        Result<
+            <u32 as soroban_sdk::ContractClientReturn>::Output,
+            <<u32 as soroban_sdk::ContractClientReturn>::Output as soroban_sdk::TryFromVal<
+                soroban_sdk::Env,
+                soroban_sdk::Val,
+            >>::Error,
+        >,
         Result<soroban_sdk::Error, soroban_sdk::InvokeError>,
     > {
         let _call_scope = soroban_sdk::testutils::ClientCallScope::enter(&self.env, self.config);
@@ -386,8 +392,7 @@ impl<'a> ContractSelfPathClient<'a> {
     /// Use [`Self::try_self_path_method`] to receive errors instead of panicking.
     pub fn self_path_method(
         &self,
-    ) -> <ContractSelfPath as __ContractSelfPath__self_SelfPathTrait__self_path_method__ret>::u32
-    {
+    ) -> <<ContractSelfPath as __ContractSelfPath__self_SelfPathTrait__self_path_method__ret>::u32 as soroban_sdk::ContractClientReturn>::Output{
         let _call_scope = soroban_sdk::testutils::ClientCallScope::enter(&self.env, self.config);
         use soroban_sdk::{FromVal, IntoVal};
         let res = self.env.invoke_contract(
@@ -406,8 +411,8 @@ impl<'a> ContractSelfPathClient<'a> {
         &self,
     ) -> Result<
         Result<
-            <ContractSelfPath as __ContractSelfPath__self_SelfPathTrait__self_path_method__ret>::u32,
-            <<ContractSelfPath as __ContractSelfPath__self_SelfPathTrait__self_path_method__ret>::u32 as soroban_sdk::TryFromVal<
+            <<ContractSelfPath as __ContractSelfPath__self_SelfPathTrait__self_path_method__ret>::u32 as soroban_sdk::ContractClientReturn>::Output,
+            <<<ContractSelfPath as __ContractSelfPath__self_SelfPathTrait__self_path_method__ret>::u32 as soroban_sdk::ContractClientReturn>::Output as soroban_sdk::TryFromVal<
                 soroban_sdk::Env,
                 soroban_sdk::Val,
             >>::Error,

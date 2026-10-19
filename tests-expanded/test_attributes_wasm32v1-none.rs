@@ -351,7 +351,7 @@ impl<'a> AttributeTraitClient<'a> {
     /// Panics if the invoked contract returns an error or panics.
     ///
     /// Use [`Self::try_trait_override`] to receive errors instead of panicking.
-    pub fn trait_override(&self) -> u32 {
+    pub fn trait_override(&self) -> <u32 as soroban_sdk::ContractClientReturn>::Output {
         use core::ops::Not;
         use soroban_sdk::{FromVal, IntoVal};
         let res = self.env.invoke_contract(
@@ -369,7 +369,13 @@ impl<'a> AttributeTraitClient<'a> {
     pub fn try_trait_override(
         &self,
     ) -> Result<
-        Result<u32, <u32 as soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val>>::Error>,
+        Result<
+            <u32 as soroban_sdk::ContractClientReturn>::Output,
+            <<u32 as soroban_sdk::ContractClientReturn>::Output as soroban_sdk::TryFromVal<
+                soroban_sdk::Env,
+                soroban_sdk::Val,
+            >>::Error,
+        >,
         Result<soroban_sdk::Error, soroban_sdk::InvokeError>,
     > {
         use soroban_sdk::{FromVal, IntoVal};
@@ -387,7 +393,7 @@ impl<'a> AttributeTraitClient<'a> {
     /// Panics if the invoked contract returns an error or panics.
     ///
     /// Use [`Self::try_trait_default`] to receive errors instead of panicking.
-    pub fn trait_default(&self) -> u32 {
+    pub fn trait_default(&self) -> <u32 as soroban_sdk::ContractClientReturn>::Output {
         use core::ops::Not;
         use soroban_sdk::{FromVal, IntoVal};
         let res = self.env.invoke_contract(
@@ -405,7 +411,13 @@ impl<'a> AttributeTraitClient<'a> {
     pub fn try_trait_default(
         &self,
     ) -> Result<
-        Result<u32, <u32 as soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val>>::Error>,
+        Result<
+            <u32 as soroban_sdk::ContractClientReturn>::Output,
+            <<u32 as soroban_sdk::ContractClientReturn>::Output as soroban_sdk::TryFromVal<
+                soroban_sdk::Env,
+                soroban_sdk::Val,
+            >>::Error,
+        >,
         Result<soroban_sdk::Error, soroban_sdk::InvokeError>,
     > {
         use soroban_sdk::{FromVal, IntoVal};
@@ -423,7 +435,7 @@ impl<'a> AttributeTraitClient<'a> {
     /// Panics if the invoked contract returns an error or panics.
     ///
     /// Use [`Self::try_trait_default_stacked_cfg`] to receive errors instead of panicking.
-    pub fn trait_default_stacked_cfg(&self) -> u32 {
+    pub fn trait_default_stacked_cfg(&self) -> <u32 as soroban_sdk::ContractClientReturn>::Output {
         use core::ops::Not;
         use soroban_sdk::{FromVal, IntoVal};
         let res = self.env.invoke_contract(
@@ -441,7 +453,13 @@ impl<'a> AttributeTraitClient<'a> {
     pub fn try_trait_default_stacked_cfg(
         &self,
     ) -> Result<
-        Result<u32, <u32 as soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val>>::Error>,
+        Result<
+            <u32 as soroban_sdk::ContractClientReturn>::Output,
+            <<u32 as soroban_sdk::ContractClientReturn>::Output as soroban_sdk::TryFromVal<
+                soroban_sdk::Env,
+                soroban_sdk::Val,
+            >>::Error,
+        >,
         Result<soroban_sdk::Error, soroban_sdk::InvokeError>,
     > {
         use soroban_sdk::{FromVal, IntoVal};
@@ -459,7 +477,7 @@ impl<'a> AttributeTraitClient<'a> {
     /// Panics if the invoked contract returns an error or panics.
     ///
     /// Use [`Self::try_trait_override_stacked_cfg`] to receive errors instead of panicking.
-    pub fn trait_override_stacked_cfg(&self) -> u32 {
+    pub fn trait_override_stacked_cfg(&self) -> <u32 as soroban_sdk::ContractClientReturn>::Output {
         use core::ops::Not;
         use soroban_sdk::{FromVal, IntoVal};
         let res = self.env.invoke_contract(
@@ -477,7 +495,13 @@ impl<'a> AttributeTraitClient<'a> {
     pub fn try_trait_override_stacked_cfg(
         &self,
     ) -> Result<
-        Result<u32, <u32 as soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val>>::Error>,
+        Result<
+            <u32 as soroban_sdk::ContractClientReturn>::Output,
+            <<u32 as soroban_sdk::ContractClientReturn>::Output as soroban_sdk::TryFromVal<
+                soroban_sdk::Env,
+                soroban_sdk::Val,
+            >>::Error,
+        >,
         Result<soroban_sdk::Error, soroban_sdk::InvokeError>,
     > {
         use soroban_sdk::{FromVal, IntoVal};
@@ -495,7 +519,7 @@ impl<'a> AttributeTraitClient<'a> {
     /// Panics if the invoked contract returns an error or panics.
     ///
     /// Use [`Self::try_trait_override_negated_cfg`] to receive errors instead of panicking.
-    pub fn trait_override_negated_cfg(&self) -> u32 {
+    pub fn trait_override_negated_cfg(&self) -> <u32 as soroban_sdk::ContractClientReturn>::Output {
         use core::ops::Not;
         use soroban_sdk::{FromVal, IntoVal};
         let res = self.env.invoke_contract(
@@ -513,7 +537,13 @@ impl<'a> AttributeTraitClient<'a> {
     pub fn try_trait_override_negated_cfg(
         &self,
     ) -> Result<
-        Result<u32, <u32 as soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val>>::Error>,
+        Result<
+            <u32 as soroban_sdk::ContractClientReturn>::Output,
+            <<u32 as soroban_sdk::ContractClientReturn>::Output as soroban_sdk::TryFromVal<
+                soroban_sdk::Env,
+                soroban_sdk::Val,
+            >>::Error,
+        >,
         Result<soroban_sdk::Error, soroban_sdk::InvokeError>,
     > {
         use soroban_sdk::{FromVal, IntoVal};
@@ -531,7 +561,7 @@ impl<'a> AttributeTraitClient<'a> {
     /// Panics if the invoked contract returns an error or panics.
     ///
     /// Use [`Self::try_trait_override_dual_cfg`] to receive errors instead of panicking.
-    pub fn trait_override_dual_cfg(&self) -> u32 {
+    pub fn trait_override_dual_cfg(&self) -> <u32 as soroban_sdk::ContractClientReturn>::Output {
         use core::ops::Not;
         use soroban_sdk::{FromVal, IntoVal};
         let res = self.env.invoke_contract(
@@ -549,7 +579,13 @@ impl<'a> AttributeTraitClient<'a> {
     pub fn try_trait_override_dual_cfg(
         &self,
     ) -> Result<
-        Result<u32, <u32 as soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val>>::Error>,
+        Result<
+            <u32 as soroban_sdk::ContractClientReturn>::Output,
+            <<u32 as soroban_sdk::ContractClientReturn>::Output as soroban_sdk::TryFromVal<
+                soroban_sdk::Env,
+                soroban_sdk::Val,
+            >>::Error,
+        >,
         Result<soroban_sdk::Error, soroban_sdk::InvokeError>,
     > {
         use soroban_sdk::{FromVal, IntoVal};
@@ -567,7 +603,7 @@ impl<'a> AttributeTraitClient<'a> {
     /// Panics if the invoked contract returns an error or panics.
     ///
     /// Use [`Self::try_trait_default_dual_cfg`] to receive errors instead of panicking.
-    pub fn trait_default_dual_cfg(&self) -> u32 {
+    pub fn trait_default_dual_cfg(&self) -> <u32 as soroban_sdk::ContractClientReturn>::Output {
         use core::ops::Not;
         use soroban_sdk::{FromVal, IntoVal};
         let res = self.env.invoke_contract(
@@ -585,7 +621,13 @@ impl<'a> AttributeTraitClient<'a> {
     pub fn try_trait_default_dual_cfg(
         &self,
     ) -> Result<
-        Result<u32, <u32 as soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val>>::Error>,
+        Result<
+            <u32 as soroban_sdk::ContractClientReturn>::Output,
+            <<u32 as soroban_sdk::ContractClientReturn>::Output as soroban_sdk::TryFromVal<
+                soroban_sdk::Env,
+                soroban_sdk::Val,
+            >>::Error,
+        >,
         Result<soroban_sdk::Error, soroban_sdk::InvokeError>,
     > {
         use soroban_sdk::{FromVal, IntoVal};
@@ -931,7 +973,10 @@ impl<'a> ContractClient<'a> {
     /// Panics if the invoked contract returns an error or panics.
     ///
     /// Use [`Self::try_always`] to receive errors instead of panicking.
-    pub fn always(&self, value: &AttributeType) -> u32 {
+    pub fn always(
+        &self,
+        value: &AttributeType,
+    ) -> <u32 as soroban_sdk::ContractClientReturn>::Output {
         use core::ops::Not;
         use soroban_sdk::{FromVal, IntoVal};
         let res = self.env.invoke_contract(
@@ -954,7 +999,13 @@ impl<'a> ContractClient<'a> {
         &self,
         value: &AttributeType,
     ) -> Result<
-        Result<u32, <u32 as soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val>>::Error>,
+        Result<
+            <u32 as soroban_sdk::ContractClientReturn>::Output,
+            <<u32 as soroban_sdk::ContractClientReturn>::Output as soroban_sdk::TryFromVal<
+                soroban_sdk::Env,
+                soroban_sdk::Val,
+            >>::Error,
+        >,
         Result<soroban_sdk::Error, soroban_sdk::InvokeError>,
     > {
         use soroban_sdk::{FromVal, IntoVal};
@@ -976,7 +1027,7 @@ impl<'a> ContractClient<'a> {
     /// Panics if the invoked contract returns an error or panics.
     ///
     /// Use [`Self::try_cfg_included`] to receive errors instead of panicking.
-    pub fn cfg_included(&self, value: &u32) -> u32 {
+    pub fn cfg_included(&self, value: &u32) -> <u32 as soroban_sdk::ContractClientReturn>::Output {
         use core::ops::Not;
         use soroban_sdk::{FromVal, IntoVal};
         let res = self.env.invoke_contract(
@@ -995,7 +1046,13 @@ impl<'a> ContractClient<'a> {
         &self,
         value: &u32,
     ) -> Result<
-        Result<u32, <u32 as soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val>>::Error>,
+        Result<
+            <u32 as soroban_sdk::ContractClientReturn>::Output,
+            <<u32 as soroban_sdk::ContractClientReturn>::Output as soroban_sdk::TryFromVal<
+                soroban_sdk::Env,
+                soroban_sdk::Val,
+            >>::Error,
+        >,
         Result<soroban_sdk::Error, soroban_sdk::InvokeError>,
     > {
         use soroban_sdk::{FromVal, IntoVal};
@@ -1343,7 +1400,7 @@ impl<'a> ContractClient<'a> {
     /// Panics if the invoked contract returns an error or panics.
     ///
     /// Use [`Self::try_trait_override`] to receive errors instead of panicking.
-    pub fn trait_override(&self) -> u32 {
+    pub fn trait_override(&self) -> <u32 as soroban_sdk::ContractClientReturn>::Output {
         use core::ops::Not;
         use soroban_sdk::{FromVal, IntoVal};
         let res = self.env.invoke_contract(
@@ -1361,7 +1418,13 @@ impl<'a> ContractClient<'a> {
     pub fn try_trait_override(
         &self,
     ) -> Result<
-        Result<u32, <u32 as soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val>>::Error>,
+        Result<
+            <u32 as soroban_sdk::ContractClientReturn>::Output,
+            <<u32 as soroban_sdk::ContractClientReturn>::Output as soroban_sdk::TryFromVal<
+                soroban_sdk::Env,
+                soroban_sdk::Val,
+            >>::Error,
+        >,
         Result<soroban_sdk::Error, soroban_sdk::InvokeError>,
     > {
         use soroban_sdk::{FromVal, IntoVal};
@@ -1379,7 +1442,7 @@ impl<'a> ContractClient<'a> {
     /// Panics if the invoked contract returns an error or panics.
     ///
     /// Use [`Self::try_trait_override_stacked_cfg`] to receive errors instead of panicking.
-    pub fn trait_override_stacked_cfg(&self) -> u32 {
+    pub fn trait_override_stacked_cfg(&self) -> <u32 as soroban_sdk::ContractClientReturn>::Output {
         use core::ops::Not;
         use soroban_sdk::{FromVal, IntoVal};
         let res = self.env.invoke_contract(
@@ -1397,7 +1460,13 @@ impl<'a> ContractClient<'a> {
     pub fn try_trait_override_stacked_cfg(
         &self,
     ) -> Result<
-        Result<u32, <u32 as soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val>>::Error>,
+        Result<
+            <u32 as soroban_sdk::ContractClientReturn>::Output,
+            <<u32 as soroban_sdk::ContractClientReturn>::Output as soroban_sdk::TryFromVal<
+                soroban_sdk::Env,
+                soroban_sdk::Val,
+            >>::Error,
+        >,
         Result<soroban_sdk::Error, soroban_sdk::InvokeError>,
     > {
         use soroban_sdk::{FromVal, IntoVal};
@@ -1415,7 +1484,7 @@ impl<'a> ContractClient<'a> {
     /// Panics if the invoked contract returns an error or panics.
     ///
     /// Use [`Self::try_trait_override_negated_cfg`] to receive errors instead of panicking.
-    pub fn trait_override_negated_cfg(&self) -> u32 {
+    pub fn trait_override_negated_cfg(&self) -> <u32 as soroban_sdk::ContractClientReturn>::Output {
         use core::ops::Not;
         use soroban_sdk::{FromVal, IntoVal};
         let res = self.env.invoke_contract(
@@ -1433,7 +1502,13 @@ impl<'a> ContractClient<'a> {
     pub fn try_trait_override_negated_cfg(
         &self,
     ) -> Result<
-        Result<u32, <u32 as soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val>>::Error>,
+        Result<
+            <u32 as soroban_sdk::ContractClientReturn>::Output,
+            <<u32 as soroban_sdk::ContractClientReturn>::Output as soroban_sdk::TryFromVal<
+                soroban_sdk::Env,
+                soroban_sdk::Val,
+            >>::Error,
+        >,
         Result<soroban_sdk::Error, soroban_sdk::InvokeError>,
     > {
         use soroban_sdk::{FromVal, IntoVal};
@@ -1451,7 +1526,7 @@ impl<'a> ContractClient<'a> {
     /// Panics if the invoked contract returns an error or panics.
     ///
     /// Use [`Self::try_trait_override_dual_cfg`] to receive errors instead of panicking.
-    pub fn trait_override_dual_cfg(&self) -> u32 {
+    pub fn trait_override_dual_cfg(&self) -> <u32 as soroban_sdk::ContractClientReturn>::Output {
         use core::ops::Not;
         use soroban_sdk::{FromVal, IntoVal};
         let res = self.env.invoke_contract(
@@ -1469,7 +1544,13 @@ impl<'a> ContractClient<'a> {
     pub fn try_trait_override_dual_cfg(
         &self,
     ) -> Result<
-        Result<u32, <u32 as soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val>>::Error>,
+        Result<
+            <u32 as soroban_sdk::ContractClientReturn>::Output,
+            <<u32 as soroban_sdk::ContractClientReturn>::Output as soroban_sdk::TryFromVal<
+                soroban_sdk::Env,
+                soroban_sdk::Val,
+            >>::Error,
+        >,
         Result<soroban_sdk::Error, soroban_sdk::InvokeError>,
     > {
         use soroban_sdk::{FromVal, IntoVal};
@@ -1823,7 +1904,7 @@ impl<'a> ContractClient<'a> {
     /// Use [`Self::try_trait_default`] to receive errors instead of panicking.
     pub fn trait_default(
         &self,
-    ) -> <Contract as __Contract__AttributeTrait__trait_default__ret>::u32 {
+    ) -> <<Contract as __Contract__AttributeTrait__trait_default__ret>::u32 as soroban_sdk::ContractClientReturn>::Output{
         use core::ops::Not;
         use soroban_sdk::{FromVal, IntoVal};
         let res = self.env.invoke_contract(
@@ -1842,8 +1923,8 @@ impl<'a> ContractClient<'a> {
         &self,
     ) -> Result<
         Result<
-            <Contract as __Contract__AttributeTrait__trait_default__ret>::u32,
-            <<Contract as __Contract__AttributeTrait__trait_default__ret>::u32 as soroban_sdk::TryFromVal<
+            <<Contract as __Contract__AttributeTrait__trait_default__ret>::u32 as soroban_sdk::ContractClientReturn>::Output,
+            <<<Contract as __Contract__AttributeTrait__trait_default__ret>::u32 as soroban_sdk::ContractClientReturn>::Output as soroban_sdk::TryFromVal<
                 soroban_sdk::Env,
                 soroban_sdk::Val,
             >>::Error,
@@ -1867,7 +1948,7 @@ impl<'a> ContractClient<'a> {
     /// Use [`Self::try_trait_default_stacked_cfg`] to receive errors instead of panicking.
     pub fn trait_default_stacked_cfg(
         &self,
-    ) -> <Contract as __Contract__AttributeTrait__trait_default_stacked_cfg__ret>::u32 {
+    ) -> <<Contract as __Contract__AttributeTrait__trait_default_stacked_cfg__ret>::u32 as soroban_sdk::ContractClientReturn>::Output{
         use core::ops::Not;
         use soroban_sdk::{FromVal, IntoVal};
         let res = self.env.invoke_contract(
@@ -1886,8 +1967,8 @@ impl<'a> ContractClient<'a> {
         &self,
     ) -> Result<
         Result<
-            <Contract as __Contract__AttributeTrait__trait_default_stacked_cfg__ret>::u32,
-            <<Contract as __Contract__AttributeTrait__trait_default_stacked_cfg__ret>::u32 as soroban_sdk::TryFromVal<
+            <<Contract as __Contract__AttributeTrait__trait_default_stacked_cfg__ret>::u32 as soroban_sdk::ContractClientReturn>::Output,
+            <<<Contract as __Contract__AttributeTrait__trait_default_stacked_cfg__ret>::u32 as soroban_sdk::ContractClientReturn>::Output as soroban_sdk::TryFromVal<
                 soroban_sdk::Env,
                 soroban_sdk::Val,
             >>::Error,
@@ -1911,7 +1992,7 @@ impl<'a> ContractClient<'a> {
     /// Use [`Self::try_trait_default_dual_cfg`] to receive errors instead of panicking.
     pub fn trait_default_dual_cfg(
         &self,
-    ) -> <Contract as __Contract__AttributeTrait__trait_default_dual_cfg__ret>::u32 {
+    ) -> <<Contract as __Contract__AttributeTrait__trait_default_dual_cfg__ret>::u32 as soroban_sdk::ContractClientReturn>::Output{
         use core::ops::Not;
         use soroban_sdk::{FromVal, IntoVal};
         let res = self.env.invoke_contract(
@@ -1930,8 +2011,8 @@ impl<'a> ContractClient<'a> {
         &self,
     ) -> Result<
         Result<
-            <Contract as __Contract__AttributeTrait__trait_default_dual_cfg__ret>::u32,
-            <<Contract as __Contract__AttributeTrait__trait_default_dual_cfg__ret>::u32 as soroban_sdk::TryFromVal<
+            <<Contract as __Contract__AttributeTrait__trait_default_dual_cfg__ret>::u32 as soroban_sdk::ContractClientReturn>::Output,
+            <<<Contract as __Contract__AttributeTrait__trait_default_dual_cfg__ret>::u32 as soroban_sdk::ContractClientReturn>::Output as soroban_sdk::TryFromVal<
                 soroban_sdk::Env,
                 soroban_sdk::Val,
             >>::Error,

@@ -1444,7 +1444,11 @@ impl<'a> ContractClient<'a> {
     /// Panics if the invoked contract returns an error or panics.
     ///
     /// Use [`Self::try_add`] to receive errors instead of panicking.
-    pub fn add(&self, a: &UdtEnum, b: &UdtEnum) -> i64 {
+    pub fn add(
+        &self,
+        a: &UdtEnum,
+        b: &UdtEnum,
+    ) -> <i64 as soroban_sdk::ContractClientReturn>::Output {
         use core::ops::Not;
         use soroban_sdk::{FromVal, IntoVal};
         let res = self.env.invoke_contract(
@@ -1471,7 +1475,13 @@ impl<'a> ContractClient<'a> {
         a: &UdtEnum,
         b: &UdtEnum,
     ) -> Result<
-        Result<i64, <i64 as soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val>>::Error>,
+        Result<
+            <i64 as soroban_sdk::ContractClientReturn>::Output,
+            <<i64 as soroban_sdk::ContractClientReturn>::Output as soroban_sdk::TryFromVal<
+                soroban_sdk::Env,
+                soroban_sdk::Val,
+            >>::Error,
+        >,
         Result<soroban_sdk::Error, soroban_sdk::InvokeError>,
     > {
         use soroban_sdk::{FromVal, IntoVal};
@@ -1496,7 +1506,10 @@ impl<'a> ContractClient<'a> {
     /// Panics if the invoked contract returns an error or panics.
     ///
     /// Use [`Self::try_recursive`] to receive errors instead of panicking.
-    pub fn recursive(&self, a: &UdtRecursive) -> Option<UdtRecursive> {
+    pub fn recursive(
+        &self,
+        a: &UdtRecursive,
+    ) -> <Option<UdtRecursive> as soroban_sdk::ContractClientReturn>::Output {
         use core::ops::Not;
         use soroban_sdk::{FromVal, IntoVal};
         let res = self.env.invoke_contract(
@@ -1520,10 +1533,13 @@ impl<'a> ContractClient<'a> {
         a: &UdtRecursive,
     ) -> Result<
         Result<
-            Option<UdtRecursive>,
-            <Option<
+            <Option<UdtRecursive> as soroban_sdk::ContractClientReturn>::Output,
+            <<Option<
                 UdtRecursive,
-            > as soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val>>::Error,
+            > as soroban_sdk::ContractClientReturn>::Output as soroban_sdk::TryFromVal<
+                soroban_sdk::Env,
+                soroban_sdk::Val,
+            >>::Error,
         >,
         Result<soroban_sdk::Error, soroban_sdk::InvokeError>,
     >{
@@ -1546,7 +1562,11 @@ impl<'a> ContractClient<'a> {
     /// Panics if the invoked contract returns an error or panics.
     ///
     /// Use [`Self::try_recursive_enum`] to receive errors instead of panicking.
-    pub fn recursive_enum(&self, a: &RecursiveEnum, key: &u32) -> Option<RecursiveEnum> {
+    pub fn recursive_enum(
+        &self,
+        a: &RecursiveEnum,
+        key: &u32,
+    ) -> <Option<RecursiveEnum> as soroban_sdk::ContractClientReturn>::Output {
         use core::ops::Not;
         use soroban_sdk::{FromVal, IntoVal};
         let res = self.env.invoke_contract(
@@ -1570,14 +1590,16 @@ impl<'a> ContractClient<'a> {
         key: &u32,
     ) -> Result<
         Result<
-            Option<RecursiveEnum>,
-            <Option<RecursiveEnum> as soroban_sdk::TryFromVal<
+            <Option<RecursiveEnum> as soroban_sdk::ContractClientReturn>::Output,
+            <<Option<
+                RecursiveEnum,
+            > as soroban_sdk::ContractClientReturn>::Output as soroban_sdk::TryFromVal<
                 soroban_sdk::Env,
                 soroban_sdk::Val,
             >>::Error,
         >,
         Result<Error, soroban_sdk::InvokeError>,
-    > {
+    >{
         use soroban_sdk::{FromVal, IntoVal};
         let res = self.env.try_invoke_contract(
             &self.address,

@@ -324,7 +324,10 @@ impl<'a> ContractClient<'a> {
     /// Panics if the invoked contract returns an error or panics.
     ///
     /// Use [`Self::try_get_data`] to receive errors instead of panicking.
-    pub fn get_data(&self, key: &DataKey) -> Option<i64> {
+    pub fn get_data(
+        &self,
+        key: &DataKey,
+    ) -> <Option<i64> as soroban_sdk::ContractClientReturn>::Output {
         use core::ops::Not;
         use soroban_sdk::{FromVal, IntoVal};
         let res = self.env.invoke_contract(
@@ -348,11 +351,16 @@ impl<'a> ContractClient<'a> {
         key: &DataKey,
     ) -> Result<
         Result<
-            Option<i64>,
-            <Option<i64> as soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val>>::Error,
+            <Option<i64> as soroban_sdk::ContractClientReturn>::Output,
+            <<Option<
+                i64,
+            > as soroban_sdk::ContractClientReturn>::Output as soroban_sdk::TryFromVal<
+                soroban_sdk::Env,
+                soroban_sdk::Val,
+            >>::Error,
         >,
         Result<soroban_sdk::Error, soroban_sdk::InvokeError>,
-    > {
+    >{
         use soroban_sdk::{FromVal, IntoVal};
         let res = self.env.try_invoke_contract(
             &self.address,

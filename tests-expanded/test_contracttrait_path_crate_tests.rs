@@ -106,7 +106,7 @@ pub mod traits {
         /// Panics if the invoked contract returns an error or panics.
         ///
         /// Use [`Self::try_crate_path_method`] to receive errors instead of panicking.
-        pub fn crate_path_method(&self) -> u32 {
+        pub fn crate_path_method(&self) -> <u32 as soroban_sdk::ContractClientReturn>::Output {
             let _call_scope =
                 soroban_sdk::testutils::ClientCallScope::enter(&self.env, self.config);
             use soroban_sdk::{FromVal, IntoVal};
@@ -126,8 +126,11 @@ pub mod traits {
             &self,
         ) -> Result<
             Result<
-                u32,
-                <u32 as soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val>>::Error,
+                <u32 as soroban_sdk::ContractClientReturn>::Output,
+                <<u32 as soroban_sdk::ContractClientReturn>::Output as soroban_sdk::TryFromVal<
+                    soroban_sdk::Env,
+                    soroban_sdk::Val,
+                >>::Error,
             >,
             Result<soroban_sdk::Error, soroban_sdk::InvokeError>,
         > {
@@ -396,7 +399,7 @@ impl<'a> ContractCratePathClient<'a> {
     /// Use [`Self::try_crate_path_method`] to receive errors instead of panicking.
     pub fn crate_path_method(
         &self,
-    ) -> <ContractCratePath as __ContractCratePath__crate_traits_CratePathTrait__crate_path_method__ret>::u32{
+    ) -> <<ContractCratePath as __ContractCratePath__crate_traits_CratePathTrait__crate_path_method__ret>::u32 as soroban_sdk::ContractClientReturn>::Output{
         let _call_scope = soroban_sdk::testutils::ClientCallScope::enter(&self.env, self.config);
         use soroban_sdk::{FromVal, IntoVal};
         let res = self.env.invoke_contract(
@@ -415,8 +418,8 @@ impl<'a> ContractCratePathClient<'a> {
         &self,
     ) -> Result<
         Result<
-            <ContractCratePath as __ContractCratePath__crate_traits_CratePathTrait__crate_path_method__ret>::u32,
-            <<ContractCratePath as __ContractCratePath__crate_traits_CratePathTrait__crate_path_method__ret>::u32 as soroban_sdk::TryFromVal<
+            <<ContractCratePath as __ContractCratePath__crate_traits_CratePathTrait__crate_path_method__ret>::u32 as soroban_sdk::ContractClientReturn>::Output,
+            <<<ContractCratePath as __ContractCratePath__crate_traits_CratePathTrait__crate_path_method__ret>::u32 as soroban_sdk::ContractClientReturn>::Output as soroban_sdk::TryFromVal<
                 soroban_sdk::Env,
                 soroban_sdk::Val,
             >>::Error,
