@@ -42,6 +42,15 @@ mod feat1 {
                 },
             );
         #[allow(non_snake_case)]
+        /// Returns the XDR of this item's contract spec entry, as it is
+        /// embedded in the contract.
+        ///
+        /// The entry names user-defined types and events by their fully
+        /// qualified path, such as `::mycrate::MyType`, which `stellar contract
+        /// build` reduces to simple names in the spec of a built contract. A
+        /// spec assembled from this entry outside of a contract build must be
+        /// reduced with `soroban_spec::reduce::reduce` before it is published or
+        /// given to tools.
         pub const fn spec_xdr_one() -> [u8; Contract::__SPEC_XDR_ENTRY_one.const_xdr_len()] {
             const { Contract::__SPEC_XDR_ENTRY_one.const_to_xdr() }
         }
@@ -205,6 +214,15 @@ mod feat2 {
                 },
             );
         #[allow(non_snake_case)]
+        /// Returns the XDR of this item's contract spec entry, as it is
+        /// embedded in the contract.
+        ///
+        /// The entry names user-defined types and events by their fully
+        /// qualified path, such as `::mycrate::MyType`, which `stellar contract
+        /// build` reduces to simple names in the spec of a built contract. A
+        /// spec assembled from this entry outside of a contract build must be
+        /// reduced with `soroban_spec::reduce::reduce` before it is published or
+        /// given to tools.
         pub const fn spec_xdr_two() -> [u8; super::Contract::__SPEC_XDR_ENTRY_two.const_xdr_len()] {
             const { super::Contract::__SPEC_XDR_ENTRY_two.const_to_xdr() }
         }
@@ -546,6 +564,15 @@ impl Contract {
             },
         );
     #[allow(non_snake_case)]
+    /// Returns the XDR of this item's contract spec entry, as it is
+    /// embedded in the contract.
+    ///
+    /// The entry names user-defined types and events by their fully
+    /// qualified path, such as `::mycrate::MyType`, which `stellar contract
+    /// build` reduces to simple names in the spec of a built contract. A
+    /// spec assembled from this entry outside of a contract build must be
+    /// reduced with `soroban_spec::reduce::reduce` before it is published or
+    /// given to tools.
     pub const fn spec_xdr_zero() -> [u8; Contract::__SPEC_XDR_ENTRY_zero.const_xdr_len()] {
         const { Contract::__SPEC_XDR_ENTRY_zero.const_to_xdr() }
     }

@@ -92,6 +92,7 @@ pub fn derive_type_struct(
                 fields: #path::xdr::r#const::VecM::try_from_slice_or_panic(&[#(#fields),*]),
             })
         };
+        let spec_xdr_doc = crate::spec::spec_xdr_doc();
         let spec_ident = format_ident!(
             "__SPEC_XDR_TYPE_{}",
             ident.unraw().to_string().to_uppercase()
@@ -104,6 +105,8 @@ pub fn derive_type_struct(
 
             impl #ident {
                 const __SPEC_XDR_ENTRY: #path::xdr::r#const::ScSpecEntry = #spec_entry;
+
+                #spec_xdr_doc
 
                 pub const fn spec_xdr() -> [u8; #ident::__SPEC_XDR_ENTRY.const_xdr_len()] {
                     const { #ident::__SPEC_XDR_ENTRY.const_to_xdr() }

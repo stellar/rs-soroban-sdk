@@ -1,5 +1,3 @@
-#![no_std]
-
 mod tests;
 
 use soroban_sdk::{contractevent, Address, BytesN, String};
@@ -189,8 +187,31 @@ pub(crate) const XDR_LEN: usize = {
     len
 };
 
-/// Returns the contract spec for Stellar Asset contract.
-pub const fn xdr() -> &'static [u8] {
+/// Returns the contract spec for the Stellar Asset contract, with the names of
+/// its types and events reduced to simple names.
+///
+/// The spec returned by [`xdr_unprocessed`] is assembled from the spec entries
+/// the SDK's macros emit, which name types and events by their fully qualified
+/// path, such as `::stellar_asset_spec::Approve`. A contract build reduces
+/// those names, but this spec is never built into a contract, so this fn
+/// reduces them with `soroban_spec::reduce::reduce`.
+pub fn xdr() -> Vec<u8> {
+    use soroban_sdk::xdr::{Limits, WriteXdr};
+    let entries = soroban_spec::read::parse_raw(xdr_unprocessed()).expect("asset spec decodes");
+    let reduced = soroban_spec::reduce::reduce(&entries).expect("asset spec reduces");
+    let mut out = Vec::new();
+    for entry in reduced.into_entries() {
+        out.extend(entry.to_xdr(Limits::none()).expect("asset spec encodes"));
+    }
+    out
+}
+
+/// Returns the contract spec for the Stellar Asset contract, with the names of
+/// its types and events as the SDK's macros emit them, fully qualified and not
+/// reduced.
+///
+/// Use [`xdr`] for the spec to publish or give to tools.
+pub const fn xdr_unprocessed() -> &'static [u8] {
     &XDR
 }
 

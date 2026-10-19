@@ -149,6 +149,9 @@ jobs:
         version: 0.6.44
     - run: cargo version
     - run: make build-libs
+    - name: Build test wasms on the host for other targets
+      if: matrix.sys.target != 'x86_64-unknown-linux-gnu'
+      run: echo TEST_WASMS_BUILD_WITH_DOCKER= >> $GITHUB_ENV
     - run: make build-test-wasms TEST_CRATES_RUSTUP_TOOLCHAIN=$RUSTUP_TOOLCHAIN
     - name: Upload test wasms
       uses: actions/upload-artifact@v7
@@ -338,7 +341,7 @@ jobs:
         sys:
         - os: ubuntu-latest
           target: wasm32v1-none
-          cargo-hack-feature-options: --manifest-path Cargo.toml --exclude soroban-meta --exclude soroban-spec --exclude soroban-spec-rust --exclude soroban-ledger-snapshot --exclude-features testutils,docs,default,std --feature-powerset
+          cargo-hack-feature-options: --manifest-path Cargo.toml --exclude soroban-meta --exclude soroban-spec --exclude soroban-spec-rust --exclude soroban-ledger-snapshot --exclude soroban-token-spec --exclude stellar-asset-spec --exclude-features testutils,docs,default,std --feature-powerset
           env: STELLAR_CLI_VERSION=${{ needs.setup.outputs.version-major }}.0.0
         - os: ubuntu-latest
           target: x86_64-unknown-linux-gnu
