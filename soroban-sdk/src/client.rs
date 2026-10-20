@@ -2,7 +2,7 @@
 //! values of contract functions.
 //!
 //! [`Type`] gives the types that a client uses for a Rust type that appears in
-//! a contract function, [`Arg`] the values a client accepts for an argument,
+//! a contract function, [`IntoArg`] the values a client accepts for an argument,
 //! and [`Output`] the values a client returns.
 //!
 //! The macros refer to every argument and return type of a client function
@@ -52,29 +52,29 @@ pub trait Type {
 /// `Mode` defaults to the type's [`Type::Arg`] and is only a parameter so that
 /// the impls for each mode do not overlap, as the compiler does not use an
 /// associated type to tell impls apart.
-pub trait Arg<T: Type, Mode = <T as Type>::Arg> {
-    fn into_val_for_client(self, env: &Env) -> Val;
+pub trait IntoArg<T: Type, Mode = <T as Type>::Arg> {
+    fn into_arg(self, env: &Env) -> Val;
 }
 
 // Any reference that borrows as the type is accepted, so that a reference to a
 // reference is accepted as it would be by deref coercion.
-impl<'a, T, R> Arg<T, ArgByBorrow> for &'a R
+impl<'a, T, R> IntoArg<T, ArgByBorrow> for &'a R
 where
     T: Type + IntoVal<Env, Val>,
     R: ?Sized + Borrow<T>,
 {
-    fn into_val_for_client(self, env: &Env) -> Val {
+    fn into_arg(self, env: &Env) -> Val {
         let t: &T = self.borrow();
         t.into_val(env)
     }
 }
 
-impl<T, X> Arg<T, ArgByInto> for X
+impl<T, X> IntoArg<T, ArgByInto> for X
 where
     T: Type + IntoVal<Env, Val>,
     X: Into<T>,
 {
-    fn into_val_for_client(self, env: &Env) -> Val {
+    fn into_arg(self, env: &Env) -> Val {
         let t: T = self.into();
         t.into_val(env)
     }

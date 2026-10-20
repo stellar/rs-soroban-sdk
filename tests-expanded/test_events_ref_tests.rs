@@ -392,9 +392,9 @@ impl<'a> ContractClient<'a> {
     /// Use [`Self::try_transfer`] to receive errors instead of panicking.
     pub fn transfer(
         &self,
-        from: impl soroban_sdk::client::Arg<Address>,
-        to: impl soroban_sdk::client::Arg<MuxedAddress>,
-        amount: impl soroban_sdk::client::Arg<i128>,
+        from: impl soroban_sdk::client::IntoArg<Address>,
+        to: impl soroban_sdk::client::IntoArg<MuxedAddress>,
+        amount: impl soroban_sdk::client::IntoArg<i128>,
     ) -> soroban_sdk::client::Ret<()> {
         let _call_scope = soroban_sdk::testutils::ClientCallScope::enter(&self.env, self.config);
         use soroban_sdk::{FromVal, IntoVal};
@@ -408,9 +408,9 @@ impl<'a> ContractClient<'a> {
             ::soroban_sdk::Vec::from_array(
                 &self.env,
                 [
-                    soroban_sdk::client::Arg::<Address>::into_val_for_client(from, &self.env),
-                    soroban_sdk::client::Arg::<MuxedAddress>::into_val_for_client(to, &self.env),
-                    soroban_sdk::client::Arg::<i128>::into_val_for_client(amount, &self.env),
+                    soroban_sdk::client::IntoArg::<Address>::into_arg(from, &self.env),
+                    soroban_sdk::client::IntoArg::<MuxedAddress>::into_arg(to, &self.env),
+                    soroban_sdk::client::IntoArg::<i128>::into_arg(amount, &self.env),
                 ],
             ),
         );
@@ -423,9 +423,9 @@ impl<'a> ContractClient<'a> {
     /// Returns an error if the invoked contract returns an error or panics. A panic in the invoked contract is caught and returned as an error rather than panicking the caller.
     pub fn try_transfer(
         &self,
-        from: impl soroban_sdk::client::Arg<Address>,
-        to: impl soroban_sdk::client::Arg<MuxedAddress>,
-        amount: impl soroban_sdk::client::Arg<i128>,
+        from: impl soroban_sdk::client::IntoArg<Address>,
+        to: impl soroban_sdk::client::IntoArg<MuxedAddress>,
+        amount: impl soroban_sdk::client::IntoArg<i128>,
     ) -> soroban_sdk::client::TryRet<()> {
         let _call_scope = soroban_sdk::testutils::ClientCallScope::enter(&self.env, self.config);
         use soroban_sdk::{FromVal, IntoVal};
@@ -439,9 +439,9 @@ impl<'a> ContractClient<'a> {
             ::soroban_sdk::Vec::from_array(
                 &self.env,
                 [
-                    soroban_sdk::client::Arg::<Address>::into_val_for_client(from, &self.env),
-                    soroban_sdk::client::Arg::<MuxedAddress>::into_val_for_client(to, &self.env),
-                    soroban_sdk::client::Arg::<i128>::into_val_for_client(amount, &self.env),
+                    soroban_sdk::client::IntoArg::<Address>::into_arg(from, &self.env),
+                    soroban_sdk::client::IntoArg::<MuxedAddress>::into_arg(to, &self.env),
+                    soroban_sdk::client::IntoArg::<i128>::into_arg(amount, &self.env),
                 ],
             ),
         );
@@ -456,9 +456,9 @@ impl<'a> ContractClient<'a> {
     /// Use [`Self::try_failed_transfer`] to receive errors instead of panicking.
     pub fn failed_transfer(
         &self,
-        from: impl soroban_sdk::client::Arg<Address>,
-        to: impl soroban_sdk::client::Arg<Address>,
-        amount: impl soroban_sdk::client::Arg<i128>,
+        from: impl soroban_sdk::client::IntoArg<Address>,
+        to: impl soroban_sdk::client::IntoArg<Address>,
+        amount: impl soroban_sdk::client::IntoArg<i128>,
     ) -> soroban_sdk::client::Ret<()> {
         let _call_scope = soroban_sdk::testutils::ClientCallScope::enter(&self.env, self.config);
         use soroban_sdk::{FromVal, IntoVal};
@@ -468,9 +468,9 @@ impl<'a> ContractClient<'a> {
             ::soroban_sdk::Vec::from_array(
                 &self.env,
                 [
-                    soroban_sdk::client::Arg::<Address>::into_val_for_client(from, &self.env),
-                    soroban_sdk::client::Arg::<Address>::into_val_for_client(to, &self.env),
-                    soroban_sdk::client::Arg::<i128>::into_val_for_client(amount, &self.env),
+                    soroban_sdk::client::IntoArg::<Address>::into_arg(from, &self.env),
+                    soroban_sdk::client::IntoArg::<Address>::into_arg(to, &self.env),
+                    soroban_sdk::client::IntoArg::<i128>::into_arg(amount, &self.env),
                 ],
             ),
         );
@@ -483,9 +483,9 @@ impl<'a> ContractClient<'a> {
     /// Returns an error if the invoked contract returns an error or panics. A panic in the invoked contract is caught and returned as an error rather than panicking the caller.
     pub fn try_failed_transfer(
         &self,
-        from: impl soroban_sdk::client::Arg<Address>,
-        to: impl soroban_sdk::client::Arg<Address>,
-        amount: impl soroban_sdk::client::Arg<i128>,
+        from: impl soroban_sdk::client::IntoArg<Address>,
+        to: impl soroban_sdk::client::IntoArg<Address>,
+        amount: impl soroban_sdk::client::IntoArg<i128>,
     ) -> soroban_sdk::client::TryRet<()> {
         let _call_scope = soroban_sdk::testutils::ClientCallScope::enter(&self.env, self.config);
         use soroban_sdk::{FromVal, IntoVal};
@@ -495,9 +495,9 @@ impl<'a> ContractClient<'a> {
             ::soroban_sdk::Vec::from_array(
                 &self.env,
                 [
-                    soroban_sdk::client::Arg::<Address>::into_val_for_client(from, &self.env),
-                    soroban_sdk::client::Arg::<Address>::into_val_for_client(to, &self.env),
-                    soroban_sdk::client::Arg::<i128>::into_val_for_client(amount, &self.env),
+                    soroban_sdk::client::IntoArg::<Address>::into_arg(from, &self.env),
+                    soroban_sdk::client::IntoArg::<Address>::into_arg(to, &self.env),
+                    soroban_sdk::client::IntoArg::<i128>::into_arg(amount, &self.env),
                 ],
             ),
         );

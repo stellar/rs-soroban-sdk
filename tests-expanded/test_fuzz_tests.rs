@@ -183,8 +183,8 @@ impl<'a> ContractClient<'a> {
     /// Use [`Self::try_run`] to receive errors instead of panicking.
     pub fn run(
         &self,
-        a: impl soroban_sdk::client::Arg<U256>,
-        b: impl soroban_sdk::client::Arg<U256>,
+        a: impl soroban_sdk::client::IntoArg<U256>,
+        b: impl soroban_sdk::client::IntoArg<U256>,
     ) -> soroban_sdk::client::Ret<()> {
         let _call_scope = soroban_sdk::testutils::ClientCallScope::enter(&self.env, self.config);
         use soroban_sdk::{FromVal, IntoVal};
@@ -198,8 +198,8 @@ impl<'a> ContractClient<'a> {
             ::soroban_sdk::Vec::from_array(
                 &self.env,
                 [
-                    soroban_sdk::client::Arg::<U256>::into_val_for_client(a, &self.env),
-                    soroban_sdk::client::Arg::<U256>::into_val_for_client(b, &self.env),
+                    soroban_sdk::client::IntoArg::<U256>::into_arg(a, &self.env),
+                    soroban_sdk::client::IntoArg::<U256>::into_arg(b, &self.env),
                 ],
             ),
         );
@@ -212,8 +212,8 @@ impl<'a> ContractClient<'a> {
     /// Returns an error if the invoked contract returns an error or panics. A panic in the invoked contract is caught and returned as an error rather than panicking the caller.
     pub fn try_run(
         &self,
-        a: impl soroban_sdk::client::Arg<U256>,
-        b: impl soroban_sdk::client::Arg<U256>,
+        a: impl soroban_sdk::client::IntoArg<U256>,
+        b: impl soroban_sdk::client::IntoArg<U256>,
     ) -> soroban_sdk::client::TryRet<()> {
         let _call_scope = soroban_sdk::testutils::ClientCallScope::enter(&self.env, self.config);
         use soroban_sdk::{FromVal, IntoVal};
@@ -227,8 +227,8 @@ impl<'a> ContractClient<'a> {
             ::soroban_sdk::Vec::from_array(
                 &self.env,
                 [
-                    soroban_sdk::client::Arg::<U256>::into_val_for_client(a, &self.env),
-                    soroban_sdk::client::Arg::<U256>::into_val_for_client(b, &self.env),
+                    soroban_sdk::client::IntoArg::<U256>::into_arg(a, &self.env),
+                    soroban_sdk::client::IntoArg::<U256>::into_arg(b, &self.env),
                 ],
             ),
         );
