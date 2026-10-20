@@ -1231,8 +1231,7 @@ mod spec_type_def;
 #[doc(hidden)]
 pub use spec_type_def::{SpecName, SpecTypeDef};
 
-mod client_type;
-pub use client_type::{ClientArg, ClientArgByInto, ClientArgByRef, ClientOutput, ClientType};
+pub mod client;
 
 #[doc(hidden)]
 #[deprecated(note = "use storage")]

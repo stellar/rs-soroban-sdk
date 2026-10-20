@@ -59,8 +59,8 @@ impl soroban_sdk::SpecTypeDef for Value {
             ),
         });
 }
-impl soroban_sdk::ClientType for Value {
-    type Arg = soroban_sdk::ClientArgByRef;
+impl soroban_sdk::client::Type for Value {
+    type Arg = soroban_sdk::client::ArgByRef;
     type Ret = Self;
 }
 #[doc(hidden)]

@@ -76,8 +76,8 @@ impl soroban_sdk::SpecTypeDef for Error {
             ),
         });
 }
-impl soroban_sdk::ClientType for Error {
-    type Arg = soroban_sdk::ClientArgByRef;
+impl soroban_sdk::client::Type for Error {
+    type Arg = soroban_sdk::client::ArgByRef;
     type Ret = Self;
 }
 #[doc(hidden)]

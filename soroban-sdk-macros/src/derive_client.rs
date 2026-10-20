@@ -10,12 +10,12 @@ use crate::{
     symbol, syn_ext,
 };
 
-/// Emits the `ClientType` impl for a user-defined type, which a client takes by
+/// Emits the `client::Type` impl for a user-defined type, which a client takes by
 /// reference and returns as itself.
 pub fn client_type_gen(path: &Path, ident: &Ident) -> TokenStream {
     quote! {
-        impl #path::ClientType for #ident {
-            type Arg = #path::ClientArgByRef;
+        impl #path::client::Type for #ident {
+            type Arg = #path::client::ArgByRef;
             type Ret = Self;
         }
     }
@@ -178,7 +178,7 @@ pub fn derive_client_impl(crate_path: &Path, name: &str, fns: &[syn_ext::Fn]) ->
             });
 
             // Map all remaining inputs. The client takes each in the form its
-            // type's `ClientType` gives, as a reference or as anything that
+            // type's `client::Type` gives, as a reference or as anything that
             // converts into it.
             let (fn_input_types, fn_input_conversions): (Vec<_>, Vec<_>) = f
                 .inputs
@@ -197,10 +197,10 @@ pub fn derive_client_impl(crate_path: &Path, name: &str, fns: &[syn_ext::Fn]) ->
                         FnArg::Receiver(_) => Type::Verbatim(quote!(Self)),
                     };
                     let input_type = quote! {
-                        #ident: impl #crate_path::ClientArg<#ty, <#ty as #crate_path::ClientType>::Arg>
+                        #ident: impl #crate_path::client::Arg<#ty, <#ty as #crate_path::client::Type>::Arg>
                     };
                     let conversion = quote! {
-                        #crate_path::ClientArg::<#ty, _>::into_val_for_client(#ident, &self.env)
+                        #crate_path::client::Arg::<#ty, _>::into_val_for_client(#ident, &self.env)
                     };
                     (input_type, conversion)
                 })

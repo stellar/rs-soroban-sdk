@@ -91,9 +91,9 @@ impl<'a> ContractClient<'a> {
     /// Use [`Self::try_add`] to receive errors instead of panicking.
     pub fn add(
         &self,
-        a: impl soroban_sdk::ClientArg<i128, <i128 as soroban_sdk::ClientType>::Arg>,
-        b: impl soroban_sdk::ClientArg<i128, <i128 as soroban_sdk::ClientType>::Arg>,
-    ) -> <i128 as soroban_sdk::ClientOutput>::Ok {
+        a: impl soroban_sdk::client::Arg<i128, <i128 as soroban_sdk::client::Type>::Arg>,
+        b: impl soroban_sdk::client::Arg<i128, <i128 as soroban_sdk::client::Type>::Arg>,
+    ) -> <i128 as soroban_sdk::client::Output>::Ok {
         use core::ops::Not;
         use soroban_sdk::{FromVal, IntoVal};
         let res = self.env.invoke_contract(
@@ -106,8 +106,8 @@ impl<'a> ContractClient<'a> {
             ::soroban_sdk::Vec::from_array(
                 &self.env,
                 [
-                    soroban_sdk::ClientArg::<i128, _>::into_val_for_client(a, &self.env),
-                    soroban_sdk::ClientArg::<i128, _>::into_val_for_client(b, &self.env),
+                    soroban_sdk::client::Arg::<i128, _>::into_val_for_client(a, &self.env),
+                    soroban_sdk::client::Arg::<i128, _>::into_val_for_client(b, &self.env),
                 ],
             ),
         );
@@ -120,17 +120,17 @@ impl<'a> ContractClient<'a> {
     /// Returns an error if the invoked contract returns an error or panics. A panic in the invoked contract is caught and returned as an error rather than panicking the caller.
     pub fn try_add(
         &self,
-        a: impl soroban_sdk::ClientArg<i128, <i128 as soroban_sdk::ClientType>::Arg>,
-        b: impl soroban_sdk::ClientArg<i128, <i128 as soroban_sdk::ClientType>::Arg>,
+        a: impl soroban_sdk::client::Arg<i128, <i128 as soroban_sdk::client::Type>::Arg>,
+        b: impl soroban_sdk::client::Arg<i128, <i128 as soroban_sdk::client::Type>::Arg>,
     ) -> Result<
         Result<
-            <i128 as soroban_sdk::ClientOutput>::Ok,
-            <<i128 as soroban_sdk::ClientOutput>::Ok as soroban_sdk::TryFromVal<
+            <i128 as soroban_sdk::client::Output>::Ok,
+            <<i128 as soroban_sdk::client::Output>::Ok as soroban_sdk::TryFromVal<
                 soroban_sdk::Env,
                 soroban_sdk::Val,
             >>::Error,
         >,
-        Result<<i128 as soroban_sdk::ClientOutput>::Err, soroban_sdk::InvokeError>,
+        Result<<i128 as soroban_sdk::client::Output>::Err, soroban_sdk::InvokeError>,
     > {
         use soroban_sdk::{FromVal, IntoVal};
         let res = self.env.try_invoke_contract(
@@ -143,8 +143,8 @@ impl<'a> ContractClient<'a> {
             ::soroban_sdk::Vec::from_array(
                 &self.env,
                 [
-                    soroban_sdk::ClientArg::<i128, _>::into_val_for_client(a, &self.env),
-                    soroban_sdk::ClientArg::<i128, _>::into_val_for_client(b, &self.env),
+                    soroban_sdk::client::Arg::<i128, _>::into_val_for_client(a, &self.env),
+                    soroban_sdk::client::Arg::<i128, _>::into_val_for_client(b, &self.env),
                 ],
             ),
         );

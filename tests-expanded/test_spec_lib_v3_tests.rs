@@ -73,8 +73,8 @@ impl soroban_sdk::SpecTypeDef for StructA {
             ),
         });
 }
-impl soroban_sdk::ClientType for StructA {
-    type Arg = soroban_sdk::ClientArgByRef;
+impl soroban_sdk::client::Type for StructA {
+    type Arg = soroban_sdk::client::ArgByRef;
     type Ret = Self;
 }
 #[doc(hidden)]
@@ -553,8 +553,8 @@ impl soroban_sdk::SpecTypeDef for StructB {
             ),
         });
 }
-impl soroban_sdk::ClientType for StructB {
-    type Arg = soroban_sdk::ClientArgByRef;
+impl soroban_sdk::client::Type for StructB {
+    type Arg = soroban_sdk::client::ArgByRef;
     type Ret = Self;
 }
 #[doc(hidden)]
@@ -1033,8 +1033,8 @@ impl soroban_sdk::SpecTypeDef for StructC {
             ),
         });
 }
-impl soroban_sdk::ClientType for StructC {
-    type Arg = soroban_sdk::ClientArgByRef;
+impl soroban_sdk::client::Type for StructC {
+    type Arg = soroban_sdk::client::ArgByRef;
     type Ret = Self;
 }
 #[doc(hidden)]
@@ -1509,8 +1509,8 @@ impl soroban_sdk::SpecTypeDef for StructTupleA {
             ),
         });
 }
-impl soroban_sdk::ClientType for StructTupleA {
-    type Arg = soroban_sdk::ClientArgByRef;
+impl soroban_sdk::client::Type for StructTupleA {
+    type Arg = soroban_sdk::client::ArgByRef;
     type Ret = Self;
 }
 #[doc(hidden)]
@@ -1941,8 +1941,8 @@ impl soroban_sdk::SpecTypeDef for StructTupleB {
             ),
         });
 }
-impl soroban_sdk::ClientType for StructTupleB {
-    type Arg = soroban_sdk::ClientArgByRef;
+impl soroban_sdk::client::Type for StructTupleB {
+    type Arg = soroban_sdk::client::ArgByRef;
     type Ret = Self;
 }
 #[doc(hidden)]
@@ -2374,8 +2374,8 @@ impl soroban_sdk::SpecTypeDef for StructTupleC {
             ),
         });
 }
-impl soroban_sdk::ClientType for StructTupleC {
-    type Arg = soroban_sdk::ClientArgByRef;
+impl soroban_sdk::client::Type for StructTupleC {
+    type Arg = soroban_sdk::client::ArgByRef;
     type Ret = Self;
 }
 #[doc(hidden)]
@@ -2818,8 +2818,8 @@ impl soroban_sdk::SpecTypeDef for EnumA {
             ),
         });
 }
-impl soroban_sdk::ClientType for EnumA {
-    type Arg = soroban_sdk::ClientArgByRef;
+impl soroban_sdk::client::Type for EnumA {
+    type Arg = soroban_sdk::client::ArgByRef;
     type Ret = Self;
 }
 #[doc(hidden)]
@@ -3360,8 +3360,8 @@ impl soroban_sdk::SpecTypeDef for EnumB {
             ),
         });
 }
-impl soroban_sdk::ClientType for EnumB {
-    type Arg = soroban_sdk::ClientArgByRef;
+impl soroban_sdk::client::Type for EnumB {
+    type Arg = soroban_sdk::client::ArgByRef;
     type Ret = Self;
 }
 #[doc(hidden)]
@@ -4031,8 +4031,8 @@ impl soroban_sdk::SpecTypeDef for EnumC {
             ),
         });
 }
-impl soroban_sdk::ClientType for EnumC {
-    type Arg = soroban_sdk::ClientArgByRef;
+impl soroban_sdk::client::Type for EnumC {
+    type Arg = soroban_sdk::client::ArgByRef;
     type Ret = Self;
 }
 #[doc(hidden)]
@@ -4652,8 +4652,8 @@ impl soroban_sdk::SpecTypeDef for EnumIntA {
             ),
         });
 }
-impl soroban_sdk::ClientType for EnumIntA {
-    type Arg = soroban_sdk::ClientArgByRef;
+impl soroban_sdk::client::Type for EnumIntA {
+    type Arg = soroban_sdk::client::ArgByRef;
     type Ret = Self;
 }
 #[doc(hidden)]
@@ -5058,8 +5058,8 @@ impl soroban_sdk::SpecTypeDef for EnumIntB {
             ),
         });
 }
-impl soroban_sdk::ClientType for EnumIntB {
-    type Arg = soroban_sdk::ClientArgByRef;
+impl soroban_sdk::client::Type for EnumIntB {
+    type Arg = soroban_sdk::client::ArgByRef;
     type Ret = Self;
 }
 #[doc(hidden)]
@@ -5464,8 +5464,8 @@ impl soroban_sdk::SpecTypeDef for EnumIntC {
             ),
         });
 }
-impl soroban_sdk::ClientType for EnumIntC {
-    type Arg = soroban_sdk::ClientArgByRef;
+impl soroban_sdk::client::Type for EnumIntC {
+    type Arg = soroban_sdk::client::ArgByRef;
     type Ret = Self;
 }
 #[doc(hidden)]
@@ -5870,8 +5870,8 @@ impl soroban_sdk::SpecTypeDef for ErrorA {
             ),
         });
 }
-impl soroban_sdk::ClientType for ErrorA {
-    type Arg = soroban_sdk::ClientArgByRef;
+impl soroban_sdk::client::Type for ErrorA {
+    type Arg = soroban_sdk::client::ArgByRef;
     type Ret = Self;
 }
 #[doc(hidden)]
@@ -6106,8 +6106,8 @@ impl soroban_sdk::SpecTypeDef for ErrorB {
             ),
         });
 }
-impl soroban_sdk::ClientType for ErrorB {
-    type Arg = soroban_sdk::ClientArgByRef;
+impl soroban_sdk::client::Type for ErrorB {
+    type Arg = soroban_sdk::client::ArgByRef;
     type Ret = Self;
 }
 #[doc(hidden)]
@@ -6342,8 +6342,8 @@ impl soroban_sdk::SpecTypeDef for ErrorC {
             ),
         });
 }
-impl soroban_sdk::ClientType for ErrorC {
-    type Arg = soroban_sdk::ClientArgByRef;
+impl soroban_sdk::client::Type for ErrorC {
+    type Arg = soroban_sdk::client::ArgByRef;
     type Ret = Self;
 }
 #[doc(hidden)]

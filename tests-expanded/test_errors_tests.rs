@@ -162,8 +162,8 @@ impl soroban_sdk::SpecTypeDef for Flag {
             ),
         });
 }
-impl soroban_sdk::ClientType for Flag {
-    type Arg = soroban_sdk::ClientArgByRef;
+impl soroban_sdk::client::Type for Flag {
+    type Arg = soroban_sdk::client::ArgByRef;
     type Ret = Self;
 }
 #[doc(hidden)]
@@ -582,8 +582,8 @@ impl soroban_sdk::SpecTypeDef for Error {
             ),
         });
 }
-impl soroban_sdk::ClientType for Error {
-    type Arg = soroban_sdk::ClientArgByRef;
+impl soroban_sdk::client::Type for Error {
+    type Arg = soroban_sdk::client::ArgByRef;
     type Ret = Self;
 }
 #[doc(hidden)]
@@ -872,8 +872,8 @@ impl<'a> ContractClient<'a> {
     /// Use [`Self::try_hello`] to receive errors instead of panicking.
     pub fn hello(
         &self,
-        flag: impl soroban_sdk::ClientArg<Flag, <Flag as soroban_sdk::ClientType>::Arg>,
-    ) -> <Result<Symbol, Error> as soroban_sdk::ClientOutput>::Ok {
+        flag: impl soroban_sdk::client::Arg<Flag, <Flag as soroban_sdk::client::Type>::Arg>,
+    ) -> <Result<Symbol, Error> as soroban_sdk::client::Output>::Ok {
         let _call_scope = soroban_sdk::testutils::ClientCallScope::enter(&self.env, self.config);
         use soroban_sdk::{FromVal, IntoVal};
         let res = self.env.invoke_contract(
@@ -885,7 +885,7 @@ impl<'a> ContractClient<'a> {
             },
             ::soroban_sdk::Vec::from_array(
                 &self.env,
-                [soroban_sdk::ClientArg::<Flag, _>::into_val_for_client(
+                [soroban_sdk::client::Arg::<Flag, _>::into_val_for_client(
                     flag, &self.env,
                 )],
             ),
@@ -899,17 +899,26 @@ impl<'a> ContractClient<'a> {
     /// Returns an error if the invoked contract returns an error or panics. A panic in the invoked contract is caught and returned as an error rather than panicking the caller.
     pub fn try_hello(
         &self,
-        flag: impl soroban_sdk::ClientArg<Flag, <Flag as soroban_sdk::ClientType>::Arg>,
+        flag: impl soroban_sdk::client::Arg<
+            Flag,
+            <Flag as soroban_sdk::client::Type>::Arg,
+        >,
     ) -> Result<
         Result<
-            <Result<Symbol, Error> as soroban_sdk::ClientOutput>::Ok,
-            <<Result<Symbol, Error> as soroban_sdk::ClientOutput>::Ok as soroban_sdk::TryFromVal<
+            <Result<Symbol, Error> as soroban_sdk::client::Output>::Ok,
+            <<Result<
+                Symbol,
+                Error,
+            > as soroban_sdk::client::Output>::Ok as soroban_sdk::TryFromVal<
                 soroban_sdk::Env,
                 soroban_sdk::Val,
             >>::Error,
         >,
-        Result<<Result<Symbol, Error> as soroban_sdk::ClientOutput>::Err, soroban_sdk::InvokeError>,
-    > {
+        Result<
+            <Result<Symbol, Error> as soroban_sdk::client::Output>::Err,
+            soroban_sdk::InvokeError,
+        >,
+    >{
         let _call_scope = soroban_sdk::testutils::ClientCallScope::enter(&self.env, self.config);
         use soroban_sdk::{FromVal, IntoVal};
         let res = self.env.try_invoke_contract(
@@ -921,7 +930,7 @@ impl<'a> ContractClient<'a> {
             },
             ::soroban_sdk::Vec::from_array(
                 &self.env,
-                [soroban_sdk::ClientArg::<Flag, _>::into_val_for_client(
+                [soroban_sdk::client::Arg::<Flag, _>::into_val_for_client(
                     flag, &self.env,
                 )],
             ),
@@ -935,7 +944,7 @@ impl<'a> ContractClient<'a> {
     /// Panics if the invoked contract returns an error or panics.
     ///
     /// Use [`Self::try_persisted`] to receive errors instead of panicking.
-    pub fn persisted(&self) -> <bool as soroban_sdk::ClientOutput>::Ok {
+    pub fn persisted(&self) -> <bool as soroban_sdk::client::Output>::Ok {
         let _call_scope = soroban_sdk::testutils::ClientCallScope::enter(&self.env, self.config);
         use soroban_sdk::{FromVal, IntoVal};
         let res = self.env.invoke_contract(
@@ -958,13 +967,13 @@ impl<'a> ContractClient<'a> {
         &self,
     ) -> Result<
         Result<
-            <bool as soroban_sdk::ClientOutput>::Ok,
-            <<bool as soroban_sdk::ClientOutput>::Ok as soroban_sdk::TryFromVal<
+            <bool as soroban_sdk::client::Output>::Ok,
+            <<bool as soroban_sdk::client::Output>::Ok as soroban_sdk::TryFromVal<
                 soroban_sdk::Env,
                 soroban_sdk::Val,
             >>::Error,
         >,
-        Result<<bool as soroban_sdk::ClientOutput>::Err, soroban_sdk::InvokeError>,
+        Result<<bool as soroban_sdk::client::Output>::Err, soroban_sdk::InvokeError>,
     > {
         let _call_scope = soroban_sdk::testutils::ClientCallScope::enter(&self.env, self.config);
         use soroban_sdk::{FromVal, IntoVal};

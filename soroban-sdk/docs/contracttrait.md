@@ -168,7 +168,7 @@ impl<T: Pause> __Contract_Pause_types for T { type Address = T::__Pause_Address;
 // fn f2(env: &Env, a: <Contract as __Contract_Pause_types>::Address)
 ```
 
-The placeholder and projected types keep the last segment of the type's path as their name so that the `Env` argument is still recognized by its name. Every other decision about a type is made through traits implemented on the type, such as `SpecTypeDef` for the spec and `ClientType` for the client, so the projected types need no name.
+The placeholder and projected types keep the last segment of the type's path as their name so that the `Env` argument is still recognized by its name. Every other decision about a type is made through traits implemented on the type, such as `SpecTypeDef` for the spec and `client::Type` for the client, so the projected types need no name.
 
 ## Why the `macro_rules!` Generated Helper Macro?
 

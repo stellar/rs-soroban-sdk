@@ -1,5 +1,9 @@
-//! ClientType gives the types that a generated contract client uses for a Rust
-//! type that appears in a contract function.
+//! Types that generated contract clients use for the arguments and return
+//! values of contract functions.
+//!
+//! [`Type`] gives the types that a client uses for a Rust type that appears in
+//! a contract function, [`Arg`] the values a client accepts for an argument,
+//! and [`Output`] the values a client returns.
 //!
 //! The macros refer to every argument and return type of a client function
 //! through these traits, rather than deciding by the type's name, so that the
@@ -19,13 +23,13 @@ use crate::{
     Timepoint, Val, Vec, I256, U256,
 };
 
-/// Marker for [`ClientType::Arg`] that a client takes the argument by
+/// Marker for [`Type::Arg`] that a client takes the argument by
 /// reference, as `&T`.
-pub struct ClientArgByRef;
+pub struct ArgByRef;
 
-/// Marker for [`ClientType::Arg`] that a client takes the argument as any value
+/// Marker for [`Type::Arg`] that a client takes the argument as any value
 /// that converts into it, as `impl Into<T>`.
-pub struct ClientArgByInto;
+pub struct ArgByInto;
 
 /// Trait for types that can be an argument or return value of a contract
 /// client function.
@@ -34,23 +38,23 @@ pub struct ClientArgByInto;
     label = "not a contract type",
     note = "types used in contract functions must be supported by contract clients, such as types marked `#[contracttype]`"
 )]
-pub trait ClientType {
-    /// How a client takes the type as an argument, either [`ClientArgByRef`]
-    /// or [`ClientArgByInto`].
+pub trait Type {
+    /// How a client takes the type as an argument, either [`ArgByRef`]
+    /// or [`ArgByInto`].
     type Arg;
     /// The type a client returns for the type.
     type Ret;
 }
 
 /// Trait for the values a client function accepts for an argument of type `T`,
-/// which are decided by `Mode`, the type's [`ClientType::Arg`].
-pub trait ClientArg<T, Mode> {
+/// which are decided by `Mode`, the type's [`Type::Arg`].
+pub trait Arg<T, Mode> {
     fn into_val_for_client(self, env: &Env) -> Val;
 }
 
 // Any reference that borrows as the type is accepted, so that a reference to a
 // reference is accepted as it would be by deref coercion.
-impl<'a, T, R> ClientArg<T, ClientArgByRef> for &'a R
+impl<'a, T, R> Arg<T, ArgByRef> for &'a R
 where
     T: IntoVal<Env, Val>,
     R: ?Sized + Borrow<T>,
@@ -61,7 +65,7 @@ where
     }
 }
 
-impl<T, X> ClientArg<T, ClientArgByInto> for X
+impl<T, X> Arg<T, ArgByInto> for X
 where
     T: IntoVal<Env, Val>,
     X: Into<T>,
@@ -74,19 +78,19 @@ where
 
 /// Trait for the return type of a contract function, giving the value a client
 /// returns, and the error a client returns when the contract returns an error.
-pub trait ClientOutput {
+pub trait Output {
     type Ok;
     type Err;
 }
 
-impl<T: ClientType> ClientOutput for T {
+impl<T: Type> Output for T {
     type Ok = T::Ret;
     type Err = Error;
 }
 
-// Result does not implement ClientType, so that it is only unpacked as the
+// Result does not implement Type, so that it is only unpacked as the
 // return type of a contract function.
-impl<T: ClientType, E> ClientOutput for Result<T, E> {
+impl<T: Type, E> Output for Result<T, E> {
     type Ok = T::Ret;
     type Err = E;
 }
@@ -94,8 +98,8 @@ impl<T: ClientType, E> ClientOutput for Result<T, E> {
 macro_rules! impl_client_type {
     ($($t:ty),* $(,)?) => {
         $(
-            impl ClientType for $t {
-                type Arg = ClientArgByRef;
+            impl Type for $t {
+                type Arg = ArgByRef;
                 type Ret = $t;
             }
         )*
@@ -134,42 +138,42 @@ impl_client_type! {
 
 // A muxed address argument accepts anything that converts into one, such as an
 // Address.
-impl ClientType for MuxedAddress {
-    type Arg = ClientArgByInto;
+impl Type for MuxedAddress {
+    type Arg = ArgByInto;
     type Ret = MuxedAddress;
 }
 
-impl<const N: usize> ClientType for BytesN<N> {
-    type Arg = ClientArgByRef;
+impl<const N: usize> Type for BytesN<N> {
+    type Arg = ArgByRef;
     type Ret = BytesN<N>;
 }
 
 // A hash can only be constructed by the host, so a client receives the bytes of
 // a returned hash.
-impl<const N: usize> ClientType for Hash<N> {
-    type Arg = ClientArgByRef;
+impl<const N: usize> Type for Hash<N> {
+    type Arg = ArgByRef;
     type Ret = BytesN<N>;
 }
 
-impl<T: ClientType> ClientType for Option<T> {
-    type Arg = ClientArgByRef;
+impl<T: Type> Type for Option<T> {
+    type Arg = ArgByRef;
     type Ret = Option<T::Ret>;
 }
 
-impl<T: ClientType> ClientType for Vec<T> {
-    type Arg = ClientArgByRef;
+impl<T: Type> Type for Vec<T> {
+    type Arg = ArgByRef;
     type Ret = Vec<T::Ret>;
 }
 
-impl<K: ClientType, V: ClientType> ClientType for Map<K, V> {
-    type Arg = ClientArgByRef;
+impl<K: Type, V: Type> Type for Map<K, V> {
+    type Arg = ArgByRef;
     type Ret = Map<K::Ret, V::Ret>;
 }
 
 macro_rules! impl_client_type_for_tuple {
     ($($t:ident),+) => {
-        impl<$($t: ClientType),+> ClientType for ($($t,)+) {
-            type Arg = ClientArgByRef;
+        impl<$($t: Type),+> Type for ($($t,)+) {
+            type Arg = ArgByRef;
             type Ret = ($($t::Ret,)+);
         }
     };
