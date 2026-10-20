@@ -1,11 +1,5 @@
 #![no_std]
-use soroban_sdk::{
-    contract, contractimpl, Address, Bytes, BytesN, Duration, Map, String, Symbol, Timepoint, Vec,
-    I256, U256,
-};
-
-// Import types but NOT the trait - use fully qualified path for the trait
-use test_contracttrait_trait::{MyEnumUnit, MyEnumVariants, MyStruct};
+use soroban_sdk::{contract, contractimpl};
 
 // =============================================================================
 // Test: Global path (::extern_crate::Trait)
@@ -22,7 +16,11 @@ impl ::test_contracttrait_trait::AllTypes for ContractGlobalPath {}
 #[cfg(test)]
 mod test {
     use super::*;
-    use soroban_sdk::{map, symbol_short, testutils::Address as _, vec, Env};
+    use soroban_sdk::{
+        map, symbol_short, testutils::Address as _, vec, Address, Bytes, BytesN, Duration, Env,
+        String, Timepoint, I256, U256,
+    };
+    use test_contracttrait_trait::{MyEnumUnit, MyEnumVariants, MyStruct};
 
     #[test]
     fn test_global_path() {

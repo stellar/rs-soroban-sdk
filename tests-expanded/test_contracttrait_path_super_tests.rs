@@ -11,7 +11,7 @@ pub struct SuperPathTraitSpec;
 pub trait __SuperPathTrait_Env {
     type __SuperPathTrait_Env;
 }
-impl<T: ?Sized> __SuperPathTrait_Env for T {
+impl<__T: ?Sized> __SuperPathTrait_Env for __T {
     type __SuperPathTrait_Env = Env;
 }
 #[doc(hidden)]
@@ -19,7 +19,7 @@ impl<T: ?Sized> __SuperPathTrait_Env for T {
 pub trait __SuperPathTrait_u32 {
     type __SuperPathTrait_u32;
 }
-impl<T: ?Sized> __SuperPathTrait_u32 for T {
+impl<__T: ?Sized> __SuperPathTrait_u32 for __T {
     type __SuperPathTrait_u32 = u32;
 }
 /// Macro for `contractimpl`ing the default functions of the trait that are not overridden.
@@ -110,7 +110,7 @@ impl<'a> SuperPathTraitClient<'a> {
     /// Panics if the invoked contract returns an error or panics.
     ///
     /// Use [`Self::try_super_path_method`] to receive errors instead of panicking.
-    pub fn super_path_method(&self) -> <u32 as soroban_sdk::client::Output>::Ok {
+    pub fn super_path_method(&self) -> soroban_sdk::client::Ret<u32> {
         let _call_scope = soroban_sdk::testutils::ClientCallScope::enter(&self.env, self.config);
         use soroban_sdk::{FromVal, IntoVal};
         let res = self.env.invoke_contract(
@@ -125,18 +125,7 @@ impl<'a> SuperPathTraitClient<'a> {
     /// # Errors
     ///
     /// Returns an error if the invoked contract returns an error or panics. A panic in the invoked contract is caught and returned as an error rather than panicking the caller.
-    pub fn try_super_path_method(
-        &self,
-    ) -> Result<
-        Result<
-            <u32 as soroban_sdk::client::Output>::Ok,
-            <<u32 as soroban_sdk::client::Output>::Ok as soroban_sdk::TryFromVal<
-                soroban_sdk::Env,
-                soroban_sdk::Val,
-            >>::Error,
-        >,
-        Result<<u32 as soroban_sdk::client::Output>::Err, soroban_sdk::InvokeError>,
-    > {
+    pub fn try_super_path_method(&self) -> soroban_sdk::client::TryRet<u32> {
         let _call_scope = soroban_sdk::testutils::ClientCallScope::enter(&self.env, self.config);
         use soroban_sdk::{FromVal, IntoVal};
         let res = self.env.try_invoke_contract(
@@ -305,13 +294,23 @@ pub mod submodule {
     impl ContractSuperPathArgs {}
     #[doc(hidden)]
     #[allow(non_camel_case_types)]
-    pub trait __ContractSuperPath_SuperPathTrait_types {
+    pub trait __ContractSuperPath_SuperPathTrait_project {
         type Env;
         type u32;
     }
-    impl<T: super::SuperPathTrait> __ContractSuperPath_SuperPathTrait_types for T {
-        type Env = T::__SuperPathTrait_Env;
-        type u32 = T::__SuperPathTrait_u32;
+    impl<__T: super::SuperPathTrait> __ContractSuperPath_SuperPathTrait_project for __T {
+        type Env = __T::__SuperPathTrait_Env;
+        type u32 = __T::__SuperPathTrait_u32;
+    }
+    #[doc(hidden)]
+    #[allow(non_snake_case)]
+    pub mod __ContractSuperPath_SuperPathTrait_types {
+        #[allow(non_camel_case_types)]
+        pub type Env =
+            <super::ContractSuperPath as super::__ContractSuperPath_SuperPathTrait_project>::Env;
+        #[allow(non_camel_case_types)]
+        pub type u32 =
+            <super::ContractSuperPath as super::__ContractSuperPath_SuperPathTrait_project>::u32;
     }
     #[doc(hidden)]
     #[allow(non_snake_case)]
@@ -382,7 +381,7 @@ pub mod submodule {
             inputs: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[]),
             outputs: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(
                 &[
-                    <<ContractSuperPath as __ContractSuperPath_SuperPathTrait_types>::u32 as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
+                    <__ContractSuperPath_SuperPathTrait_types::u32 as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
                 ],
             ),
         });
@@ -411,7 +410,7 @@ pub mod submodule {
         /// Use [`Self::try_super_path_method`] to receive errors instead of panicking.
         pub fn super_path_method(
             &self,
-        ) -> <<ContractSuperPath as __ContractSuperPath_SuperPathTrait_types>::u32 as soroban_sdk::client::Output>::Ok{
+        ) -> soroban_sdk::client::Ret<__ContractSuperPath_SuperPathTrait_types::u32> {
             let _call_scope =
                 soroban_sdk::testutils::ClientCallScope::enter(&self.env, self.config);
             use soroban_sdk::{FromVal, IntoVal};
@@ -429,19 +428,7 @@ pub mod submodule {
         /// Returns an error if the invoked contract returns an error or panics. A panic in the invoked contract is caught and returned as an error rather than panicking the caller.
         pub fn try_super_path_method(
             &self,
-        ) -> Result<
-            Result<
-                <<ContractSuperPath as __ContractSuperPath_SuperPathTrait_types>::u32 as soroban_sdk::client::Output>::Ok,
-                <<<ContractSuperPath as __ContractSuperPath_SuperPathTrait_types>::u32 as soroban_sdk::client::Output>::Ok as soroban_sdk::TryFromVal<
-                    soroban_sdk::Env,
-                    soroban_sdk::Val,
-                >>::Error,
-            >,
-            Result<
-                <<ContractSuperPath as __ContractSuperPath_SuperPathTrait_types>::u32 as soroban_sdk::client::Output>::Err,
-                soroban_sdk::InvokeError,
-            >,
-        >{
+        ) -> soroban_sdk::client::TryRet<__ContractSuperPath_SuperPathTrait_types::u32> {
             let _call_scope =
                 soroban_sdk::testutils::ClientCallScope::enter(&self.env, self.config);
             use soroban_sdk::{FromVal, IntoVal};

@@ -11,7 +11,7 @@ pub struct SelfPathTraitSpec;
 pub trait __SelfPathTrait_Env {
     type __SelfPathTrait_Env;
 }
-impl<T: ?Sized> __SelfPathTrait_Env for T {
+impl<__T: ?Sized> __SelfPathTrait_Env for __T {
     type __SelfPathTrait_Env = Env;
 }
 #[doc(hidden)]
@@ -19,7 +19,7 @@ impl<T: ?Sized> __SelfPathTrait_Env for T {
 pub trait __SelfPathTrait_u32 {
     type __SelfPathTrait_u32;
 }
-impl<T: ?Sized> __SelfPathTrait_u32 for T {
+impl<__T: ?Sized> __SelfPathTrait_u32 for __T {
     type __SelfPathTrait_u32 = u32;
 }
 /// Macro for `contractimpl`ing the default functions of the trait that are not overridden.
@@ -54,7 +54,7 @@ impl<'a> SelfPathTraitClient<'a> {
     /// Panics if the invoked contract returns an error or panics.
     ///
     /// Use [`Self::try_self_path_method`] to receive errors instead of panicking.
-    pub fn self_path_method(&self) -> <u32 as soroban_sdk::client::Output>::Ok {
+    pub fn self_path_method(&self) -> soroban_sdk::client::Ret<u32> {
         use core::ops::Not;
         use soroban_sdk::{FromVal, IntoVal};
         let res = self.env.invoke_contract(
@@ -69,18 +69,7 @@ impl<'a> SelfPathTraitClient<'a> {
     /// # Errors
     ///
     /// Returns an error if the invoked contract returns an error or panics. A panic in the invoked contract is caught and returned as an error rather than panicking the caller.
-    pub fn try_self_path_method(
-        &self,
-    ) -> Result<
-        Result<
-            <u32 as soroban_sdk::client::Output>::Ok,
-            <<u32 as soroban_sdk::client::Output>::Ok as soroban_sdk::TryFromVal<
-                soroban_sdk::Env,
-                soroban_sdk::Val,
-            >>::Error,
-        >,
-        Result<<u32 as soroban_sdk::client::Output>::Err, soroban_sdk::InvokeError>,
-    > {
+    pub fn try_self_path_method(&self) -> soroban_sdk::client::TryRet<u32> {
         use soroban_sdk::{FromVal, IntoVal};
         let res = self.env.try_invoke_contract(
             &self.address,
@@ -155,13 +144,23 @@ impl<'a> ContractSelfPathClient<'a> {}
 impl ContractSelfPathArgs {}
 #[doc(hidden)]
 #[allow(non_camel_case_types)]
-pub trait __ContractSelfPath_SelfPathTrait_types {
+pub trait __ContractSelfPath_SelfPathTrait_project {
     type Env;
     type u32;
 }
-impl<T: self::SelfPathTrait> __ContractSelfPath_SelfPathTrait_types for T {
-    type Env = T::__SelfPathTrait_Env;
-    type u32 = T::__SelfPathTrait_u32;
+impl<__T: self::SelfPathTrait> __ContractSelfPath_SelfPathTrait_project for __T {
+    type Env = __T::__SelfPathTrait_Env;
+    type u32 = __T::__SelfPathTrait_u32;
+}
+#[doc(hidden)]
+#[allow(non_snake_case)]
+pub mod __ContractSelfPath_SelfPathTrait_types {
+    #[allow(non_camel_case_types)]
+    pub type Env =
+        <super::ContractSelfPath as super::__ContractSelfPath_SelfPathTrait_project>::Env;
+    #[allow(non_camel_case_types)]
+    pub type u32 =
+        <super::ContractSelfPath as super::__ContractSelfPath_SelfPathTrait_project>::u32;
 }
 #[doc(hidden)]
 #[allow(non_snake_case)]
@@ -210,7 +209,7 @@ impl ContractSelfPath {
         inputs: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[]),
         outputs: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(
             &[
-                <<ContractSelfPath as __ContractSelfPath_SelfPathTrait_types>::u32 as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
+                <__ContractSelfPath_SelfPathTrait_types::u32 as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
             ],
         ),
     });
@@ -239,7 +238,7 @@ impl<'a> ContractSelfPathClient<'a> {
     /// Use [`Self::try_self_path_method`] to receive errors instead of panicking.
     pub fn self_path_method(
         &self,
-    ) -> <<ContractSelfPath as __ContractSelfPath_SelfPathTrait_types>::u32 as soroban_sdk::client::Output>::Ok{
+    ) -> soroban_sdk::client::Ret<__ContractSelfPath_SelfPathTrait_types::u32> {
         use core::ops::Not;
         use soroban_sdk::{FromVal, IntoVal};
         let res = self.env.invoke_contract(
@@ -256,19 +255,7 @@ impl<'a> ContractSelfPathClient<'a> {
     /// Returns an error if the invoked contract returns an error or panics. A panic in the invoked contract is caught and returned as an error rather than panicking the caller.
     pub fn try_self_path_method(
         &self,
-    ) -> Result<
-        Result<
-            <<ContractSelfPath as __ContractSelfPath_SelfPathTrait_types>::u32 as soroban_sdk::client::Output>::Ok,
-            <<<ContractSelfPath as __ContractSelfPath_SelfPathTrait_types>::u32 as soroban_sdk::client::Output>::Ok as soroban_sdk::TryFromVal<
-                soroban_sdk::Env,
-                soroban_sdk::Val,
-            >>::Error,
-        >,
-        Result<
-            <<ContractSelfPath as __ContractSelfPath_SelfPathTrait_types>::u32 as soroban_sdk::client::Output>::Err,
-            soroban_sdk::InvokeError,
-        >,
-    >{
+    ) -> soroban_sdk::client::TryRet<__ContractSelfPath_SelfPathTrait_types::u32> {
         use soroban_sdk::{FromVal, IntoVal};
         let res = self.env.try_invoke_contract(
             &self.address,

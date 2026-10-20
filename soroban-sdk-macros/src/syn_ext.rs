@@ -209,20 +209,13 @@ impl Fn {
     /// The type the client returns for the fn's return type.
     pub fn output(&self, crate_path: &Path) -> Type {
         let ty = self.output_type();
-        Type::Verbatim(quote!(<#ty as #crate_path::client::Output>::Ok))
+        Type::Verbatim(quote!(#crate_path::client::Ret<#ty>))
     }
 
     /// The type the client's try fn returns for the fn's return type.
     pub fn try_output(&self, crate_path: &Path) -> Type {
         let ty = self.output_type();
-        let t = quote!(<#ty as #crate_path::client::Output>::Ok);
-        let e = quote!(<#ty as #crate_path::client::Output>::Err);
-        Type::Verbatim(quote! {
-            Result<
-                Result<#t, <#t as #crate_path::TryFromVal<#crate_path::Env, #crate_path::Val>>::Error>,
-                Result<#e, #crate_path::InvokeError>
-            >
-        })
+        Type::Verbatim(quote!(#crate_path::client::TryRet<#ty>))
     }
 
     fn output_type(&self) -> Type {

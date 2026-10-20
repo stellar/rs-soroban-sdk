@@ -1524,7 +1524,7 @@ impl<'a> ContractClient<'a> {
         &self,
         a: impl soroban_sdk::client::Arg<UdtEnum>,
         b: impl soroban_sdk::client::Arg<UdtEnum>,
-    ) -> <i64 as soroban_sdk::client::Output>::Ok {
+    ) -> soroban_sdk::client::Ret<i64> {
         use core::ops::Not;
         use soroban_sdk::{FromVal, IntoVal};
         let res = self.env.invoke_contract(
@@ -1553,16 +1553,7 @@ impl<'a> ContractClient<'a> {
         &self,
         a: impl soroban_sdk::client::Arg<UdtEnum>,
         b: impl soroban_sdk::client::Arg<UdtEnum>,
-    ) -> Result<
-        Result<
-            <i64 as soroban_sdk::client::Output>::Ok,
-            <<i64 as soroban_sdk::client::Output>::Ok as soroban_sdk::TryFromVal<
-                soroban_sdk::Env,
-                soroban_sdk::Val,
-            >>::Error,
-        >,
-        Result<<i64 as soroban_sdk::client::Output>::Err, soroban_sdk::InvokeError>,
-    > {
+    ) -> soroban_sdk::client::TryRet<i64> {
         use soroban_sdk::{FromVal, IntoVal};
         let res = self.env.try_invoke_contract(
             &self.address,
@@ -1591,7 +1582,7 @@ impl<'a> ContractClient<'a> {
     pub fn recursive(
         &self,
         a: impl soroban_sdk::client::Arg<UdtRecursive>,
-    ) -> <Option<UdtRecursive> as soroban_sdk::client::Output>::Ok {
+    ) -> soroban_sdk::client::Ret<Option<UdtRecursive>> {
         use core::ops::Not;
         use soroban_sdk::{FromVal, IntoVal};
         let res = self.env.invoke_contract(
@@ -1616,21 +1607,7 @@ impl<'a> ContractClient<'a> {
     pub fn try_recursive(
         &self,
         a: impl soroban_sdk::client::Arg<UdtRecursive>,
-    ) -> Result<
-        Result<
-            <Option<UdtRecursive> as soroban_sdk::client::Output>::Ok,
-            <<Option<
-                UdtRecursive,
-            > as soroban_sdk::client::Output>::Ok as soroban_sdk::TryFromVal<
-                soroban_sdk::Env,
-                soroban_sdk::Val,
-            >>::Error,
-        >,
-        Result<
-            <Option<UdtRecursive> as soroban_sdk::client::Output>::Err,
-            soroban_sdk::InvokeError,
-        >,
-    >{
+    ) -> soroban_sdk::client::TryRet<Option<UdtRecursive>> {
         use soroban_sdk::{FromVal, IntoVal};
         let res = self.env.try_invoke_contract(
             &self.address,
@@ -1657,7 +1634,7 @@ impl<'a> ContractClient<'a> {
         &self,
         a: impl soroban_sdk::client::Arg<RecursiveEnum>,
         key: impl soroban_sdk::client::Arg<u32>,
-    ) -> <Result<Option<RecursiveEnum>, Error> as soroban_sdk::client::Output>::Ok {
+    ) -> soroban_sdk::client::Ret<Result<Option<RecursiveEnum>, Error>> {
         use core::ops::Not;
         use soroban_sdk::{FromVal, IntoVal};
         let res = self.env.invoke_contract(
@@ -1682,22 +1659,7 @@ impl<'a> ContractClient<'a> {
         &self,
         a: impl soroban_sdk::client::Arg<RecursiveEnum>,
         key: impl soroban_sdk::client::Arg<u32>,
-    ) -> Result<
-        Result<
-            <Result<Option<RecursiveEnum>, Error> as soroban_sdk::client::Output>::Ok,
-            <<Result<
-                Option<RecursiveEnum>,
-                Error,
-            > as soroban_sdk::client::Output>::Ok as soroban_sdk::TryFromVal<
-                soroban_sdk::Env,
-                soroban_sdk::Val,
-            >>::Error,
-        >,
-        Result<
-            <Result<Option<RecursiveEnum>, Error> as soroban_sdk::client::Output>::Err,
-            soroban_sdk::InvokeError,
-        >,
-    >{
+    ) -> soroban_sdk::client::TryRet<Result<Option<RecursiveEnum>, Error>> {
         use soroban_sdk::{FromVal, IntoVal};
         let res = self.env.try_invoke_contract(
             &self.address,

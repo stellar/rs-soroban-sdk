@@ -8,8 +8,8 @@ use proc_macro2::{Ident, TokenStream as TokenStream2};
 use quote::ToTokens;
 use quote::{format_ident, quote};
 use syn::{
-    ext::IdentExt as _, parse2, parse_quote, ImplItemFn, ItemTrait, Path, ReturnType, Signature,
-    TraitItem, TraitItemFn, Type, TypePath,
+    ext::IdentExt as _, parse2, parse_quote, GenericArgument, ImplItemFn, ItemTrait, Path,
+    PathArguments, ReturnType, Signature, TraitItem, TraitItemFn, Type, TypePath,
 };
 
 /// The root of the placeholder paths that stand in for the types of default
@@ -97,21 +97,21 @@ fn derive(input: &mut ItemTrait) -> TokenStream2 {
     // so that wherever the trait is implemented the type can be named through
     // the trait, rather than by the name it has where the trait is defined.
     let vis = &input.vis;
-    let capture_traits = captures.types.iter().map(|(name, ty)| {
+    let capture_traits = captures.types.iter().map(|Capture { name, params, ty }| {
         let ident = type_capture_ident(&trait_name, name);
         quote! {
             #[doc(hidden)]
             #[allow(non_camel_case_types)]
             #vis trait #ident {
-                type #ident;
+                type #ident<#(#params),*>;
             }
-            impl<T: ?Sized> #ident for T {
-                type #ident = #ty;
+            impl<__T: ?Sized> #ident for __T {
+                type #ident<#(#params),*> = #ty;
             }
         }
     });
     let capture_traits = quote!(#(#capture_traits)*);
-    for (name, _) in &captures.types {
+    for Capture { name, .. } in &captures.types {
         let ident = type_capture_ident(&trait_name, name);
         input.colon_token.get_or_insert_with(Default::default);
         input.supertraits.push(parse_quote!(#ident));
@@ -159,17 +159,33 @@ fn derive(input: &mut ItemTrait) -> TokenStream2 {
     }
 }
 
-/// The distinct types of the default fns, each with the name of the
-/// associated type that captures it.
+/// A type of the default fns, captured where the trait is defined. A generic
+/// type is captured without its generic arguments, as a generic associated type
+/// with a parameter for each argument, and each argument is captured on its
+/// own, so that the type keeps its arguments wherever it is named, e.g.
+/// `Vec<Point>`.
+struct Capture {
+    /// The name of the associated type, which is the last segment of the
+    /// type's path, so that docs show the type's name and the generated code
+    /// can still recognize the `Env` by its name.
+    name: Ident,
+    /// The parameters of the associated type, one for each generic argument.
+    params: Vec<TokenStream2>,
+    /// The type, with its generic arguments replaced by the parameters.
+    ty: Type,
+}
+
+/// The distinct types of the default fns.
 #[derive(Default)]
 struct TypeCaptures {
-    types: Vec<(Ident, Type)>,
+    types: Vec<Capture>,
 }
 
 impl TypeCaptures {
     /// Replaces the types of the signature with placeholders for captured
-    /// types. References are kept on the placeholder because the captured type
-    /// cannot hold their lifetimes.
+    /// types. References and tuples are kept on the placeholder because the
+    /// captured type cannot hold the lifetimes of references, and so that docs
+    /// show them.
     fn capture_sig(&mut self, sig: &mut Signature) {
         for input in sig.inputs.iter_mut() {
             if let syn::FnArg::Typed(pat_type) = input {
@@ -182,8 +198,10 @@ impl TypeCaptures {
     }
 
     fn capture(&mut self, ty: &mut Type) {
-        if let Type::Reference(r) = ty {
-            return self.capture(&mut r.elem);
+        match ty {
+            Type::Reference(r) => return self.capture(&mut r.elem),
+            Type::Tuple(t) => return t.elems.iter_mut().for_each(|e| self.capture(e)),
+            _ => {}
         }
         // Types that refer to `Self` are left in place, because `Self` only
         // has meaning within the trait and its impls.
@@ -194,34 +212,74 @@ impl TypeCaptures {
         if mentions_self {
             return;
         }
-        let name = self.name(ty);
         let placeholder = format_ident!("{TYPE_PLACEHOLDER}");
+        // A generic type has its arguments captured on their own, unless it has
+        // arguments other than types and consts, in which case it is captured
+        // whole.
+        if let Type::Path(TypePath { qself: None, path }) = ty {
+            let segment = path.segments.last_mut().unwrap();
+            if let PathArguments::AngleBracketed(args) = &mut segment.arguments {
+                let generic = args
+                    .args
+                    .iter()
+                    .all(|a| matches!(a, GenericArgument::Type(_) | GenericArgument::Const(_)));
+                if generic {
+                    let mut params = Vec::new();
+                    let mut param_args = Vec::new();
+                    for (i, arg) in args.args.iter_mut().enumerate() {
+                        match arg {
+                            GenericArgument::Type(t) => {
+                                self.capture(t);
+                                let p = format_ident!("T{i}");
+                                params.push(quote!(#p));
+                                param_args.push(quote!(#p));
+                            }
+                            _ => {
+                                // Const generics of contract types are lengths.
+                                let p = format_ident!("N{i}");
+                                params.push(quote!(const #p: usize));
+                                param_args.push(quote!(#p));
+                            }
+                        }
+                    }
+                    let args = args.clone();
+                    let mut base = path.clone();
+                    base.segments.last_mut().unwrap().arguments = PathArguments::None;
+                    let name = self.name(parse_quote!(#base<#(#param_args),*>), params);
+                    *ty = parse_quote!(#placeholder::#name #args);
+                    return;
+                }
+            }
+        }
+        let name = self.name(ty.clone(), Vec::new());
         *ty = parse_quote!(#placeholder::#name);
     }
 
-    /// The name of the captured type, which is the last segment of its path,
-    /// so that the generated code can still recognize the `Env` by its name.
-    fn name(&mut self, ty: &Type) -> Ident {
+    fn name(&mut self, ty: Type, params: Vec<TokenStream2>) -> Ident {
         let ty_str = ty.to_token_stream().to_string();
-        if let Some((name, _)) = self
+        if let Some(c) = self
             .types
             .iter()
-            .find(|(_, t)| t.to_token_stream().to_string() == ty_str)
+            .find(|c| c.ty.to_token_stream().to_string() == ty_str)
         {
-            return name.clone();
+            return c.name.clone();
         }
-        let base = match ty {
+        let base = match &ty {
             Type::Path(TypePath { path, .. }) => path.segments.last().map(|s| s.ident.unraw()),
             _ => None,
         }
         .unwrap_or_else(|| format_ident!("Type"));
         let mut name = base.clone();
         let mut i = 1;
-        while self.types.iter().any(|(n, _)| *n == name) {
+        while self.types.iter().any(|c| c.name == name) {
             name = format_ident!("{base}_{i}");
             i += 1;
         }
-        self.types.push((name.clone(), ty.clone()));
+        self.types.push(Capture {
+            name: name.clone(),
+            params,
+            ty,
+        });
         name
     }
 }

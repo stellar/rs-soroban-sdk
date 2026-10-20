@@ -478,7 +478,7 @@ impl<'a> ContractClient<'a> {
     pub fn hello(
         &self,
         flag: impl soroban_sdk::client::Arg<Flag>,
-    ) -> <Result<Symbol, Error> as soroban_sdk::client::Output>::Ok {
+    ) -> soroban_sdk::client::Ret<Result<Symbol, Error>> {
         use core::ops::Not;
         use soroban_sdk::{FromVal, IntoVal};
         let res = self.env.invoke_contract(
@@ -505,22 +505,7 @@ impl<'a> ContractClient<'a> {
     pub fn try_hello(
         &self,
         flag: impl soroban_sdk::client::Arg<Flag>,
-    ) -> Result<
-        Result<
-            <Result<Symbol, Error> as soroban_sdk::client::Output>::Ok,
-            <<Result<
-                Symbol,
-                Error,
-            > as soroban_sdk::client::Output>::Ok as soroban_sdk::TryFromVal<
-                soroban_sdk::Env,
-                soroban_sdk::Val,
-            >>::Error,
-        >,
-        Result<
-            <Result<Symbol, Error> as soroban_sdk::client::Output>::Err,
-            soroban_sdk::InvokeError,
-        >,
-    >{
+    ) -> soroban_sdk::client::TryRet<Result<Symbol, Error>> {
         use soroban_sdk::{FromVal, IntoVal};
         let res = self.env.try_invoke_contract(
             &self.address,

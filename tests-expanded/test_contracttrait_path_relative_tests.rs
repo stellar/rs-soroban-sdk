@@ -13,7 +13,7 @@ pub mod traits {
     pub trait __RelativePathTrait_Env {
         type __RelativePathTrait_Env;
     }
-    impl<T: ?Sized> __RelativePathTrait_Env for T {
+    impl<__T: ?Sized> __RelativePathTrait_Env for __T {
         type __RelativePathTrait_Env = Env;
     }
     #[doc(hidden)]
@@ -21,7 +21,7 @@ pub mod traits {
     pub trait __RelativePathTrait_u32 {
         type __RelativePathTrait_u32;
     }
-    impl<T: ?Sized> __RelativePathTrait_u32 for T {
+    impl<__T: ?Sized> __RelativePathTrait_u32 for __T {
         type __RelativePathTrait_u32 = u32;
     }
     /// Macro for `contractimpl`ing the default functions of the trait that are not overridden.
@@ -112,7 +112,7 @@ pub mod traits {
         /// Panics if the invoked contract returns an error or panics.
         ///
         /// Use [`Self::try_relative_path_method`] to receive errors instead of panicking.
-        pub fn relative_path_method(&self) -> <u32 as soroban_sdk::client::Output>::Ok {
+        pub fn relative_path_method(&self) -> soroban_sdk::client::Ret<u32> {
             let _call_scope =
                 soroban_sdk::testutils::ClientCallScope::enter(&self.env, self.config);
             use soroban_sdk::{FromVal, IntoVal};
@@ -128,18 +128,7 @@ pub mod traits {
         /// # Errors
         ///
         /// Returns an error if the invoked contract returns an error or panics. A panic in the invoked contract is caught and returned as an error rather than panicking the caller.
-        pub fn try_relative_path_method(
-            &self,
-        ) -> Result<
-            Result<
-                <u32 as soroban_sdk::client::Output>::Ok,
-                <<u32 as soroban_sdk::client::Output>::Ok as soroban_sdk::TryFromVal<
-                    soroban_sdk::Env,
-                    soroban_sdk::Val,
-                >>::Error,
-            >,
-            Result<<u32 as soroban_sdk::client::Output>::Err, soroban_sdk::InvokeError>,
-        > {
+        pub fn try_relative_path_method(&self) -> soroban_sdk::client::TryRet<u32> {
             let _call_scope =
                 soroban_sdk::testutils::ClientCallScope::enter(&self.env, self.config);
             use soroban_sdk::{FromVal, IntoVal};
@@ -309,13 +298,21 @@ impl<'a> ContractRelativePathClient<'a> {}
 impl ContractRelativePathArgs {}
 #[doc(hidden)]
 #[allow(non_camel_case_types)]
-pub trait __ContractRelativePath_RelativePathTrait_types {
+pub trait __ContractRelativePath_RelativePathTrait_project {
     type Env;
     type u32;
 }
-impl<T: traits::RelativePathTrait> __ContractRelativePath_RelativePathTrait_types for T {
-    type Env = T::__RelativePathTrait_Env;
-    type u32 = T::__RelativePathTrait_u32;
+impl<__T: traits::RelativePathTrait> __ContractRelativePath_RelativePathTrait_project for __T {
+    type Env = __T::__RelativePathTrait_Env;
+    type u32 = __T::__RelativePathTrait_u32;
+}
+#[doc(hidden)]
+#[allow(non_snake_case)]
+pub mod __ContractRelativePath_RelativePathTrait_types {
+    #[allow(non_camel_case_types)]
+    pub type Env = <super::ContractRelativePath as super::__ContractRelativePath_RelativePathTrait_project>::Env;
+    #[allow(non_camel_case_types)]
+    pub type u32 = <super::ContractRelativePath as super::__ContractRelativePath_RelativePathTrait_project>::u32;
 }
 #[doc(hidden)]
 #[allow(non_snake_case)]
@@ -386,7 +383,7 @@ impl ContractRelativePath {
         inputs: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[]),
         outputs: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(
             &[
-                <<ContractRelativePath as __ContractRelativePath_RelativePathTrait_types>::u32 as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
+                <__ContractRelativePath_RelativePathTrait_types::u32 as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
             ],
         ),
     });
@@ -415,7 +412,7 @@ impl<'a> ContractRelativePathClient<'a> {
     /// Use [`Self::try_relative_path_method`] to receive errors instead of panicking.
     pub fn relative_path_method(
         &self,
-    ) -> <<ContractRelativePath as __ContractRelativePath_RelativePathTrait_types>::u32 as soroban_sdk::client::Output>::Ok{
+    ) -> soroban_sdk::client::Ret<__ContractRelativePath_RelativePathTrait_types::u32> {
         let _call_scope = soroban_sdk::testutils::ClientCallScope::enter(&self.env, self.config);
         use soroban_sdk::{FromVal, IntoVal};
         let res = self.env.invoke_contract(
@@ -432,19 +429,7 @@ impl<'a> ContractRelativePathClient<'a> {
     /// Returns an error if the invoked contract returns an error or panics. A panic in the invoked contract is caught and returned as an error rather than panicking the caller.
     pub fn try_relative_path_method(
         &self,
-    ) -> Result<
-        Result<
-            <<ContractRelativePath as __ContractRelativePath_RelativePathTrait_types>::u32 as soroban_sdk::client::Output>::Ok,
-            <<<ContractRelativePath as __ContractRelativePath_RelativePathTrait_types>::u32 as soroban_sdk::client::Output>::Ok as soroban_sdk::TryFromVal<
-                soroban_sdk::Env,
-                soroban_sdk::Val,
-            >>::Error,
-        >,
-        Result<
-            <<ContractRelativePath as __ContractRelativePath_RelativePathTrait_types>::u32 as soroban_sdk::client::Output>::Err,
-            soroban_sdk::InvokeError,
-        >,
-    >{
+    ) -> soroban_sdk::client::TryRet<__ContractRelativePath_RelativePathTrait_types::u32> {
         let _call_scope = soroban_sdk::testutils::ClientCallScope::enter(&self.env, self.config);
         use soroban_sdk::{FromVal, IntoVal};
         let res = self.env.try_invoke_contract(

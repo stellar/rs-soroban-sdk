@@ -187,7 +187,7 @@ impl<'a> ContractClient<'a> {
     pub fn void_fn(
         &self,
         _void_arg: impl soroban_sdk::client::Arg<()>,
-    ) -> <() as soroban_sdk::client::Output>::Ok {
+    ) -> soroban_sdk::client::Ret<()> {
         use core::ops::Not;
         use soroban_sdk::{FromVal, IntoVal};
         let res = self.env.invoke_contract(
@@ -214,16 +214,7 @@ impl<'a> ContractClient<'a> {
     pub fn try_void_fn(
         &self,
         _void_arg: impl soroban_sdk::client::Arg<()>,
-    ) -> Result<
-        Result<
-            <() as soroban_sdk::client::Output>::Ok,
-            <<() as soroban_sdk::client::Output>::Ok as soroban_sdk::TryFromVal<
-                soroban_sdk::Env,
-                soroban_sdk::Val,
-            >>::Error,
-        >,
-        Result<<() as soroban_sdk::client::Output>::Err, soroban_sdk::InvokeError>,
-    > {
+    ) -> soroban_sdk::client::TryRet<()> {
         use soroban_sdk::{FromVal, IntoVal};
         let res = self.env.try_invoke_contract(
             &self.address,
@@ -251,7 +242,7 @@ impl<'a> ContractClient<'a> {
     pub fn tuple1(
         &self,
         arg: impl soroban_sdk::client::Arg<(u32,)>,
-    ) -> <(u32,) as soroban_sdk::client::Output>::Ok {
+    ) -> soroban_sdk::client::Ret<(u32,)> {
         use core::ops::Not;
         use soroban_sdk::{FromVal, IntoVal};
         let res = self.env.invoke_contract(
@@ -278,16 +269,7 @@ impl<'a> ContractClient<'a> {
     pub fn try_tuple1(
         &self,
         arg: impl soroban_sdk::client::Arg<(u32,)>,
-    ) -> Result<
-        Result<
-            <(u32,) as soroban_sdk::client::Output>::Ok,
-            <<(u32,) as soroban_sdk::client::Output>::Ok as soroban_sdk::TryFromVal<
-                soroban_sdk::Env,
-                soroban_sdk::Val,
-            >>::Error,
-        >,
-        Result<<(u32,) as soroban_sdk::client::Output>::Err, soroban_sdk::InvokeError>,
-    > {
+    ) -> soroban_sdk::client::TryRet<(u32,)> {
         use soroban_sdk::{FromVal, IntoVal};
         let res = self.env.try_invoke_contract(
             &self.address,
@@ -315,7 +297,7 @@ impl<'a> ContractClient<'a> {
     pub fn tuple2(
         &self,
         arg: impl soroban_sdk::client::Arg<(u32, i64)>,
-    ) -> <(u32, i64) as soroban_sdk::client::Output>::Ok {
+    ) -> soroban_sdk::client::Ret<(u32, i64)> {
         use core::ops::Not;
         use soroban_sdk::{FromVal, IntoVal};
         let res = self.env.invoke_contract(
@@ -342,16 +324,7 @@ impl<'a> ContractClient<'a> {
     pub fn try_tuple2(
         &self,
         arg: impl soroban_sdk::client::Arg<(u32, i64)>,
-    ) -> Result<
-        Result<
-            <(u32, i64) as soroban_sdk::client::Output>::Ok,
-            <<(u32, i64) as soroban_sdk::client::Output>::Ok as soroban_sdk::TryFromVal<
-                soroban_sdk::Env,
-                soroban_sdk::Val,
-            >>::Error,
-        >,
-        Result<<(u32, i64) as soroban_sdk::client::Output>::Err, soroban_sdk::InvokeError>,
-    > {
+    ) -> soroban_sdk::client::TryRet<(u32, i64)> {
         use soroban_sdk::{FromVal, IntoVal};
         let res = self.env.try_invoke_contract(
             &self.address,

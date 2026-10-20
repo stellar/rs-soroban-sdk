@@ -19,8 +19,8 @@ use crate::{
         bn254::{Bn254Fp, Bn254Fr, Bn254G1Affine, Bn254G2Affine},
         Hash,
     },
-    Address, Bytes, BytesN, Duration, Env, Error, IntoVal, Map, MuxedAddress, String, Symbol,
-    Timepoint, Val, Vec, I256, U256,
+    Address, Bytes, BytesN, Duration, Env, Error, IntoVal, InvokeError, Map, MuxedAddress, String,
+    Symbol, Timepoint, TryFromVal, Val, Vec, I256, U256,
 };
 
 /// Marker for [`Type::Arg`] that a client takes the argument as a reference
@@ -98,6 +98,25 @@ impl<T: Type, E> Output for Result<T, E> {
     type Ok = T::Ret;
     type Err = E;
 }
+
+/// The value a client function returns for a contract function that returns
+/// `T`.
+///
+/// It is the [`Type::Ret`] of `T`, or of the ok type if `T` is a `Result`. For
+/// example, a client returns `BytesN<32>` for a contract function that returns
+/// `Hash<32>`.
+pub type Ret<T> = <T as Output>::Ok;
+
+/// The value a client's `try_` function returns for a contract function that
+/// returns `T`.
+///
+/// The outer result is an error if the invocation fails, holding the contract's
+/// error if it returned one, or the [`InvokeError`] otherwise. The inner result
+/// is an error if the returned value cannot be converted into [`Ret<T>`].
+pub type TryRet<T> = Result<
+    Result<Ret<T>, <Ret<T> as TryFromVal<Env, Val>>::Error>,
+    Result<<T as Output>::Err, InvokeError>,
+>;
 
 macro_rules! impl_client_type {
     ($($t:ty),* $(,)?) => {

@@ -448,7 +448,7 @@ impl<'a> ContractClient<'a> {
         &self,
         p: impl soroban_sdk::client::Arg<Bls12381G1Affine>,
         s: impl soroban_sdk::client::Arg<Bls12381Fr>,
-    ) -> <Bls12381G1Affine as soroban_sdk::client::Output>::Ok {
+    ) -> soroban_sdk::client::Ret<Bls12381G1Affine> {
         use core::ops::Not;
         use soroban_sdk::{FromVal, IntoVal};
         let res = self.env.invoke_contract(
@@ -477,16 +477,7 @@ impl<'a> ContractClient<'a> {
         &self,
         p: impl soroban_sdk::client::Arg<Bls12381G1Affine>,
         s: impl soroban_sdk::client::Arg<Bls12381Fr>,
-    ) -> Result<
-        Result<
-            <Bls12381G1Affine as soroban_sdk::client::Output>::Ok,
-            <<Bls12381G1Affine as soroban_sdk::client::Output>::Ok as soroban_sdk::TryFromVal<
-                soroban_sdk::Env,
-                soroban_sdk::Val,
-            >>::Error,
-        >,
-        Result<<Bls12381G1Affine as soroban_sdk::client::Output>::Err, soroban_sdk::InvokeError>,
-    > {
+    ) -> soroban_sdk::client::TryRet<Bls12381G1Affine> {
         use soroban_sdk::{FromVal, IntoVal};
         let res = self.env.try_invoke_contract(
             &self.address,
@@ -516,7 +507,7 @@ impl<'a> ContractClient<'a> {
         &self,
         p: impl soroban_sdk::client::Arg<Bls12381G2Affine>,
         s: impl soroban_sdk::client::Arg<Bls12381Fr>,
-    ) -> <Bls12381G2Affine as soroban_sdk::client::Output>::Ok {
+    ) -> soroban_sdk::client::Ret<Bls12381G2Affine> {
         use core::ops::Not;
         use soroban_sdk::{FromVal, IntoVal};
         let res = self.env.invoke_contract(
@@ -545,16 +536,7 @@ impl<'a> ContractClient<'a> {
         &self,
         p: impl soroban_sdk::client::Arg<Bls12381G2Affine>,
         s: impl soroban_sdk::client::Arg<Bls12381Fr>,
-    ) -> Result<
-        Result<
-            <Bls12381G2Affine as soroban_sdk::client::Output>::Ok,
-            <<Bls12381G2Affine as soroban_sdk::client::Output>::Ok as soroban_sdk::TryFromVal<
-                soroban_sdk::Env,
-                soroban_sdk::Val,
-            >>::Error,
-        >,
-        Result<<Bls12381G2Affine as soroban_sdk::client::Output>::Err, soroban_sdk::InvokeError>,
-    > {
+    ) -> soroban_sdk::client::TryRet<Bls12381G2Affine> {
         use soroban_sdk::{FromVal, IntoVal};
         let res = self.env.try_invoke_contract(
             &self.address,
@@ -583,7 +565,7 @@ impl<'a> ContractClient<'a> {
     pub fn dummy_verify(
         &self,
         proof: impl soroban_sdk::client::Arg<DummyProof>,
-    ) -> <bool as soroban_sdk::client::Output>::Ok {
+    ) -> soroban_sdk::client::Ret<bool> {
         use core::ops::Not;
         use soroban_sdk::{FromVal, IntoVal};
         let res = self.env.invoke_contract(
@@ -606,16 +588,7 @@ impl<'a> ContractClient<'a> {
     pub fn try_dummy_verify(
         &self,
         proof: impl soroban_sdk::client::Arg<DummyProof>,
-    ) -> Result<
-        Result<
-            <bool as soroban_sdk::client::Output>::Ok,
-            <<bool as soroban_sdk::client::Output>::Ok as soroban_sdk::TryFromVal<
-                soroban_sdk::Env,
-                soroban_sdk::Val,
-            >>::Error,
-        >,
-        Result<<bool as soroban_sdk::client::Output>::Err, soroban_sdk::InvokeError>,
-    > {
+    ) -> soroban_sdk::client::TryRet<bool> {
         use soroban_sdk::{FromVal, IntoVal};
         let res = self.env.try_invoke_contract(
             &self.address,
@@ -640,7 +613,7 @@ impl<'a> ContractClient<'a> {
         &self,
         values: impl soroban_sdk::client::Arg<Vec<Bls12381Fr>>,
         index: impl soroban_sdk::client::Arg<u32>,
-    ) -> <Bls12381Fr as soroban_sdk::client::Output>::Ok {
+    ) -> soroban_sdk::client::Ret<Bls12381Fr> {
         use core::ops::Not;
         use soroban_sdk::{FromVal, IntoVal};
         let res = self.env.invoke_contract(
@@ -667,16 +640,7 @@ impl<'a> ContractClient<'a> {
         &self,
         values: impl soroban_sdk::client::Arg<Vec<Bls12381Fr>>,
         index: impl soroban_sdk::client::Arg<u32>,
-    ) -> Result<
-        Result<
-            <Bls12381Fr as soroban_sdk::client::Output>::Ok,
-            <<Bls12381Fr as soroban_sdk::client::Output>::Ok as soroban_sdk::TryFromVal<
-                soroban_sdk::Env,
-                soroban_sdk::Val,
-            >>::Error,
-        >,
-        Result<<Bls12381Fr as soroban_sdk::client::Output>::Err, soroban_sdk::InvokeError>,
-    > {
+    ) -> soroban_sdk::client::TryRet<Bls12381Fr> {
         use soroban_sdk::{FromVal, IntoVal};
         let res = self.env.try_invoke_contract(
             &self.address,

@@ -8,11 +8,12 @@ use crate::{
     syn_ext::{self, ident_to_type},
 };
 use darling::{ast::NestedMeta, Error, FromMeta};
+use itertools::MultiUnzip;
 use proc_macro2::{Ident, TokenStream as TokenStream2};
 use quote::{format_ident, quote};
 use syn::{
-    ext::IdentExt as _, visit_mut::VisitMut, Attribute, FnArg, LitStr, Path, ReturnType, Type,
-    TypePath,
+    ext::IdentExt as _, visit_mut::VisitMut, Attribute, FnArg, GenericArgument, LitStr, Path,
+    PathArguments, ReturnType, Type, TypePath,
 };
 
 // See soroban-sdk/docs/contracttrait.md for documentation on how this works.
@@ -95,15 +96,16 @@ fn derive(args: &Args) -> Result<TokenStream2, Error> {
     }
 
     // Replace the placeholders for types captured where the trait is defined
-    // with those types, named through a trait local to the impl that projects
-    // them from the hidden supertraits that capture them.
-    let local_ident = format_ident!(
-        "__{}_{}_types",
-        args.impl_ident.unraw(),
-        args.trait_name.as_deref().unwrap_or_default()
-    );
+    // with those types, named through aliases in a module local to the impl.
+    // Each alias projects the type through a trait local to the impl from the
+    // hidden supertraits that capture it. The aliases have the names of the
+    // types, so that docs show the type's name rather than the projection.
+    let impl_name = args.impl_ident.unraw();
+    let trait_name = args.trait_name.as_deref().unwrap_or_default();
+    let local_ident = format_ident!("__{impl_name}_{trait_name}_project");
+    let types_ident = format_ident!("__{impl_name}_{trait_name}_types");
     let mut replacer = ReplaceTypePlaceholders {
-        local: quote!(<#impl_ty as #local_ident>),
+        local: quote!(#types_ident),
         names: Vec::new(),
     };
     let mut fns = fns;
@@ -120,16 +122,34 @@ fn derive(args: &Args) -> Result<TokenStream2, Error> {
 
     let mut output = quote! {};
     if let (Some(trait_name), false) = (&args.trait_name, replacer.names.is_empty()) {
-        let names = &replacer.names;
-        let captures = names.iter().map(|n| type_capture_ident(trait_name, n));
+        let impl_ident = &args.impl_ident;
+        let projections = replacer.names.iter().map(|(name, params, args)| {
+            let capture = type_capture_ident(trait_name, name);
+            let args = quote!(#(#args),*);
+            (
+                quote!(type #name<#(#params),*>;),
+                quote!(type #name<#(#params),*> = __T::#capture<#args>;),
+                quote! {
+                    #[allow(non_camel_case_types)]
+                    pub type #name<#(#params),*> =
+                        <super::#impl_ident as super::#local_ident>::#name<#args>;
+                },
+            )
+        });
+        let (decls, impls, aliases): (Vec<_>, Vec<_>, Vec<_>) = projections.multiunzip();
         output.extend(quote! {
             #[doc(hidden)]
             #[allow(non_camel_case_types)]
             pub trait #local_ident {
-                #(type #names;)*
+                #(#decls)*
             }
-            impl<T: #trait_ident> #local_ident for T {
-                #(type #names = T::#captures;)*
+            impl<__T: #trait_ident> #local_ident for __T {
+                #(#impls)*
+            }
+            #[doc(hidden)]
+            #[allow(non_snake_case)]
+            pub mod #types_ident {
+                #(#aliases)*
             }
         });
     }
@@ -176,11 +196,12 @@ fn cfg_condition(attrs: &[Attribute]) -> Result<Option<TokenStream2>, Error> {
     })
 }
 
-/// Replaces placeholder paths, e.g. `__contracttrait_type::Address`, with the
-/// associated type of the same name on the local trait, collecting the names.
+/// Replaces placeholder paths, e.g. `__contracttrait_type::Vec<..>`, with the
+/// alias of the same name in the local module, collecting the names and the
+/// parameters each alias needs for the arguments it is given.
 struct ReplaceTypePlaceholders {
     local: TokenStream2,
-    names: Vec<Ident>,
+    names: Vec<(Ident, Vec<TokenStream2>, Vec<Ident>)>,
 }
 
 impl VisitMut for ReplaceTypePlaceholders {
@@ -188,13 +209,30 @@ impl VisitMut for ReplaceTypePlaceholders {
         if let Type::Path(TypePath { qself: None, path }) = ty {
             if let [root, name] = path.segments.iter().collect::<Vec<_>>()[..] {
                 if root.ident == TYPE_PLACEHOLDER {
-                    let name = name.ident.clone();
-                    if !self.names.contains(&name) {
-                        self.names.push(name.clone());
+                    let ident = name.ident.clone();
+                    if !self.names.iter().any(|(n, _, _)| *n == ident) {
+                        let (params, args) = match &name.arguments {
+                            PathArguments::AngleBracketed(args) => args
+                                .args
+                                .iter()
+                                .enumerate()
+                                .map(|(i, a)| match a {
+                                    GenericArgument::Type(_) => {
+                                        let p = format_ident!("T{i}");
+                                        (quote!(#p), p)
+                                    }
+                                    _ => {
+                                        let p = format_ident!("N{i}");
+                                        (quote!(const #p: usize), p)
+                                    }
+                                })
+                                .unzip(),
+                            _ => (Vec::new(), Vec::new()),
+                        };
+                        self.names.push((ident, params, args));
                     }
                     let local = &self.local;
-                    *ty = syn::parse_quote!(#local::#name);
-                    return;
+                    path.segments[0] = syn::parse_quote!(#local);
                 }
             }
         }

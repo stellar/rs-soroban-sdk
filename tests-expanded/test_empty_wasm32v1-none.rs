@@ -74,7 +74,7 @@ impl<'a> ContractClient<'a> {
     /// Panics if the invoked contract returns an error or panics.
     ///
     /// Use [`Self::try_empty`] to receive errors instead of panicking.
-    pub fn empty(&self) -> <() as soroban_sdk::client::Output>::Ok {
+    pub fn empty(&self) -> soroban_sdk::client::Ret<()> {
         use core::ops::Not;
         use soroban_sdk::{FromVal, IntoVal};
         let res = self.env.invoke_contract(
@@ -93,18 +93,7 @@ impl<'a> ContractClient<'a> {
     /// # Errors
     ///
     /// Returns an error if the invoked contract returns an error or panics. A panic in the invoked contract is caught and returned as an error rather than panicking the caller.
-    pub fn try_empty(
-        &self,
-    ) -> Result<
-        Result<
-            <() as soroban_sdk::client::Output>::Ok,
-            <<() as soroban_sdk::client::Output>::Ok as soroban_sdk::TryFromVal<
-                soroban_sdk::Env,
-                soroban_sdk::Val,
-            >>::Error,
-        >,
-        Result<<() as soroban_sdk::client::Output>::Err, soroban_sdk::InvokeError>,
-    > {
+    pub fn try_empty(&self) -> soroban_sdk::client::TryRet<()> {
         use soroban_sdk::{FromVal, IntoVal};
         let res = self.env.try_invoke_contract(
             &self.address,

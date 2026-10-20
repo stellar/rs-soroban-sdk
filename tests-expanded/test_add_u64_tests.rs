@@ -678,7 +678,7 @@ impl<'a> ContractClient<'a> {
         &self,
         a: impl soroban_sdk::client::Arg<u64>,
         b: impl soroban_sdk::client::Arg<u64>,
-    ) -> <u64 as soroban_sdk::client::Output>::Ok {
+    ) -> soroban_sdk::client::Ret<u64> {
         let _call_scope = soroban_sdk::testutils::ClientCallScope::enter(&self.env, self.config);
         use soroban_sdk::{FromVal, IntoVal};
         let res = self.env.invoke_contract(
@@ -707,16 +707,7 @@ impl<'a> ContractClient<'a> {
         &self,
         a: impl soroban_sdk::client::Arg<u64>,
         b: impl soroban_sdk::client::Arg<u64>,
-    ) -> Result<
-        Result<
-            <u64 as soroban_sdk::client::Output>::Ok,
-            <<u64 as soroban_sdk::client::Output>::Ok as soroban_sdk::TryFromVal<
-                soroban_sdk::Env,
-                soroban_sdk::Val,
-            >>::Error,
-        >,
-        Result<<u64 as soroban_sdk::client::Output>::Err, soroban_sdk::InvokeError>,
-    > {
+    ) -> soroban_sdk::client::TryRet<u64> {
         let _call_scope = soroban_sdk::testutils::ClientCallScope::enter(&self.env, self.config);
         use soroban_sdk::{FromVal, IntoVal};
         let res = self.env.try_invoke_contract(
@@ -747,7 +738,7 @@ impl<'a> ContractClient<'a> {
         &self,
         a: impl soroban_sdk::client::Arg<u64>,
         b: impl soroban_sdk::client::Arg<u64>,
-    ) -> <Result<u64, Error> as soroban_sdk::client::Output>::Ok {
+    ) -> soroban_sdk::client::Ret<Result<u64, Error>> {
         let _call_scope = soroban_sdk::testutils::ClientCallScope::enter(&self.env, self.config);
         use soroban_sdk::{FromVal, IntoVal};
         let res = self.env.invoke_contract(
@@ -776,16 +767,7 @@ impl<'a> ContractClient<'a> {
         &self,
         a: impl soroban_sdk::client::Arg<u64>,
         b: impl soroban_sdk::client::Arg<u64>,
-    ) -> Result<
-        Result<
-            <Result<u64, Error> as soroban_sdk::client::Output>::Ok,
-            <<Result<u64, Error> as soroban_sdk::client::Output>::Ok as soroban_sdk::TryFromVal<
-                soroban_sdk::Env,
-                soroban_sdk::Val,
-            >>::Error,
-        >,
-        Result<<Result<u64, Error> as soroban_sdk::client::Output>::Err, soroban_sdk::InvokeError>,
-    > {
+    ) -> soroban_sdk::client::TryRet<Result<u64, Error>> {
         let _call_scope = soroban_sdk::testutils::ClientCallScope::enter(&self.env, self.config);
         use soroban_sdk::{FromVal, IntoVal};
         let res = self.env.try_invoke_contract(
@@ -816,7 +798,7 @@ impl<'a> ContractClient<'a> {
         &self,
         a: impl soroban_sdk::client::Arg<u64>,
         b: impl soroban_sdk::client::Arg<u64>,
-    ) -> <Result<u64, MyError> as soroban_sdk::client::Output>::Ok {
+    ) -> soroban_sdk::client::Ret<Result<u64, MyError>> {
         let _call_scope = soroban_sdk::testutils::ClientCallScope::enter(&self.env, self.config);
         use soroban_sdk::{FromVal, IntoVal};
         let res = self.env.invoke_contract(
@@ -841,22 +823,7 @@ impl<'a> ContractClient<'a> {
         &self,
         a: impl soroban_sdk::client::Arg<u64>,
         b: impl soroban_sdk::client::Arg<u64>,
-    ) -> Result<
-        Result<
-            <Result<u64, MyError> as soroban_sdk::client::Output>::Ok,
-            <<Result<
-                u64,
-                MyError,
-            > as soroban_sdk::client::Output>::Ok as soroban_sdk::TryFromVal<
-                soroban_sdk::Env,
-                soroban_sdk::Val,
-            >>::Error,
-        >,
-        Result<
-            <Result<u64, MyError> as soroban_sdk::client::Output>::Err,
-            soroban_sdk::InvokeError,
-        >,
-    >{
+    ) -> soroban_sdk::client::TryRet<Result<u64, MyError>> {
         let _call_scope = soroban_sdk::testutils::ClientCallScope::enter(&self.env, self.config);
         use soroban_sdk::{FromVal, IntoVal};
         let res = self.env.try_invoke_contract(

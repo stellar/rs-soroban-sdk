@@ -102,7 +102,7 @@ impl<'a> ContractClient<'a> {
         i1: impl soroban_sdk::client::Arg<u32>,
         i2: impl soroban_sdk::client::Arg<u32>,
         i3: impl soroban_sdk::client::Arg<u32>,
-    ) -> <u32 as soroban_sdk::client::Output>::Ok {
+    ) -> soroban_sdk::client::Ret<u32> {
         use core::ops::Not;
         use soroban_sdk::{FromVal, IntoVal};
         let res = self.env.invoke_contract(
@@ -133,16 +133,7 @@ impl<'a> ContractClient<'a> {
         i1: impl soroban_sdk::client::Arg<u32>,
         i2: impl soroban_sdk::client::Arg<u32>,
         i3: impl soroban_sdk::client::Arg<u32>,
-    ) -> Result<
-        Result<
-            <u32 as soroban_sdk::client::Output>::Ok,
-            <<u32 as soroban_sdk::client::Output>::Ok as soroban_sdk::TryFromVal<
-                soroban_sdk::Env,
-                soroban_sdk::Val,
-            >>::Error,
-        >,
-        Result<<u32 as soroban_sdk::client::Output>::Err, soroban_sdk::InvokeError>,
-    > {
+    ) -> soroban_sdk::client::TryRet<u32> {
         use soroban_sdk::{FromVal, IntoVal};
         let res = self.env.try_invoke_contract(
             &self.address,

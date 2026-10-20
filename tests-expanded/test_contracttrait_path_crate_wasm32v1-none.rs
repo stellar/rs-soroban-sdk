@@ -13,7 +13,7 @@ pub mod traits {
     pub trait __CratePathTrait_Env {
         type __CratePathTrait_Env;
     }
-    impl<T: ?Sized> __CratePathTrait_Env for T {
+    impl<__T: ?Sized> __CratePathTrait_Env for __T {
         type __CratePathTrait_Env = Env;
     }
     #[doc(hidden)]
@@ -21,7 +21,7 @@ pub mod traits {
     pub trait __CratePathTrait_u32 {
         type __CratePathTrait_u32;
     }
-    impl<T: ?Sized> __CratePathTrait_u32 for T {
+    impl<__T: ?Sized> __CratePathTrait_u32 for __T {
         type __CratePathTrait_u32 = u32;
     }
     /// Macro for `contractimpl`ing the default functions of the trait that are not overridden.
@@ -56,7 +56,7 @@ pub mod traits {
         /// Panics if the invoked contract returns an error or panics.
         ///
         /// Use [`Self::try_crate_path_method`] to receive errors instead of panicking.
-        pub fn crate_path_method(&self) -> <u32 as soroban_sdk::client::Output>::Ok {
+        pub fn crate_path_method(&self) -> soroban_sdk::client::Ret<u32> {
             use core::ops::Not;
             use soroban_sdk::{FromVal, IntoVal};
             let res = self.env.invoke_contract(
@@ -71,18 +71,7 @@ pub mod traits {
         /// # Errors
         ///
         /// Returns an error if the invoked contract returns an error or panics. A panic in the invoked contract is caught and returned as an error rather than panicking the caller.
-        pub fn try_crate_path_method(
-            &self,
-        ) -> Result<
-            Result<
-                <u32 as soroban_sdk::client::Output>::Ok,
-                <<u32 as soroban_sdk::client::Output>::Ok as soroban_sdk::TryFromVal<
-                    soroban_sdk::Env,
-                    soroban_sdk::Val,
-                >>::Error,
-            >,
-            Result<<u32 as soroban_sdk::client::Output>::Err, soroban_sdk::InvokeError>,
-        > {
+        pub fn try_crate_path_method(&self) -> soroban_sdk::client::TryRet<u32> {
             use soroban_sdk::{FromVal, IntoVal};
             let res = self.env.try_invoke_contract(
                 &self.address,
@@ -158,13 +147,23 @@ impl<'a> ContractCratePathClient<'a> {}
 impl ContractCratePathArgs {}
 #[doc(hidden)]
 #[allow(non_camel_case_types)]
-pub trait __ContractCratePath_CratePathTrait_types {
+pub trait __ContractCratePath_CratePathTrait_project {
     type Env;
     type u32;
 }
-impl<T: crate::traits::CratePathTrait> __ContractCratePath_CratePathTrait_types for T {
-    type Env = T::__CratePathTrait_Env;
-    type u32 = T::__CratePathTrait_u32;
+impl<__T: crate::traits::CratePathTrait> __ContractCratePath_CratePathTrait_project for __T {
+    type Env = __T::__CratePathTrait_Env;
+    type u32 = __T::__CratePathTrait_u32;
+}
+#[doc(hidden)]
+#[allow(non_snake_case)]
+pub mod __ContractCratePath_CratePathTrait_types {
+    #[allow(non_camel_case_types)]
+    pub type Env =
+        <super::ContractCratePath as super::__ContractCratePath_CratePathTrait_project>::Env;
+    #[allow(non_camel_case_types)]
+    pub type u32 =
+        <super::ContractCratePath as super::__ContractCratePath_CratePathTrait_project>::u32;
 }
 #[doc(hidden)]
 #[allow(non_snake_case)]
@@ -215,7 +214,7 @@ impl ContractCratePath {
         inputs: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[]),
         outputs: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(
             &[
-                <<ContractCratePath as __ContractCratePath_CratePathTrait_types>::u32 as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
+                <__ContractCratePath_CratePathTrait_types::u32 as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
             ],
         ),
     });
@@ -244,7 +243,7 @@ impl<'a> ContractCratePathClient<'a> {
     /// Use [`Self::try_crate_path_method`] to receive errors instead of panicking.
     pub fn crate_path_method(
         &self,
-    ) -> <<ContractCratePath as __ContractCratePath_CratePathTrait_types>::u32 as soroban_sdk::client::Output>::Ok{
+    ) -> soroban_sdk::client::Ret<__ContractCratePath_CratePathTrait_types::u32> {
         use core::ops::Not;
         use soroban_sdk::{FromVal, IntoVal};
         let res = self.env.invoke_contract(
@@ -261,19 +260,7 @@ impl<'a> ContractCratePathClient<'a> {
     /// Returns an error if the invoked contract returns an error or panics. A panic in the invoked contract is caught and returned as an error rather than panicking the caller.
     pub fn try_crate_path_method(
         &self,
-    ) -> Result<
-        Result<
-            <<ContractCratePath as __ContractCratePath_CratePathTrait_types>::u32 as soroban_sdk::client::Output>::Ok,
-            <<<ContractCratePath as __ContractCratePath_CratePathTrait_types>::u32 as soroban_sdk::client::Output>::Ok as soroban_sdk::TryFromVal<
-                soroban_sdk::Env,
-                soroban_sdk::Val,
-            >>::Error,
-        >,
-        Result<
-            <<ContractCratePath as __ContractCratePath_CratePathTrait_types>::u32 as soroban_sdk::client::Output>::Err,
-            soroban_sdk::InvokeError,
-        >,
-    >{
+    ) -> soroban_sdk::client::TryRet<__ContractCratePath_CratePathTrait_types::u32> {
         use soroban_sdk::{FromVal, IntoVal};
         let res = self.env.try_invoke_contract(
             &self.address,

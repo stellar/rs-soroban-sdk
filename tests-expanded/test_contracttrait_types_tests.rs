@@ -710,7 +710,7 @@ pub mod traits {
     pub trait __TypesTrait_Env {
         type __TypesTrait_Env;
     }
-    impl<T: ?Sized> __TypesTrait_Env for T {
+    impl<__T: ?Sized> __TypesTrait_Env for __T {
         type __TypesTrait_Env = Env;
     }
     #[doc(hidden)]
@@ -718,7 +718,7 @@ pub mod traits {
     pub trait __TypesTrait_u32 {
         type __TypesTrait_u32;
     }
-    impl<T: ?Sized> __TypesTrait_u32 for T {
+    impl<__T: ?Sized> __TypesTrait_u32 for __T {
         type __TypesTrait_u32 = u32;
     }
     #[doc(hidden)]
@@ -726,31 +726,39 @@ pub mod traits {
     pub trait __TypesTrait_Point {
         type __TypesTrait_Point;
     }
-    impl<T: ?Sized> __TypesTrait_Point for T {
+    impl<__T: ?Sized> __TypesTrait_Point for __T {
         type __TypesTrait_Point = Point;
     }
     #[doc(hidden)]
     #[allow(non_camel_case_types)]
     pub trait __TypesTrait_Vec {
-        type __TypesTrait_Vec;
+        type __TypesTrait_Vec<T0>;
     }
-    impl<T: ?Sized> __TypesTrait_Vec for T {
-        type __TypesTrait_Vec = Vec<Point>;
+    impl<__T: ?Sized> __TypesTrait_Vec for __T {
+        type __TypesTrait_Vec<T0> = Vec<T0>;
+    }
+    #[doc(hidden)]
+    #[allow(non_camel_case_types)]
+    pub trait __TypesTrait_Error {
+        type __TypesTrait_Error;
+    }
+    impl<__T: ?Sized> __TypesTrait_Error for __T {
+        type __TypesTrait_Error = Error;
     }
     #[doc(hidden)]
     #[allow(non_camel_case_types)]
     pub trait __TypesTrait_Result {
-        type __TypesTrait_Result;
+        type __TypesTrait_Result<T0, T1>;
     }
-    impl<T: ?Sized> __TypesTrait_Result for T {
-        type __TypesTrait_Result = Result<u32, Error>;
+    impl<__T: ?Sized> __TypesTrait_Result for __T {
+        type __TypesTrait_Result<T0, T1> = Result<T0, T1>;
     }
     #[doc(hidden)]
     #[allow(non_camel_case_types)]
     pub trait __TypesTrait_Address {
         type __TypesTrait_Address;
     }
-    impl<T: ?Sized> __TypesTrait_Address for T {
+    impl<__T: ?Sized> __TypesTrait_Address for __T {
         type __TypesTrait_Address = Address;
     }
     #[doc(hidden)]
@@ -758,7 +766,7 @@ pub mod traits {
     pub trait __TypesTrait_MuxedAddress {
         type __TypesTrait_MuxedAddress;
     }
-    impl<T: ?Sized> __TypesTrait_MuxedAddress for T {
+    impl<__T: ?Sized> __TypesTrait_MuxedAddress for __T {
         type __TypesTrait_MuxedAddress = MuxedAddress;
     }
     #[doc(hidden)]
@@ -766,16 +774,16 @@ pub mod traits {
     pub trait __TypesTrait_Bytes {
         type __TypesTrait_Bytes;
     }
-    impl<T: ?Sized> __TypesTrait_Bytes for T {
+    impl<__T: ?Sized> __TypesTrait_Bytes for __T {
         type __TypesTrait_Bytes = Bytes;
     }
     #[doc(hidden)]
     #[allow(non_camel_case_types)]
     pub trait __TypesTrait_Hash {
-        type __TypesTrait_Hash;
+        type __TypesTrait_Hash<const N0: usize>;
     }
-    impl<T: ?Sized> __TypesTrait_Hash for T {
-        type __TypesTrait_Hash = Hash<32>;
+    impl<__T: ?Sized> __TypesTrait_Hash for __T {
+        type __TypesTrait_Hash<const N0: usize> = Hash<N0>;
     }
     /// Macro for `contractimpl`ing the default functions of the trait that are not overridden.
     pub use __contractimpl_for_types_trait as TypesTrait;
@@ -784,6 +792,7 @@ pub mod traits {
         + __TypesTrait_u32
         + __TypesTrait_Point
         + __TypesTrait_Vec
+        + __TypesTrait_Error
         + __TypesTrait_Result
         + __TypesTrait_Address
         + __TypesTrait_MuxedAddress
@@ -894,7 +903,7 @@ pub mod traits {
             &self,
             x: impl soroban_sdk::client::Arg<u32>,
             y: impl soroban_sdk::client::Arg<u32>,
-        ) -> <Point as soroban_sdk::client::Output>::Ok {
+        ) -> soroban_sdk::client::Ret<Point> {
             let _call_scope =
                 soroban_sdk::testutils::ClientCallScope::enter(&self.env, self.config);
             use soroban_sdk::{FromVal, IntoVal};
@@ -924,16 +933,7 @@ pub mod traits {
             &self,
             x: impl soroban_sdk::client::Arg<u32>,
             y: impl soroban_sdk::client::Arg<u32>,
-        ) -> Result<
-            Result<
-                <Point as soroban_sdk::client::Output>::Ok,
-                <<Point as soroban_sdk::client::Output>::Ok as soroban_sdk::TryFromVal<
-                    soroban_sdk::Env,
-                    soroban_sdk::Val,
-                >>::Error,
-            >,
-            Result<<Point as soroban_sdk::client::Output>::Err, soroban_sdk::InvokeError>,
-        > {
+        ) -> soroban_sdk::client::TryRet<Point> {
             let _call_scope =
                 soroban_sdk::testutils::ClientCallScope::enter(&self.env, self.config);
             use soroban_sdk::{FromVal, IntoVal};
@@ -964,7 +964,7 @@ pub mod traits {
         pub fn points(
             &self,
             p: impl soroban_sdk::client::Arg<Point>,
-        ) -> <Vec<Point> as soroban_sdk::client::Output>::Ok {
+        ) -> soroban_sdk::client::Ret<Vec<Point>> {
             let _call_scope =
                 soroban_sdk::testutils::ClientCallScope::enter(&self.env, self.config);
             use soroban_sdk::{FromVal, IntoVal};
@@ -992,16 +992,7 @@ pub mod traits {
         pub fn try_points(
             &self,
             p: impl soroban_sdk::client::Arg<Point>,
-        ) -> Result<
-            Result<
-                <Vec<Point> as soroban_sdk::client::Output>::Ok,
-                <<Vec<Point> as soroban_sdk::client::Output>::Ok as soroban_sdk::TryFromVal<
-                    soroban_sdk::Env,
-                    soroban_sdk::Val,
-                >>::Error,
-            >,
-            Result<<Vec<Point> as soroban_sdk::client::Output>::Err, soroban_sdk::InvokeError>,
-        > {
+        ) -> soroban_sdk::client::TryRet<Vec<Point>> {
             let _call_scope =
                 soroban_sdk::testutils::ClientCallScope::enter(&self.env, self.config);
             use soroban_sdk::{FromVal, IntoVal};
@@ -1031,7 +1022,7 @@ pub mod traits {
         pub fn even(
             &self,
             v: impl soroban_sdk::client::Arg<u32>,
-        ) -> <Result<u32, Error> as soroban_sdk::client::Output>::Ok {
+        ) -> soroban_sdk::client::Ret<Result<u32, Error>> {
             let _call_scope =
                 soroban_sdk::testutils::ClientCallScope::enter(&self.env, self.config);
             use soroban_sdk::{FromVal, IntoVal};
@@ -1059,22 +1050,7 @@ pub mod traits {
         pub fn try_even(
             &self,
             v: impl soroban_sdk::client::Arg<u32>,
-        ) -> Result<
-            Result<
-                <Result<u32, Error> as soroban_sdk::client::Output>::Ok,
-                <<Result<
-                    u32,
-                    Error,
-                > as soroban_sdk::client::Output>::Ok as soroban_sdk::TryFromVal<
-                    soroban_sdk::Env,
-                    soroban_sdk::Val,
-                >>::Error,
-            >,
-            Result<
-                <Result<u32, Error> as soroban_sdk::client::Output>::Err,
-                soroban_sdk::InvokeError,
-            >,
-        >{
+        ) -> soroban_sdk::client::TryRet<Result<u32, Error>> {
             let _call_scope =
                 soroban_sdk::testutils::ClientCallScope::enter(&self.env, self.config);
             use soroban_sdk::{FromVal, IntoVal};
@@ -1105,7 +1081,7 @@ pub mod traits {
             &self,
             a: impl soroban_sdk::client::Arg<Address>,
             _m: impl soroban_sdk::client::Arg<MuxedAddress>,
-        ) -> <Address as soroban_sdk::client::Output>::Ok {
+        ) -> soroban_sdk::client::Ret<Address> {
             let _call_scope =
                 soroban_sdk::testutils::ClientCallScope::enter(&self.env, self.config);
             use soroban_sdk::{FromVal, IntoVal};
@@ -1137,16 +1113,7 @@ pub mod traits {
             &self,
             a: impl soroban_sdk::client::Arg<Address>,
             _m: impl soroban_sdk::client::Arg<MuxedAddress>,
-        ) -> Result<
-            Result<
-                <Address as soroban_sdk::client::Output>::Ok,
-                <<Address as soroban_sdk::client::Output>::Ok as soroban_sdk::TryFromVal<
-                    soroban_sdk::Env,
-                    soroban_sdk::Val,
-                >>::Error,
-            >,
-            Result<<Address as soroban_sdk::client::Output>::Err, soroban_sdk::InvokeError>,
-        > {
+        ) -> soroban_sdk::client::TryRet<Address> {
             let _call_scope =
                 soroban_sdk::testutils::ClientCallScope::enter(&self.env, self.config);
             use soroban_sdk::{FromVal, IntoVal};
@@ -1179,7 +1146,7 @@ pub mod traits {
         pub fn hash(
             &self,
             b: impl soroban_sdk::client::Arg<Bytes>,
-        ) -> <Hash<32> as soroban_sdk::client::Output>::Ok {
+        ) -> soroban_sdk::client::Ret<Hash<32>> {
             let _call_scope =
                 soroban_sdk::testutils::ClientCallScope::enter(&self.env, self.config);
             use soroban_sdk::{FromVal, IntoVal};
@@ -1207,16 +1174,7 @@ pub mod traits {
         pub fn try_hash(
             &self,
             b: impl soroban_sdk::client::Arg<Bytes>,
-        ) -> Result<
-            Result<
-                <Hash<32> as soroban_sdk::client::Output>::Ok,
-                <<Hash<32> as soroban_sdk::client::Output>::Ok as soroban_sdk::TryFromVal<
-                    soroban_sdk::Env,
-                    soroban_sdk::Val,
-                >>::Error,
-            >,
-            Result<<Hash<32> as soroban_sdk::client::Output>::Err, soroban_sdk::InvokeError>,
-        > {
+        ) -> soroban_sdk::client::TryRet<Hash<32>> {
             let _call_scope =
                 soroban_sdk::testutils::ClientCallScope::enter(&self.env, self.config);
             use soroban_sdk::{FromVal, IntoVal};
@@ -1575,27 +1533,55 @@ impl<'a> ContractClient<'a> {}
 impl ContractArgs {}
 #[doc(hidden)]
 #[allow(non_camel_case_types)]
-pub trait __Contract_TypesTrait_types {
+pub trait __Contract_TypesTrait_project {
     type Env;
     type u32;
     type Point;
-    type Vec;
-    type Result;
+    type Vec<T0>;
+    type Result<T0, T1>;
+    type Error;
     type Address;
     type MuxedAddress;
     type Bytes;
-    type Hash;
+    type Hash<const N0: usize>;
 }
-impl<T: traits::TypesTrait> __Contract_TypesTrait_types for T {
-    type Env = T::__TypesTrait_Env;
-    type u32 = T::__TypesTrait_u32;
-    type Point = T::__TypesTrait_Point;
-    type Vec = T::__TypesTrait_Vec;
-    type Result = T::__TypesTrait_Result;
-    type Address = T::__TypesTrait_Address;
-    type MuxedAddress = T::__TypesTrait_MuxedAddress;
-    type Bytes = T::__TypesTrait_Bytes;
-    type Hash = T::__TypesTrait_Hash;
+impl<__T: traits::TypesTrait> __Contract_TypesTrait_project for __T {
+    type Env = __T::__TypesTrait_Env;
+    type u32 = __T::__TypesTrait_u32;
+    type Point = __T::__TypesTrait_Point;
+    type Vec<T0> = __T::__TypesTrait_Vec<T0>;
+    type Result<T0, T1> = __T::__TypesTrait_Result<T0, T1>;
+    type Error = __T::__TypesTrait_Error;
+    type Address = __T::__TypesTrait_Address;
+    type MuxedAddress = __T::__TypesTrait_MuxedAddress;
+    type Bytes = __T::__TypesTrait_Bytes;
+    type Hash<const N0: usize> = __T::__TypesTrait_Hash<N0>;
+}
+#[doc(hidden)]
+#[allow(non_snake_case)]
+pub mod __Contract_TypesTrait_types {
+    #[allow(non_camel_case_types)]
+    pub type Env = <super::Contract as super::__Contract_TypesTrait_project>::Env;
+    #[allow(non_camel_case_types)]
+    pub type u32 = <super::Contract as super::__Contract_TypesTrait_project>::u32;
+    #[allow(non_camel_case_types)]
+    pub type Point = <super::Contract as super::__Contract_TypesTrait_project>::Point;
+    #[allow(non_camel_case_types)]
+    pub type Vec<T0> = <super::Contract as super::__Contract_TypesTrait_project>::Vec<T0>;
+    #[allow(non_camel_case_types)]
+    pub type Result<T0, T1> =
+        <super::Contract as super::__Contract_TypesTrait_project>::Result<T0, T1>;
+    #[allow(non_camel_case_types)]
+    pub type Error = <super::Contract as super::__Contract_TypesTrait_project>::Error;
+    #[allow(non_camel_case_types)]
+    pub type Address = <super::Contract as super::__Contract_TypesTrait_project>::Address;
+    #[allow(non_camel_case_types)]
+    pub type MuxedAddress = <super::Contract as super::__Contract_TypesTrait_project>::MuxedAddress;
+    #[allow(non_camel_case_types)]
+    pub type Bytes = <super::Contract as super::__Contract_TypesTrait_project>::Bytes;
+    #[allow(non_camel_case_types)]
+    pub type Hash<const N0: usize> =
+        <super::Contract as super::__Contract_TypesTrait_project>::Hash<N0>;
 }
 #[doc(hidden)]
 #[allow(non_snake_case)]
@@ -1881,7 +1867,7 @@ impl Contract {
                     name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(
                         b"x",
                     ),
-                    type_: <<Contract as __Contract_TypesTrait_types>::u32 as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
+                    type_: <__Contract_TypesTrait_types::u32 as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
                 },
                 soroban_sdk::xdr::r#const::ScSpecFunctionInputV0 {
                     doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(
@@ -1890,13 +1876,13 @@ impl Contract {
                     name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(
                         b"y",
                     ),
-                    type_: <<Contract as __Contract_TypesTrait_types>::u32 as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
+                    type_: <__Contract_TypesTrait_types::u32 as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
                 },
             ],
         ),
         outputs: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(
             &[
-                <<Contract as __Contract_TypesTrait_types>::Point as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
+                <__Contract_TypesTrait_types::Point as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
             ],
         ),
     });
@@ -1941,13 +1927,15 @@ impl Contract {
                     name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(
                         b"p",
                     ),
-                    type_: <<Contract as __Contract_TypesTrait_types>::Point as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
+                    type_: <__Contract_TypesTrait_types::Point as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
                 },
             ],
         ),
         outputs: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(
             &[
-                <<Contract as __Contract_TypesTrait_types>::Vec as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
+                <__Contract_TypesTrait_types::Vec<
+                    __Contract_TypesTrait_types::Point,
+                > as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
             ],
         ),
     });
@@ -1992,13 +1980,16 @@ impl Contract {
                     name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(
                         b"v",
                     ),
-                    type_: <<Contract as __Contract_TypesTrait_types>::u32 as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
+                    type_: <__Contract_TypesTrait_types::u32 as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
                 },
             ],
         ),
         outputs: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(
             &[
-                <<Contract as __Contract_TypesTrait_types>::Result as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
+                <__Contract_TypesTrait_types::Result<
+                    __Contract_TypesTrait_types::u32,
+                    __Contract_TypesTrait_types::Error,
+                > as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
             ],
         ),
     });
@@ -2043,7 +2034,7 @@ impl Contract {
                     name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(
                         b"a",
                     ),
-                    type_: <<Contract as __Contract_TypesTrait_types>::Address as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
+                    type_: <__Contract_TypesTrait_types::Address as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
                 },
                 soroban_sdk::xdr::r#const::ScSpecFunctionInputV0 {
                     doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(
@@ -2052,13 +2043,13 @@ impl Contract {
                     name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(
                         b"m",
                     ),
-                    type_: <<Contract as __Contract_TypesTrait_types>::MuxedAddress as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
+                    type_: <__Contract_TypesTrait_types::MuxedAddress as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
                 },
             ],
         ),
         outputs: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(
             &[
-                <<Contract as __Contract_TypesTrait_types>::Address as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
+                <__Contract_TypesTrait_types::Address as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
             ],
         ),
     });
@@ -2103,13 +2094,15 @@ impl Contract {
                     name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(
                         b"b",
                     ),
-                    type_: <<Contract as __Contract_TypesTrait_types>::Bytes as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
+                    type_: <__Contract_TypesTrait_types::Bytes as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
                 },
             ],
         ),
         outputs: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(
             &[
-                <<Contract as __Contract_TypesTrait_types>::Hash as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
+                <__Contract_TypesTrait_types::Hash<
+                    32,
+                > as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
             ],
         ),
     });
@@ -2137,9 +2130,9 @@ impl<'a> ContractClient<'a> {
     /// Use [`Self::try_point`] to receive errors instead of panicking.
     pub fn point(
         &self,
-        x: impl soroban_sdk::client::Arg<<Contract as __Contract_TypesTrait_types>::u32>,
-        y: impl soroban_sdk::client::Arg<<Contract as __Contract_TypesTrait_types>::u32>,
-    ) -> <<Contract as __Contract_TypesTrait_types>::Point as soroban_sdk::client::Output>::Ok {
+        x: impl soroban_sdk::client::Arg<__Contract_TypesTrait_types::u32>,
+        y: impl soroban_sdk::client::Arg<__Contract_TypesTrait_types::u32>,
+    ) -> soroban_sdk::client::Ret<__Contract_TypesTrait_types::Point> {
         let _call_scope = soroban_sdk::testutils::ClientCallScope::enter(&self.env, self.config);
         use soroban_sdk::{FromVal, IntoVal};
         let res = self
@@ -2157,10 +2150,10 @@ impl<'a> ContractClient<'a> {
                     &self.env,
                     [
                         soroban_sdk::client::Arg::<
-                            <Contract as __Contract_TypesTrait_types>::u32,
+                            __Contract_TypesTrait_types::u32,
                         >::into_val_for_client(x, &self.env),
                         soroban_sdk::client::Arg::<
-                            <Contract as __Contract_TypesTrait_types>::u32,
+                            __Contract_TypesTrait_types::u32,
                         >::into_val_for_client(y, &self.env),
                     ],
                 ),
@@ -2174,21 +2167,9 @@ impl<'a> ContractClient<'a> {
     /// Returns an error if the invoked contract returns an error or panics. A panic in the invoked contract is caught and returned as an error rather than panicking the caller.
     pub fn try_point(
         &self,
-        x: impl soroban_sdk::client::Arg<<Contract as __Contract_TypesTrait_types>::u32>,
-        y: impl soroban_sdk::client::Arg<<Contract as __Contract_TypesTrait_types>::u32>,
-    ) -> Result<
-        Result<
-            <<Contract as __Contract_TypesTrait_types>::Point as soroban_sdk::client::Output>::Ok,
-            <<<Contract as __Contract_TypesTrait_types>::Point as soroban_sdk::client::Output>::Ok as soroban_sdk::TryFromVal<
-                soroban_sdk::Env,
-                soroban_sdk::Val,
-            >>::Error,
-        >,
-        Result<
-            <<Contract as __Contract_TypesTrait_types>::Point as soroban_sdk::client::Output>::Err,
-            soroban_sdk::InvokeError,
-        >,
-    >{
+        x: impl soroban_sdk::client::Arg<__Contract_TypesTrait_types::u32>,
+        y: impl soroban_sdk::client::Arg<__Contract_TypesTrait_types::u32>,
+    ) -> soroban_sdk::client::TryRet<__Contract_TypesTrait_types::Point> {
         let _call_scope = soroban_sdk::testutils::ClientCallScope::enter(&self.env, self.config);
         use soroban_sdk::{FromVal, IntoVal};
         let res = self
@@ -2206,10 +2187,10 @@ impl<'a> ContractClient<'a> {
                     &self.env,
                     [
                         soroban_sdk::client::Arg::<
-                            <Contract as __Contract_TypesTrait_types>::u32,
+                            __Contract_TypesTrait_types::u32,
                         >::into_val_for_client(x, &self.env),
                         soroban_sdk::client::Arg::<
-                            <Contract as __Contract_TypesTrait_types>::u32,
+                            __Contract_TypesTrait_types::u32,
                         >::into_val_for_client(y, &self.env),
                     ],
                 ),
@@ -2225,24 +2206,32 @@ impl<'a> ContractClient<'a> {
     /// Use [`Self::try_points`] to receive errors instead of panicking.
     pub fn points(
         &self,
-        p: impl soroban_sdk::client::Arg<<Contract as __Contract_TypesTrait_types>::Point>,
-    ) -> <<Contract as __Contract_TypesTrait_types>::Vec as soroban_sdk::client::Output>::Ok {
+        p: impl soroban_sdk::client::Arg<__Contract_TypesTrait_types::Point>,
+    ) -> soroban_sdk::client::Ret<
+        __Contract_TypesTrait_types::Vec<__Contract_TypesTrait_types::Point>,
+    > {
         let _call_scope = soroban_sdk::testutils::ClientCallScope::enter(&self.env, self.config);
         use soroban_sdk::{FromVal, IntoVal};
-        let res = self.env.invoke_contract(
-            &self.address,
-            &{
-                #[allow(deprecated)]
-                const SYMBOL: soroban_sdk::Symbol = soroban_sdk::Symbol::short("points");
-                SYMBOL
-            },
-            ::soroban_sdk::Vec::from_array(
-                &self.env,
-                [soroban_sdk::client::Arg::<
-                    <Contract as __Contract_TypesTrait_types>::Point,
-                >::into_val_for_client(p, &self.env)],
-            ),
-        );
+        let res = self
+            .env
+            .invoke_contract(
+                &self.address,
+                &{
+                    #[allow(deprecated)]
+                    const SYMBOL: soroban_sdk::Symbol = soroban_sdk::Symbol::short(
+                        "points",
+                    );
+                    SYMBOL
+                },
+                ::soroban_sdk::Vec::from_array(
+                    &self.env,
+                    [
+                        soroban_sdk::client::Arg::<
+                            __Contract_TypesTrait_types::Point,
+                        >::into_val_for_client(p, &self.env),
+                    ],
+                ),
+            );
         res
     }
     /// Call `points` function on the contract.
@@ -2252,38 +2241,32 @@ impl<'a> ContractClient<'a> {
     /// Returns an error if the invoked contract returns an error or panics. A panic in the invoked contract is caught and returned as an error rather than panicking the caller.
     pub fn try_points(
         &self,
-        p: impl soroban_sdk::client::Arg<
-            <Contract as __Contract_TypesTrait_types>::Point,
-        >,
-    ) -> Result<
-        Result<
-            <<Contract as __Contract_TypesTrait_types>::Vec as soroban_sdk::client::Output>::Ok,
-            <<<Contract as __Contract_TypesTrait_types>::Vec as soroban_sdk::client::Output>::Ok as soroban_sdk::TryFromVal<
-                soroban_sdk::Env,
-                soroban_sdk::Val,
-            >>::Error,
-        >,
-        Result<
-            <<Contract as __Contract_TypesTrait_types>::Vec as soroban_sdk::client::Output>::Err,
-            soroban_sdk::InvokeError,
-        >,
-    >{
+        p: impl soroban_sdk::client::Arg<__Contract_TypesTrait_types::Point>,
+    ) -> soroban_sdk::client::TryRet<
+        __Contract_TypesTrait_types::Vec<__Contract_TypesTrait_types::Point>,
+    > {
         let _call_scope = soroban_sdk::testutils::ClientCallScope::enter(&self.env, self.config);
         use soroban_sdk::{FromVal, IntoVal};
-        let res = self.env.try_invoke_contract(
-            &self.address,
-            &{
-                #[allow(deprecated)]
-                const SYMBOL: soroban_sdk::Symbol = soroban_sdk::Symbol::short("points");
-                SYMBOL
-            },
-            ::soroban_sdk::Vec::from_array(
-                &self.env,
-                [soroban_sdk::client::Arg::<
-                    <Contract as __Contract_TypesTrait_types>::Point,
-                >::into_val_for_client(p, &self.env)],
-            ),
-        );
+        let res = self
+            .env
+            .try_invoke_contract(
+                &self.address,
+                &{
+                    #[allow(deprecated)]
+                    const SYMBOL: soroban_sdk::Symbol = soroban_sdk::Symbol::short(
+                        "points",
+                    );
+                    SYMBOL
+                },
+                ::soroban_sdk::Vec::from_array(
+                    &self.env,
+                    [
+                        soroban_sdk::client::Arg::<
+                            __Contract_TypesTrait_types::Point,
+                        >::into_val_for_client(p, &self.env),
+                    ],
+                ),
+            );
         res
     }
     /// Call `even` function on the contract.
@@ -2295,25 +2278,35 @@ impl<'a> ContractClient<'a> {
     /// Use [`Self::try_even`] to receive errors instead of panicking.
     pub fn even(
         &self,
-        v: impl soroban_sdk::client::Arg<<Contract as __Contract_TypesTrait_types>::u32>,
-    ) -> <<Contract as __Contract_TypesTrait_types>::Result as soroban_sdk::client::Output>::Ok
-    {
+        v: impl soroban_sdk::client::Arg<__Contract_TypesTrait_types::u32>,
+    ) -> soroban_sdk::client::Ret<
+        __Contract_TypesTrait_types::Result<
+            __Contract_TypesTrait_types::u32,
+            __Contract_TypesTrait_types::Error,
+        >,
+    > {
         let _call_scope = soroban_sdk::testutils::ClientCallScope::enter(&self.env, self.config);
         use soroban_sdk::{FromVal, IntoVal};
-        let res = self.env.invoke_contract(
-            &self.address,
-            &{
-                #[allow(deprecated)]
-                const SYMBOL: soroban_sdk::Symbol = soroban_sdk::Symbol::short("even");
-                SYMBOL
-            },
-            ::soroban_sdk::Vec::from_array(
-                &self.env,
-                [soroban_sdk::client::Arg::<
-                    <Contract as __Contract_TypesTrait_types>::u32,
-                >::into_val_for_client(v, &self.env)],
-            ),
-        );
+        let res = self
+            .env
+            .invoke_contract(
+                &self.address,
+                &{
+                    #[allow(deprecated)]
+                    const SYMBOL: soroban_sdk::Symbol = soroban_sdk::Symbol::short(
+                        "even",
+                    );
+                    SYMBOL
+                },
+                ::soroban_sdk::Vec::from_array(
+                    &self.env,
+                    [
+                        soroban_sdk::client::Arg::<
+                            __Contract_TypesTrait_types::u32,
+                        >::into_val_for_client(v, &self.env),
+                    ],
+                ),
+            );
         res
     }
     /// Call `even` function on the contract.
@@ -2323,36 +2316,35 @@ impl<'a> ContractClient<'a> {
     /// Returns an error if the invoked contract returns an error or panics. A panic in the invoked contract is caught and returned as an error rather than panicking the caller.
     pub fn try_even(
         &self,
-        v: impl soroban_sdk::client::Arg<<Contract as __Contract_TypesTrait_types>::u32>,
-    ) -> Result<
-        Result<
-            <<Contract as __Contract_TypesTrait_types>::Result as soroban_sdk::client::Output>::Ok,
-            <<<Contract as __Contract_TypesTrait_types>::Result as soroban_sdk::client::Output>::Ok as soroban_sdk::TryFromVal<
-                soroban_sdk::Env,
-                soroban_sdk::Val,
-            >>::Error,
+        v: impl soroban_sdk::client::Arg<__Contract_TypesTrait_types::u32>,
+    ) -> soroban_sdk::client::TryRet<
+        __Contract_TypesTrait_types::Result<
+            __Contract_TypesTrait_types::u32,
+            __Contract_TypesTrait_types::Error,
         >,
-        Result<
-            <<Contract as __Contract_TypesTrait_types>::Result as soroban_sdk::client::Output>::Err,
-            soroban_sdk::InvokeError,
-        >,
-    >{
+    > {
         let _call_scope = soroban_sdk::testutils::ClientCallScope::enter(&self.env, self.config);
         use soroban_sdk::{FromVal, IntoVal};
-        let res = self.env.try_invoke_contract(
-            &self.address,
-            &{
-                #[allow(deprecated)]
-                const SYMBOL: soroban_sdk::Symbol = soroban_sdk::Symbol::short("even");
-                SYMBOL
-            },
-            ::soroban_sdk::Vec::from_array(
-                &self.env,
-                [soroban_sdk::client::Arg::<
-                    <Contract as __Contract_TypesTrait_types>::u32,
-                >::into_val_for_client(v, &self.env)],
-            ),
-        );
+        let res = self
+            .env
+            .try_invoke_contract(
+                &self.address,
+                &{
+                    #[allow(deprecated)]
+                    const SYMBOL: soroban_sdk::Symbol = soroban_sdk::Symbol::short(
+                        "even",
+                    );
+                    SYMBOL
+                },
+                ::soroban_sdk::Vec::from_array(
+                    &self.env,
+                    [
+                        soroban_sdk::client::Arg::<
+                            __Contract_TypesTrait_types::u32,
+                        >::into_val_for_client(v, &self.env),
+                    ],
+                ),
+            );
         res
     }
     /// Call `address` function on the contract.
@@ -2364,28 +2356,30 @@ impl<'a> ContractClient<'a> {
     /// Use [`Self::try_address`] to receive errors instead of panicking.
     pub fn address(
         &self,
-        a: impl soroban_sdk::client::Arg<<Contract as __Contract_TypesTrait_types>::Address>,
-        _m: impl soroban_sdk::client::Arg<<Contract as __Contract_TypesTrait_types>::MuxedAddress>,
-    ) -> <<Contract as __Contract_TypesTrait_types>::Address as soroban_sdk::client::Output>::Ok
-    {
+        a: impl soroban_sdk::client::Arg<__Contract_TypesTrait_types::Address>,
+        _m: impl soroban_sdk::client::Arg<__Contract_TypesTrait_types::MuxedAddress>,
+    ) -> soroban_sdk::client::Ret<__Contract_TypesTrait_types::Address> {
         let _call_scope = soroban_sdk::testutils::ClientCallScope::enter(&self.env, self.config);
         use soroban_sdk::{FromVal, IntoVal};
-        let res =
-            self.env.invoke_contract(
+        let res = self
+            .env
+            .invoke_contract(
                 &self.address,
                 &{
                     #[allow(deprecated)]
-                    const SYMBOL: soroban_sdk::Symbol = soroban_sdk::Symbol::short("address");
+                    const SYMBOL: soroban_sdk::Symbol = soroban_sdk::Symbol::short(
+                        "address",
+                    );
                     SYMBOL
                 },
                 ::soroban_sdk::Vec::from_array(
                     &self.env,
                     [
                         soroban_sdk::client::Arg::<
-                            <Contract as __Contract_TypesTrait_types>::Address,
+                            __Contract_TypesTrait_types::Address,
                         >::into_val_for_client(a, &self.env),
                         soroban_sdk::client::Arg::<
-                            <Contract as __Contract_TypesTrait_types>::MuxedAddress,
+                            __Contract_TypesTrait_types::MuxedAddress,
                         >::into_val_for_client(_m, &self.env),
                     ],
                 ),
@@ -2399,43 +2393,30 @@ impl<'a> ContractClient<'a> {
     /// Returns an error if the invoked contract returns an error or panics. A panic in the invoked contract is caught and returned as an error rather than panicking the caller.
     pub fn try_address(
         &self,
-        a: impl soroban_sdk::client::Arg<
-            <Contract as __Contract_TypesTrait_types>::Address,
-        >,
-        _m: impl soroban_sdk::client::Arg<
-            <Contract as __Contract_TypesTrait_types>::MuxedAddress,
-        >,
-    ) -> Result<
-        Result<
-            <<Contract as __Contract_TypesTrait_types>::Address as soroban_sdk::client::Output>::Ok,
-            <<<Contract as __Contract_TypesTrait_types>::Address as soroban_sdk::client::Output>::Ok as soroban_sdk::TryFromVal<
-                soroban_sdk::Env,
-                soroban_sdk::Val,
-            >>::Error,
-        >,
-        Result<
-            <<Contract as __Contract_TypesTrait_types>::Address as soroban_sdk::client::Output>::Err,
-            soroban_sdk::InvokeError,
-        >,
-    >{
+        a: impl soroban_sdk::client::Arg<__Contract_TypesTrait_types::Address>,
+        _m: impl soroban_sdk::client::Arg<__Contract_TypesTrait_types::MuxedAddress>,
+    ) -> soroban_sdk::client::TryRet<__Contract_TypesTrait_types::Address> {
         let _call_scope = soroban_sdk::testutils::ClientCallScope::enter(&self.env, self.config);
         use soroban_sdk::{FromVal, IntoVal};
-        let res =
-            self.env.try_invoke_contract(
+        let res = self
+            .env
+            .try_invoke_contract(
                 &self.address,
                 &{
                     #[allow(deprecated)]
-                    const SYMBOL: soroban_sdk::Symbol = soroban_sdk::Symbol::short("address");
+                    const SYMBOL: soroban_sdk::Symbol = soroban_sdk::Symbol::short(
+                        "address",
+                    );
                     SYMBOL
                 },
                 ::soroban_sdk::Vec::from_array(
                     &self.env,
                     [
                         soroban_sdk::client::Arg::<
-                            <Contract as __Contract_TypesTrait_types>::Address,
+                            __Contract_TypesTrait_types::Address,
                         >::into_val_for_client(a, &self.env),
                         soroban_sdk::client::Arg::<
-                            <Contract as __Contract_TypesTrait_types>::MuxedAddress,
+                            __Contract_TypesTrait_types::MuxedAddress,
                         >::into_val_for_client(_m, &self.env),
                     ],
                 ),
@@ -2451,24 +2432,30 @@ impl<'a> ContractClient<'a> {
     /// Use [`Self::try_hash`] to receive errors instead of panicking.
     pub fn hash(
         &self,
-        b: impl soroban_sdk::client::Arg<<Contract as __Contract_TypesTrait_types>::Bytes>,
-    ) -> <<Contract as __Contract_TypesTrait_types>::Hash as soroban_sdk::client::Output>::Ok {
+        b: impl soroban_sdk::client::Arg<__Contract_TypesTrait_types::Bytes>,
+    ) -> soroban_sdk::client::Ret<__Contract_TypesTrait_types::Hash<32>> {
         let _call_scope = soroban_sdk::testutils::ClientCallScope::enter(&self.env, self.config);
         use soroban_sdk::{FromVal, IntoVal};
-        let res = self.env.invoke_contract(
-            &self.address,
-            &{
-                #[allow(deprecated)]
-                const SYMBOL: soroban_sdk::Symbol = soroban_sdk::Symbol::short("hash");
-                SYMBOL
-            },
-            ::soroban_sdk::Vec::from_array(
-                &self.env,
-                [soroban_sdk::client::Arg::<
-                    <Contract as __Contract_TypesTrait_types>::Bytes,
-                >::into_val_for_client(b, &self.env)],
-            ),
-        );
+        let res = self
+            .env
+            .invoke_contract(
+                &self.address,
+                &{
+                    #[allow(deprecated)]
+                    const SYMBOL: soroban_sdk::Symbol = soroban_sdk::Symbol::short(
+                        "hash",
+                    );
+                    SYMBOL
+                },
+                ::soroban_sdk::Vec::from_array(
+                    &self.env,
+                    [
+                        soroban_sdk::client::Arg::<
+                            __Contract_TypesTrait_types::Bytes,
+                        >::into_val_for_client(b, &self.env),
+                    ],
+                ),
+            );
         res
     }
     /// Call `hash` function on the contract.
@@ -2478,38 +2465,30 @@ impl<'a> ContractClient<'a> {
     /// Returns an error if the invoked contract returns an error or panics. A panic in the invoked contract is caught and returned as an error rather than panicking the caller.
     pub fn try_hash(
         &self,
-        b: impl soroban_sdk::client::Arg<
-            <Contract as __Contract_TypesTrait_types>::Bytes,
-        >,
-    ) -> Result<
-        Result<
-            <<Contract as __Contract_TypesTrait_types>::Hash as soroban_sdk::client::Output>::Ok,
-            <<<Contract as __Contract_TypesTrait_types>::Hash as soroban_sdk::client::Output>::Ok as soroban_sdk::TryFromVal<
-                soroban_sdk::Env,
-                soroban_sdk::Val,
-            >>::Error,
-        >,
-        Result<
-            <<Contract as __Contract_TypesTrait_types>::Hash as soroban_sdk::client::Output>::Err,
-            soroban_sdk::InvokeError,
-        >,
-    >{
+        b: impl soroban_sdk::client::Arg<__Contract_TypesTrait_types::Bytes>,
+    ) -> soroban_sdk::client::TryRet<__Contract_TypesTrait_types::Hash<32>> {
         let _call_scope = soroban_sdk::testutils::ClientCallScope::enter(&self.env, self.config);
         use soroban_sdk::{FromVal, IntoVal};
-        let res = self.env.try_invoke_contract(
-            &self.address,
-            &{
-                #[allow(deprecated)]
-                const SYMBOL: soroban_sdk::Symbol = soroban_sdk::Symbol::short("hash");
-                SYMBOL
-            },
-            ::soroban_sdk::Vec::from_array(
-                &self.env,
-                [soroban_sdk::client::Arg::<
-                    <Contract as __Contract_TypesTrait_types>::Bytes,
-                >::into_val_for_client(b, &self.env)],
-            ),
-        );
+        let res = self
+            .env
+            .try_invoke_contract(
+                &self.address,
+                &{
+                    #[allow(deprecated)]
+                    const SYMBOL: soroban_sdk::Symbol = soroban_sdk::Symbol::short(
+                        "hash",
+                    );
+                    SYMBOL
+                },
+                ::soroban_sdk::Vec::from_array(
+                    &self.env,
+                    [
+                        soroban_sdk::client::Arg::<
+                            __Contract_TypesTrait_types::Bytes,
+                        >::into_val_for_client(b, &self.env),
+                    ],
+                ),
+            );
         res
     }
 }
@@ -2517,44 +2496,44 @@ impl ContractArgs {
     #[inline(always)]
     #[allow(clippy::unused_unit)]
     pub fn point<'i>(
-        x: &'i <Contract as __Contract_TypesTrait_types>::u32,
-        y: &'i <Contract as __Contract_TypesTrait_types>::u32,
+        x: &'i __Contract_TypesTrait_types::u32,
+        y: &'i __Contract_TypesTrait_types::u32,
     ) -> (
-        &'i <Contract as __Contract_TypesTrait_types>::u32,
-        &'i <Contract as __Contract_TypesTrait_types>::u32,
+        &'i __Contract_TypesTrait_types::u32,
+        &'i __Contract_TypesTrait_types::u32,
     ) {
         (x, y)
     }
     #[inline(always)]
     #[allow(clippy::unused_unit)]
     pub fn points<'i>(
-        p: &'i <Contract as __Contract_TypesTrait_types>::Point,
-    ) -> (&'i <Contract as __Contract_TypesTrait_types>::Point,) {
+        p: &'i __Contract_TypesTrait_types::Point,
+    ) -> (&'i __Contract_TypesTrait_types::Point,) {
         (p,)
     }
     #[inline(always)]
     #[allow(clippy::unused_unit)]
     pub fn even<'i>(
-        v: &'i <Contract as __Contract_TypesTrait_types>::u32,
-    ) -> (&'i <Contract as __Contract_TypesTrait_types>::u32,) {
+        v: &'i __Contract_TypesTrait_types::u32,
+    ) -> (&'i __Contract_TypesTrait_types::u32,) {
         (v,)
     }
     #[inline(always)]
     #[allow(clippy::unused_unit)]
     pub fn address<'i>(
-        a: &'i <Contract as __Contract_TypesTrait_types>::Address,
-        _m: &'i <Contract as __Contract_TypesTrait_types>::MuxedAddress,
+        a: &'i __Contract_TypesTrait_types::Address,
+        _m: &'i __Contract_TypesTrait_types::MuxedAddress,
     ) -> (
-        &'i <Contract as __Contract_TypesTrait_types>::Address,
-        &'i <Contract as __Contract_TypesTrait_types>::MuxedAddress,
+        &'i __Contract_TypesTrait_types::Address,
+        &'i __Contract_TypesTrait_types::MuxedAddress,
     ) {
         (a, _m)
     }
     #[inline(always)]
     #[allow(clippy::unused_unit)]
     pub fn hash<'i>(
-        b: &'i <Contract as __Contract_TypesTrait_types>::Bytes,
-    ) -> (&'i <Contract as __Contract_TypesTrait_types>::Bytes,) {
+        b: &'i __Contract_TypesTrait_types::Bytes,
+    ) -> (&'i __Contract_TypesTrait_types::Bytes,) {
         (b,)
     }
 }
@@ -2747,7 +2726,7 @@ impl<'a> ContractClient<'a> {
     pub fn hash_direct(
         &self,
         b: impl soroban_sdk::client::Arg<Bytes>,
-    ) -> <Hash<32> as soroban_sdk::client::Output>::Ok {
+    ) -> soroban_sdk::client::Ret<Hash<32>> {
         let _call_scope = soroban_sdk::testutils::ClientCallScope::enter(&self.env, self.config);
         use soroban_sdk::{FromVal, IntoVal};
         let res = self.env.invoke_contract(
@@ -2770,16 +2749,7 @@ impl<'a> ContractClient<'a> {
     pub fn try_hash_direct(
         &self,
         b: impl soroban_sdk::client::Arg<Bytes>,
-    ) -> Result<
-        Result<
-            <Hash<32> as soroban_sdk::client::Output>::Ok,
-            <<Hash<32> as soroban_sdk::client::Output>::Ok as soroban_sdk::TryFromVal<
-                soroban_sdk::Env,
-                soroban_sdk::Val,
-            >>::Error,
-        >,
-        Result<<Hash<32> as soroban_sdk::client::Output>::Err, soroban_sdk::InvokeError>,
-    > {
+    ) -> soroban_sdk::client::TryRet<Hash<32>> {
         let _call_scope = soroban_sdk::testutils::ClientCallScope::enter(&self.env, self.config);
         use soroban_sdk::{FromVal, IntoVal};
         let res = self.env.try_invoke_contract(
@@ -2804,7 +2774,7 @@ impl<'a> ContractClient<'a> {
     pub fn muxed_direct(
         &self,
         m: impl soroban_sdk::client::Arg<MuxedAddress>,
-    ) -> <MuxedAddress as soroban_sdk::client::Output>::Ok {
+    ) -> soroban_sdk::client::Ret<MuxedAddress> {
         let _call_scope = soroban_sdk::testutils::ClientCallScope::enter(&self.env, self.config);
         use soroban_sdk::{FromVal, IntoVal};
         let res = self.env.invoke_contract(
@@ -2825,16 +2795,7 @@ impl<'a> ContractClient<'a> {
     pub fn try_muxed_direct(
         &self,
         m: impl soroban_sdk::client::Arg<MuxedAddress>,
-    ) -> Result<
-        Result<
-            <MuxedAddress as soroban_sdk::client::Output>::Ok,
-            <<MuxedAddress as soroban_sdk::client::Output>::Ok as soroban_sdk::TryFromVal<
-                soroban_sdk::Env,
-                soroban_sdk::Val,
-            >>::Error,
-        >,
-        Result<<MuxedAddress as soroban_sdk::client::Output>::Err, soroban_sdk::InvokeError>,
-    > {
+    ) -> soroban_sdk::client::TryRet<MuxedAddress> {
         let _call_scope = soroban_sdk::testutils::ClientCallScope::enter(&self.env, self.config);
         use soroban_sdk::{FromVal, IntoVal};
         let res = self.env.try_invoke_contract(

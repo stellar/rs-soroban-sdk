@@ -352,7 +352,7 @@ impl<'a> ContractClient<'a> {
     pub fn get_data(
         &self,
         key: impl soroban_sdk::client::Arg<DataKey>,
-    ) -> <Option<i64> as soroban_sdk::client::Output>::Ok {
+    ) -> soroban_sdk::client::Ret<Option<i64>> {
         use core::ops::Not;
         use soroban_sdk::{FromVal, IntoVal};
         let res = self.env.invoke_contract(
@@ -379,16 +379,7 @@ impl<'a> ContractClient<'a> {
     pub fn try_get_data(
         &self,
         key: impl soroban_sdk::client::Arg<DataKey>,
-    ) -> Result<
-        Result<
-            <Option<i64> as soroban_sdk::client::Output>::Ok,
-            <<Option<i64> as soroban_sdk::client::Output>::Ok as soroban_sdk::TryFromVal<
-                soroban_sdk::Env,
-                soroban_sdk::Val,
-            >>::Error,
-        >,
-        Result<<Option<i64> as soroban_sdk::client::Output>::Err, soroban_sdk::InvokeError>,
-    > {
+    ) -> soroban_sdk::client::TryRet<Option<i64>> {
         use soroban_sdk::{FromVal, IntoVal};
         let res = self.env.try_invoke_contract(
             &self.address,
