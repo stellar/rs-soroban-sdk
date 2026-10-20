@@ -73,7 +73,7 @@ impl soroban_sdk::SpecTypeDef for StructA {
             ),
         });
 }
-impl soroban_sdk::ContractClientReturn for StructA {
+impl soroban_sdk::client::Type for StructA {
     type Output = Self;
     type Ok = Self;
     type Err = soroban_sdk::Error;
@@ -551,7 +551,7 @@ impl soroban_sdk::SpecTypeDef for StructB {
             ),
         });
 }
-impl soroban_sdk::ContractClientReturn for StructB {
+impl soroban_sdk::client::Type for StructB {
     type Output = Self;
     type Ok = Self;
     type Err = soroban_sdk::Error;
@@ -1029,7 +1029,7 @@ impl soroban_sdk::SpecTypeDef for StructC {
             ),
         });
 }
-impl soroban_sdk::ContractClientReturn for StructC {
+impl soroban_sdk::client::Type for StructC {
     type Output = Self;
     type Ok = Self;
     type Err = soroban_sdk::Error;
@@ -1503,7 +1503,7 @@ impl soroban_sdk::SpecTypeDef for StructTupleA {
             ),
         });
 }
-impl soroban_sdk::ContractClientReturn for StructTupleA {
+impl soroban_sdk::client::Type for StructTupleA {
     type Output = Self;
     type Ok = Self;
     type Err = soroban_sdk::Error;
@@ -1933,7 +1933,7 @@ impl soroban_sdk::SpecTypeDef for StructTupleB {
             ),
         });
 }
-impl soroban_sdk::ContractClientReturn for StructTupleB {
+impl soroban_sdk::client::Type for StructTupleB {
     type Output = Self;
     type Ok = Self;
     type Err = soroban_sdk::Error;
@@ -2364,7 +2364,7 @@ impl soroban_sdk::SpecTypeDef for StructTupleC {
             ),
         });
 }
-impl soroban_sdk::ContractClientReturn for StructTupleC {
+impl soroban_sdk::client::Type for StructTupleC {
     type Output = Self;
     type Ok = Self;
     type Err = soroban_sdk::Error;
@@ -2806,7 +2806,7 @@ impl soroban_sdk::SpecTypeDef for EnumA {
             ),
         });
 }
-impl soroban_sdk::ContractClientReturn for EnumA {
+impl soroban_sdk::client::Type for EnumA {
     type Output = Self;
     type Ok = Self;
     type Err = soroban_sdk::Error;
@@ -3346,7 +3346,7 @@ impl soroban_sdk::SpecTypeDef for EnumB {
             ),
         });
 }
-impl soroban_sdk::ContractClientReturn for EnumB {
+impl soroban_sdk::client::Type for EnumB {
     type Output = Self;
     type Ok = Self;
     type Err = soroban_sdk::Error;
@@ -4015,7 +4015,7 @@ impl soroban_sdk::SpecTypeDef for EnumC {
             ),
         });
 }
-impl soroban_sdk::ContractClientReturn for EnumC {
+impl soroban_sdk::client::Type for EnumC {
     type Output = Self;
     type Ok = Self;
     type Err = soroban_sdk::Error;
@@ -4634,7 +4634,7 @@ impl soroban_sdk::SpecTypeDef for EnumIntA {
             ),
         });
 }
-impl soroban_sdk::ContractClientReturn for EnumIntA {
+impl soroban_sdk::client::Type for EnumIntA {
     type Output = Self;
     type Ok = Self;
     type Err = soroban_sdk::Error;
@@ -5038,7 +5038,7 @@ impl soroban_sdk::SpecTypeDef for EnumIntB {
             ),
         });
 }
-impl soroban_sdk::ContractClientReturn for EnumIntB {
+impl soroban_sdk::client::Type for EnumIntB {
     type Output = Self;
     type Ok = Self;
     type Err = soroban_sdk::Error;
@@ -5442,7 +5442,7 @@ impl soroban_sdk::SpecTypeDef for EnumIntC {
             ),
         });
 }
-impl soroban_sdk::ContractClientReturn for EnumIntC {
+impl soroban_sdk::client::Type for EnumIntC {
     type Output = Self;
     type Ok = Self;
     type Err = soroban_sdk::Error;
@@ -5846,7 +5846,7 @@ impl soroban_sdk::SpecTypeDef for ErrorA {
             ),
         });
 }
-impl soroban_sdk::ContractClientReturn for ErrorA {
+impl soroban_sdk::client::Type for ErrorA {
     type Output = Self;
     type Ok = Self;
     type Err = soroban_sdk::Error;
@@ -6082,7 +6082,7 @@ impl soroban_sdk::SpecTypeDef for ErrorB {
             ),
         });
 }
-impl soroban_sdk::ContractClientReturn for ErrorB {
+impl soroban_sdk::client::Type for ErrorB {
     type Output = Self;
     type Ok = Self;
     type Err = soroban_sdk::Error;
@@ -6318,7 +6318,7 @@ impl soroban_sdk::SpecTypeDef for ErrorC {
             ),
         });
 }
-impl soroban_sdk::ContractClientReturn for ErrorC {
+impl soroban_sdk::client::Type for ErrorC {
     type Output = Self;
     type Ok = Self;
     type Err = soroban_sdk::Error;

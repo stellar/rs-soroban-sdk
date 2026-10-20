@@ -37,7 +37,7 @@ impl soroban_sdk::SpecTypeDef for Enum {
             ),
         });
 }
-impl soroban_sdk::ContractClientReturn for Enum {
+impl soroban_sdk::client::Type for Enum {
     type Output = Self;
     type Ok = Self;
     type Err = soroban_sdk::Error;

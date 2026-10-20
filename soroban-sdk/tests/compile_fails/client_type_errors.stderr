@@ -1,16 +1,16 @@
 error[E0277]: `NotAReturnType` cannot be used as a contract function return type
-  --> tests/compile_fails/contract_client_return_errors.rs:27:1
+  --> tests/compile_fails/client_type_errors.rs:27:1
    |
 27 | #[contractimpl]
    | ^^^^^^^^^^^^^^^ not a contract function return type
    |
-help: the trait `soroban_sdk::ContractClientReturn` is not implemented for `NotAReturnType`
-  --> tests/compile_fails/contract_client_return_errors.rs:11:1
+help: the trait `soroban_sdk::client::Type` is not implemented for `NotAReturnType`
+  --> tests/compile_fails/client_type_errors.rs:11:1
    |
 11 | pub struct NotAReturnType;
    | ^^^^^^^^^^^^^^^^^^^^^^^^^
    = note: contract function return types must be types supported by the contract spec, such as types marked `#[contracttype]`
-   = help: the following other types implement trait `soroban_sdk::ContractClientReturn`:
+   = help: the following other types implement trait `soroban_sdk::client::Type`:
              ()
              (T0,)
              (T0, T1)

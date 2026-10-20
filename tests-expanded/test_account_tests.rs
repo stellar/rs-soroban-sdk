@@ -76,7 +76,7 @@ impl soroban_sdk::SpecTypeDef for Error {
             ),
         });
 }
-impl soroban_sdk::ContractClientReturn for Error {
+impl soroban_sdk::client::Type for Error {
     type Output = Self;
     type Ok = Self;
     type Err = soroban_sdk::Error;

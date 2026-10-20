@@ -9,7 +9,7 @@ use syn::{
 use crate::{
     doc::docs_from_attrs,
     shaking,
-    spec::{const_view_string, contract_client_return_gen, spec_anchor_impl, spec_type_def_gen},
+    spec::{client_type_gen, const_view_string, spec_anchor_impl, spec_type_def_gen},
 };
 
 pub fn derive_type_error_enum_int(
@@ -78,7 +78,7 @@ pub fn derive_type_error_enum_int(
     // Generated code spec. The spec entry is rendered as the equivalent
     // const::ScSpecEntry, which the contract crate encodes to XDR at compile time.
     let mut spec_type_def = spec_type_def_gen(path, enum_ident, None, None, None);
-    spec_type_def.extend(contract_client_return_gen(path, enum_ident));
+    spec_type_def.extend(client_type_gen(path, enum_ident));
     let spec_gen = {
         let doc = const_view_string(path, &spec.doc);
         let lib = const_view_string(path, &spec.lib);

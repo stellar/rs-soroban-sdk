@@ -1218,9 +1218,8 @@ mod try_from_val_for_contract_fn;
 #[allow(deprecated)]
 pub use try_from_val_for_contract_fn::{TryFromValForCheckAuthPayload, TryFromValForContractFn};
 
-mod contract_client_return;
 #[doc(hidden)]
-pub use contract_client_return::ContractClientReturn;
+pub mod client;
 
 mod into_val_for_contract_fn;
 #[doc(hidden)]

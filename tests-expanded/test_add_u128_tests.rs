@@ -170,7 +170,7 @@ impl<'a> ContractClient<'a> {
     /// Panics if the invoked contract returns an error or panics.
     ///
     /// Use [`Self::try_add`] to receive errors instead of panicking.
-    pub fn add(&self, a: &u128, b: &u128) -> <u128 as soroban_sdk::ContractClientReturn>::Ok {
+    pub fn add(&self, a: &u128, b: &u128) -> <u128 as soroban_sdk::client::Type>::Ok {
         let _call_scope = soroban_sdk::testutils::ClientCallScope::enter(&self.env, self.config);
         use soroban_sdk::{FromVal, IntoVal};
         let res = self.env.invoke_contract(
@@ -198,13 +198,13 @@ impl<'a> ContractClient<'a> {
         b: &u128,
     ) -> Result<
         Result<
-            <u128 as soroban_sdk::ContractClientReturn>::Ok,
-            <<u128 as soroban_sdk::ContractClientReturn>::Ok as soroban_sdk::TryFromVal<
+            <u128 as soroban_sdk::client::Type>::Ok,
+            <<u128 as soroban_sdk::client::Type>::Ok as soroban_sdk::TryFromVal<
                 soroban_sdk::Env,
                 soroban_sdk::Val,
             >>::Error,
         >,
-        Result<<u128 as soroban_sdk::ContractClientReturn>::Err, soroban_sdk::InvokeError>,
+        Result<<u128 as soroban_sdk::client::Type>::Err, soroban_sdk::InvokeError>,
     > {
         let _call_scope = soroban_sdk::testutils::ClientCallScope::enter(&self.env, self.config);
         use soroban_sdk::{FromVal, IntoVal};

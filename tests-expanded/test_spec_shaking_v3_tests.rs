@@ -191,7 +191,7 @@ impl soroban_sdk::SpecTypeDef for UsedParamStruct {
             ),
         });
 }
-impl soroban_sdk::ContractClientReturn for UsedParamStruct {
+impl soroban_sdk::client::Type for UsedParamStruct {
     type Output = Self;
     type Ok = Self;
     type Err = soroban_sdk::Error;
@@ -691,7 +691,7 @@ impl soroban_sdk::SpecTypeDef for UsedReturnEnum {
             ),
         });
 }
-impl soroban_sdk::ContractClientReturn for UsedReturnEnum {
+impl soroban_sdk::client::Type for UsedReturnEnum {
     type Output = Self;
     type Ok = Self;
     type Err = soroban_sdk::Error;
@@ -1269,7 +1269,7 @@ impl soroban_sdk::SpecTypeDef for UsedParamIntEnum {
             ),
         });
 }
-impl soroban_sdk::ContractClientReturn for UsedParamIntEnum {
+impl soroban_sdk::client::Type for UsedParamIntEnum {
     type Output = Self;
     type Ok = Self;
     type Err = soroban_sdk::Error;
@@ -1657,7 +1657,7 @@ impl soroban_sdk::SpecTypeDef for UsedErrorEnum {
             ),
         });
 }
-impl soroban_sdk::ContractClientReturn for UsedErrorEnum {
+impl soroban_sdk::client::Type for UsedErrorEnum {
     type Output = Self;
     type Ok = Self;
     type Err = soroban_sdk::Error;
@@ -1878,7 +1878,7 @@ impl soroban_sdk::SpecTypeDef for UsedPanicErrorEnum {
             ),
         });
 }
-impl soroban_sdk::ContractClientReturn for UsedPanicErrorEnum {
+impl soroban_sdk::client::Type for UsedPanicErrorEnum {
     type Output = Self;
     type Ok = Self;
     type Err = soroban_sdk::Error;
@@ -2088,7 +2088,7 @@ impl soroban_sdk::SpecTypeDef for UsedAssertErrorEnum {
             ),
         });
 }
-impl soroban_sdk::ContractClientReturn for UsedAssertErrorEnum {
+impl soroban_sdk::client::Type for UsedAssertErrorEnum {
     type Output = Self;
     type Ok = Self;
     type Err = soroban_sdk::Error;
@@ -2305,7 +2305,7 @@ impl soroban_sdk::SpecTypeDef for UsedNestedInStruct {
             ),
         });
 }
-impl soroban_sdk::ContractClientReturn for UsedNestedInStruct {
+impl soroban_sdk::client::Type for UsedNestedInStruct {
     type Output = Self;
     type Ok = Self;
     type Err = soroban_sdk::Error;
@@ -2727,7 +2727,7 @@ impl soroban_sdk::SpecTypeDef for UsedVecElement {
             ),
         });
 }
-impl soroban_sdk::ContractClientReturn for UsedVecElement {
+impl soroban_sdk::client::Type for UsedVecElement {
     type Output = Self;
     type Ok = Self;
     type Err = soroban_sdk::Error;
@@ -3154,7 +3154,7 @@ impl soroban_sdk::SpecTypeDef for UsedMapKey {
             ),
         });
 }
-impl soroban_sdk::ContractClientReturn for UsedMapKey {
+impl soroban_sdk::client::Type for UsedMapKey {
     type Output = Self;
     type Ok = Self;
     type Err = soroban_sdk::Error;
@@ -3532,7 +3532,7 @@ impl soroban_sdk::SpecTypeDef for UsedMapVal {
             ),
         });
 }
-impl soroban_sdk::ContractClientReturn for UsedMapVal {
+impl soroban_sdk::client::Type for UsedMapVal {
     type Output = Self;
     type Ok = Self;
     type Err = soroban_sdk::Error;
@@ -3952,7 +3952,7 @@ impl soroban_sdk::SpecTypeDef for UsedOptionElement {
             ),
         });
 }
-impl soroban_sdk::ContractClientReturn for UsedOptionElement {
+impl soroban_sdk::client::Type for UsedOptionElement {
     type Output = Self;
     type Ok = Self;
     type Err = soroban_sdk::Error;
@@ -4372,7 +4372,7 @@ impl soroban_sdk::SpecTypeDef for UsedResultOk {
             ),
         });
 }
-impl soroban_sdk::ContractClientReturn for UsedResultOk {
+impl soroban_sdk::client::Type for UsedResultOk {
     type Output = Self;
     type Ok = Self;
     type Err = soroban_sdk::Error;
@@ -4943,7 +4943,7 @@ impl soroban_sdk::SpecTypeDef for UsedEventTopicType {
             ),
         });
 }
-impl soroban_sdk::ContractClientReturn for UsedEventTopicType {
+impl soroban_sdk::client::Type for UsedEventTopicType {
     type Output = Self;
     type Ok = Self;
     type Err = soroban_sdk::Error;
@@ -5486,7 +5486,7 @@ impl soroban_sdk::SpecTypeDef for UsedEventDataType {
             ),
         });
 }
-impl soroban_sdk::ContractClientReturn for UsedEventDataType {
+impl soroban_sdk::client::Type for UsedEventDataType {
     type Output = Self;
     type Ok = Self;
     type Err = soroban_sdk::Error;
@@ -6116,7 +6116,7 @@ impl soroban_sdk::SpecTypeDef for UsedEventTopicOuter {
             ),
         });
 }
-impl soroban_sdk::ContractClientReturn for UsedEventTopicOuter {
+impl soroban_sdk::client::Type for UsedEventTopicOuter {
     type Output = Self;
     type Ok = Self;
     type Err = soroban_sdk::Error;
@@ -6548,7 +6548,7 @@ impl soroban_sdk::SpecTypeDef for UsedEventTopicInner {
             ),
         });
 }
-impl soroban_sdk::ContractClientReturn for UsedEventTopicInner {
+impl soroban_sdk::client::Type for UsedEventTopicInner {
     type Output = Self;
     type Ok = Self;
     type Err = soroban_sdk::Error;
@@ -7126,7 +7126,7 @@ impl soroban_sdk::SpecTypeDef for UsedEventDataOuter {
             ),
         });
 }
-impl soroban_sdk::ContractClientReturn for UsedEventDataOuter {
+impl soroban_sdk::client::Type for UsedEventDataOuter {
     type Output = Self;
     type Ok = Self;
     type Err = soroban_sdk::Error;
@@ -7556,7 +7556,7 @@ impl soroban_sdk::SpecTypeDef for UsedEventDataInner {
             ),
         });
 }
-impl soroban_sdk::ContractClientReturn for UsedEventDataInner {
+impl soroban_sdk::client::Type for UsedEventDataInner {
     type Output = Self;
     type Ok = Self;
     type Err = soroban_sdk::Error;
@@ -8134,7 +8134,7 @@ impl soroban_sdk::SpecTypeDef for UsedRefTopicType {
             ),
         });
 }
-impl soroban_sdk::ContractClientReturn for UsedRefTopicType {
+impl soroban_sdk::client::Type for UsedRefTopicType {
     type Output = Self;
     type Ok = Self;
     type Err = soroban_sdk::Error;
@@ -8520,7 +8520,7 @@ impl soroban_sdk::SpecTypeDef for UsedRefDataType {
             ),
         });
 }
-impl soroban_sdk::ContractClientReturn for UsedRefDataType {
+impl soroban_sdk::client::Type for UsedRefDataType {
     type Output = Self;
     type Ok = Self;
     type Err = soroban_sdk::Error;
@@ -8945,7 +8945,7 @@ impl soroban_sdk::SpecTypeDef for UsedRefDataInner {
             ),
         });
 }
-impl soroban_sdk::ContractClientReturn for UsedRefDataInner {
+impl soroban_sdk::client::Type for UsedRefDataInner {
     type Output = Self;
     type Ok = Self;
     type Err = soroban_sdk::Error;
@@ -9519,7 +9519,7 @@ impl soroban_sdk::SpecTypeDef for UsedPublishEventDataType {
             ),
         });
 }
-impl soroban_sdk::ContractClientReturn for UsedPublishEventDataType {
+impl soroban_sdk::client::Type for UsedPublishEventDataType {
     type Output = Self;
     type Ok = Self;
     type Err = soroban_sdk::Error;
@@ -10083,7 +10083,7 @@ impl soroban_sdk::SpecTypeDef for UsedTraitPublishDataType {
             ),
         });
 }
-impl soroban_sdk::ContractClientReturn for UsedTraitPublishDataType {
+impl soroban_sdk::client::Type for UsedTraitPublishDataType {
     type Output = Self;
     type Ok = Self;
     type Err = soroban_sdk::Error;
@@ -10642,7 +10642,7 @@ impl soroban_sdk::SpecTypeDef for UsedTupleElement {
             ),
         });
 }
-impl soroban_sdk::ContractClientReturn for UsedTupleElement {
+impl soroban_sdk::client::Type for UsedTupleElement {
     type Output = Self;
     type Ok = Self;
     type Err = soroban_sdk::Error;
@@ -11067,7 +11067,7 @@ impl soroban_sdk::SpecTypeDef for UsedTupleReturnElement {
             ),
         });
 }
-impl soroban_sdk::ContractClientReturn for UsedTupleReturnElement {
+impl soroban_sdk::client::Type for UsedTupleReturnElement {
     type Output = Self;
     type Ok = Self;
     type Err = soroban_sdk::Error;
@@ -11496,7 +11496,7 @@ impl soroban_sdk::SpecTypeDef for UsedVecInnerVecElement {
             ),
         });
 }
-impl soroban_sdk::ContractClientReturn for UsedVecInnerVecElement {
+impl soroban_sdk::client::Type for UsedVecInnerVecElement {
     type Output = Self;
     type Ok = Self;
     type Err = soroban_sdk::Error;
@@ -11925,7 +11925,7 @@ impl soroban_sdk::SpecTypeDef for UsedVecInnerElement {
             ),
         });
 }
-impl soroban_sdk::ContractClientReturn for UsedVecInnerElement {
+impl soroban_sdk::client::Type for UsedVecInnerElement {
     type Output = Self;
     type Ok = Self;
     type Err = soroban_sdk::Error;
@@ -12364,7 +12364,7 @@ impl soroban_sdk::SpecTypeDef for UsedVecElementNested {
             ),
         });
 }
-impl soroban_sdk::ContractClientReturn for UsedVecElementNested {
+impl soroban_sdk::client::Type for UsedVecElementNested {
     type Output = Self;
     type Ok = Self;
     type Err = soroban_sdk::Error;
@@ -12923,7 +12923,7 @@ impl soroban_sdk::SpecTypeDef for UsedNonPubStruct {
             ),
         });
 }
-impl soroban_sdk::ContractClientReturn for UsedNonPubStruct {
+impl soroban_sdk::client::Type for UsedNonPubStruct {
     type Output = Self;
     type Ok = Self;
     type Err = soroban_sdk::Error;
@@ -13341,7 +13341,7 @@ impl soroban_sdk::SpecTypeDef for UsedNonPubError {
             ),
         });
 }
-impl soroban_sdk::ContractClientReturn for UsedNonPubError {
+impl soroban_sdk::client::Type for UsedNonPubError {
     type Output = Self;
     type Ok = Self;
     type Err = soroban_sdk::Error;
@@ -13556,7 +13556,7 @@ impl soroban_sdk::SpecTypeDef for UsedRecursiveRoot {
             ),
         });
 }
-impl soroban_sdk::ContractClientReturn for UsedRecursiveRoot {
+impl soroban_sdk::client::Type for UsedRecursiveRoot {
     type Output = Self;
     type Ok = Self;
     type Err = soroban_sdk::Error;
@@ -14003,7 +14003,7 @@ impl soroban_sdk::SpecTypeDef for UsedRecursiveNode {
             ),
         });
 }
-impl soroban_sdk::ContractClientReturn for UsedRecursiveNode {
+impl soroban_sdk::client::Type for UsedRecursiveNode {
     type Output = Self;
     type Ok = Self;
     type Err = soroban_sdk::Error;
@@ -14593,7 +14593,7 @@ impl soroban_sdk::SpecTypeDef for UsedRecursiveLeaf {
             ),
         });
 }
-impl soroban_sdk::ContractClientReturn for UsedRecursiveLeaf {
+impl soroban_sdk::client::Type for UsedRecursiveLeaf {
     type Output = Self;
     type Ok = Self;
     type Err = soroban_sdk::Error;
@@ -15019,7 +15019,7 @@ impl soroban_sdk::SpecTypeDef for UsedLeaf {
             ),
         });
 }
-impl soroban_sdk::ContractClientReturn for UsedLeaf {
+impl soroban_sdk::client::Type for UsedLeaf {
     type Output = Self;
     type Ok = Self;
     type Err = soroban_sdk::Error;
@@ -15441,7 +15441,7 @@ impl soroban_sdk::SpecTypeDef for UsedSelfRef {
             ),
         });
 }
-impl soroban_sdk::ContractClientReturn for UsedSelfRef {
+impl soroban_sdk::client::Type for UsedSelfRef {
     type Output = Self;
     type Ok = Self;
     type Err = soroban_sdk::Error;
@@ -15895,7 +15895,7 @@ mod wasm_imported {
         /// Panics if the invoked contract returns an error or panics.
         ///
         /// Use [`Self::try_fn_enum_a`] to receive errors instead of panicking.
-        pub fn fn_enum_a(&self) -> <EnumA as soroban_sdk::ContractClientReturn>::Ok {
+        pub fn fn_enum_a(&self) -> <EnumA as soroban_sdk::client::Type>::Ok {
             let _call_scope =
                 soroban_sdk::testutils::ClientCallScope::enter(&self.env, self.config);
             use soroban_sdk::{FromVal, IntoVal};
@@ -15919,13 +15919,13 @@ mod wasm_imported {
             &self,
         ) -> Result<
             Result<
-                <EnumA as soroban_sdk::ContractClientReturn>::Ok,
-                <<EnumA as soroban_sdk::ContractClientReturn>::Ok as soroban_sdk::TryFromVal<
+                <EnumA as soroban_sdk::client::Type>::Ok,
+                <<EnumA as soroban_sdk::client::Type>::Ok as soroban_sdk::TryFromVal<
                     soroban_sdk::Env,
                     soroban_sdk::Val,
                 >>::Error,
             >,
-            Result<<EnumA as soroban_sdk::ContractClientReturn>::Err, soroban_sdk::InvokeError>,
+            Result<<EnumA as soroban_sdk::client::Type>::Err, soroban_sdk::InvokeError>,
         > {
             let _call_scope =
                 soroban_sdk::testutils::ClientCallScope::enter(&self.env, self.config);
@@ -15951,7 +15951,7 @@ mod wasm_imported {
         pub fn fn_error_a(
             &self,
             input: &u32,
-        ) -> <Result<u32, ErrorA> as soroban_sdk::ContractClientReturn>::Ok {
+        ) -> <Result<u32, ErrorA> as soroban_sdk::client::Type>::Ok {
             let _call_scope =
                 soroban_sdk::testutils::ClientCallScope::enter(&self.env, self.config);
             use soroban_sdk::{FromVal, IntoVal};
@@ -15972,17 +15972,17 @@ mod wasm_imported {
             input: &u32,
         ) -> Result<
             Result<
-                <Result<u32, ErrorA> as soroban_sdk::ContractClientReturn>::Ok,
+                <Result<u32, ErrorA> as soroban_sdk::client::Type>::Ok,
                 <<Result<
                     u32,
                     ErrorA,
-                > as soroban_sdk::ContractClientReturn>::Ok as soroban_sdk::TryFromVal<
+                > as soroban_sdk::client::Type>::Ok as soroban_sdk::TryFromVal<
                     soroban_sdk::Env,
                     soroban_sdk::Val,
                 >>::Error,
             >,
             Result<
-                <Result<u32, ErrorA> as soroban_sdk::ContractClientReturn>::Err,
+                <Result<u32, ErrorA> as soroban_sdk::client::Type>::Err,
                 soroban_sdk::InvokeError,
             >,
         >{
@@ -16093,7 +16093,7 @@ mod wasm_imported {
             &self,
             f1: &u32,
             f2: &bool,
-        ) -> <StructA as soroban_sdk::ContractClientReturn>::Ok {
+        ) -> <StructA as soroban_sdk::client::Type>::Ok {
             let _call_scope =
                 soroban_sdk::testutils::ClientCallScope::enter(&self.env, self.config);
             use soroban_sdk::{FromVal, IntoVal};
@@ -16118,13 +16118,13 @@ mod wasm_imported {
             f2: &bool,
         ) -> Result<
             Result<
-                <StructA as soroban_sdk::ContractClientReturn>::Ok,
-                <<StructA as soroban_sdk::ContractClientReturn>::Ok as soroban_sdk::TryFromVal<
+                <StructA as soroban_sdk::client::Type>::Ok,
+                <<StructA as soroban_sdk::client::Type>::Ok as soroban_sdk::TryFromVal<
                     soroban_sdk::Env,
                     soroban_sdk::Val,
                 >>::Error,
             >,
-            Result<<StructA as soroban_sdk::ContractClientReturn>::Err, soroban_sdk::InvokeError>,
+            Result<<StructA as soroban_sdk::client::Type>::Err, soroban_sdk::InvokeError>,
         > {
             let _call_scope =
                 soroban_sdk::testutils::ClientCallScope::enter(&self.env, self.config);
@@ -16146,7 +16146,7 @@ mod wasm_imported {
         /// Panics if the invoked contract returns an error or panics.
         ///
         /// Use [`Self::try_fn_enum_int_a`] to receive errors instead of panicking.
-        pub fn fn_enum_int_a(&self) -> <EnumIntA as soroban_sdk::ContractClientReturn>::Ok {
+        pub fn fn_enum_int_a(&self) -> <EnumIntA as soroban_sdk::client::Type>::Ok {
             let _call_scope =
                 soroban_sdk::testutils::ClientCallScope::enter(&self.env, self.config);
             use soroban_sdk::{FromVal, IntoVal};
@@ -16166,13 +16166,13 @@ mod wasm_imported {
             &self,
         ) -> Result<
             Result<
-                <EnumIntA as soroban_sdk::ContractClientReturn>::Ok,
-                <<EnumIntA as soroban_sdk::ContractClientReturn>::Ok as soroban_sdk::TryFromVal<
+                <EnumIntA as soroban_sdk::client::Type>::Ok,
+                <<EnumIntA as soroban_sdk::client::Type>::Ok as soroban_sdk::TryFromVal<
                     soroban_sdk::Env,
                     soroban_sdk::Val,
                 >>::Error,
             >,
-            Result<<EnumIntA as soroban_sdk::ContractClientReturn>::Err, soroban_sdk::InvokeError>,
+            Result<<EnumIntA as soroban_sdk::client::Type>::Err, soroban_sdk::InvokeError>,
         > {
             let _call_scope =
                 soroban_sdk::testutils::ClientCallScope::enter(&self.env, self.config);
@@ -16195,7 +16195,7 @@ mod wasm_imported {
             &self,
             f1: &i64,
             f2: &i64,
-        ) -> <StructTupleA as soroban_sdk::ContractClientReturn>::Ok {
+        ) -> <StructTupleA as soroban_sdk::client::Type>::Ok {
             let _call_scope =
                 soroban_sdk::testutils::ClientCallScope::enter(&self.env, self.config);
             use soroban_sdk::{FromVal, IntoVal};
@@ -16220,17 +16220,14 @@ mod wasm_imported {
             f2: &i64,
         ) -> Result<
             Result<
-                <StructTupleA as soroban_sdk::ContractClientReturn>::Ok,
-                <<StructTupleA as soroban_sdk::ContractClientReturn>::Ok as soroban_sdk::TryFromVal<
+                <StructTupleA as soroban_sdk::client::Type>::Ok,
+                <<StructTupleA as soroban_sdk::client::Type>::Ok as soroban_sdk::TryFromVal<
                     soroban_sdk::Env,
                     soroban_sdk::Val,
                 >>::Error,
             >,
-            Result<
-                <StructTupleA as soroban_sdk::ContractClientReturn>::Err,
-                soroban_sdk::InvokeError,
-            >,
-        >{
+            Result<<StructTupleA as soroban_sdk::client::Type>::Err, soroban_sdk::InvokeError>,
+        > {
             let _call_scope =
                 soroban_sdk::testutils::ClientCallScope::enter(&self.env, self.config);
             use soroban_sdk::{FromVal, IntoVal};
@@ -16387,7 +16384,7 @@ mod wasm_imported {
                 },
             );
     }
-    impl soroban_sdk::ContractClientReturn for ContractExecutableRef {
+    impl soroban_sdk::client::Type for ContractExecutableRef {
         type Output = Self;
         type Ok = Self;
         type Err = soroban_sdk::Error;
@@ -16936,7 +16933,7 @@ mod wasm_imported {
                 },
             );
     }
-    impl soroban_sdk::ContractClientReturn for ContractContext {
+    impl soroban_sdk::client::Type for ContractContext {
         type Output = Self;
         type Ok = Self;
         type Err = soroban_sdk::Error;
@@ -17550,7 +17547,7 @@ mod wasm_imported {
                 },
             );
     }
-    impl soroban_sdk::ContractClientReturn for SubContractInvocation {
+    impl soroban_sdk::client::Type for SubContractInvocation {
         type Output = Self;
         type Ok = Self;
         type Err = soroban_sdk::Error;
@@ -18097,7 +18094,7 @@ mod wasm_imported {
                 },
             );
     }
-    impl soroban_sdk::ContractClientReturn for CreateContractHostFnContext {
+    impl soroban_sdk::client::Type for CreateContractHostFnContext {
         type Output = Self;
         type Ok = Self;
         type Err = soroban_sdk::Error;
@@ -18663,7 +18660,7 @@ mod wasm_imported {
                 },
             );
     }
-    impl soroban_sdk::ContractClientReturn for CreateContractWithConstructorHostFnContext {
+    impl soroban_sdk::client::Type for CreateContractWithConstructorHostFnContext {
         type Output = Self;
         type Ok = Self;
         type Err = soroban_sdk::Error;
@@ -19318,7 +19315,7 @@ mod wasm_imported {
                 },
             );
     }
-    impl soroban_sdk::ContractClientReturn for StructA {
+    impl soroban_sdk::client::Type for StructA {
         type Output = Self;
         type Ok = Self;
         type Err = soroban_sdk::Error;
@@ -19826,7 +19823,7 @@ mod wasm_imported {
                 },
             );
     }
-    impl soroban_sdk::ContractClientReturn for StructB {
+    impl soroban_sdk::client::Type for StructB {
         type Output = Self;
         type Ok = Self;
         type Err = soroban_sdk::Error;
@@ -20334,7 +20331,7 @@ mod wasm_imported {
                 },
             );
     }
-    impl soroban_sdk::ContractClientReturn for StructC {
+    impl soroban_sdk::client::Type for StructC {
         type Output = Self;
         type Ok = Self;
         type Err = soroban_sdk::Error;
@@ -20847,7 +20844,7 @@ mod wasm_imported {
                 },
             );
     }
-    impl soroban_sdk::ContractClientReturn for StructTupleA {
+    impl soroban_sdk::client::Type for StructTupleA {
         type Output = Self;
         type Ok = Self;
         type Err = soroban_sdk::Error;
@@ -21308,7 +21305,7 @@ mod wasm_imported {
                 },
             );
     }
-    impl soroban_sdk::ContractClientReturn for StructTupleB {
+    impl soroban_sdk::client::Type for StructTupleB {
         type Output = Self;
         type Ok = Self;
         type Err = soroban_sdk::Error;
@@ -21770,7 +21767,7 @@ mod wasm_imported {
                 },
             );
     }
-    impl soroban_sdk::ContractClientReturn for StructTupleC {
+    impl soroban_sdk::client::Type for StructTupleC {
         type Output = Self;
         type Ok = Self;
         type Err = soroban_sdk::Error;
@@ -22276,7 +22273,7 @@ mod wasm_imported {
                 },
             );
     }
-    impl soroban_sdk::ContractClientReturn for ContractExecutable {
+    impl soroban_sdk::client::Type for ContractExecutable {
         type Output = Self;
         type Ok = Self;
         type Err = soroban_sdk::Error;
@@ -22984,7 +22981,7 @@ mod wasm_imported {
                 },
             );
     }
-    impl soroban_sdk::ContractClientReturn for Context {
+    impl soroban_sdk::client::Type for Context {
         type Output = Self;
         type Ok = Self;
         type Err = soroban_sdk::Error;
@@ -23794,7 +23791,7 @@ mod wasm_imported {
                 },
             );
     }
-    impl soroban_sdk::ContractClientReturn for InvokerContractAuthEntry {
+    impl soroban_sdk::client::Type for InvokerContractAuthEntry {
         type Output = Self;
         type Ok = Self;
         type Err = soroban_sdk::Error;
@@ -24582,7 +24579,7 @@ mod wasm_imported {
                 },
             );
     }
-    impl soroban_sdk::ContractClientReturn for Executable {
+    impl soroban_sdk::client::Type for Executable {
         type Output = Self;
         type Ok = Self;
         type Err = soroban_sdk::Error;
@@ -25208,7 +25205,7 @@ mod wasm_imported {
                 },
             );
     }
-    impl soroban_sdk::ContractClientReturn for EnumA {
+    impl soroban_sdk::client::Type for EnumA {
         type Output = Self;
         type Ok = Self;
         type Err = soroban_sdk::Error;
@@ -25808,7 +25805,7 @@ mod wasm_imported {
                 },
             );
     }
-    impl soroban_sdk::ContractClientReturn for EnumB {
+    impl soroban_sdk::client::Type for EnumB {
         type Output = Self;
         type Ok = Self;
         type Err = soroban_sdk::Error;
@@ -26531,7 +26528,7 @@ mod wasm_imported {
                 },
             );
     }
-    impl soroban_sdk::ContractClientReturn for EnumC {
+    impl soroban_sdk::client::Type for EnumC {
         type Output = Self;
         type Ok = Self;
         type Err = soroban_sdk::Error;
@@ -27181,7 +27178,7 @@ mod wasm_imported {
                 },
             );
     }
-    impl soroban_sdk::ContractClientReturn for EnumIntA {
+    impl soroban_sdk::client::Type for EnumIntA {
         type Output = Self;
         type Ok = Self;
         type Err = soroban_sdk::Error;
@@ -27615,7 +27612,7 @@ mod wasm_imported {
                 },
             );
     }
-    impl soroban_sdk::ContractClientReturn for EnumIntB {
+    impl soroban_sdk::client::Type for EnumIntB {
         type Output = Self;
         type Ok = Self;
         type Err = soroban_sdk::Error;
@@ -28049,7 +28046,7 @@ mod wasm_imported {
                 },
             );
     }
-    impl soroban_sdk::ContractClientReturn for EnumIntC {
+    impl soroban_sdk::client::Type for EnumIntC {
         type Output = Self;
         type Ok = Self;
         type Err = soroban_sdk::Error;
@@ -28483,7 +28480,7 @@ mod wasm_imported {
                 },
             );
     }
-    impl soroban_sdk::ContractClientReturn for ErrorA {
+    impl soroban_sdk::client::Type for ErrorA {
         type Output = Self;
         type Ok = Self;
         type Err = soroban_sdk::Error;
@@ -28745,7 +28742,7 @@ mod wasm_imported {
                 },
             );
     }
-    impl soroban_sdk::ContractClientReturn for ErrorB {
+    impl soroban_sdk::client::Type for ErrorB {
         type Output = Self;
         type Ok = Self;
         type Err = soroban_sdk::Error;
@@ -29007,7 +29004,7 @@ mod wasm_imported {
                 },
             );
     }
-    impl soroban_sdk::ContractClientReturn for ErrorC {
+    impl soroban_sdk::client::Type for ErrorC {
         type Output = Self;
         type Ok = Self;
         type Err = soroban_sdk::Error;
@@ -29943,7 +29940,7 @@ impl soroban_sdk::SpecTypeDef for UnusedStruct {
             ),
         });
 }
-impl soroban_sdk::ContractClientReturn for UnusedStruct {
+impl soroban_sdk::client::Type for UnusedStruct {
     type Output = Self;
     type Ok = Self;
     type Err = soroban_sdk::Error;
@@ -30372,7 +30369,7 @@ impl soroban_sdk::SpecTypeDef for UnusedEnum {
             ),
         });
 }
-impl soroban_sdk::ContractClientReturn for UnusedEnum {
+impl soroban_sdk::client::Type for UnusedEnum {
     type Output = Self;
     type Ok = Self;
     type Err = soroban_sdk::Error;
@@ -30901,7 +30898,7 @@ impl soroban_sdk::SpecTypeDef for UnusedIntEnum {
             ),
         });
 }
-impl soroban_sdk::ContractClientReturn for UnusedIntEnum {
+impl soroban_sdk::client::Type for UnusedIntEnum {
     type Output = Self;
     type Ok = Self;
     type Err = soroban_sdk::Error;
@@ -31425,7 +31422,7 @@ impl soroban_sdk::SpecTypeDef for UnusedEventDataType {
             ),
         });
 }
-impl soroban_sdk::ContractClientReturn for UnusedEventDataType {
+impl soroban_sdk::client::Type for UnusedEventDataType {
     type Output = Self;
     type Ok = Self;
     type Err = soroban_sdk::Error;
@@ -31996,7 +31993,7 @@ impl soroban_sdk::SpecTypeDef for UnusedOuter {
             ),
         });
 }
-impl soroban_sdk::ContractClientReturn for UnusedOuter {
+impl soroban_sdk::client::Type for UnusedOuter {
     type Output = Self;
     type Ok = Self;
     type Err = soroban_sdk::Error;
@@ -32415,7 +32412,7 @@ impl soroban_sdk::SpecTypeDef for UnusedInner {
             ),
         });
 }
-impl soroban_sdk::ContractClientReturn for UnusedInner {
+impl soroban_sdk::client::Type for UnusedInner {
     type Output = Self;
     type Ok = Self;
     type Err = soroban_sdk::Error;
@@ -32830,7 +32827,7 @@ impl soroban_sdk::SpecTypeDef for UnusedCycleA {
             ),
         });
 }
-impl soroban_sdk::ContractClientReturn for UnusedCycleA {
+impl soroban_sdk::client::Type for UnusedCycleA {
     type Output = Self;
     type Ok = Self;
     type Err = soroban_sdk::Error;
@@ -33246,7 +33243,7 @@ impl soroban_sdk::SpecTypeDef for UnusedCycleB {
             ),
         });
 }
-impl soroban_sdk::ContractClientReturn for UnusedCycleB {
+impl soroban_sdk::client::Type for UnusedCycleB {
     type Output = Self;
     type Ok = Self;
     type Err = soroban_sdk::Error;
@@ -33671,7 +33668,7 @@ impl soroban_sdk::SpecTypeDef for UnusedSelfRef {
             ),
         });
 }
-impl soroban_sdk::ContractClientReturn for UnusedSelfRef {
+impl soroban_sdk::client::Type for UnusedSelfRef {
     type Output = Self;
     type Ok = Self;
     type Err = soroban_sdk::Error;
@@ -34098,7 +34095,7 @@ impl soroban_sdk::SpecTypeDef for UnusedPubError {
             ),
         });
 }
-impl soroban_sdk::ContractClientReturn for UnusedPubError {
+impl soroban_sdk::client::Type for UnusedPubError {
     type Output = Self;
     type Ok = Self;
     type Err = soroban_sdk::Error;
@@ -34313,7 +34310,7 @@ impl soroban_sdk::SpecTypeDef for UnusedNonContractFnParam {
             ),
         });
 }
-impl soroban_sdk::ContractClientReturn for UnusedNonContractFnParam {
+impl soroban_sdk::client::Type for UnusedNonContractFnParam {
     type Output = Self;
     type Ok = Self;
     type Err = soroban_sdk::Error;
@@ -34744,7 +34741,7 @@ impl soroban_sdk::SpecTypeDef for UnusedNonContractFnReturn {
             ),
         });
 }
-impl soroban_sdk::ContractClientReturn for UnusedNonContractFnReturn {
+impl soroban_sdk::client::Type for UnusedNonContractFnReturn {
     type Output = Self;
     type Ok = Self;
     type Err = soroban_sdk::Error;
@@ -35170,7 +35167,7 @@ impl soroban_sdk::SpecTypeDef for UnusedNonPubStruct {
             ),
         });
 }
-impl soroban_sdk::ContractClientReturn for UnusedNonPubStruct {
+impl soroban_sdk::client::Type for UnusedNonPubStruct {
     type Output = Self;
     type Ok = Self;
     type Err = soroban_sdk::Error;
@@ -35588,7 +35585,7 @@ impl soroban_sdk::SpecTypeDef for UnusedNonPubError {
             ),
         });
 }
-impl soroban_sdk::ContractClientReturn for UnusedNonPubError {
+impl soroban_sdk::client::Type for UnusedNonPubError {
     type Output = Self;
     type Ok = Self;
     type Err = soroban_sdk::Error;
@@ -36970,7 +36967,7 @@ impl<'a> ContractClient<'a> {
     /// Panics if the invoked contract returns an error or panics.
     ///
     /// Use [`Self::try_with_return`] to receive errors instead of panicking.
-    pub fn with_return(&self) -> <UsedReturnEnum as soroban_sdk::ContractClientReturn>::Ok {
+    pub fn with_return(&self) -> <UsedReturnEnum as soroban_sdk::client::Type>::Ok {
         let _call_scope = soroban_sdk::testutils::ClientCallScope::enter(&self.env, self.config);
         use soroban_sdk::{FromVal, IntoVal};
         let res = self.env.invoke_contract(
@@ -36989,17 +36986,14 @@ impl<'a> ContractClient<'a> {
         &self,
     ) -> Result<
         Result<
-            <UsedReturnEnum as soroban_sdk::ContractClientReturn>::Ok,
-            <<UsedReturnEnum as soroban_sdk::ContractClientReturn>::Ok as soroban_sdk::TryFromVal<
+            <UsedReturnEnum as soroban_sdk::client::Type>::Ok,
+            <<UsedReturnEnum as soroban_sdk::client::Type>::Ok as soroban_sdk::TryFromVal<
                 soroban_sdk::Env,
                 soroban_sdk::Val,
             >>::Error,
         >,
-        Result<
-            <UsedReturnEnum as soroban_sdk::ContractClientReturn>::Err,
-            soroban_sdk::InvokeError,
-        >,
-    >{
+        Result<<UsedReturnEnum as soroban_sdk::client::Type>::Err, soroban_sdk::InvokeError>,
+    > {
         let _call_scope = soroban_sdk::testutils::ClientCallScope::enter(&self.env, self.config);
         use soroban_sdk::{FromVal, IntoVal};
         let res = self.env.try_invoke_contract(
@@ -37016,9 +37010,7 @@ impl<'a> ContractClient<'a> {
     /// Panics if the invoked contract returns an error or panics.
     ///
     /// Use [`Self::try_with_error`] to receive errors instead of panicking.
-    pub fn with_error(
-        &self,
-    ) -> <Result<u32, UsedErrorEnum> as soroban_sdk::ContractClientReturn>::Ok {
+    pub fn with_error(&self) -> <Result<u32, UsedErrorEnum> as soroban_sdk::client::Type>::Ok {
         let _call_scope = soroban_sdk::testutils::ClientCallScope::enter(&self.env, self.config);
         use soroban_sdk::{FromVal, IntoVal};
         let res = self.env.invoke_contract(
@@ -37037,17 +37029,17 @@ impl<'a> ContractClient<'a> {
         &self,
     ) -> Result<
         Result<
-            <Result<u32, UsedErrorEnum> as soroban_sdk::ContractClientReturn>::Ok,
+            <Result<u32, UsedErrorEnum> as soroban_sdk::client::Type>::Ok,
             <<Result<
                 u32,
                 UsedErrorEnum,
-            > as soroban_sdk::ContractClientReturn>::Ok as soroban_sdk::TryFromVal<
+            > as soroban_sdk::client::Type>::Ok as soroban_sdk::TryFromVal<
                 soroban_sdk::Env,
                 soroban_sdk::Val,
             >>::Error,
         >,
         Result<
-            <Result<u32, UsedErrorEnum> as soroban_sdk::ContractClientReturn>::Err,
+            <Result<u32, UsedErrorEnum> as soroban_sdk::client::Type>::Err,
             soroban_sdk::InvokeError,
         >,
     >{
@@ -37351,7 +37343,7 @@ impl<'a> ContractClient<'a> {
     /// Use [`Self::try_with_result`] to receive errors instead of panicking.
     pub fn with_result(
         &self,
-    ) -> <Result<UsedResultOk, UsedErrorEnum> as soroban_sdk::ContractClientReturn>::Ok {
+    ) -> <Result<UsedResultOk, UsedErrorEnum> as soroban_sdk::client::Type>::Ok {
         let _call_scope = soroban_sdk::testutils::ClientCallScope::enter(&self.env, self.config);
         use soroban_sdk::{FromVal, IntoVal};
         let res = self.env.invoke_contract(
@@ -37370,23 +37362,17 @@ impl<'a> ContractClient<'a> {
         &self,
     ) -> Result<
         Result<
-            <Result<
-                UsedResultOk,
-                UsedErrorEnum,
-            > as soroban_sdk::ContractClientReturn>::Ok,
+            <Result<UsedResultOk, UsedErrorEnum> as soroban_sdk::client::Type>::Ok,
             <<Result<
                 UsedResultOk,
                 UsedErrorEnum,
-            > as soroban_sdk::ContractClientReturn>::Ok as soroban_sdk::TryFromVal<
+            > as soroban_sdk::client::Type>::Ok as soroban_sdk::TryFromVal<
                 soroban_sdk::Env,
                 soroban_sdk::Val,
             >>::Error,
         >,
         Result<
-            <Result<
-                UsedResultOk,
-                UsedErrorEnum,
-            > as soroban_sdk::ContractClientReturn>::Err,
+            <Result<UsedResultOk, UsedErrorEnum> as soroban_sdk::client::Type>::Err,
             soroban_sdk::InvokeError,
         >,
     >{
@@ -37897,7 +37883,7 @@ impl<'a> ContractClient<'a> {
     /// Use [`Self::try_with_non_pub_error`] to receive errors instead of panicking.
     pub fn with_non_pub_error(
         &self,
-    ) -> <Result<u32, UsedNonPubError> as soroban_sdk::ContractClientReturn>::Ok {
+    ) -> <Result<u32, UsedNonPubError> as soroban_sdk::client::Type>::Ok {
         let _call_scope = soroban_sdk::testutils::ClientCallScope::enter(&self.env, self.config);
         use soroban_sdk::{FromVal, IntoVal};
         let res = self.env.invoke_contract(
@@ -37916,17 +37902,17 @@ impl<'a> ContractClient<'a> {
         &self,
     ) -> Result<
         Result<
-            <Result<u32, UsedNonPubError> as soroban_sdk::ContractClientReturn>::Ok,
+            <Result<u32, UsedNonPubError> as soroban_sdk::client::Type>::Ok,
             <<Result<
                 u32,
                 UsedNonPubError,
-            > as soroban_sdk::ContractClientReturn>::Ok as soroban_sdk::TryFromVal<
+            > as soroban_sdk::client::Type>::Ok as soroban_sdk::TryFromVal<
                 soroban_sdk::Env,
                 soroban_sdk::Val,
             >>::Error,
         >,
         Result<
-            <Result<u32, UsedNonPubError> as soroban_sdk::ContractClientReturn>::Err,
+            <Result<u32, UsedNonPubError> as soroban_sdk::client::Type>::Err,
             soroban_sdk::InvokeError,
         >,
     >{
@@ -37986,7 +37972,7 @@ impl<'a> ContractClient<'a> {
     /// Use [`Self::try_with_tuple_return`] to receive errors instead of panicking.
     pub fn with_tuple_return(
         &self,
-    ) -> <(UsedTupleReturnElement, u32) as soroban_sdk::ContractClientReturn>::Ok {
+    ) -> <(UsedTupleReturnElement, u32) as soroban_sdk::client::Type>::Ok {
         let _call_scope = soroban_sdk::testutils::ClientCallScope::enter(&self.env, self.config);
         use soroban_sdk::{FromVal, IntoVal};
         let res = self.env.invoke_contract(
@@ -38005,17 +37991,17 @@ impl<'a> ContractClient<'a> {
         &self,
     ) -> Result<
         Result<
-            <(UsedTupleReturnElement, u32) as soroban_sdk::ContractClientReturn>::Ok,
+            <(UsedTupleReturnElement, u32) as soroban_sdk::client::Type>::Ok,
             <<(
                 UsedTupleReturnElement,
                 u32,
-            ) as soroban_sdk::ContractClientReturn>::Ok as soroban_sdk::TryFromVal<
+            ) as soroban_sdk::client::Type>::Ok as soroban_sdk::TryFromVal<
                 soroban_sdk::Env,
                 soroban_sdk::Val,
             >>::Error,
         >,
         Result<
-            <(UsedTupleReturnElement, u32) as soroban_sdk::ContractClientReturn>::Err,
+            <(UsedTupleReturnElement, u32) as soroban_sdk::client::Type>::Err,
             soroban_sdk::InvokeError,
         >,
     >{

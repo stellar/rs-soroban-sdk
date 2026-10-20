@@ -75,7 +75,7 @@ impl soroban_sdk::SpecTypeDef for UdtEnum2 {
             ),
         });
 }
-impl soroban_sdk::ContractClientReturn for UdtEnum2 {
+impl soroban_sdk::client::Type for UdtEnum2 {
     type Output = Self;
     type Ok = Self;
     type Err = soroban_sdk::Error;
@@ -480,7 +480,7 @@ impl soroban_sdk::SpecTypeDef for UdtEnum {
             ),
         });
 }
-impl soroban_sdk::ContractClientReturn for UdtEnum {
+impl soroban_sdk::client::Type for UdtEnum {
     type Output = Self;
     type Ok = Self;
     type Err = soroban_sdk::Error;
@@ -1178,7 +1178,7 @@ impl soroban_sdk::SpecTypeDef for UdtTuple {
             ),
         });
 }
-impl soroban_sdk::ContractClientReturn for UdtTuple {
+impl soroban_sdk::client::Type for UdtTuple {
     type Output = Self;
     type Ok = Self;
     type Err = soroban_sdk::Error;
@@ -1624,7 +1624,7 @@ impl soroban_sdk::SpecTypeDef for UdtStruct {
             ),
         });
 }
-impl soroban_sdk::ContractClientReturn for UdtStruct {
+impl soroban_sdk::client::Type for UdtStruct {
     type Output = Self;
     type Ok = Self;
     type Err = soroban_sdk::Error;
@@ -2165,7 +2165,7 @@ impl soroban_sdk::SpecTypeDef for UdtRecursive {
             ),
         });
 }
-impl soroban_sdk::ContractClientReturn for UdtRecursive {
+impl soroban_sdk::client::Type for UdtRecursive {
     type Output = Self;
     type Ok = Self;
     type Err = soroban_sdk::Error;
@@ -2653,7 +2653,7 @@ impl soroban_sdk::SpecTypeDef for RecursiveToEnum {
             ),
         });
 }
-impl soroban_sdk::ContractClientReturn for RecursiveToEnum {
+impl soroban_sdk::client::Type for RecursiveToEnum {
     type Output = Self;
     type Ok = Self;
     type Err = soroban_sdk::Error;
@@ -3155,7 +3155,7 @@ impl soroban_sdk::SpecTypeDef for RecursiveEnum {
             ),
         });
 }
-impl soroban_sdk::ContractClientReturn for RecursiveEnum {
+impl soroban_sdk::client::Type for RecursiveEnum {
     type Output = Self;
     type Ok = Self;
     type Err = soroban_sdk::Error;
@@ -3905,7 +3905,7 @@ impl<'a> ContractClient<'a> {
     /// Panics if the invoked contract returns an error or panics.
     ///
     /// Use [`Self::try_add`] to receive errors instead of panicking.
-    pub fn add(&self, a: &UdtEnum, b: &UdtEnum) -> <i64 as soroban_sdk::ContractClientReturn>::Ok {
+    pub fn add(&self, a: &UdtEnum, b: &UdtEnum) -> <i64 as soroban_sdk::client::Type>::Ok {
         let _call_scope = soroban_sdk::testutils::ClientCallScope::enter(&self.env, self.config);
         use soroban_sdk::{FromVal, IntoVal};
         let res = self.env.invoke_contract(
@@ -3933,13 +3933,13 @@ impl<'a> ContractClient<'a> {
         b: &UdtEnum,
     ) -> Result<
         Result<
-            <i64 as soroban_sdk::ContractClientReturn>::Ok,
-            <<i64 as soroban_sdk::ContractClientReturn>::Ok as soroban_sdk::TryFromVal<
+            <i64 as soroban_sdk::client::Type>::Ok,
+            <<i64 as soroban_sdk::client::Type>::Ok as soroban_sdk::TryFromVal<
                 soroban_sdk::Env,
                 soroban_sdk::Val,
             >>::Error,
         >,
-        Result<<i64 as soroban_sdk::ContractClientReturn>::Err, soroban_sdk::InvokeError>,
+        Result<<i64 as soroban_sdk::client::Type>::Err, soroban_sdk::InvokeError>,
     > {
         let _call_scope = soroban_sdk::testutils::ClientCallScope::enter(&self.env, self.config);
         use soroban_sdk::{FromVal, IntoVal};
@@ -3967,7 +3967,7 @@ impl<'a> ContractClient<'a> {
     pub fn recursive(
         &self,
         a: &UdtRecursive,
-    ) -> <Option<UdtRecursive> as soroban_sdk::ContractClientReturn>::Ok {
+    ) -> <Option<UdtRecursive> as soroban_sdk::client::Type>::Ok {
         let _call_scope = soroban_sdk::testutils::ClientCallScope::enter(&self.env, self.config);
         use soroban_sdk::{FromVal, IntoVal};
         let res = self.env.invoke_contract(
@@ -3991,19 +3991,14 @@ impl<'a> ContractClient<'a> {
         a: &UdtRecursive,
     ) -> Result<
         Result<
-            <Option<UdtRecursive> as soroban_sdk::ContractClientReturn>::Ok,
-            <<Option<
-                UdtRecursive,
-            > as soroban_sdk::ContractClientReturn>::Ok as soroban_sdk::TryFromVal<
+            <Option<UdtRecursive> as soroban_sdk::client::Type>::Ok,
+            <<Option<UdtRecursive> as soroban_sdk::client::Type>::Ok as soroban_sdk::TryFromVal<
                 soroban_sdk::Env,
                 soroban_sdk::Val,
             >>::Error,
         >,
-        Result<
-            <Option<UdtRecursive> as soroban_sdk::ContractClientReturn>::Err,
-            soroban_sdk::InvokeError,
-        >,
-    >{
+        Result<<Option<UdtRecursive> as soroban_sdk::client::Type>::Err, soroban_sdk::InvokeError>,
+    > {
         let _call_scope = soroban_sdk::testutils::ClientCallScope::enter(&self.env, self.config);
         use soroban_sdk::{FromVal, IntoVal};
         let res = self.env.try_invoke_contract(
@@ -4028,7 +4023,7 @@ impl<'a> ContractClient<'a> {
         &self,
         a: &RecursiveEnum,
         key: &u32,
-    ) -> <Result<Option<RecursiveEnum>, Error> as soroban_sdk::ContractClientReturn>::Ok {
+    ) -> <Result<Option<RecursiveEnum>, Error> as soroban_sdk::client::Type>::Ok {
         let _call_scope = soroban_sdk::testutils::ClientCallScope::enter(&self.env, self.config);
         use soroban_sdk::{FromVal, IntoVal};
         let res = self.env.invoke_contract(
@@ -4052,23 +4047,17 @@ impl<'a> ContractClient<'a> {
         key: &u32,
     ) -> Result<
         Result<
-            <Result<
-                Option<RecursiveEnum>,
-                Error,
-            > as soroban_sdk::ContractClientReturn>::Ok,
+            <Result<Option<RecursiveEnum>, Error> as soroban_sdk::client::Type>::Ok,
             <<Result<
                 Option<RecursiveEnum>,
                 Error,
-            > as soroban_sdk::ContractClientReturn>::Ok as soroban_sdk::TryFromVal<
+            > as soroban_sdk::client::Type>::Ok as soroban_sdk::TryFromVal<
                 soroban_sdk::Env,
                 soroban_sdk::Val,
             >>::Error,
         >,
         Result<
-            <Result<
-                Option<RecursiveEnum>,
-                Error,
-            > as soroban_sdk::ContractClientReturn>::Err,
+            <Result<Option<RecursiveEnum>, Error> as soroban_sdk::client::Type>::Err,
             soroban_sdk::InvokeError,
         >,
     >{
@@ -4725,11 +4714,7 @@ mod test_with_wasm {
             /// Panics if the invoked contract returns an error or panics.
             ///
             /// Use [`Self::try_add`] to receive errors instead of panicking.
-            pub fn add(
-                &self,
-                a: &UdtEnum,
-                b: &UdtEnum,
-            ) -> <i64 as soroban_sdk::ContractClientReturn>::Ok {
+            pub fn add(&self, a: &UdtEnum, b: &UdtEnum) -> <i64 as soroban_sdk::client::Type>::Ok {
                 let _call_scope =
                     soroban_sdk::testutils::ClientCallScope::enter(&self.env, self.config);
                 use soroban_sdk::{FromVal, IntoVal};
@@ -4758,13 +4743,13 @@ mod test_with_wasm {
                 b: &UdtEnum,
             ) -> Result<
                 Result<
-                    <i64 as soroban_sdk::ContractClientReturn>::Ok,
-                    <<i64 as soroban_sdk::ContractClientReturn>::Ok as soroban_sdk::TryFromVal<
+                    <i64 as soroban_sdk::client::Type>::Ok,
+                    <<i64 as soroban_sdk::client::Type>::Ok as soroban_sdk::TryFromVal<
                         soroban_sdk::Env,
                         soroban_sdk::Val,
                     >>::Error,
                 >,
-                Result<<i64 as soroban_sdk::ContractClientReturn>::Err, soroban_sdk::InvokeError>,
+                Result<<i64 as soroban_sdk::client::Type>::Err, soroban_sdk::InvokeError>,
             > {
                 let _call_scope =
                     soroban_sdk::testutils::ClientCallScope::enter(&self.env, self.config);
@@ -4793,7 +4778,7 @@ mod test_with_wasm {
             pub fn recursive(
                 &self,
                 a: &UdtRecursive,
-            ) -> <Option<UdtRecursive> as soroban_sdk::ContractClientReturn>::Ok {
+            ) -> <Option<UdtRecursive> as soroban_sdk::client::Type>::Ok {
                 let _call_scope =
                     soroban_sdk::testutils::ClientCallScope::enter(&self.env, self.config);
                 use soroban_sdk::{FromVal, IntoVal};
@@ -4818,16 +4803,16 @@ mod test_with_wasm {
                 a: &UdtRecursive,
             ) -> Result<
                 Result<
-                    <Option<UdtRecursive> as soroban_sdk::ContractClientReturn>::Ok,
+                    <Option<UdtRecursive> as soroban_sdk::client::Type>::Ok,
                     <<Option<
                         UdtRecursive,
-                    > as soroban_sdk::ContractClientReturn>::Ok as soroban_sdk::TryFromVal<
+                    > as soroban_sdk::client::Type>::Ok as soroban_sdk::TryFromVal<
                         soroban_sdk::Env,
                         soroban_sdk::Val,
                     >>::Error,
                 >,
                 Result<
-                    <Option<UdtRecursive> as soroban_sdk::ContractClientReturn>::Err,
+                    <Option<UdtRecursive> as soroban_sdk::client::Type>::Err,
                     soroban_sdk::InvokeError,
                 >,
             >{
@@ -4856,10 +4841,8 @@ mod test_with_wasm {
                 &self,
                 a: &RecursiveEnum,
                 key: &u32,
-            ) -> <Result<
-                Option<RecursiveEnum>,
-                soroban_sdk::Error,
-            > as soroban_sdk::ContractClientReturn>::Ok{
+            ) -> <Result<Option<RecursiveEnum>, soroban_sdk::Error> as soroban_sdk::client::Type>::Ok
+            {
                 let _call_scope =
                     soroban_sdk::testutils::ClientCallScope::enter(&self.env, self.config);
                 use soroban_sdk::{FromVal, IntoVal};
@@ -4887,11 +4870,11 @@ mod test_with_wasm {
                     <Result<
                         Option<RecursiveEnum>,
                         soroban_sdk::Error,
-                    > as soroban_sdk::ContractClientReturn>::Ok,
+                    > as soroban_sdk::client::Type>::Ok,
                     <<Result<
                         Option<RecursiveEnum>,
                         soroban_sdk::Error,
-                    > as soroban_sdk::ContractClientReturn>::Ok as soroban_sdk::TryFromVal<
+                    > as soroban_sdk::client::Type>::Ok as soroban_sdk::TryFromVal<
                         soroban_sdk::Env,
                         soroban_sdk::Val,
                     >>::Error,
@@ -4900,7 +4883,7 @@ mod test_with_wasm {
                     <Result<
                         Option<RecursiveEnum>,
                         soroban_sdk::Error,
-                    > as soroban_sdk::ContractClientReturn>::Err,
+                    > as soroban_sdk::client::Type>::Err,
                     soroban_sdk::InvokeError,
                 >,
             >{
@@ -5030,7 +5013,7 @@ mod test_with_wasm {
                     },
                 );
         }
-        impl soroban_sdk::ContractClientReturn for UdtTuple {
+        impl soroban_sdk::client::Type for UdtTuple {
             type Output = Self;
             type Ok = Self;
             type Err = soroban_sdk::Error;
@@ -5532,7 +5515,7 @@ mod test_with_wasm {
                     },
                 );
         }
-        impl soroban_sdk::ContractClientReturn for UdtStruct {
+        impl soroban_sdk::client::Type for UdtStruct {
             type Output = Self;
             type Ok = Self;
             type Err = soroban_sdk::Error;
@@ -6125,7 +6108,7 @@ mod test_with_wasm {
                     },
                 );
         }
-        impl soroban_sdk::ContractClientReturn for UdtRecursive {
+        impl soroban_sdk::client::Type for UdtRecursive {
             type Output = Self;
             type Ok = Self;
             type Err = soroban_sdk::Error;
@@ -6657,7 +6640,7 @@ mod test_with_wasm {
                     },
                 );
         }
-        impl soroban_sdk::ContractClientReturn for RecursiveToEnum {
+        impl soroban_sdk::client::Type for RecursiveToEnum {
             type Output = Self;
             type Ok = Self;
             type Err = soroban_sdk::Error;
@@ -7193,7 +7176,7 @@ mod test_with_wasm {
                     },
                 );
         }
-        impl soroban_sdk::ContractClientReturn for ContractExecutableRef {
+        impl soroban_sdk::client::Type for ContractExecutableRef {
             type Output = Self;
             type Ok = Self;
             type Err = soroban_sdk::Error;
@@ -7749,7 +7732,7 @@ mod test_with_wasm {
                     },
                 );
         }
-        impl soroban_sdk::ContractClientReturn for ContractContext {
+        impl soroban_sdk::client::Type for ContractContext {
             type Output = Self;
             type Ok = Self;
             type Err = soroban_sdk::Error;
@@ -8368,7 +8351,7 @@ mod test_with_wasm {
                     },
                 );
         }
-        impl soroban_sdk::ContractClientReturn for SubContractInvocation {
+        impl soroban_sdk::client::Type for SubContractInvocation {
             type Output = Self;
             type Ok = Self;
             type Err = soroban_sdk::Error;
@@ -8918,7 +8901,7 @@ mod test_with_wasm {
                     },
                 );
         }
-        impl soroban_sdk::ContractClientReturn for CreateContractHostFnContext {
+        impl soroban_sdk::client::Type for CreateContractHostFnContext {
             type Output = Self;
             type Ok = Self;
             type Err = soroban_sdk::Error;
@@ -9502,7 +9485,7 @@ mod test_with_wasm {
                     },
                 );
         }
-        impl soroban_sdk::ContractClientReturn for CreateContractWithConstructorHostFnContext {
+        impl soroban_sdk::client::Type for CreateContractWithConstructorHostFnContext {
             type Output = Self;
             type Ok = Self;
             type Err = soroban_sdk::Error;
@@ -10199,7 +10182,7 @@ mod test_with_wasm {
                     },
                 );
         }
-        impl soroban_sdk::ContractClientReturn for UdtEnum {
+        impl soroban_sdk::client::Type for UdtEnum {
             type Output = Self;
             type Ok = Self;
             type Err = soroban_sdk::Error;
@@ -10990,7 +10973,7 @@ mod test_with_wasm {
                     },
                 );
         }
-        impl soroban_sdk::ContractClientReturn for RecursiveEnum {
+        impl soroban_sdk::client::Type for RecursiveEnum {
             type Output = Self;
             type Ok = Self;
             type Err = soroban_sdk::Error;
@@ -11621,7 +11604,7 @@ mod test_with_wasm {
                     },
                 );
         }
-        impl soroban_sdk::ContractClientReturn for ContractExecutable {
+        impl soroban_sdk::client::Type for ContractExecutable {
             type Output = Self;
             type Ok = Self;
             type Err = soroban_sdk::Error;
@@ -12333,7 +12316,7 @@ mod test_with_wasm {
                     },
                 );
         }
-        impl soroban_sdk::ContractClientReturn for Context {
+        impl soroban_sdk::client::Type for Context {
             type Output = Self;
             type Ok = Self;
             type Err = soroban_sdk::Error;
@@ -13154,7 +13137,7 @@ mod test_with_wasm {
                     },
                 );
         }
-        impl soroban_sdk::ContractClientReturn for InvokerContractAuthEntry {
+        impl soroban_sdk::client::Type for InvokerContractAuthEntry {
             type Output = Self;
             type Ok = Self;
             type Err = soroban_sdk::Error;
@@ -13972,7 +13955,7 @@ mod test_with_wasm {
                     },
                 );
         }
-        impl soroban_sdk::ContractClientReturn for Executable {
+        impl soroban_sdk::client::Type for Executable {
             type Output = Self;
             type Ok = Self;
             type Err = soroban_sdk::Error;
@@ -14604,7 +14587,7 @@ mod test_with_wasm {
                     },
                 );
         }
-        impl soroban_sdk::ContractClientReturn for UdtEnum2 {
+        impl soroban_sdk::client::Type for UdtEnum2 {
             type Output = Self;
             type Ok = Self;
             type Err = soroban_sdk::Error;

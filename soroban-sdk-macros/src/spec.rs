@@ -164,11 +164,11 @@ pub fn spec_type_def_gen(
     }
 }
 
-/// Generates the `ContractClientReturn` impl for a user-defined type that
-/// converts from a `Val`, which a client returns as itself.
-pub fn contract_client_return_gen(path: &Path, ident: &Ident) -> TokenStream2 {
+/// Generates the `client::Type` impl for a user-defined type that converts
+/// from a `Val`, which a client returns as itself.
+pub fn client_type_gen(path: &Path, ident: &Ident) -> TokenStream2 {
     quote! {
-        impl #path::ContractClientReturn for #ident {
+        impl #path::client::Type for #ident {
             type Output = Self;
             type Ok = Self;
             type Err = #path::Error;

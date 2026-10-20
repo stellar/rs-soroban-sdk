@@ -286,7 +286,7 @@ impl<'a> ContractClient<'a> {
     /// Panics if the invoked contract returns an error or panics.
     ///
     /// Use [`Self::try_test_u32`] to receive errors instead of panicking.
-    pub fn test_u32(&self, v: &u32) -> <u32 as soroban_sdk::ContractClientReturn>::Ok {
+    pub fn test_u32(&self, v: &u32) -> <u32 as soroban_sdk::client::Type>::Ok {
         let _call_scope = soroban_sdk::testutils::ClientCallScope::enter(&self.env, self.config);
         use soroban_sdk::{FromVal, IntoVal};
         let res = self.env.invoke_contract(
@@ -310,13 +310,13 @@ impl<'a> ContractClient<'a> {
         v: &u32,
     ) -> Result<
         Result<
-            <u32 as soroban_sdk::ContractClientReturn>::Ok,
-            <<u32 as soroban_sdk::ContractClientReturn>::Ok as soroban_sdk::TryFromVal<
+            <u32 as soroban_sdk::client::Type>::Ok,
+            <<u32 as soroban_sdk::client::Type>::Ok as soroban_sdk::TryFromVal<
                 soroban_sdk::Env,
                 soroban_sdk::Val,
             >>::Error,
         >,
-        Result<<u32 as soroban_sdk::ContractClientReturn>::Err, soroban_sdk::InvokeError>,
+        Result<<u32 as soroban_sdk::client::Type>::Err, soroban_sdk::InvokeError>,
     > {
         let _call_scope = soroban_sdk::testutils::ClientCallScope::enter(&self.env, self.config);
         use soroban_sdk::{FromVal, IntoVal};
@@ -338,7 +338,7 @@ impl<'a> ContractClient<'a> {
     /// Panics if the invoked contract returns an error or panics.
     ///
     /// Use [`Self::try_test_string`] to receive errors instead of panicking.
-    pub fn test_string(&self, v: &String) -> <String as soroban_sdk::ContractClientReturn>::Ok {
+    pub fn test_string(&self, v: &String) -> <String as soroban_sdk::client::Type>::Ok {
         let _call_scope = soroban_sdk::testutils::ClientCallScope::enter(&self.env, self.config);
         use soroban_sdk::{FromVal, IntoVal};
         let res = self.env.invoke_contract(
@@ -358,13 +358,13 @@ impl<'a> ContractClient<'a> {
         v: &String,
     ) -> Result<
         Result<
-            <String as soroban_sdk::ContractClientReturn>::Ok,
-            <<String as soroban_sdk::ContractClientReturn>::Ok as soroban_sdk::TryFromVal<
+            <String as soroban_sdk::client::Type>::Ok,
+            <<String as soroban_sdk::client::Type>::Ok as soroban_sdk::TryFromVal<
                 soroban_sdk::Env,
                 soroban_sdk::Val,
             >>::Error,
         >,
-        Result<<String as soroban_sdk::ContractClientReturn>::Err, soroban_sdk::InvokeError>,
+        Result<<String as soroban_sdk::client::Type>::Err, soroban_sdk::InvokeError>,
     > {
         let _call_scope = soroban_sdk::testutils::ClientCallScope::enter(&self.env, self.config);
         use soroban_sdk::{FromVal, IntoVal};
@@ -382,7 +382,7 @@ impl<'a> ContractClient<'a> {
     /// Panics if the invoked contract returns an error or panics.
     ///
     /// Use [`Self::try_test_env_param`] to receive errors instead of panicking.
-    pub fn test_env_param(&self) -> <u32 as soroban_sdk::ContractClientReturn>::Ok {
+    pub fn test_env_param(&self) -> <u32 as soroban_sdk::client::Type>::Ok {
         let _call_scope = soroban_sdk::testutils::ClientCallScope::enter(&self.env, self.config);
         use soroban_sdk::{FromVal, IntoVal};
         let res = self.env.invoke_contract(
@@ -401,13 +401,13 @@ impl<'a> ContractClient<'a> {
         &self,
     ) -> Result<
         Result<
-            <u32 as soroban_sdk::ContractClientReturn>::Ok,
-            <<u32 as soroban_sdk::ContractClientReturn>::Ok as soroban_sdk::TryFromVal<
+            <u32 as soroban_sdk::client::Type>::Ok,
+            <<u32 as soroban_sdk::client::Type>::Ok as soroban_sdk::TryFromVal<
                 soroban_sdk::Env,
                 soroban_sdk::Val,
             >>::Error,
         >,
-        Result<<u32 as soroban_sdk::ContractClientReturn>::Err, soroban_sdk::InvokeError>,
+        Result<<u32 as soroban_sdk::client::Type>::Err, soroban_sdk::InvokeError>,
     > {
         let _call_scope = soroban_sdk::testutils::ClientCallScope::enter(&self.env, self.config);
         use soroban_sdk::{FromVal, IntoVal};
@@ -425,7 +425,7 @@ impl<'a> ContractClient<'a> {
     /// Panics if the invoked contract returns an error or panics.
     ///
     /// Use [`Self::try_test_struct`] to receive errors instead of panicking.
-    pub fn test_struct(&self, v: &MyStruct) -> <MyStruct as soroban_sdk::ContractClientReturn>::Ok {
+    pub fn test_struct(&self, v: &MyStruct) -> <MyStruct as soroban_sdk::client::Type>::Ok {
         let _call_scope = soroban_sdk::testutils::ClientCallScope::enter(&self.env, self.config);
         use soroban_sdk::{FromVal, IntoVal};
         let res = self.env.invoke_contract(
@@ -445,13 +445,13 @@ impl<'a> ContractClient<'a> {
         v: &MyStruct,
     ) -> Result<
         Result<
-            <MyStruct as soroban_sdk::ContractClientReturn>::Ok,
-            <<MyStruct as soroban_sdk::ContractClientReturn>::Ok as soroban_sdk::TryFromVal<
+            <MyStruct as soroban_sdk::client::Type>::Ok,
+            <<MyStruct as soroban_sdk::client::Type>::Ok as soroban_sdk::TryFromVal<
                 soroban_sdk::Env,
                 soroban_sdk::Val,
             >>::Error,
         >,
-        Result<<MyStruct as soroban_sdk::ContractClientReturn>::Err, soroban_sdk::InvokeError>,
+        Result<<MyStruct as soroban_sdk::client::Type>::Err, soroban_sdk::InvokeError>,
     > {
         let _call_scope = soroban_sdk::testutils::ClientCallScope::enter(&self.env, self.config);
         use soroban_sdk::{FromVal, IntoVal};
@@ -2614,7 +2614,8 @@ impl<'a> ContractClient<'a> {
     pub fn test_i32(
         &self,
         v: &<Contract as __Contract__AllTypes__test_i32__arg_0>::i32,
-    ) -> <<Contract as __Contract__AllTypes__test_i32__ret>::i32 as soroban_sdk::ContractClientReturn>::Ok{
+    ) -> <<Contract as __Contract__AllTypes__test_i32__ret>::i32 as soroban_sdk::client::Type>::Ok
+    {
         let _call_scope = soroban_sdk::testutils::ClientCallScope::enter(&self.env, self.config);
         use soroban_sdk::{FromVal, IntoVal};
         let res = self.env.invoke_contract(
@@ -2640,14 +2641,14 @@ impl<'a> ContractClient<'a> {
         v: &<Contract as __Contract__AllTypes__test_i32__arg_0>::i32,
     ) -> Result<
         Result<
-            <<Contract as __Contract__AllTypes__test_i32__ret>::i32 as soroban_sdk::ContractClientReturn>::Ok,
-            <<<Contract as __Contract__AllTypes__test_i32__ret>::i32 as soroban_sdk::ContractClientReturn>::Ok as soroban_sdk::TryFromVal<
+            <<Contract as __Contract__AllTypes__test_i32__ret>::i32 as soroban_sdk::client::Type>::Ok,
+            <<<Contract as __Contract__AllTypes__test_i32__ret>::i32 as soroban_sdk::client::Type>::Ok as soroban_sdk::TryFromVal<
                 soroban_sdk::Env,
                 soroban_sdk::Val,
             >>::Error,
         >,
         Result<
-            <<Contract as __Contract__AllTypes__test_i32__ret>::i32 as soroban_sdk::ContractClientReturn>::Err,
+            <<Contract as __Contract__AllTypes__test_i32__ret>::i32 as soroban_sdk::client::Type>::Err,
             soroban_sdk::InvokeError,
         >,
     >{
@@ -2674,7 +2675,8 @@ impl<'a> ContractClient<'a> {
     pub fn test_u64(
         &self,
         v: &<Contract as __Contract__AllTypes__test_u64__arg_0>::u64,
-    ) -> <<Contract as __Contract__AllTypes__test_u64__ret>::u64 as soroban_sdk::ContractClientReturn>::Ok{
+    ) -> <<Contract as __Contract__AllTypes__test_u64__ret>::u64 as soroban_sdk::client::Type>::Ok
+    {
         let _call_scope = soroban_sdk::testutils::ClientCallScope::enter(&self.env, self.config);
         use soroban_sdk::{FromVal, IntoVal};
         let res = self.env.invoke_contract(
@@ -2698,14 +2700,14 @@ impl<'a> ContractClient<'a> {
         v: &<Contract as __Contract__AllTypes__test_u64__arg_0>::u64,
     ) -> Result<
         Result<
-            <<Contract as __Contract__AllTypes__test_u64__ret>::u64 as soroban_sdk::ContractClientReturn>::Ok,
-            <<<Contract as __Contract__AllTypes__test_u64__ret>::u64 as soroban_sdk::ContractClientReturn>::Ok as soroban_sdk::TryFromVal<
+            <<Contract as __Contract__AllTypes__test_u64__ret>::u64 as soroban_sdk::client::Type>::Ok,
+            <<<Contract as __Contract__AllTypes__test_u64__ret>::u64 as soroban_sdk::client::Type>::Ok as soroban_sdk::TryFromVal<
                 soroban_sdk::Env,
                 soroban_sdk::Val,
             >>::Error,
         >,
         Result<
-            <<Contract as __Contract__AllTypes__test_u64__ret>::u64 as soroban_sdk::ContractClientReturn>::Err,
+            <<Contract as __Contract__AllTypes__test_u64__ret>::u64 as soroban_sdk::client::Type>::Err,
             soroban_sdk::InvokeError,
         >,
     >{
@@ -2732,7 +2734,8 @@ impl<'a> ContractClient<'a> {
     pub fn test_i64(
         &self,
         v: &<Contract as __Contract__AllTypes__test_i64__arg_0>::i64,
-    ) -> <<Contract as __Contract__AllTypes__test_i64__ret>::i64 as soroban_sdk::ContractClientReturn>::Ok{
+    ) -> <<Contract as __Contract__AllTypes__test_i64__ret>::i64 as soroban_sdk::client::Type>::Ok
+    {
         let _call_scope = soroban_sdk::testutils::ClientCallScope::enter(&self.env, self.config);
         use soroban_sdk::{FromVal, IntoVal};
         let res = self.env.invoke_contract(
@@ -2756,14 +2759,14 @@ impl<'a> ContractClient<'a> {
         v: &<Contract as __Contract__AllTypes__test_i64__arg_0>::i64,
     ) -> Result<
         Result<
-            <<Contract as __Contract__AllTypes__test_i64__ret>::i64 as soroban_sdk::ContractClientReturn>::Ok,
-            <<<Contract as __Contract__AllTypes__test_i64__ret>::i64 as soroban_sdk::ContractClientReturn>::Ok as soroban_sdk::TryFromVal<
+            <<Contract as __Contract__AllTypes__test_i64__ret>::i64 as soroban_sdk::client::Type>::Ok,
+            <<<Contract as __Contract__AllTypes__test_i64__ret>::i64 as soroban_sdk::client::Type>::Ok as soroban_sdk::TryFromVal<
                 soroban_sdk::Env,
                 soroban_sdk::Val,
             >>::Error,
         >,
         Result<
-            <<Contract as __Contract__AllTypes__test_i64__ret>::i64 as soroban_sdk::ContractClientReturn>::Err,
+            <<Contract as __Contract__AllTypes__test_i64__ret>::i64 as soroban_sdk::client::Type>::Err,
             soroban_sdk::InvokeError,
         >,
     >{
@@ -2790,7 +2793,8 @@ impl<'a> ContractClient<'a> {
     pub fn test_u128(
         &self,
         v: &<Contract as __Contract__AllTypes__test_u128__arg_0>::u128,
-    ) -> <<Contract as __Contract__AllTypes__test_u128__ret>::u128 as soroban_sdk::ContractClientReturn>::Ok{
+    ) -> <<Contract as __Contract__AllTypes__test_u128__ret>::u128 as soroban_sdk::client::Type>::Ok
+    {
         let _call_scope = soroban_sdk::testutils::ClientCallScope::enter(&self.env, self.config);
         use soroban_sdk::{FromVal, IntoVal};
         let res = self.env.invoke_contract(
@@ -2814,14 +2818,14 @@ impl<'a> ContractClient<'a> {
         v: &<Contract as __Contract__AllTypes__test_u128__arg_0>::u128,
     ) -> Result<
         Result<
-            <<Contract as __Contract__AllTypes__test_u128__ret>::u128 as soroban_sdk::ContractClientReturn>::Ok,
-            <<<Contract as __Contract__AllTypes__test_u128__ret>::u128 as soroban_sdk::ContractClientReturn>::Ok as soroban_sdk::TryFromVal<
+            <<Contract as __Contract__AllTypes__test_u128__ret>::u128 as soroban_sdk::client::Type>::Ok,
+            <<<Contract as __Contract__AllTypes__test_u128__ret>::u128 as soroban_sdk::client::Type>::Ok as soroban_sdk::TryFromVal<
                 soroban_sdk::Env,
                 soroban_sdk::Val,
             >>::Error,
         >,
         Result<
-            <<Contract as __Contract__AllTypes__test_u128__ret>::u128 as soroban_sdk::ContractClientReturn>::Err,
+            <<Contract as __Contract__AllTypes__test_u128__ret>::u128 as soroban_sdk::client::Type>::Err,
             soroban_sdk::InvokeError,
         >,
     >{
@@ -2848,7 +2852,8 @@ impl<'a> ContractClient<'a> {
     pub fn test_i128(
         &self,
         v: &<Contract as __Contract__AllTypes__test_i128__arg_0>::i128,
-    ) -> <<Contract as __Contract__AllTypes__test_i128__ret>::i128 as soroban_sdk::ContractClientReturn>::Ok{
+    ) -> <<Contract as __Contract__AllTypes__test_i128__ret>::i128 as soroban_sdk::client::Type>::Ok
+    {
         let _call_scope = soroban_sdk::testutils::ClientCallScope::enter(&self.env, self.config);
         use soroban_sdk::{FromVal, IntoVal};
         let res = self.env.invoke_contract(
@@ -2872,14 +2877,14 @@ impl<'a> ContractClient<'a> {
         v: &<Contract as __Contract__AllTypes__test_i128__arg_0>::i128,
     ) -> Result<
         Result<
-            <<Contract as __Contract__AllTypes__test_i128__ret>::i128 as soroban_sdk::ContractClientReturn>::Ok,
-            <<<Contract as __Contract__AllTypes__test_i128__ret>::i128 as soroban_sdk::ContractClientReturn>::Ok as soroban_sdk::TryFromVal<
+            <<Contract as __Contract__AllTypes__test_i128__ret>::i128 as soroban_sdk::client::Type>::Ok,
+            <<<Contract as __Contract__AllTypes__test_i128__ret>::i128 as soroban_sdk::client::Type>::Ok as soroban_sdk::TryFromVal<
                 soroban_sdk::Env,
                 soroban_sdk::Val,
             >>::Error,
         >,
         Result<
-            <<Contract as __Contract__AllTypes__test_i128__ret>::i128 as soroban_sdk::ContractClientReturn>::Err,
+            <<Contract as __Contract__AllTypes__test_i128__ret>::i128 as soroban_sdk::client::Type>::Err,
             soroban_sdk::InvokeError,
         >,
     >{
@@ -2906,7 +2911,8 @@ impl<'a> ContractClient<'a> {
     pub fn test_bool(
         &self,
         v: &<Contract as __Contract__AllTypes__test_bool__arg_0>::bool,
-    ) -> <<Contract as __Contract__AllTypes__test_bool__ret>::bool as soroban_sdk::ContractClientReturn>::Ok{
+    ) -> <<Contract as __Contract__AllTypes__test_bool__ret>::bool as soroban_sdk::client::Type>::Ok
+    {
         let _call_scope = soroban_sdk::testutils::ClientCallScope::enter(&self.env, self.config);
         use soroban_sdk::{FromVal, IntoVal};
         let res = self.env.invoke_contract(
@@ -2930,14 +2936,14 @@ impl<'a> ContractClient<'a> {
         v: &<Contract as __Contract__AllTypes__test_bool__arg_0>::bool,
     ) -> Result<
         Result<
-            <<Contract as __Contract__AllTypes__test_bool__ret>::bool as soroban_sdk::ContractClientReturn>::Ok,
-            <<<Contract as __Contract__AllTypes__test_bool__ret>::bool as soroban_sdk::ContractClientReturn>::Ok as soroban_sdk::TryFromVal<
+            <<Contract as __Contract__AllTypes__test_bool__ret>::bool as soroban_sdk::client::Type>::Ok,
+            <<<Contract as __Contract__AllTypes__test_bool__ret>::bool as soroban_sdk::client::Type>::Ok as soroban_sdk::TryFromVal<
                 soroban_sdk::Env,
                 soroban_sdk::Val,
             >>::Error,
         >,
         Result<
-            <<Contract as __Contract__AllTypes__test_bool__ret>::bool as soroban_sdk::ContractClientReturn>::Err,
+            <<Contract as __Contract__AllTypes__test_bool__ret>::bool as soroban_sdk::client::Type>::Err,
             soroban_sdk::InvokeError,
         >,
     >{
@@ -2964,7 +2970,7 @@ impl<'a> ContractClient<'a> {
     pub fn test_address(
         &self,
         v: &<Contract as __Contract__AllTypes__test_address__arg_0>::Address,
-    ) -> <<Contract as __Contract__AllTypes__test_address__ret>::Address as soroban_sdk::ContractClientReturn>::Ok{
+    ) -> <<Contract as __Contract__AllTypes__test_address__ret>::Address as soroban_sdk::client::Type>::Ok{
         let _call_scope = soroban_sdk::testutils::ClientCallScope::enter(&self.env, self.config);
         use soroban_sdk::{FromVal, IntoVal};
         let res = self.env.invoke_contract(
@@ -2984,14 +2990,14 @@ impl<'a> ContractClient<'a> {
         v: &<Contract as __Contract__AllTypes__test_address__arg_0>::Address,
     ) -> Result<
         Result<
-            <<Contract as __Contract__AllTypes__test_address__ret>::Address as soroban_sdk::ContractClientReturn>::Ok,
-            <<<Contract as __Contract__AllTypes__test_address__ret>::Address as soroban_sdk::ContractClientReturn>::Ok as soroban_sdk::TryFromVal<
+            <<Contract as __Contract__AllTypes__test_address__ret>::Address as soroban_sdk::client::Type>::Ok,
+            <<<Contract as __Contract__AllTypes__test_address__ret>::Address as soroban_sdk::client::Type>::Ok as soroban_sdk::TryFromVal<
                 soroban_sdk::Env,
                 soroban_sdk::Val,
             >>::Error,
         >,
         Result<
-            <<Contract as __Contract__AllTypes__test_address__ret>::Address as soroban_sdk::ContractClientReturn>::Err,
+            <<Contract as __Contract__AllTypes__test_address__ret>::Address as soroban_sdk::client::Type>::Err,
             soroban_sdk::InvokeError,
         >,
     >{
@@ -3014,7 +3020,8 @@ impl<'a> ContractClient<'a> {
     pub fn test_bytes(
         &self,
         v: &<Contract as __Contract__AllTypes__test_bytes__arg_0>::Bytes,
-    ) -> <<Contract as __Contract__AllTypes__test_bytes__ret>::Bytes as soroban_sdk::ContractClientReturn>::Ok{
+    ) -> <<Contract as __Contract__AllTypes__test_bytes__ret>::Bytes as soroban_sdk::client::Type>::Ok
+    {
         let _call_scope = soroban_sdk::testutils::ClientCallScope::enter(&self.env, self.config);
         use soroban_sdk::{FromVal, IntoVal};
         let res = self.env.invoke_contract(
@@ -3034,14 +3041,14 @@ impl<'a> ContractClient<'a> {
         v: &<Contract as __Contract__AllTypes__test_bytes__arg_0>::Bytes,
     ) -> Result<
         Result<
-            <<Contract as __Contract__AllTypes__test_bytes__ret>::Bytes as soroban_sdk::ContractClientReturn>::Ok,
-            <<<Contract as __Contract__AllTypes__test_bytes__ret>::Bytes as soroban_sdk::ContractClientReturn>::Ok as soroban_sdk::TryFromVal<
+            <<Contract as __Contract__AllTypes__test_bytes__ret>::Bytes as soroban_sdk::client::Type>::Ok,
+            <<<Contract as __Contract__AllTypes__test_bytes__ret>::Bytes as soroban_sdk::client::Type>::Ok as soroban_sdk::TryFromVal<
                 soroban_sdk::Env,
                 soroban_sdk::Val,
             >>::Error,
         >,
         Result<
-            <<Contract as __Contract__AllTypes__test_bytes__ret>::Bytes as soroban_sdk::ContractClientReturn>::Err,
+            <<Contract as __Contract__AllTypes__test_bytes__ret>::Bytes as soroban_sdk::client::Type>::Err,
             soroban_sdk::InvokeError,
         >,
     >{
@@ -3064,7 +3071,7 @@ impl<'a> ContractClient<'a> {
     pub fn test_bytes_n(
         &self,
         v: &<Contract as __Contract__AllTypes__test_bytes_n__arg_0>::BytesN,
-    ) -> <<Contract as __Contract__AllTypes__test_bytes_n__ret>::BytesN as soroban_sdk::ContractClientReturn>::Ok{
+    ) -> <<Contract as __Contract__AllTypes__test_bytes_n__ret>::BytesN as soroban_sdk::client::Type>::Ok{
         let _call_scope = soroban_sdk::testutils::ClientCallScope::enter(&self.env, self.config);
         use soroban_sdk::{FromVal, IntoVal};
         let res = self.env.invoke_contract(
@@ -3084,14 +3091,14 @@ impl<'a> ContractClient<'a> {
         v: &<Contract as __Contract__AllTypes__test_bytes_n__arg_0>::BytesN,
     ) -> Result<
         Result<
-            <<Contract as __Contract__AllTypes__test_bytes_n__ret>::BytesN as soroban_sdk::ContractClientReturn>::Ok,
-            <<<Contract as __Contract__AllTypes__test_bytes_n__ret>::BytesN as soroban_sdk::ContractClientReturn>::Ok as soroban_sdk::TryFromVal<
+            <<Contract as __Contract__AllTypes__test_bytes_n__ret>::BytesN as soroban_sdk::client::Type>::Ok,
+            <<<Contract as __Contract__AllTypes__test_bytes_n__ret>::BytesN as soroban_sdk::client::Type>::Ok as soroban_sdk::TryFromVal<
                 soroban_sdk::Env,
                 soroban_sdk::Val,
             >>::Error,
         >,
         Result<
-            <<Contract as __Contract__AllTypes__test_bytes_n__ret>::BytesN as soroban_sdk::ContractClientReturn>::Err,
+            <<Contract as __Contract__AllTypes__test_bytes_n__ret>::BytesN as soroban_sdk::client::Type>::Err,
             soroban_sdk::InvokeError,
         >,
     >{
@@ -3114,7 +3121,7 @@ impl<'a> ContractClient<'a> {
     pub fn test_symbol(
         &self,
         v: &<Contract as __Contract__AllTypes__test_symbol__arg_0>::Symbol,
-    ) -> <<Contract as __Contract__AllTypes__test_symbol__ret>::Symbol as soroban_sdk::ContractClientReturn>::Ok{
+    ) -> <<Contract as __Contract__AllTypes__test_symbol__ret>::Symbol as soroban_sdk::client::Type>::Ok{
         let _call_scope = soroban_sdk::testutils::ClientCallScope::enter(&self.env, self.config);
         use soroban_sdk::{FromVal, IntoVal};
         let res = self.env.invoke_contract(
@@ -3134,14 +3141,14 @@ impl<'a> ContractClient<'a> {
         v: &<Contract as __Contract__AllTypes__test_symbol__arg_0>::Symbol,
     ) -> Result<
         Result<
-            <<Contract as __Contract__AllTypes__test_symbol__ret>::Symbol as soroban_sdk::ContractClientReturn>::Ok,
-            <<<Contract as __Contract__AllTypes__test_symbol__ret>::Symbol as soroban_sdk::ContractClientReturn>::Ok as soroban_sdk::TryFromVal<
+            <<Contract as __Contract__AllTypes__test_symbol__ret>::Symbol as soroban_sdk::client::Type>::Ok,
+            <<<Contract as __Contract__AllTypes__test_symbol__ret>::Symbol as soroban_sdk::client::Type>::Ok as soroban_sdk::TryFromVal<
                 soroban_sdk::Env,
                 soroban_sdk::Val,
             >>::Error,
         >,
         Result<
-            <<Contract as __Contract__AllTypes__test_symbol__ret>::Symbol as soroban_sdk::ContractClientReturn>::Err,
+            <<Contract as __Contract__AllTypes__test_symbol__ret>::Symbol as soroban_sdk::client::Type>::Err,
             soroban_sdk::InvokeError,
         >,
     >{
@@ -3164,7 +3171,8 @@ impl<'a> ContractClient<'a> {
     pub fn test_vec(
         &self,
         v: &<Contract as __Contract__AllTypes__test_vec__arg_0>::Vec,
-    ) -> <<Contract as __Contract__AllTypes__test_vec__ret>::Vec as soroban_sdk::ContractClientReturn>::Ok{
+    ) -> <<Contract as __Contract__AllTypes__test_vec__ret>::Vec as soroban_sdk::client::Type>::Ok
+    {
         let _call_scope = soroban_sdk::testutils::ClientCallScope::enter(&self.env, self.config);
         use soroban_sdk::{FromVal, IntoVal};
         let res = self.env.invoke_contract(
@@ -3188,14 +3196,14 @@ impl<'a> ContractClient<'a> {
         v: &<Contract as __Contract__AllTypes__test_vec__arg_0>::Vec,
     ) -> Result<
         Result<
-            <<Contract as __Contract__AllTypes__test_vec__ret>::Vec as soroban_sdk::ContractClientReturn>::Ok,
-            <<<Contract as __Contract__AllTypes__test_vec__ret>::Vec as soroban_sdk::ContractClientReturn>::Ok as soroban_sdk::TryFromVal<
+            <<Contract as __Contract__AllTypes__test_vec__ret>::Vec as soroban_sdk::client::Type>::Ok,
+            <<<Contract as __Contract__AllTypes__test_vec__ret>::Vec as soroban_sdk::client::Type>::Ok as soroban_sdk::TryFromVal<
                 soroban_sdk::Env,
                 soroban_sdk::Val,
             >>::Error,
         >,
         Result<
-            <<Contract as __Contract__AllTypes__test_vec__ret>::Vec as soroban_sdk::ContractClientReturn>::Err,
+            <<Contract as __Contract__AllTypes__test_vec__ret>::Vec as soroban_sdk::client::Type>::Err,
             soroban_sdk::InvokeError,
         >,
     >{
@@ -3222,7 +3230,8 @@ impl<'a> ContractClient<'a> {
     pub fn test_map(
         &self,
         v: &<Contract as __Contract__AllTypes__test_map__arg_0>::Map,
-    ) -> <<Contract as __Contract__AllTypes__test_map__ret>::Map as soroban_sdk::ContractClientReturn>::Ok{
+    ) -> <<Contract as __Contract__AllTypes__test_map__ret>::Map as soroban_sdk::client::Type>::Ok
+    {
         let _call_scope = soroban_sdk::testutils::ClientCallScope::enter(&self.env, self.config);
         use soroban_sdk::{FromVal, IntoVal};
         let res = self.env.invoke_contract(
@@ -3246,14 +3255,14 @@ impl<'a> ContractClient<'a> {
         v: &<Contract as __Contract__AllTypes__test_map__arg_0>::Map,
     ) -> Result<
         Result<
-            <<Contract as __Contract__AllTypes__test_map__ret>::Map as soroban_sdk::ContractClientReturn>::Ok,
-            <<<Contract as __Contract__AllTypes__test_map__ret>::Map as soroban_sdk::ContractClientReturn>::Ok as soroban_sdk::TryFromVal<
+            <<Contract as __Contract__AllTypes__test_map__ret>::Map as soroban_sdk::client::Type>::Ok,
+            <<<Contract as __Contract__AllTypes__test_map__ret>::Map as soroban_sdk::client::Type>::Ok as soroban_sdk::TryFromVal<
                 soroban_sdk::Env,
                 soroban_sdk::Val,
             >>::Error,
         >,
         Result<
-            <<Contract as __Contract__AllTypes__test_map__ret>::Map as soroban_sdk::ContractClientReturn>::Err,
+            <<Contract as __Contract__AllTypes__test_map__ret>::Map as soroban_sdk::client::Type>::Err,
             soroban_sdk::InvokeError,
         >,
     >{
@@ -3280,7 +3289,7 @@ impl<'a> ContractClient<'a> {
     pub fn test_duration(
         &self,
         v: &<Contract as __Contract__AllTypes__test_duration__arg_0>::Duration,
-    ) -> <<Contract as __Contract__AllTypes__test_duration__ret>::Duration as soroban_sdk::ContractClientReturn>::Ok{
+    ) -> <<Contract as __Contract__AllTypes__test_duration__ret>::Duration as soroban_sdk::client::Type>::Ok{
         let _call_scope = soroban_sdk::testutils::ClientCallScope::enter(&self.env, self.config);
         use soroban_sdk::{FromVal, IntoVal};
         let res = self.env.invoke_contract(
@@ -3300,14 +3309,14 @@ impl<'a> ContractClient<'a> {
         v: &<Contract as __Contract__AllTypes__test_duration__arg_0>::Duration,
     ) -> Result<
         Result<
-            <<Contract as __Contract__AllTypes__test_duration__ret>::Duration as soroban_sdk::ContractClientReturn>::Ok,
-            <<<Contract as __Contract__AllTypes__test_duration__ret>::Duration as soroban_sdk::ContractClientReturn>::Ok as soroban_sdk::TryFromVal<
+            <<Contract as __Contract__AllTypes__test_duration__ret>::Duration as soroban_sdk::client::Type>::Ok,
+            <<<Contract as __Contract__AllTypes__test_duration__ret>::Duration as soroban_sdk::client::Type>::Ok as soroban_sdk::TryFromVal<
                 soroban_sdk::Env,
                 soroban_sdk::Val,
             >>::Error,
         >,
         Result<
-            <<Contract as __Contract__AllTypes__test_duration__ret>::Duration as soroban_sdk::ContractClientReturn>::Err,
+            <<Contract as __Contract__AllTypes__test_duration__ret>::Duration as soroban_sdk::client::Type>::Err,
             soroban_sdk::InvokeError,
         >,
     >{
@@ -3330,7 +3339,7 @@ impl<'a> ContractClient<'a> {
     pub fn test_timepoint(
         &self,
         v: &<Contract as __Contract__AllTypes__test_timepoint__arg_0>::Timepoint,
-    ) -> <<Contract as __Contract__AllTypes__test_timepoint__ret>::Timepoint as soroban_sdk::ContractClientReturn>::Ok{
+    ) -> <<Contract as __Contract__AllTypes__test_timepoint__ret>::Timepoint as soroban_sdk::client::Type>::Ok{
         let _call_scope = soroban_sdk::testutils::ClientCallScope::enter(&self.env, self.config);
         use soroban_sdk::{FromVal, IntoVal};
         let res = self.env.invoke_contract(
@@ -3350,14 +3359,14 @@ impl<'a> ContractClient<'a> {
         v: &<Contract as __Contract__AllTypes__test_timepoint__arg_0>::Timepoint,
     ) -> Result<
         Result<
-            <<Contract as __Contract__AllTypes__test_timepoint__ret>::Timepoint as soroban_sdk::ContractClientReturn>::Ok,
-            <<<Contract as __Contract__AllTypes__test_timepoint__ret>::Timepoint as soroban_sdk::ContractClientReturn>::Ok as soroban_sdk::TryFromVal<
+            <<Contract as __Contract__AllTypes__test_timepoint__ret>::Timepoint as soroban_sdk::client::Type>::Ok,
+            <<<Contract as __Contract__AllTypes__test_timepoint__ret>::Timepoint as soroban_sdk::client::Type>::Ok as soroban_sdk::TryFromVal<
                 soroban_sdk::Env,
                 soroban_sdk::Val,
             >>::Error,
         >,
         Result<
-            <<Contract as __Contract__AllTypes__test_timepoint__ret>::Timepoint as soroban_sdk::ContractClientReturn>::Err,
+            <<Contract as __Contract__AllTypes__test_timepoint__ret>::Timepoint as soroban_sdk::client::Type>::Err,
             soroban_sdk::InvokeError,
         >,
     >{
@@ -3380,7 +3389,8 @@ impl<'a> ContractClient<'a> {
     pub fn test_i256(
         &self,
         v: &<Contract as __Contract__AllTypes__test_i256__arg_0>::I256,
-    ) -> <<Contract as __Contract__AllTypes__test_i256__ret>::I256 as soroban_sdk::ContractClientReturn>::Ok{
+    ) -> <<Contract as __Contract__AllTypes__test_i256__ret>::I256 as soroban_sdk::client::Type>::Ok
+    {
         let _call_scope = soroban_sdk::testutils::ClientCallScope::enter(&self.env, self.config);
         use soroban_sdk::{FromVal, IntoVal};
         let res = self.env.invoke_contract(
@@ -3404,14 +3414,14 @@ impl<'a> ContractClient<'a> {
         v: &<Contract as __Contract__AllTypes__test_i256__arg_0>::I256,
     ) -> Result<
         Result<
-            <<Contract as __Contract__AllTypes__test_i256__ret>::I256 as soroban_sdk::ContractClientReturn>::Ok,
-            <<<Contract as __Contract__AllTypes__test_i256__ret>::I256 as soroban_sdk::ContractClientReturn>::Ok as soroban_sdk::TryFromVal<
+            <<Contract as __Contract__AllTypes__test_i256__ret>::I256 as soroban_sdk::client::Type>::Ok,
+            <<<Contract as __Contract__AllTypes__test_i256__ret>::I256 as soroban_sdk::client::Type>::Ok as soroban_sdk::TryFromVal<
                 soroban_sdk::Env,
                 soroban_sdk::Val,
             >>::Error,
         >,
         Result<
-            <<Contract as __Contract__AllTypes__test_i256__ret>::I256 as soroban_sdk::ContractClientReturn>::Err,
+            <<Contract as __Contract__AllTypes__test_i256__ret>::I256 as soroban_sdk::client::Type>::Err,
             soroban_sdk::InvokeError,
         >,
     >{
@@ -3438,7 +3448,8 @@ impl<'a> ContractClient<'a> {
     pub fn test_u256(
         &self,
         v: &<Contract as __Contract__AllTypes__test_u256__arg_0>::U256,
-    ) -> <<Contract as __Contract__AllTypes__test_u256__ret>::U256 as soroban_sdk::ContractClientReturn>::Ok{
+    ) -> <<Contract as __Contract__AllTypes__test_u256__ret>::U256 as soroban_sdk::client::Type>::Ok
+    {
         let _call_scope = soroban_sdk::testutils::ClientCallScope::enter(&self.env, self.config);
         use soroban_sdk::{FromVal, IntoVal};
         let res = self.env.invoke_contract(
@@ -3462,14 +3473,14 @@ impl<'a> ContractClient<'a> {
         v: &<Contract as __Contract__AllTypes__test_u256__arg_0>::U256,
     ) -> Result<
         Result<
-            <<Contract as __Contract__AllTypes__test_u256__ret>::U256 as soroban_sdk::ContractClientReturn>::Ok,
-            <<<Contract as __Contract__AllTypes__test_u256__ret>::U256 as soroban_sdk::ContractClientReturn>::Ok as soroban_sdk::TryFromVal<
+            <<Contract as __Contract__AllTypes__test_u256__ret>::U256 as soroban_sdk::client::Type>::Ok,
+            <<<Contract as __Contract__AllTypes__test_u256__ret>::U256 as soroban_sdk::client::Type>::Ok as soroban_sdk::TryFromVal<
                 soroban_sdk::Env,
                 soroban_sdk::Val,
             >>::Error,
         >,
         Result<
-            <<Contract as __Contract__AllTypes__test_u256__ret>::U256 as soroban_sdk::ContractClientReturn>::Err,
+            <<Contract as __Contract__AllTypes__test_u256__ret>::U256 as soroban_sdk::client::Type>::Err,
             soroban_sdk::InvokeError,
         >,
     >{
@@ -3496,7 +3507,7 @@ impl<'a> ContractClient<'a> {
     pub fn test_enum_unit(
         &self,
         v: &<Contract as __Contract__AllTypes__test_enum_unit__arg_0>::MyEnumUnit,
-    ) -> <<Contract as __Contract__AllTypes__test_enum_unit__ret>::MyEnumUnit as soroban_sdk::ContractClientReturn>::Ok{
+    ) -> <<Contract as __Contract__AllTypes__test_enum_unit__ret>::MyEnumUnit as soroban_sdk::client::Type>::Ok{
         let _call_scope = soroban_sdk::testutils::ClientCallScope::enter(&self.env, self.config);
         use soroban_sdk::{FromVal, IntoVal};
         let res = self.env.invoke_contract(
@@ -3516,14 +3527,14 @@ impl<'a> ContractClient<'a> {
         v: &<Contract as __Contract__AllTypes__test_enum_unit__arg_0>::MyEnumUnit,
     ) -> Result<
         Result<
-            <<Contract as __Contract__AllTypes__test_enum_unit__ret>::MyEnumUnit as soroban_sdk::ContractClientReturn>::Ok,
-            <<<Contract as __Contract__AllTypes__test_enum_unit__ret>::MyEnumUnit as soroban_sdk::ContractClientReturn>::Ok as soroban_sdk::TryFromVal<
+            <<Contract as __Contract__AllTypes__test_enum_unit__ret>::MyEnumUnit as soroban_sdk::client::Type>::Ok,
+            <<<Contract as __Contract__AllTypes__test_enum_unit__ret>::MyEnumUnit as soroban_sdk::client::Type>::Ok as soroban_sdk::TryFromVal<
                 soroban_sdk::Env,
                 soroban_sdk::Val,
             >>::Error,
         >,
         Result<
-            <<Contract as __Contract__AllTypes__test_enum_unit__ret>::MyEnumUnit as soroban_sdk::ContractClientReturn>::Err,
+            <<Contract as __Contract__AllTypes__test_enum_unit__ret>::MyEnumUnit as soroban_sdk::client::Type>::Err,
             soroban_sdk::InvokeError,
         >,
     >{
@@ -3546,7 +3557,7 @@ impl<'a> ContractClient<'a> {
     pub fn test_enum_variants(
         &self,
         v: &<Contract as __Contract__AllTypes__test_enum_variants__arg_0>::MyEnumVariants,
-    ) -> <<Contract as __Contract__AllTypes__test_enum_variants__ret>::MyEnumVariants as soroban_sdk::ContractClientReturn>::Ok{
+    ) -> <<Contract as __Contract__AllTypes__test_enum_variants__ret>::MyEnumVariants as soroban_sdk::client::Type>::Ok{
         let _call_scope = soroban_sdk::testutils::ClientCallScope::enter(&self.env, self.config);
         use soroban_sdk::{FromVal, IntoVal};
         let res = self.env.invoke_contract(
@@ -3566,14 +3577,14 @@ impl<'a> ContractClient<'a> {
         v: &<Contract as __Contract__AllTypes__test_enum_variants__arg_0>::MyEnumVariants,
     ) -> Result<
         Result<
-            <<Contract as __Contract__AllTypes__test_enum_variants__ret>::MyEnumVariants as soroban_sdk::ContractClientReturn>::Ok,
-            <<<Contract as __Contract__AllTypes__test_enum_variants__ret>::MyEnumVariants as soroban_sdk::ContractClientReturn>::Ok as soroban_sdk::TryFromVal<
+            <<Contract as __Contract__AllTypes__test_enum_variants__ret>::MyEnumVariants as soroban_sdk::client::Type>::Ok,
+            <<<Contract as __Contract__AllTypes__test_enum_variants__ret>::MyEnumVariants as soroban_sdk::client::Type>::Ok as soroban_sdk::TryFromVal<
                 soroban_sdk::Env,
                 soroban_sdk::Val,
             >>::Error,
         >,
         Result<
-            <<Contract as __Contract__AllTypes__test_enum_variants__ret>::MyEnumVariants as soroban_sdk::ContractClientReturn>::Err,
+            <<Contract as __Contract__AllTypes__test_enum_variants__ret>::MyEnumVariants as soroban_sdk::client::Type>::Err,
             soroban_sdk::InvokeError,
         >,
     >{

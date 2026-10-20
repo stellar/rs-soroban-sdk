@@ -71,7 +71,7 @@ impl soroban_sdk::SpecTypeDef for Flag {
             ),
         });
 }
-impl soroban_sdk::ContractClientReturn for Flag {
+impl soroban_sdk::client::Type for Flag {
     type Output = Self;
     type Ok = Self;
     type Err = soroban_sdk::Error;
@@ -225,7 +225,7 @@ impl soroban_sdk::SpecTypeDef for Error {
             ),
         });
 }
-impl soroban_sdk::ContractClientReturn for Error {
+impl soroban_sdk::client::Type for Error {
     type Output = Self;
     type Ok = Self;
     type Err = soroban_sdk::Error;
@@ -464,10 +464,7 @@ impl<'a> ContractClient<'a> {
     /// Panics if the invoked contract returns an error or panics.
     ///
     /// Use [`Self::try_hello`] to receive errors instead of panicking.
-    pub fn hello(
-        &self,
-        flag: &Flag,
-    ) -> <Result<Symbol, Error> as soroban_sdk::ContractClientReturn>::Ok {
+    pub fn hello(&self, flag: &Flag) -> <Result<Symbol, Error> as soroban_sdk::client::Type>::Ok {
         use core::ops::Not;
         use soroban_sdk::{FromVal, IntoVal};
         let res = self.env.invoke_contract(
@@ -491,20 +488,14 @@ impl<'a> ContractClient<'a> {
         flag: &Flag,
     ) -> Result<
         Result<
-            <Result<Symbol, Error> as soroban_sdk::ContractClientReturn>::Ok,
-            <<Result<
-                Symbol,
-                Error,
-            > as soroban_sdk::ContractClientReturn>::Ok as soroban_sdk::TryFromVal<
+            <Result<Symbol, Error> as soroban_sdk::client::Type>::Ok,
+            <<Result<Symbol, Error> as soroban_sdk::client::Type>::Ok as soroban_sdk::TryFromVal<
                 soroban_sdk::Env,
                 soroban_sdk::Val,
             >>::Error,
         >,
-        Result<
-            <Result<Symbol, Error> as soroban_sdk::ContractClientReturn>::Err,
-            soroban_sdk::InvokeError,
-        >,
-    >{
+        Result<<Result<Symbol, Error> as soroban_sdk::client::Type>::Err, soroban_sdk::InvokeError>,
+    > {
         use soroban_sdk::{FromVal, IntoVal};
         let res = self.env.try_invoke_contract(
             &self.address,

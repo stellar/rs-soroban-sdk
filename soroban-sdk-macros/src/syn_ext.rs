@@ -224,15 +224,15 @@ impl Fn {
     pub fn output(&self, crate_path: &Path) -> Type {
         Type::Verbatim(match &self.output {
             ReturnType::Default => quote!(()),
-            ReturnType::Type(_, typ) => quote!(<#typ as #crate_path::ContractClientReturn>::Ok),
+            ReturnType::Type(_, typ) => quote!(<#typ as #crate_path::client::Type>::Ok),
         })
     }
     pub fn try_output(&self, crate_path: &Path) -> Type {
         let (t, e) = match &self.output {
             ReturnType::Default => (quote!(()), quote!(#crate_path::Error)),
             ReturnType::Type(_, typ) => (
-                quote!(<#typ as #crate_path::ContractClientReturn>::Ok),
-                quote!(<#typ as #crate_path::ContractClientReturn>::Err),
+                quote!(<#typ as #crate_path::client::Type>::Ok),
+                quote!(<#typ as #crate_path::client::Type>::Err),
             ),
         };
         Type::Verbatim(quote! {

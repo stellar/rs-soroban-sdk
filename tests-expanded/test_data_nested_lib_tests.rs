@@ -35,7 +35,7 @@ impl soroban_sdk::SpecTypeDef for Inner {
             ),
         });
 }
-impl soroban_sdk::ContractClientReturn for Inner {
+impl soroban_sdk::client::Type for Inner {
     type Output = Self;
     type Ok = Self;
     type Err = soroban_sdk::Error;
@@ -140,7 +140,7 @@ impl soroban_sdk::SpecTypeDef for Outer {
             ),
         });
 }
-impl soroban_sdk::ContractClientReturn for Outer {
+impl soroban_sdk::client::Type for Outer {
     type Output = Self;
     type Ok = Self;
     type Err = soroban_sdk::Error;

@@ -328,11 +328,7 @@ impl<'a> ContractClient<'a> {
     /// Panics if the invoked contract returns an error or panics.
     ///
     /// Use [`Self::try_fn_struct_a`] to receive errors instead of panicking.
-    pub fn fn_struct_a(
-        &self,
-        f1: &u32,
-        f2: &bool,
-    ) -> <StructA as soroban_sdk::ContractClientReturn>::Ok {
+    pub fn fn_struct_a(&self, f1: &u32, f2: &bool) -> <StructA as soroban_sdk::client::Type>::Ok {
         use core::ops::Not;
         use soroban_sdk::{FromVal, IntoVal};
         let res = self.env.invoke_contract(
@@ -356,13 +352,13 @@ impl<'a> ContractClient<'a> {
         f2: &bool,
     ) -> Result<
         Result<
-            <StructA as soroban_sdk::ContractClientReturn>::Ok,
-            <<StructA as soroban_sdk::ContractClientReturn>::Ok as soroban_sdk::TryFromVal<
+            <StructA as soroban_sdk::client::Type>::Ok,
+            <<StructA as soroban_sdk::client::Type>::Ok as soroban_sdk::TryFromVal<
                 soroban_sdk::Env,
                 soroban_sdk::Val,
             >>::Error,
         >,
-        Result<<StructA as soroban_sdk::ContractClientReturn>::Err, soroban_sdk::InvokeError>,
+        Result<<StructA as soroban_sdk::client::Type>::Err, soroban_sdk::InvokeError>,
     > {
         use soroban_sdk::{FromVal, IntoVal};
         let res = self.env.try_invoke_contract(
@@ -386,7 +382,7 @@ impl<'a> ContractClient<'a> {
         &self,
         f1: &i64,
         f2: &i64,
-    ) -> <StructTupleA as soroban_sdk::ContractClientReturn>::Ok {
+    ) -> <StructTupleA as soroban_sdk::client::Type>::Ok {
         use core::ops::Not;
         use soroban_sdk::{FromVal, IntoVal};
         let res = self.env.invoke_contract(
@@ -410,13 +406,13 @@ impl<'a> ContractClient<'a> {
         f2: &i64,
     ) -> Result<
         Result<
-            <StructTupleA as soroban_sdk::ContractClientReturn>::Ok,
-            <<StructTupleA as soroban_sdk::ContractClientReturn>::Ok as soroban_sdk::TryFromVal<
+            <StructTupleA as soroban_sdk::client::Type>::Ok,
+            <<StructTupleA as soroban_sdk::client::Type>::Ok as soroban_sdk::TryFromVal<
                 soroban_sdk::Env,
                 soroban_sdk::Val,
             >>::Error,
         >,
-        Result<<StructTupleA as soroban_sdk::ContractClientReturn>::Err, soroban_sdk::InvokeError>,
+        Result<<StructTupleA as soroban_sdk::client::Type>::Err, soroban_sdk::InvokeError>,
     > {
         use soroban_sdk::{FromVal, IntoVal};
         let res = self.env.try_invoke_contract(
@@ -436,7 +432,7 @@ impl<'a> ContractClient<'a> {
     /// Panics if the invoked contract returns an error or panics.
     ///
     /// Use [`Self::try_fn_enum_a`] to receive errors instead of panicking.
-    pub fn fn_enum_a(&self) -> <EnumA as soroban_sdk::ContractClientReturn>::Ok {
+    pub fn fn_enum_a(&self) -> <EnumA as soroban_sdk::client::Type>::Ok {
         use core::ops::Not;
         use soroban_sdk::{FromVal, IntoVal};
         let res = self.env.invoke_contract(
@@ -459,13 +455,13 @@ impl<'a> ContractClient<'a> {
         &self,
     ) -> Result<
         Result<
-            <EnumA as soroban_sdk::ContractClientReturn>::Ok,
-            <<EnumA as soroban_sdk::ContractClientReturn>::Ok as soroban_sdk::TryFromVal<
+            <EnumA as soroban_sdk::client::Type>::Ok,
+            <<EnumA as soroban_sdk::client::Type>::Ok as soroban_sdk::TryFromVal<
                 soroban_sdk::Env,
                 soroban_sdk::Val,
             >>::Error,
         >,
-        Result<<EnumA as soroban_sdk::ContractClientReturn>::Err, soroban_sdk::InvokeError>,
+        Result<<EnumA as soroban_sdk::client::Type>::Err, soroban_sdk::InvokeError>,
     > {
         use soroban_sdk::{FromVal, IntoVal};
         let res = self.env.try_invoke_contract(
@@ -486,7 +482,7 @@ impl<'a> ContractClient<'a> {
     /// Panics if the invoked contract returns an error or panics.
     ///
     /// Use [`Self::try_fn_enum_int_a`] to receive errors instead of panicking.
-    pub fn fn_enum_int_a(&self) -> <EnumIntA as soroban_sdk::ContractClientReturn>::Ok {
+    pub fn fn_enum_int_a(&self) -> <EnumIntA as soroban_sdk::client::Type>::Ok {
         use core::ops::Not;
         use soroban_sdk::{FromVal, IntoVal};
         let res = self.env.invoke_contract(
@@ -505,13 +501,13 @@ impl<'a> ContractClient<'a> {
         &self,
     ) -> Result<
         Result<
-            <EnumIntA as soroban_sdk::ContractClientReturn>::Ok,
-            <<EnumIntA as soroban_sdk::ContractClientReturn>::Ok as soroban_sdk::TryFromVal<
+            <EnumIntA as soroban_sdk::client::Type>::Ok,
+            <<EnumIntA as soroban_sdk::client::Type>::Ok as soroban_sdk::TryFromVal<
                 soroban_sdk::Env,
                 soroban_sdk::Val,
             >>::Error,
         >,
-        Result<<EnumIntA as soroban_sdk::ContractClientReturn>::Err, soroban_sdk::InvokeError>,
+        Result<<EnumIntA as soroban_sdk::client::Type>::Err, soroban_sdk::InvokeError>,
     > {
         use soroban_sdk::{FromVal, IntoVal};
         let res = self.env.try_invoke_contract(
@@ -531,7 +527,7 @@ impl<'a> ContractClient<'a> {
     pub fn fn_error_a(
         &self,
         input: &u32,
-    ) -> <Result<u32, ErrorA> as soroban_sdk::ContractClientReturn>::Ok {
+    ) -> <Result<u32, ErrorA> as soroban_sdk::client::Type>::Ok {
         use core::ops::Not;
         use soroban_sdk::{FromVal, IntoVal};
         let res = self.env.invoke_contract(
@@ -551,20 +547,14 @@ impl<'a> ContractClient<'a> {
         input: &u32,
     ) -> Result<
         Result<
-            <Result<u32, ErrorA> as soroban_sdk::ContractClientReturn>::Ok,
-            <<Result<
-                u32,
-                ErrorA,
-            > as soroban_sdk::ContractClientReturn>::Ok as soroban_sdk::TryFromVal<
+            <Result<u32, ErrorA> as soroban_sdk::client::Type>::Ok,
+            <<Result<u32, ErrorA> as soroban_sdk::client::Type>::Ok as soroban_sdk::TryFromVal<
                 soroban_sdk::Env,
                 soroban_sdk::Val,
             >>::Error,
         >,
-        Result<
-            <Result<u32, ErrorA> as soroban_sdk::ContractClientReturn>::Err,
-            soroban_sdk::InvokeError,
-        >,
-    >{
+        Result<<Result<u32, ErrorA> as soroban_sdk::client::Type>::Err, soroban_sdk::InvokeError>,
+    > {
         use soroban_sdk::{FromVal, IntoVal};
         let res = self.env.try_invoke_contract(
             &self.address,

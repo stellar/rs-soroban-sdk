@@ -37,7 +37,7 @@ impl soroban_sdk::SpecTypeDef for IntEnum {
             ),
         });
 }
-impl soroban_sdk::ContractClientReturn for IntEnum {
+impl soroban_sdk::client::Type for IntEnum {
     type Output = Self;
     type Ok = Self;
     type Err = soroban_sdk::Error;

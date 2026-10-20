@@ -2139,7 +2139,7 @@ impl<'a> ContractGlobalPathClient<'a> {
     pub fn test_u32(
         &self,
         v: &<ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__test_u32__arg_0>::u32,
-    ) -> <<ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__test_u32__ret>::u32 as soroban_sdk::ContractClientReturn>::Ok{
+    ) -> <<ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__test_u32__ret>::u32 as soroban_sdk::client::Type>::Ok{
         use core::ops::Not;
         use soroban_sdk::{FromVal, IntoVal};
         let res = self.env.invoke_contract(
@@ -2166,14 +2166,14 @@ impl<'a> ContractGlobalPathClient<'a> {
         v: &<ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__test_u32__arg_0>::u32,
     ) -> Result<
         Result<
-            <<ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__test_u32__ret>::u32 as soroban_sdk::ContractClientReturn>::Ok,
-            <<<ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__test_u32__ret>::u32 as soroban_sdk::ContractClientReturn>::Ok as soroban_sdk::TryFromVal<
+            <<ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__test_u32__ret>::u32 as soroban_sdk::client::Type>::Ok,
+            <<<ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__test_u32__ret>::u32 as soroban_sdk::client::Type>::Ok as soroban_sdk::TryFromVal<
                 soroban_sdk::Env,
                 soroban_sdk::Val,
             >>::Error,
         >,
         Result<
-            <<ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__test_u32__ret>::u32 as soroban_sdk::ContractClientReturn>::Err,
+            <<ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__test_u32__ret>::u32 as soroban_sdk::client::Type>::Err,
             soroban_sdk::InvokeError,
         >,
     >{
@@ -2201,7 +2201,7 @@ impl<'a> ContractGlobalPathClient<'a> {
     pub fn test_i32(
         &self,
         v: &<ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__test_i32__arg_0>::i32,
-    ) -> <<ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__test_i32__ret>::i32 as soroban_sdk::ContractClientReturn>::Ok{
+    ) -> <<ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__test_i32__ret>::i32 as soroban_sdk::client::Type>::Ok{
         use core::ops::Not;
         use soroban_sdk::{FromVal, IntoVal};
         let res = self.env.invoke_contract(
@@ -2227,14 +2227,14 @@ impl<'a> ContractGlobalPathClient<'a> {
         v: &<ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__test_i32__arg_0>::i32,
     ) -> Result<
         Result<
-            <<ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__test_i32__ret>::i32 as soroban_sdk::ContractClientReturn>::Ok,
-            <<<ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__test_i32__ret>::i32 as soroban_sdk::ContractClientReturn>::Ok as soroban_sdk::TryFromVal<
+            <<ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__test_i32__ret>::i32 as soroban_sdk::client::Type>::Ok,
+            <<<ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__test_i32__ret>::i32 as soroban_sdk::client::Type>::Ok as soroban_sdk::TryFromVal<
                 soroban_sdk::Env,
                 soroban_sdk::Val,
             >>::Error,
         >,
         Result<
-            <<ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__test_i32__ret>::i32 as soroban_sdk::ContractClientReturn>::Err,
+            <<ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__test_i32__ret>::i32 as soroban_sdk::client::Type>::Err,
             soroban_sdk::InvokeError,
         >,
     >{
@@ -2260,7 +2260,7 @@ impl<'a> ContractGlobalPathClient<'a> {
     pub fn test_u64(
         &self,
         v: &<ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__test_u64__arg_0>::u64,
-    ) -> <<ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__test_u64__ret>::u64 as soroban_sdk::ContractClientReturn>::Ok{
+    ) -> <<ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__test_u64__ret>::u64 as soroban_sdk::client::Type>::Ok{
         use core::ops::Not;
         use soroban_sdk::{FromVal, IntoVal};
         let res = self.env.invoke_contract(
@@ -2284,14 +2284,14 @@ impl<'a> ContractGlobalPathClient<'a> {
         v: &<ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__test_u64__arg_0>::u64,
     ) -> Result<
         Result<
-            <<ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__test_u64__ret>::u64 as soroban_sdk::ContractClientReturn>::Ok,
-            <<<ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__test_u64__ret>::u64 as soroban_sdk::ContractClientReturn>::Ok as soroban_sdk::TryFromVal<
+            <<ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__test_u64__ret>::u64 as soroban_sdk::client::Type>::Ok,
+            <<<ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__test_u64__ret>::u64 as soroban_sdk::client::Type>::Ok as soroban_sdk::TryFromVal<
                 soroban_sdk::Env,
                 soroban_sdk::Val,
             >>::Error,
         >,
         Result<
-            <<ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__test_u64__ret>::u64 as soroban_sdk::ContractClientReturn>::Err,
+            <<ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__test_u64__ret>::u64 as soroban_sdk::client::Type>::Err,
             soroban_sdk::InvokeError,
         >,
     >{
@@ -2317,7 +2317,7 @@ impl<'a> ContractGlobalPathClient<'a> {
     pub fn test_i64(
         &self,
         v: &<ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__test_i64__arg_0>::i64,
-    ) -> <<ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__test_i64__ret>::i64 as soroban_sdk::ContractClientReturn>::Ok{
+    ) -> <<ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__test_i64__ret>::i64 as soroban_sdk::client::Type>::Ok{
         use core::ops::Not;
         use soroban_sdk::{FromVal, IntoVal};
         let res = self.env.invoke_contract(
@@ -2341,14 +2341,14 @@ impl<'a> ContractGlobalPathClient<'a> {
         v: &<ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__test_i64__arg_0>::i64,
     ) -> Result<
         Result<
-            <<ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__test_i64__ret>::i64 as soroban_sdk::ContractClientReturn>::Ok,
-            <<<ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__test_i64__ret>::i64 as soroban_sdk::ContractClientReturn>::Ok as soroban_sdk::TryFromVal<
+            <<ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__test_i64__ret>::i64 as soroban_sdk::client::Type>::Ok,
+            <<<ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__test_i64__ret>::i64 as soroban_sdk::client::Type>::Ok as soroban_sdk::TryFromVal<
                 soroban_sdk::Env,
                 soroban_sdk::Val,
             >>::Error,
         >,
         Result<
-            <<ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__test_i64__ret>::i64 as soroban_sdk::ContractClientReturn>::Err,
+            <<ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__test_i64__ret>::i64 as soroban_sdk::client::Type>::Err,
             soroban_sdk::InvokeError,
         >,
     >{
@@ -2374,7 +2374,7 @@ impl<'a> ContractGlobalPathClient<'a> {
     pub fn test_u128(
         &self,
         v: &<ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__test_u128__arg_0>::u128,
-    ) -> <<ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__test_u128__ret>::u128 as soroban_sdk::ContractClientReturn>::Ok{
+    ) -> <<ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__test_u128__ret>::u128 as soroban_sdk::client::Type>::Ok{
         use core::ops::Not;
         use soroban_sdk::{FromVal, IntoVal};
         let res = self.env.invoke_contract(
@@ -2398,14 +2398,14 @@ impl<'a> ContractGlobalPathClient<'a> {
         v: &<ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__test_u128__arg_0>::u128,
     ) -> Result<
         Result<
-            <<ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__test_u128__ret>::u128 as soroban_sdk::ContractClientReturn>::Ok,
-            <<<ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__test_u128__ret>::u128 as soroban_sdk::ContractClientReturn>::Ok as soroban_sdk::TryFromVal<
+            <<ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__test_u128__ret>::u128 as soroban_sdk::client::Type>::Ok,
+            <<<ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__test_u128__ret>::u128 as soroban_sdk::client::Type>::Ok as soroban_sdk::TryFromVal<
                 soroban_sdk::Env,
                 soroban_sdk::Val,
             >>::Error,
         >,
         Result<
-            <<ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__test_u128__ret>::u128 as soroban_sdk::ContractClientReturn>::Err,
+            <<ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__test_u128__ret>::u128 as soroban_sdk::client::Type>::Err,
             soroban_sdk::InvokeError,
         >,
     >{
@@ -2431,7 +2431,7 @@ impl<'a> ContractGlobalPathClient<'a> {
     pub fn test_i128(
         &self,
         v: &<ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__test_i128__arg_0>::i128,
-    ) -> <<ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__test_i128__ret>::i128 as soroban_sdk::ContractClientReturn>::Ok{
+    ) -> <<ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__test_i128__ret>::i128 as soroban_sdk::client::Type>::Ok{
         use core::ops::Not;
         use soroban_sdk::{FromVal, IntoVal};
         let res = self.env.invoke_contract(
@@ -2455,14 +2455,14 @@ impl<'a> ContractGlobalPathClient<'a> {
         v: &<ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__test_i128__arg_0>::i128,
     ) -> Result<
         Result<
-            <<ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__test_i128__ret>::i128 as soroban_sdk::ContractClientReturn>::Ok,
-            <<<ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__test_i128__ret>::i128 as soroban_sdk::ContractClientReturn>::Ok as soroban_sdk::TryFromVal<
+            <<ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__test_i128__ret>::i128 as soroban_sdk::client::Type>::Ok,
+            <<<ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__test_i128__ret>::i128 as soroban_sdk::client::Type>::Ok as soroban_sdk::TryFromVal<
                 soroban_sdk::Env,
                 soroban_sdk::Val,
             >>::Error,
         >,
         Result<
-            <<ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__test_i128__ret>::i128 as soroban_sdk::ContractClientReturn>::Err,
+            <<ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__test_i128__ret>::i128 as soroban_sdk::client::Type>::Err,
             soroban_sdk::InvokeError,
         >,
     >{
@@ -2488,7 +2488,7 @@ impl<'a> ContractGlobalPathClient<'a> {
     pub fn test_bool(
         &self,
         v: &<ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__test_bool__arg_0>::bool,
-    ) -> <<ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__test_bool__ret>::bool as soroban_sdk::ContractClientReturn>::Ok{
+    ) -> <<ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__test_bool__ret>::bool as soroban_sdk::client::Type>::Ok{
         use core::ops::Not;
         use soroban_sdk::{FromVal, IntoVal};
         let res = self.env.invoke_contract(
@@ -2512,14 +2512,14 @@ impl<'a> ContractGlobalPathClient<'a> {
         v: &<ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__test_bool__arg_0>::bool,
     ) -> Result<
         Result<
-            <<ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__test_bool__ret>::bool as soroban_sdk::ContractClientReturn>::Ok,
-            <<<ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__test_bool__ret>::bool as soroban_sdk::ContractClientReturn>::Ok as soroban_sdk::TryFromVal<
+            <<ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__test_bool__ret>::bool as soroban_sdk::client::Type>::Ok,
+            <<<ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__test_bool__ret>::bool as soroban_sdk::client::Type>::Ok as soroban_sdk::TryFromVal<
                 soroban_sdk::Env,
                 soroban_sdk::Val,
             >>::Error,
         >,
         Result<
-            <<ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__test_bool__ret>::bool as soroban_sdk::ContractClientReturn>::Err,
+            <<ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__test_bool__ret>::bool as soroban_sdk::client::Type>::Err,
             soroban_sdk::InvokeError,
         >,
     >{
@@ -2545,7 +2545,7 @@ impl<'a> ContractGlobalPathClient<'a> {
     pub fn test_address(
         &self,
         v: &<ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__test_address__arg_0>::Address,
-    ) -> <<ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__test_address__ret>::Address as soroban_sdk::ContractClientReturn>::Ok{
+    ) -> <<ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__test_address__ret>::Address as soroban_sdk::client::Type>::Ok{
         use core::ops::Not;
         use soroban_sdk::{FromVal, IntoVal};
         let res = self.env.invoke_contract(
@@ -2565,14 +2565,14 @@ impl<'a> ContractGlobalPathClient<'a> {
         v: &<ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__test_address__arg_0>::Address,
     ) -> Result<
         Result<
-            <<ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__test_address__ret>::Address as soroban_sdk::ContractClientReturn>::Ok,
-            <<<ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__test_address__ret>::Address as soroban_sdk::ContractClientReturn>::Ok as soroban_sdk::TryFromVal<
+            <<ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__test_address__ret>::Address as soroban_sdk::client::Type>::Ok,
+            <<<ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__test_address__ret>::Address as soroban_sdk::client::Type>::Ok as soroban_sdk::TryFromVal<
                 soroban_sdk::Env,
                 soroban_sdk::Val,
             >>::Error,
         >,
         Result<
-            <<ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__test_address__ret>::Address as soroban_sdk::ContractClientReturn>::Err,
+            <<ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__test_address__ret>::Address as soroban_sdk::client::Type>::Err,
             soroban_sdk::InvokeError,
         >,
     >{
@@ -2594,7 +2594,7 @@ impl<'a> ContractGlobalPathClient<'a> {
     pub fn test_bytes(
         &self,
         v: &<ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__test_bytes__arg_0>::Bytes,
-    ) -> <<ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__test_bytes__ret>::Bytes as soroban_sdk::ContractClientReturn>::Ok{
+    ) -> <<ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__test_bytes__ret>::Bytes as soroban_sdk::client::Type>::Ok{
         use core::ops::Not;
         use soroban_sdk::{FromVal, IntoVal};
         let res = self.env.invoke_contract(
@@ -2614,14 +2614,14 @@ impl<'a> ContractGlobalPathClient<'a> {
         v: &<ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__test_bytes__arg_0>::Bytes,
     ) -> Result<
         Result<
-            <<ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__test_bytes__ret>::Bytes as soroban_sdk::ContractClientReturn>::Ok,
-            <<<ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__test_bytes__ret>::Bytes as soroban_sdk::ContractClientReturn>::Ok as soroban_sdk::TryFromVal<
+            <<ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__test_bytes__ret>::Bytes as soroban_sdk::client::Type>::Ok,
+            <<<ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__test_bytes__ret>::Bytes as soroban_sdk::client::Type>::Ok as soroban_sdk::TryFromVal<
                 soroban_sdk::Env,
                 soroban_sdk::Val,
             >>::Error,
         >,
         Result<
-            <<ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__test_bytes__ret>::Bytes as soroban_sdk::ContractClientReturn>::Err,
+            <<ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__test_bytes__ret>::Bytes as soroban_sdk::client::Type>::Err,
             soroban_sdk::InvokeError,
         >,
     >{
@@ -2643,7 +2643,7 @@ impl<'a> ContractGlobalPathClient<'a> {
     pub fn test_bytes_n(
         &self,
         v: &<ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__test_bytes_n__arg_0>::BytesN,
-    ) -> <<ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__test_bytes_n__ret>::BytesN as soroban_sdk::ContractClientReturn>::Ok{
+    ) -> <<ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__test_bytes_n__ret>::BytesN as soroban_sdk::client::Type>::Ok{
         use core::ops::Not;
         use soroban_sdk::{FromVal, IntoVal};
         let res = self.env.invoke_contract(
@@ -2663,14 +2663,14 @@ impl<'a> ContractGlobalPathClient<'a> {
         v: &<ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__test_bytes_n__arg_0>::BytesN,
     ) -> Result<
         Result<
-            <<ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__test_bytes_n__ret>::BytesN as soroban_sdk::ContractClientReturn>::Ok,
-            <<<ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__test_bytes_n__ret>::BytesN as soroban_sdk::ContractClientReturn>::Ok as soroban_sdk::TryFromVal<
+            <<ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__test_bytes_n__ret>::BytesN as soroban_sdk::client::Type>::Ok,
+            <<<ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__test_bytes_n__ret>::BytesN as soroban_sdk::client::Type>::Ok as soroban_sdk::TryFromVal<
                 soroban_sdk::Env,
                 soroban_sdk::Val,
             >>::Error,
         >,
         Result<
-            <<ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__test_bytes_n__ret>::BytesN as soroban_sdk::ContractClientReturn>::Err,
+            <<ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__test_bytes_n__ret>::BytesN as soroban_sdk::client::Type>::Err,
             soroban_sdk::InvokeError,
         >,
     >{
@@ -2692,7 +2692,7 @@ impl<'a> ContractGlobalPathClient<'a> {
     pub fn test_string(
         &self,
         v: &<ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__test_string__arg_0>::String,
-    ) -> <<ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__test_string__ret>::String as soroban_sdk::ContractClientReturn>::Ok{
+    ) -> <<ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__test_string__ret>::String as soroban_sdk::client::Type>::Ok{
         use core::ops::Not;
         use soroban_sdk::{FromVal, IntoVal};
         let res = self.env.invoke_contract(
@@ -2712,14 +2712,14 @@ impl<'a> ContractGlobalPathClient<'a> {
         v: &<ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__test_string__arg_0>::String,
     ) -> Result<
         Result<
-            <<ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__test_string__ret>::String as soroban_sdk::ContractClientReturn>::Ok,
-            <<<ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__test_string__ret>::String as soroban_sdk::ContractClientReturn>::Ok as soroban_sdk::TryFromVal<
+            <<ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__test_string__ret>::String as soroban_sdk::client::Type>::Ok,
+            <<<ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__test_string__ret>::String as soroban_sdk::client::Type>::Ok as soroban_sdk::TryFromVal<
                 soroban_sdk::Env,
                 soroban_sdk::Val,
             >>::Error,
         >,
         Result<
-            <<ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__test_string__ret>::String as soroban_sdk::ContractClientReturn>::Err,
+            <<ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__test_string__ret>::String as soroban_sdk::client::Type>::Err,
             soroban_sdk::InvokeError,
         >,
     >{
@@ -2741,7 +2741,7 @@ impl<'a> ContractGlobalPathClient<'a> {
     pub fn test_symbol(
         &self,
         v: &<ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__test_symbol__arg_0>::Symbol,
-    ) -> <<ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__test_symbol__ret>::Symbol as soroban_sdk::ContractClientReturn>::Ok{
+    ) -> <<ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__test_symbol__ret>::Symbol as soroban_sdk::client::Type>::Ok{
         use core::ops::Not;
         use soroban_sdk::{FromVal, IntoVal};
         let res = self.env.invoke_contract(
@@ -2761,14 +2761,14 @@ impl<'a> ContractGlobalPathClient<'a> {
         v: &<ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__test_symbol__arg_0>::Symbol,
     ) -> Result<
         Result<
-            <<ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__test_symbol__ret>::Symbol as soroban_sdk::ContractClientReturn>::Ok,
-            <<<ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__test_symbol__ret>::Symbol as soroban_sdk::ContractClientReturn>::Ok as soroban_sdk::TryFromVal<
+            <<ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__test_symbol__ret>::Symbol as soroban_sdk::client::Type>::Ok,
+            <<<ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__test_symbol__ret>::Symbol as soroban_sdk::client::Type>::Ok as soroban_sdk::TryFromVal<
                 soroban_sdk::Env,
                 soroban_sdk::Val,
             >>::Error,
         >,
         Result<
-            <<ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__test_symbol__ret>::Symbol as soroban_sdk::ContractClientReturn>::Err,
+            <<ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__test_symbol__ret>::Symbol as soroban_sdk::client::Type>::Err,
             soroban_sdk::InvokeError,
         >,
     >{
@@ -2790,7 +2790,7 @@ impl<'a> ContractGlobalPathClient<'a> {
     pub fn test_vec(
         &self,
         v: &<ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__test_vec__arg_0>::Vec,
-    ) -> <<ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__test_vec__ret>::Vec as soroban_sdk::ContractClientReturn>::Ok{
+    ) -> <<ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__test_vec__ret>::Vec as soroban_sdk::client::Type>::Ok{
         use core::ops::Not;
         use soroban_sdk::{FromVal, IntoVal};
         let res = self.env.invoke_contract(
@@ -2814,14 +2814,14 @@ impl<'a> ContractGlobalPathClient<'a> {
         v: &<ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__test_vec__arg_0>::Vec,
     ) -> Result<
         Result<
-            <<ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__test_vec__ret>::Vec as soroban_sdk::ContractClientReturn>::Ok,
-            <<<ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__test_vec__ret>::Vec as soroban_sdk::ContractClientReturn>::Ok as soroban_sdk::TryFromVal<
+            <<ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__test_vec__ret>::Vec as soroban_sdk::client::Type>::Ok,
+            <<<ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__test_vec__ret>::Vec as soroban_sdk::client::Type>::Ok as soroban_sdk::TryFromVal<
                 soroban_sdk::Env,
                 soroban_sdk::Val,
             >>::Error,
         >,
         Result<
-            <<ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__test_vec__ret>::Vec as soroban_sdk::ContractClientReturn>::Err,
+            <<ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__test_vec__ret>::Vec as soroban_sdk::client::Type>::Err,
             soroban_sdk::InvokeError,
         >,
     >{
@@ -2847,7 +2847,7 @@ impl<'a> ContractGlobalPathClient<'a> {
     pub fn test_map(
         &self,
         v: &<ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__test_map__arg_0>::Map,
-    ) -> <<ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__test_map__ret>::Map as soroban_sdk::ContractClientReturn>::Ok{
+    ) -> <<ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__test_map__ret>::Map as soroban_sdk::client::Type>::Ok{
         use core::ops::Not;
         use soroban_sdk::{FromVal, IntoVal};
         let res = self.env.invoke_contract(
@@ -2871,14 +2871,14 @@ impl<'a> ContractGlobalPathClient<'a> {
         v: &<ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__test_map__arg_0>::Map,
     ) -> Result<
         Result<
-            <<ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__test_map__ret>::Map as soroban_sdk::ContractClientReturn>::Ok,
-            <<<ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__test_map__ret>::Map as soroban_sdk::ContractClientReturn>::Ok as soroban_sdk::TryFromVal<
+            <<ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__test_map__ret>::Map as soroban_sdk::client::Type>::Ok,
+            <<<ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__test_map__ret>::Map as soroban_sdk::client::Type>::Ok as soroban_sdk::TryFromVal<
                 soroban_sdk::Env,
                 soroban_sdk::Val,
             >>::Error,
         >,
         Result<
-            <<ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__test_map__ret>::Map as soroban_sdk::ContractClientReturn>::Err,
+            <<ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__test_map__ret>::Map as soroban_sdk::client::Type>::Err,
             soroban_sdk::InvokeError,
         >,
     >{
@@ -2904,7 +2904,7 @@ impl<'a> ContractGlobalPathClient<'a> {
     pub fn test_duration(
         &self,
         v: &<ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__test_duration__arg_0>::Duration,
-    ) -> <<ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__test_duration__ret>::Duration as soroban_sdk::ContractClientReturn>::Ok{
+    ) -> <<ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__test_duration__ret>::Duration as soroban_sdk::client::Type>::Ok{
         use core::ops::Not;
         use soroban_sdk::{FromVal, IntoVal};
         let res = self.env.invoke_contract(
@@ -2924,14 +2924,14 @@ impl<'a> ContractGlobalPathClient<'a> {
         v: &<ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__test_duration__arg_0>::Duration,
     ) -> Result<
         Result<
-            <<ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__test_duration__ret>::Duration as soroban_sdk::ContractClientReturn>::Ok,
-            <<<ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__test_duration__ret>::Duration as soroban_sdk::ContractClientReturn>::Ok as soroban_sdk::TryFromVal<
+            <<ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__test_duration__ret>::Duration as soroban_sdk::client::Type>::Ok,
+            <<<ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__test_duration__ret>::Duration as soroban_sdk::client::Type>::Ok as soroban_sdk::TryFromVal<
                 soroban_sdk::Env,
                 soroban_sdk::Val,
             >>::Error,
         >,
         Result<
-            <<ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__test_duration__ret>::Duration as soroban_sdk::ContractClientReturn>::Err,
+            <<ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__test_duration__ret>::Duration as soroban_sdk::client::Type>::Err,
             soroban_sdk::InvokeError,
         >,
     >{
@@ -2953,7 +2953,7 @@ impl<'a> ContractGlobalPathClient<'a> {
     pub fn test_timepoint(
         &self,
         v: &<ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__test_timepoint__arg_0>::Timepoint,
-    ) -> <<ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__test_timepoint__ret>::Timepoint as soroban_sdk::ContractClientReturn>::Ok{
+    ) -> <<ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__test_timepoint__ret>::Timepoint as soroban_sdk::client::Type>::Ok{
         use core::ops::Not;
         use soroban_sdk::{FromVal, IntoVal};
         let res = self.env.invoke_contract(
@@ -2973,14 +2973,14 @@ impl<'a> ContractGlobalPathClient<'a> {
         v: &<ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__test_timepoint__arg_0>::Timepoint,
     ) -> Result<
         Result<
-            <<ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__test_timepoint__ret>::Timepoint as soroban_sdk::ContractClientReturn>::Ok,
-            <<<ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__test_timepoint__ret>::Timepoint as soroban_sdk::ContractClientReturn>::Ok as soroban_sdk::TryFromVal<
+            <<ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__test_timepoint__ret>::Timepoint as soroban_sdk::client::Type>::Ok,
+            <<<ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__test_timepoint__ret>::Timepoint as soroban_sdk::client::Type>::Ok as soroban_sdk::TryFromVal<
                 soroban_sdk::Env,
                 soroban_sdk::Val,
             >>::Error,
         >,
         Result<
-            <<ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__test_timepoint__ret>::Timepoint as soroban_sdk::ContractClientReturn>::Err,
+            <<ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__test_timepoint__ret>::Timepoint as soroban_sdk::client::Type>::Err,
             soroban_sdk::InvokeError,
         >,
     >{
@@ -3002,7 +3002,7 @@ impl<'a> ContractGlobalPathClient<'a> {
     pub fn test_i256(
         &self,
         v: &<ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__test_i256__arg_0>::I256,
-    ) -> <<ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__test_i256__ret>::I256 as soroban_sdk::ContractClientReturn>::Ok{
+    ) -> <<ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__test_i256__ret>::I256 as soroban_sdk::client::Type>::Ok{
         use core::ops::Not;
         use soroban_sdk::{FromVal, IntoVal};
         let res = self.env.invoke_contract(
@@ -3026,14 +3026,14 @@ impl<'a> ContractGlobalPathClient<'a> {
         v: &<ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__test_i256__arg_0>::I256,
     ) -> Result<
         Result<
-            <<ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__test_i256__ret>::I256 as soroban_sdk::ContractClientReturn>::Ok,
-            <<<ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__test_i256__ret>::I256 as soroban_sdk::ContractClientReturn>::Ok as soroban_sdk::TryFromVal<
+            <<ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__test_i256__ret>::I256 as soroban_sdk::client::Type>::Ok,
+            <<<ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__test_i256__ret>::I256 as soroban_sdk::client::Type>::Ok as soroban_sdk::TryFromVal<
                 soroban_sdk::Env,
                 soroban_sdk::Val,
             >>::Error,
         >,
         Result<
-            <<ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__test_i256__ret>::I256 as soroban_sdk::ContractClientReturn>::Err,
+            <<ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__test_i256__ret>::I256 as soroban_sdk::client::Type>::Err,
             soroban_sdk::InvokeError,
         >,
     >{
@@ -3059,7 +3059,7 @@ impl<'a> ContractGlobalPathClient<'a> {
     pub fn test_u256(
         &self,
         v: &<ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__test_u256__arg_0>::U256,
-    ) -> <<ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__test_u256__ret>::U256 as soroban_sdk::ContractClientReturn>::Ok{
+    ) -> <<ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__test_u256__ret>::U256 as soroban_sdk::client::Type>::Ok{
         use core::ops::Not;
         use soroban_sdk::{FromVal, IntoVal};
         let res = self.env.invoke_contract(
@@ -3083,14 +3083,14 @@ impl<'a> ContractGlobalPathClient<'a> {
         v: &<ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__test_u256__arg_0>::U256,
     ) -> Result<
         Result<
-            <<ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__test_u256__ret>::U256 as soroban_sdk::ContractClientReturn>::Ok,
-            <<<ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__test_u256__ret>::U256 as soroban_sdk::ContractClientReturn>::Ok as soroban_sdk::TryFromVal<
+            <<ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__test_u256__ret>::U256 as soroban_sdk::client::Type>::Ok,
+            <<<ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__test_u256__ret>::U256 as soroban_sdk::client::Type>::Ok as soroban_sdk::TryFromVal<
                 soroban_sdk::Env,
                 soroban_sdk::Val,
             >>::Error,
         >,
         Result<
-            <<ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__test_u256__ret>::U256 as soroban_sdk::ContractClientReturn>::Err,
+            <<ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__test_u256__ret>::U256 as soroban_sdk::client::Type>::Err,
             soroban_sdk::InvokeError,
         >,
     >{
@@ -3115,7 +3115,7 @@ impl<'a> ContractGlobalPathClient<'a> {
     /// Use [`Self::try_test_env_param`] to receive errors instead of panicking.
     pub fn test_env_param(
         &self,
-    ) -> <<ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__test_env_param__ret>::u32 as soroban_sdk::ContractClientReturn>::Ok{
+    ) -> <<ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__test_env_param__ret>::u32 as soroban_sdk::client::Type>::Ok{
         use core::ops::Not;
         use soroban_sdk::{FromVal, IntoVal};
         let res = self.env.invoke_contract(
@@ -3134,14 +3134,14 @@ impl<'a> ContractGlobalPathClient<'a> {
         &self,
     ) -> Result<
         Result<
-            <<ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__test_env_param__ret>::u32 as soroban_sdk::ContractClientReturn>::Ok,
-            <<<ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__test_env_param__ret>::u32 as soroban_sdk::ContractClientReturn>::Ok as soroban_sdk::TryFromVal<
+            <<ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__test_env_param__ret>::u32 as soroban_sdk::client::Type>::Ok,
+            <<<ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__test_env_param__ret>::u32 as soroban_sdk::client::Type>::Ok as soroban_sdk::TryFromVal<
                 soroban_sdk::Env,
                 soroban_sdk::Val,
             >>::Error,
         >,
         Result<
-            <<ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__test_env_param__ret>::u32 as soroban_sdk::ContractClientReturn>::Err,
+            <<ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__test_env_param__ret>::u32 as soroban_sdk::client::Type>::Err,
             soroban_sdk::InvokeError,
         >,
     >{
@@ -3163,7 +3163,7 @@ impl<'a> ContractGlobalPathClient<'a> {
     pub fn test_struct(
         &self,
         v: &<ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__test_struct__arg_0>::MyStruct,
-    ) -> <<ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__test_struct__ret>::MyStruct as soroban_sdk::ContractClientReturn>::Ok{
+    ) -> <<ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__test_struct__ret>::MyStruct as soroban_sdk::client::Type>::Ok{
         use core::ops::Not;
         use soroban_sdk::{FromVal, IntoVal};
         let res = self.env.invoke_contract(
@@ -3183,14 +3183,14 @@ impl<'a> ContractGlobalPathClient<'a> {
         v: &<ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__test_struct__arg_0>::MyStruct,
     ) -> Result<
         Result<
-            <<ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__test_struct__ret>::MyStruct as soroban_sdk::ContractClientReturn>::Ok,
-            <<<ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__test_struct__ret>::MyStruct as soroban_sdk::ContractClientReturn>::Ok as soroban_sdk::TryFromVal<
+            <<ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__test_struct__ret>::MyStruct as soroban_sdk::client::Type>::Ok,
+            <<<ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__test_struct__ret>::MyStruct as soroban_sdk::client::Type>::Ok as soroban_sdk::TryFromVal<
                 soroban_sdk::Env,
                 soroban_sdk::Val,
             >>::Error,
         >,
         Result<
-            <<ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__test_struct__ret>::MyStruct as soroban_sdk::ContractClientReturn>::Err,
+            <<ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__test_struct__ret>::MyStruct as soroban_sdk::client::Type>::Err,
             soroban_sdk::InvokeError,
         >,
     >{
@@ -3212,7 +3212,7 @@ impl<'a> ContractGlobalPathClient<'a> {
     pub fn test_enum_unit(
         &self,
         v: &<ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__test_enum_unit__arg_0>::MyEnumUnit,
-    ) -> <<ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__test_enum_unit__ret>::MyEnumUnit as soroban_sdk::ContractClientReturn>::Ok{
+    ) -> <<ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__test_enum_unit__ret>::MyEnumUnit as soroban_sdk::client::Type>::Ok{
         use core::ops::Not;
         use soroban_sdk::{FromVal, IntoVal};
         let res = self.env.invoke_contract(
@@ -3232,14 +3232,14 @@ impl<'a> ContractGlobalPathClient<'a> {
         v: &<ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__test_enum_unit__arg_0>::MyEnumUnit,
     ) -> Result<
         Result<
-            <<ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__test_enum_unit__ret>::MyEnumUnit as soroban_sdk::ContractClientReturn>::Ok,
-            <<<ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__test_enum_unit__ret>::MyEnumUnit as soroban_sdk::ContractClientReturn>::Ok as soroban_sdk::TryFromVal<
+            <<ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__test_enum_unit__ret>::MyEnumUnit as soroban_sdk::client::Type>::Ok,
+            <<<ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__test_enum_unit__ret>::MyEnumUnit as soroban_sdk::client::Type>::Ok as soroban_sdk::TryFromVal<
                 soroban_sdk::Env,
                 soroban_sdk::Val,
             >>::Error,
         >,
         Result<
-            <<ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__test_enum_unit__ret>::MyEnumUnit as soroban_sdk::ContractClientReturn>::Err,
+            <<ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__test_enum_unit__ret>::MyEnumUnit as soroban_sdk::client::Type>::Err,
             soroban_sdk::InvokeError,
         >,
     >{
@@ -3261,7 +3261,7 @@ impl<'a> ContractGlobalPathClient<'a> {
     pub fn test_enum_variants(
         &self,
         v: &<ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__test_enum_variants__arg_0>::MyEnumVariants,
-    ) -> <<ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__test_enum_variants__ret>::MyEnumVariants as soroban_sdk::ContractClientReturn>::Ok{
+    ) -> <<ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__test_enum_variants__ret>::MyEnumVariants as soroban_sdk::client::Type>::Ok{
         use core::ops::Not;
         use soroban_sdk::{FromVal, IntoVal};
         let res = self.env.invoke_contract(
@@ -3281,14 +3281,14 @@ impl<'a> ContractGlobalPathClient<'a> {
         v: &<ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__test_enum_variants__arg_0>::MyEnumVariants,
     ) -> Result<
         Result<
-            <<ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__test_enum_variants__ret>::MyEnumVariants as soroban_sdk::ContractClientReturn>::Ok,
-            <<<ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__test_enum_variants__ret>::MyEnumVariants as soroban_sdk::ContractClientReturn>::Ok as soroban_sdk::TryFromVal<
+            <<ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__test_enum_variants__ret>::MyEnumVariants as soroban_sdk::client::Type>::Ok,
+            <<<ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__test_enum_variants__ret>::MyEnumVariants as soroban_sdk::client::Type>::Ok as soroban_sdk::TryFromVal<
                 soroban_sdk::Env,
                 soroban_sdk::Val,
             >>::Error,
         >,
         Result<
-            <<ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__test_enum_variants__ret>::MyEnumVariants as soroban_sdk::ContractClientReturn>::Err,
+            <<ContractGlobalPath as __ContractGlobalPath__test_contracttrait_trait_AllTypes__test_enum_variants__ret>::MyEnumVariants as soroban_sdk::client::Type>::Err,
             soroban_sdk::InvokeError,
         >,
     >{

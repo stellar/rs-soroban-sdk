@@ -50,7 +50,7 @@ pub mod traits {
         /// Panics if the invoked contract returns an error or panics.
         ///
         /// Use [`Self::try_relative_path_method`] to receive errors instead of panicking.
-        pub fn relative_path_method(&self) -> <u32 as soroban_sdk::ContractClientReturn>::Ok {
+        pub fn relative_path_method(&self) -> <u32 as soroban_sdk::client::Type>::Ok {
             use core::ops::Not;
             use soroban_sdk::{FromVal, IntoVal};
             let res = self.env.invoke_contract(
@@ -69,13 +69,13 @@ pub mod traits {
             &self,
         ) -> Result<
             Result<
-                <u32 as soroban_sdk::ContractClientReturn>::Ok,
-                <<u32 as soroban_sdk::ContractClientReturn>::Ok as soroban_sdk::TryFromVal<
+                <u32 as soroban_sdk::client::Type>::Ok,
+                <<u32 as soroban_sdk::client::Type>::Ok as soroban_sdk::TryFromVal<
                     soroban_sdk::Env,
                     soroban_sdk::Val,
                 >>::Error,
             >,
-            Result<<u32 as soroban_sdk::ContractClientReturn>::Err, soroban_sdk::InvokeError>,
+            Result<<u32 as soroban_sdk::client::Type>::Err, soroban_sdk::InvokeError>,
         > {
             use soroban_sdk::{FromVal, IntoVal};
             let res = self.env.try_invoke_contract(
@@ -232,7 +232,7 @@ impl<'a> ContractRelativePathClient<'a> {
     /// Use [`Self::try_relative_path_method`] to receive errors instead of panicking.
     pub fn relative_path_method(
         &self,
-    ) -> <<ContractRelativePath as __ContractRelativePath__traits_RelativePathTrait__relative_path_method__ret>::u32 as soroban_sdk::ContractClientReturn>::Ok{
+    ) -> <<ContractRelativePath as __ContractRelativePath__traits_RelativePathTrait__relative_path_method__ret>::u32 as soroban_sdk::client::Type>::Ok{
         use core::ops::Not;
         use soroban_sdk::{FromVal, IntoVal};
         let res = self.env.invoke_contract(
@@ -251,14 +251,14 @@ impl<'a> ContractRelativePathClient<'a> {
         &self,
     ) -> Result<
         Result<
-            <<ContractRelativePath as __ContractRelativePath__traits_RelativePathTrait__relative_path_method__ret>::u32 as soroban_sdk::ContractClientReturn>::Ok,
-            <<<ContractRelativePath as __ContractRelativePath__traits_RelativePathTrait__relative_path_method__ret>::u32 as soroban_sdk::ContractClientReturn>::Ok as soroban_sdk::TryFromVal<
+            <<ContractRelativePath as __ContractRelativePath__traits_RelativePathTrait__relative_path_method__ret>::u32 as soroban_sdk::client::Type>::Ok,
+            <<<ContractRelativePath as __ContractRelativePath__traits_RelativePathTrait__relative_path_method__ret>::u32 as soroban_sdk::client::Type>::Ok as soroban_sdk::TryFromVal<
                 soroban_sdk::Env,
                 soroban_sdk::Val,
             >>::Error,
         >,
         Result<
-            <<ContractRelativePath as __ContractRelativePath__traits_RelativePathTrait__relative_path_method__ret>::u32 as soroban_sdk::ContractClientReturn>::Err,
+            <<ContractRelativePath as __ContractRelativePath__traits_RelativePathTrait__relative_path_method__ret>::u32 as soroban_sdk::client::Type>::Err,
             soroban_sdk::InvokeError,
         >,
     >{
