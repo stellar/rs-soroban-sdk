@@ -161,7 +161,6 @@ impl soroban_sdk::SpecTypeDef for Error {
         });
 }
 impl soroban_sdk::client::Type for Error {
-    type ArgMethod = soroban_sdk::client::Borrowed;
     type Ret = Self;
 }
 #[doc(hidden)]
@@ -354,7 +353,6 @@ impl soroban_sdk::SpecTypeDef for MyError {
         });
 }
 impl soroban_sdk::client::Type for MyError {
-    type ArgMethod = soroban_sdk::client::Borrowed;
     type Ret = Self;
 }
 #[doc(hidden)]

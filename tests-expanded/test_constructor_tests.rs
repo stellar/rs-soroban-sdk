@@ -147,7 +147,6 @@ impl soroban_sdk::SpecTypeDef for DataKey {
         });
 }
 impl soroban_sdk::client::Type for DataKey {
-    type ArgMethod = soroban_sdk::client::Borrowed;
     type Ret = Self;
 }
 #[doc(hidden)]

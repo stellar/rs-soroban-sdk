@@ -3,24 +3,18 @@
 
 use core::borrow::Borrow;
 
-use crate::{
-    client::{Borrowed, Converted, Type},
-    Env, IntoVal, Val,
-};
+use crate::{client::Type, Address, Env, IntoVal, MuxedAddress, Val};
 
-/// Trait for the values a client function accepts for an argument of type `T`,
-/// which are decided by the type's [`Type::ArgMethod`].
+/// Trait for the values a client function accepts for an argument of type `T`.
 ///
-/// `Method` defaults to the type's [`Type::ArgMethod`] and is only a parameter
-/// so that the impls for each method do not overlap, as the compiler does not
-/// use an associated type to tell impls apart.
-pub trait IntoArg<T: Type, Method = <T as Type>::ArgMethod> {
+/// Any value that borrows as `T` is accepted, so that an argument can be passed
+/// by value or by reference. Types that other types convert into accept those
+/// types too, such as a [`MuxedAddress`] argument accepting an [`Address`].
+pub trait IntoArg<T> {
     fn into_arg(self, env: &Env) -> Val;
 }
 
-// Any value that borrows as the type is accepted, so that the type can be
-// passed by value or by reference.
-impl<T, R> IntoArg<T, Borrowed> for R
+impl<T, R> IntoArg<T> for R
 where
     T: Type + IntoVal<Env, Val>,
     R: Borrow<T>,
@@ -31,13 +25,14 @@ where
     }
 }
 
-impl<T, X> IntoArg<T, Converted> for X
-where
-    T: Type + IntoVal<Env, Val>,
-    X: Into<T>,
-{
+impl IntoArg<MuxedAddress> for Address {
     fn into_arg(self, env: &Env) -> Val {
-        let t: T = self.into();
-        t.into_val(env)
+        MuxedAddress::from(self).into_val(env)
+    }
+}
+
+impl IntoArg<MuxedAddress> for &Address {
+    fn into_arg(self, env: &Env) -> Val {
+        MuxedAddress::from(self).into_val(env)
     }
 }

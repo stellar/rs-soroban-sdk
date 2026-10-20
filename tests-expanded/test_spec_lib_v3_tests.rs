@@ -74,7 +74,6 @@ impl soroban_sdk::SpecTypeDef for StructA {
         });
 }
 impl soroban_sdk::client::Type for StructA {
-    type ArgMethod = soroban_sdk::client::Borrowed;
     type Ret = Self;
 }
 #[doc(hidden)]
@@ -554,7 +553,6 @@ impl soroban_sdk::SpecTypeDef for StructB {
         });
 }
 impl soroban_sdk::client::Type for StructB {
-    type ArgMethod = soroban_sdk::client::Borrowed;
     type Ret = Self;
 }
 #[doc(hidden)]
@@ -1034,7 +1032,6 @@ impl soroban_sdk::SpecTypeDef for StructC {
         });
 }
 impl soroban_sdk::client::Type for StructC {
-    type ArgMethod = soroban_sdk::client::Borrowed;
     type Ret = Self;
 }
 #[doc(hidden)]
@@ -1510,7 +1507,6 @@ impl soroban_sdk::SpecTypeDef for StructTupleA {
         });
 }
 impl soroban_sdk::client::Type for StructTupleA {
-    type ArgMethod = soroban_sdk::client::Borrowed;
     type Ret = Self;
 }
 #[doc(hidden)]
@@ -1942,7 +1938,6 @@ impl soroban_sdk::SpecTypeDef for StructTupleB {
         });
 }
 impl soroban_sdk::client::Type for StructTupleB {
-    type ArgMethod = soroban_sdk::client::Borrowed;
     type Ret = Self;
 }
 #[doc(hidden)]
@@ -2375,7 +2370,6 @@ impl soroban_sdk::SpecTypeDef for StructTupleC {
         });
 }
 impl soroban_sdk::client::Type for StructTupleC {
-    type ArgMethod = soroban_sdk::client::Borrowed;
     type Ret = Self;
 }
 #[doc(hidden)]
@@ -2819,7 +2813,6 @@ impl soroban_sdk::SpecTypeDef for EnumA {
         });
 }
 impl soroban_sdk::client::Type for EnumA {
-    type ArgMethod = soroban_sdk::client::Borrowed;
     type Ret = Self;
 }
 #[doc(hidden)]
@@ -3361,7 +3354,6 @@ impl soroban_sdk::SpecTypeDef for EnumB {
         });
 }
 impl soroban_sdk::client::Type for EnumB {
-    type ArgMethod = soroban_sdk::client::Borrowed;
     type Ret = Self;
 }
 #[doc(hidden)]
@@ -4032,7 +4024,6 @@ impl soroban_sdk::SpecTypeDef for EnumC {
         });
 }
 impl soroban_sdk::client::Type for EnumC {
-    type ArgMethod = soroban_sdk::client::Borrowed;
     type Ret = Self;
 }
 #[doc(hidden)]
@@ -4653,7 +4644,6 @@ impl soroban_sdk::SpecTypeDef for EnumIntA {
         });
 }
 impl soroban_sdk::client::Type for EnumIntA {
-    type ArgMethod = soroban_sdk::client::Borrowed;
     type Ret = Self;
 }
 #[doc(hidden)]
@@ -5059,7 +5049,6 @@ impl soroban_sdk::SpecTypeDef for EnumIntB {
         });
 }
 impl soroban_sdk::client::Type for EnumIntB {
-    type ArgMethod = soroban_sdk::client::Borrowed;
     type Ret = Self;
 }
 #[doc(hidden)]
@@ -5465,7 +5454,6 @@ impl soroban_sdk::SpecTypeDef for EnumIntC {
         });
 }
 impl soroban_sdk::client::Type for EnumIntC {
-    type ArgMethod = soroban_sdk::client::Borrowed;
     type Ret = Self;
 }
 #[doc(hidden)]
@@ -5871,7 +5859,6 @@ impl soroban_sdk::SpecTypeDef for ErrorA {
         });
 }
 impl soroban_sdk::client::Type for ErrorA {
-    type ArgMethod = soroban_sdk::client::Borrowed;
     type Ret = Self;
 }
 #[doc(hidden)]
@@ -6107,7 +6094,6 @@ impl soroban_sdk::SpecTypeDef for ErrorB {
         });
 }
 impl soroban_sdk::client::Type for ErrorB {
-    type ArgMethod = soroban_sdk::client::Borrowed;
     type Ret = Self;
 }
 #[doc(hidden)]
@@ -6343,7 +6329,6 @@ impl soroban_sdk::SpecTypeDef for ErrorC {
         });
 }
 impl soroban_sdk::client::Type for ErrorC {
-    type ArgMethod = soroban_sdk::client::Borrowed;
     type Ret = Self;
 }
 #[doc(hidden)]

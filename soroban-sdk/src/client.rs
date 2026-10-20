@@ -21,14 +21,6 @@ use crate::{
     Timepoint, TryFromVal, Val, Vec, I256, U256,
 };
 
-/// Marker for [`Type::ArgMethod`] that a client takes the argument as any value
-/// that borrows as it, such as `T` or `&T`.
-pub struct Borrowed;
-
-/// Marker for [`Type::ArgMethod`] that a client takes the argument as any value
-/// that converts into it, as `impl Into<T>`.
-pub struct Converted;
-
 /// Trait for types that can be an argument or return value of a contract
 /// client function.
 #[diagnostic::on_unimplemented(
@@ -37,9 +29,6 @@ pub struct Converted;
     note = "types used in contract functions must be supported by contract clients, such as types marked `#[contracttype]`"
 )]
 pub trait Type {
-    /// How a client takes the type as an argument, either [`Borrowed`]
-    /// or [`Converted`].
-    type ArgMethod;
     /// The type a client returns for the type.
     type Ret;
 }
@@ -86,7 +75,6 @@ macro_rules! impl_client_type {
     ($($t:ty),* $(,)?) => {
         $(
             impl Type for $t {
-                type ArgMethod = Borrowed;
                 type Ret = $t;
             }
         )*
@@ -123,44 +111,35 @@ impl_client_type! {
     Bn254Fr,
 }
 
-// A muxed address argument accepts anything that converts into one, such as an
-// Address.
 impl Type for MuxedAddress {
-    type ArgMethod = Converted;
     type Ret = MuxedAddress;
 }
 
 impl<const N: usize> Type for BytesN<N> {
-    type ArgMethod = Borrowed;
     type Ret = BytesN<N>;
 }
 
 // A hash can only be constructed by the host, so a client receives the bytes of
 // a returned hash.
 impl<const N: usize> Type for Hash<N> {
-    type ArgMethod = Borrowed;
     type Ret = BytesN<N>;
 }
 
 impl<T: Type> Type for Option<T> {
-    type ArgMethod = Borrowed;
     type Ret = Option<T::Ret>;
 }
 
 impl<T: Type> Type for Vec<T> {
-    type ArgMethod = Borrowed;
     type Ret = Vec<T::Ret>;
 }
 
 impl<K: Type, V: Type> Type for Map<K, V> {
-    type ArgMethod = Borrowed;
     type Ret = Map<K::Ret, V::Ret>;
 }
 
 macro_rules! impl_client_type_for_tuple {
     ($($t:ident),+) => {
         impl<$($t: Type),+> Type for ($($t,)+) {
-            type ArgMethod = Borrowed;
             type Ret = ($($t::Ret,)+);
         }
     };

@@ -43,7 +43,6 @@ impl soroban_sdk::SpecTypeDef for DummyProof {
         });
 }
 impl soroban_sdk::client::Type for DummyProof {
-    type ArgMethod = soroban_sdk::client::Borrowed;
     type Ret = Self;
 }
 #[doc(hidden)]

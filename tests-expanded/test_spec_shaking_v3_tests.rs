@@ -192,7 +192,6 @@ impl soroban_sdk::SpecTypeDef for UsedParamStruct {
         });
 }
 impl soroban_sdk::client::Type for UsedParamStruct {
-    type ArgMethod = soroban_sdk::client::Borrowed;
     type Ret = Self;
 }
 #[doc(hidden)]
@@ -694,7 +693,6 @@ impl soroban_sdk::SpecTypeDef for UsedReturnEnum {
         });
 }
 impl soroban_sdk::client::Type for UsedReturnEnum {
-    type ArgMethod = soroban_sdk::client::Borrowed;
     type Ret = Self;
 }
 #[doc(hidden)]
@@ -1274,7 +1272,6 @@ impl soroban_sdk::SpecTypeDef for UsedParamIntEnum {
         });
 }
 impl soroban_sdk::client::Type for UsedParamIntEnum {
-    type ArgMethod = soroban_sdk::client::Borrowed;
     type Ret = Self;
 }
 #[doc(hidden)]
@@ -1664,7 +1661,6 @@ impl soroban_sdk::SpecTypeDef for UsedErrorEnum {
         });
 }
 impl soroban_sdk::client::Type for UsedErrorEnum {
-    type ArgMethod = soroban_sdk::client::Borrowed;
     type Ret = Self;
 }
 #[doc(hidden)]
@@ -1885,7 +1881,6 @@ impl soroban_sdk::SpecTypeDef for UsedPanicErrorEnum {
         });
 }
 impl soroban_sdk::client::Type for UsedPanicErrorEnum {
-    type ArgMethod = soroban_sdk::client::Borrowed;
     type Ret = Self;
 }
 #[doc(hidden)]
@@ -2095,7 +2090,6 @@ impl soroban_sdk::SpecTypeDef for UsedAssertErrorEnum {
         });
 }
 impl soroban_sdk::client::Type for UsedAssertErrorEnum {
-    type ArgMethod = soroban_sdk::client::Borrowed;
     type Ret = Self;
 }
 #[doc(hidden)]
@@ -2312,7 +2306,6 @@ impl soroban_sdk::SpecTypeDef for UsedNestedInStruct {
         });
 }
 impl soroban_sdk::client::Type for UsedNestedInStruct {
-    type ArgMethod = soroban_sdk::client::Borrowed;
     type Ret = Self;
 }
 #[doc(hidden)]
@@ -2736,7 +2729,6 @@ impl soroban_sdk::SpecTypeDef for UsedVecElement {
         });
 }
 impl soroban_sdk::client::Type for UsedVecElement {
-    type ArgMethod = soroban_sdk::client::Borrowed;
     type Ret = Self;
 }
 #[doc(hidden)]
@@ -3165,7 +3157,6 @@ impl soroban_sdk::SpecTypeDef for UsedMapKey {
         });
 }
 impl soroban_sdk::client::Type for UsedMapKey {
-    type ArgMethod = soroban_sdk::client::Borrowed;
     type Ret = Self;
 }
 #[doc(hidden)]
@@ -3545,7 +3536,6 @@ impl soroban_sdk::SpecTypeDef for UsedMapVal {
         });
 }
 impl soroban_sdk::client::Type for UsedMapVal {
-    type ArgMethod = soroban_sdk::client::Borrowed;
     type Ret = Self;
 }
 #[doc(hidden)]
@@ -3967,7 +3957,6 @@ impl soroban_sdk::SpecTypeDef for UsedOptionElement {
         });
 }
 impl soroban_sdk::client::Type for UsedOptionElement {
-    type ArgMethod = soroban_sdk::client::Borrowed;
     type Ret = Self;
 }
 #[doc(hidden)]
@@ -4389,7 +4378,6 @@ impl soroban_sdk::SpecTypeDef for UsedResultOk {
         });
 }
 impl soroban_sdk::client::Type for UsedResultOk {
-    type ArgMethod = soroban_sdk::client::Borrowed;
     type Ret = Self;
 }
 #[doc(hidden)]
@@ -4965,7 +4953,6 @@ impl soroban_sdk::SpecTypeDef for UsedEventTopicType {
         });
 }
 impl soroban_sdk::client::Type for UsedEventTopicType {
-    type ArgMethod = soroban_sdk::client::Borrowed;
     type Ret = Self;
 }
 #[doc(hidden)]
@@ -5513,7 +5500,6 @@ impl soroban_sdk::SpecTypeDef for UsedEventDataType {
         });
 }
 impl soroban_sdk::client::Type for UsedEventDataType {
-    type ArgMethod = soroban_sdk::client::Borrowed;
     type Ret = Self;
 }
 #[doc(hidden)]
@@ -6148,7 +6134,6 @@ impl soroban_sdk::SpecTypeDef for UsedEventTopicOuter {
         });
 }
 impl soroban_sdk::client::Type for UsedEventTopicOuter {
-    type ArgMethod = soroban_sdk::client::Borrowed;
     type Ret = Self;
 }
 #[doc(hidden)]
@@ -6582,7 +6567,6 @@ impl soroban_sdk::SpecTypeDef for UsedEventTopicInner {
         });
 }
 impl soroban_sdk::client::Type for UsedEventTopicInner {
-    type ArgMethod = soroban_sdk::client::Borrowed;
     type Ret = Self;
 }
 #[doc(hidden)]
@@ -7165,7 +7149,6 @@ impl soroban_sdk::SpecTypeDef for UsedEventDataOuter {
         });
 }
 impl soroban_sdk::client::Type for UsedEventDataOuter {
-    type ArgMethod = soroban_sdk::client::Borrowed;
     type Ret = Self;
 }
 #[doc(hidden)]
@@ -7597,7 +7580,6 @@ impl soroban_sdk::SpecTypeDef for UsedEventDataInner {
         });
 }
 impl soroban_sdk::client::Type for UsedEventDataInner {
-    type ArgMethod = soroban_sdk::client::Borrowed;
     type Ret = Self;
 }
 #[doc(hidden)]
@@ -8180,7 +8162,6 @@ impl soroban_sdk::SpecTypeDef for UsedRefTopicType {
         });
 }
 impl soroban_sdk::client::Type for UsedRefTopicType {
-    type ArgMethod = soroban_sdk::client::Borrowed;
     type Ret = Self;
 }
 #[doc(hidden)]
@@ -8568,7 +8549,6 @@ impl soroban_sdk::SpecTypeDef for UsedRefDataType {
         });
 }
 impl soroban_sdk::client::Type for UsedRefDataType {
-    type ArgMethod = soroban_sdk::client::Borrowed;
     type Ret = Self;
 }
 #[doc(hidden)]
@@ -8995,7 +8975,6 @@ impl soroban_sdk::SpecTypeDef for UsedRefDataInner {
         });
 }
 impl soroban_sdk::client::Type for UsedRefDataInner {
-    type ArgMethod = soroban_sdk::client::Borrowed;
     type Ret = Self;
 }
 #[doc(hidden)]
@@ -9574,7 +9553,6 @@ impl soroban_sdk::SpecTypeDef for UsedPublishEventDataType {
         });
 }
 impl soroban_sdk::client::Type for UsedPublishEventDataType {
-    type ArgMethod = soroban_sdk::client::Borrowed;
     type Ret = Self;
 }
 #[doc(hidden)]
@@ -10143,7 +10121,6 @@ impl soroban_sdk::SpecTypeDef for UsedTraitPublishDataType {
         });
 }
 impl soroban_sdk::client::Type for UsedTraitPublishDataType {
-    type ArgMethod = soroban_sdk::client::Borrowed;
     type Ret = Self;
 }
 #[doc(hidden)]
@@ -10707,7 +10684,6 @@ impl soroban_sdk::SpecTypeDef for UsedTupleElement {
         });
 }
 impl soroban_sdk::client::Type for UsedTupleElement {
-    type ArgMethod = soroban_sdk::client::Borrowed;
     type Ret = Self;
 }
 #[doc(hidden)]
@@ -11134,7 +11110,6 @@ impl soroban_sdk::SpecTypeDef for UsedTupleReturnElement {
         });
 }
 impl soroban_sdk::client::Type for UsedTupleReturnElement {
-    type ArgMethod = soroban_sdk::client::Borrowed;
     type Ret = Self;
 }
 #[doc(hidden)]
@@ -11565,7 +11540,6 @@ impl soroban_sdk::SpecTypeDef for UsedVecInnerVecElement {
         });
 }
 impl soroban_sdk::client::Type for UsedVecInnerVecElement {
-    type ArgMethod = soroban_sdk::client::Borrowed;
     type Ret = Self;
 }
 #[doc(hidden)]
@@ -11996,7 +11970,6 @@ impl soroban_sdk::SpecTypeDef for UsedVecInnerElement {
         });
 }
 impl soroban_sdk::client::Type for UsedVecInnerElement {
-    type ArgMethod = soroban_sdk::client::Borrowed;
     type Ret = Self;
 }
 #[doc(hidden)]
@@ -12437,7 +12410,6 @@ impl soroban_sdk::SpecTypeDef for UsedVecElementNested {
         });
 }
 impl soroban_sdk::client::Type for UsedVecElementNested {
-    type ArgMethod = soroban_sdk::client::Borrowed;
     type Ret = Self;
 }
 #[doc(hidden)]
@@ -12998,7 +12970,6 @@ impl soroban_sdk::SpecTypeDef for UsedNonPubStruct {
         });
 }
 impl soroban_sdk::client::Type for UsedNonPubStruct {
-    type ArgMethod = soroban_sdk::client::Borrowed;
     type Ret = Self;
 }
 #[doc(hidden)]
@@ -13418,7 +13389,6 @@ impl soroban_sdk::SpecTypeDef for UsedNonPubError {
         });
 }
 impl soroban_sdk::client::Type for UsedNonPubError {
-    type ArgMethod = soroban_sdk::client::Borrowed;
     type Ret = Self;
 }
 #[doc(hidden)]
@@ -13633,7 +13603,6 @@ impl soroban_sdk::SpecTypeDef for UsedRecursiveRoot {
         });
 }
 impl soroban_sdk::client::Type for UsedRecursiveRoot {
-    type ArgMethod = soroban_sdk::client::Borrowed;
     type Ret = Self;
 }
 #[doc(hidden)]
@@ -14082,7 +14051,6 @@ impl soroban_sdk::SpecTypeDef for UsedRecursiveNode {
         });
 }
 impl soroban_sdk::client::Type for UsedRecursiveNode {
-    type ArgMethod = soroban_sdk::client::Borrowed;
     type Ret = Self;
 }
 #[doc(hidden)]
@@ -14674,7 +14642,6 @@ impl soroban_sdk::SpecTypeDef for UsedRecursiveLeaf {
         });
 }
 impl soroban_sdk::client::Type for UsedRecursiveLeaf {
-    type ArgMethod = soroban_sdk::client::Borrowed;
     type Ret = Self;
 }
 #[doc(hidden)]
@@ -15102,7 +15069,6 @@ impl soroban_sdk::SpecTypeDef for UsedLeaf {
         });
 }
 impl soroban_sdk::client::Type for UsedLeaf {
-    type ArgMethod = soroban_sdk::client::Borrowed;
     type Ret = Self;
 }
 #[doc(hidden)]
@@ -15526,7 +15492,6 @@ impl soroban_sdk::SpecTypeDef for UsedSelfRef {
         });
 }
 impl soroban_sdk::client::Type for UsedSelfRef {
-    type ArgMethod = soroban_sdk::client::Borrowed;
     type Ret = Self;
 }
 #[doc(hidden)]
@@ -16436,7 +16401,6 @@ mod wasm_imported {
             );
     }
     impl soroban_sdk::client::Type for ContractExecutableRef {
-        type ArgMethod = soroban_sdk::client::Borrowed;
         type Ret = Self;
     }
     #[doc(hidden)]
@@ -16987,7 +16951,6 @@ mod wasm_imported {
             );
     }
     impl soroban_sdk::client::Type for ContractContext {
-        type ArgMethod = soroban_sdk::client::Borrowed;
         type Ret = Self;
     }
     #[doc(hidden)]
@@ -17603,7 +17566,6 @@ mod wasm_imported {
             );
     }
     impl soroban_sdk::client::Type for SubContractInvocation {
-        type ArgMethod = soroban_sdk::client::Borrowed;
         type Ret = Self;
     }
     #[doc(hidden)]
@@ -18152,7 +18114,6 @@ mod wasm_imported {
             );
     }
     impl soroban_sdk::client::Type for CreateContractHostFnContext {
-        type ArgMethod = soroban_sdk::client::Borrowed;
         type Ret = Self;
     }
     #[doc(hidden)]
@@ -18720,7 +18681,6 @@ mod wasm_imported {
             );
     }
     impl soroban_sdk::client::Type for CreateContractWithConstructorHostFnContext {
-        type ArgMethod = soroban_sdk::client::Borrowed;
         type Ret = Self;
     }
     #[doc(hidden)]
@@ -19377,7 +19337,6 @@ mod wasm_imported {
             );
     }
     impl soroban_sdk::client::Type for StructA {
-        type ArgMethod = soroban_sdk::client::Borrowed;
         type Ret = Self;
     }
     #[doc(hidden)]
@@ -19887,7 +19846,6 @@ mod wasm_imported {
             );
     }
     impl soroban_sdk::client::Type for StructB {
-        type ArgMethod = soroban_sdk::client::Borrowed;
         type Ret = Self;
     }
     #[doc(hidden)]
@@ -20397,7 +20355,6 @@ mod wasm_imported {
             );
     }
     impl soroban_sdk::client::Type for StructC {
-        type ArgMethod = soroban_sdk::client::Borrowed;
         type Ret = Self;
     }
     #[doc(hidden)]
@@ -20912,7 +20869,6 @@ mod wasm_imported {
             );
     }
     impl soroban_sdk::client::Type for StructTupleA {
-        type ArgMethod = soroban_sdk::client::Borrowed;
         type Ret = Self;
     }
     #[doc(hidden)]
@@ -21375,7 +21331,6 @@ mod wasm_imported {
             );
     }
     impl soroban_sdk::client::Type for StructTupleB {
-        type ArgMethod = soroban_sdk::client::Borrowed;
         type Ret = Self;
     }
     #[doc(hidden)]
@@ -21839,7 +21794,6 @@ mod wasm_imported {
             );
     }
     impl soroban_sdk::client::Type for StructTupleC {
-        type ArgMethod = soroban_sdk::client::Borrowed;
         type Ret = Self;
     }
     #[doc(hidden)]
@@ -22347,7 +22301,6 @@ mod wasm_imported {
             );
     }
     impl soroban_sdk::client::Type for ContractExecutable {
-        type ArgMethod = soroban_sdk::client::Borrowed;
         type Ret = Self;
     }
     #[doc(hidden)]
@@ -23057,7 +23010,6 @@ mod wasm_imported {
             );
     }
     impl soroban_sdk::client::Type for Context {
-        type ArgMethod = soroban_sdk::client::Borrowed;
         type Ret = Self;
     }
     #[doc(hidden)]
@@ -23869,7 +23821,6 @@ mod wasm_imported {
             );
     }
     impl soroban_sdk::client::Type for InvokerContractAuthEntry {
-        type ArgMethod = soroban_sdk::client::Borrowed;
         type Ret = Self;
     }
     #[doc(hidden)]
@@ -24659,7 +24610,6 @@ mod wasm_imported {
             );
     }
     impl soroban_sdk::client::Type for Executable {
-        type ArgMethod = soroban_sdk::client::Borrowed;
         type Ret = Self;
     }
     #[doc(hidden)]
@@ -25287,7 +25237,6 @@ mod wasm_imported {
             );
     }
     impl soroban_sdk::client::Type for EnumA {
-        type ArgMethod = soroban_sdk::client::Borrowed;
         type Ret = Self;
     }
     #[doc(hidden)]
@@ -25889,7 +25838,6 @@ mod wasm_imported {
             );
     }
     impl soroban_sdk::client::Type for EnumB {
-        type ArgMethod = soroban_sdk::client::Borrowed;
         type Ret = Self;
     }
     #[doc(hidden)]
@@ -26614,7 +26562,6 @@ mod wasm_imported {
             );
     }
     impl soroban_sdk::client::Type for EnumC {
-        type ArgMethod = soroban_sdk::client::Borrowed;
         type Ret = Self;
     }
     #[doc(hidden)]
@@ -27266,7 +27213,6 @@ mod wasm_imported {
             );
     }
     impl soroban_sdk::client::Type for EnumIntA {
-        type ArgMethod = soroban_sdk::client::Borrowed;
         type Ret = Self;
     }
     #[doc(hidden)]
@@ -27702,7 +27648,6 @@ mod wasm_imported {
             );
     }
     impl soroban_sdk::client::Type for EnumIntB {
-        type ArgMethod = soroban_sdk::client::Borrowed;
         type Ret = Self;
     }
     #[doc(hidden)]
@@ -28138,7 +28083,6 @@ mod wasm_imported {
             );
     }
     impl soroban_sdk::client::Type for EnumIntC {
-        type ArgMethod = soroban_sdk::client::Borrowed;
         type Ret = Self;
     }
     #[doc(hidden)]
@@ -28574,7 +28518,6 @@ mod wasm_imported {
             );
     }
     impl soroban_sdk::client::Type for ErrorA {
-        type ArgMethod = soroban_sdk::client::Borrowed;
         type Ret = Self;
     }
     #[doc(hidden)]
@@ -28836,7 +28779,6 @@ mod wasm_imported {
             );
     }
     impl soroban_sdk::client::Type for ErrorB {
-        type ArgMethod = soroban_sdk::client::Borrowed;
         type Ret = Self;
     }
     #[doc(hidden)]
@@ -29098,7 +29040,6 @@ mod wasm_imported {
             );
     }
     impl soroban_sdk::client::Type for ErrorC {
-        type ArgMethod = soroban_sdk::client::Borrowed;
         type Ret = Self;
     }
     #[doc(hidden)]
@@ -30046,7 +29987,6 @@ impl soroban_sdk::SpecTypeDef for UnusedStruct {
         });
 }
 impl soroban_sdk::client::Type for UnusedStruct {
-    type ArgMethod = soroban_sdk::client::Borrowed;
     type Ret = Self;
 }
 #[doc(hidden)]
@@ -30477,7 +30417,6 @@ impl soroban_sdk::SpecTypeDef for UnusedEnum {
         });
 }
 impl soroban_sdk::client::Type for UnusedEnum {
-    type ArgMethod = soroban_sdk::client::Borrowed;
     type Ret = Self;
 }
 #[doc(hidden)]
@@ -31008,7 +30947,6 @@ impl soroban_sdk::SpecTypeDef for UnusedIntEnum {
         });
 }
 impl soroban_sdk::client::Type for UnusedIntEnum {
-    type ArgMethod = soroban_sdk::client::Borrowed;
     type Ret = Self;
 }
 #[doc(hidden)]
@@ -31537,7 +31475,6 @@ impl soroban_sdk::SpecTypeDef for UnusedEventDataType {
         });
 }
 impl soroban_sdk::client::Type for UnusedEventDataType {
-    type ArgMethod = soroban_sdk::client::Borrowed;
     type Ret = Self;
 }
 #[doc(hidden)]
@@ -32113,7 +32050,6 @@ impl soroban_sdk::SpecTypeDef for UnusedOuter {
         });
 }
 impl soroban_sdk::client::Type for UnusedOuter {
-    type ArgMethod = soroban_sdk::client::Borrowed;
     type Ret = Self;
 }
 #[doc(hidden)]
@@ -32534,7 +32470,6 @@ impl soroban_sdk::SpecTypeDef for UnusedInner {
         });
 }
 impl soroban_sdk::client::Type for UnusedInner {
-    type ArgMethod = soroban_sdk::client::Borrowed;
     type Ret = Self;
 }
 #[doc(hidden)]
@@ -32951,7 +32886,6 @@ impl soroban_sdk::SpecTypeDef for UnusedCycleA {
         });
 }
 impl soroban_sdk::client::Type for UnusedCycleA {
-    type ArgMethod = soroban_sdk::client::Borrowed;
     type Ret = Self;
 }
 #[doc(hidden)]
@@ -33369,7 +33303,6 @@ impl soroban_sdk::SpecTypeDef for UnusedCycleB {
         });
 }
 impl soroban_sdk::client::Type for UnusedCycleB {
-    type ArgMethod = soroban_sdk::client::Borrowed;
     type Ret = Self;
 }
 #[doc(hidden)]
@@ -33796,7 +33729,6 @@ impl soroban_sdk::SpecTypeDef for UnusedSelfRef {
         });
 }
 impl soroban_sdk::client::Type for UnusedSelfRef {
-    type ArgMethod = soroban_sdk::client::Borrowed;
     type Ret = Self;
 }
 #[doc(hidden)]
@@ -34225,7 +34157,6 @@ impl soroban_sdk::SpecTypeDef for UnusedPubError {
         });
 }
 impl soroban_sdk::client::Type for UnusedPubError {
-    type ArgMethod = soroban_sdk::client::Borrowed;
     type Ret = Self;
 }
 #[doc(hidden)]
@@ -34440,7 +34371,6 @@ impl soroban_sdk::SpecTypeDef for UnusedNonContractFnParam {
         });
 }
 impl soroban_sdk::client::Type for UnusedNonContractFnParam {
-    type ArgMethod = soroban_sdk::client::Borrowed;
     type Ret = Self;
 }
 #[doc(hidden)]
@@ -34873,7 +34803,6 @@ impl soroban_sdk::SpecTypeDef for UnusedNonContractFnReturn {
         });
 }
 impl soroban_sdk::client::Type for UnusedNonContractFnReturn {
-    type ArgMethod = soroban_sdk::client::Borrowed;
     type Ret = Self;
 }
 #[doc(hidden)]
@@ -35301,7 +35230,6 @@ impl soroban_sdk::SpecTypeDef for UnusedNonPubStruct {
         });
 }
 impl soroban_sdk::client::Type for UnusedNonPubStruct {
-    type ArgMethod = soroban_sdk::client::Borrowed;
     type Ret = Self;
 }
 #[doc(hidden)]
@@ -35721,7 +35649,6 @@ impl soroban_sdk::SpecTypeDef for UnusedNonPubError {
         });
 }
 impl soroban_sdk::client::Type for UnusedNonPubError {
-    type ArgMethod = soroban_sdk::client::Borrowed;
     type Ret = Self;
 }
 #[doc(hidden)]

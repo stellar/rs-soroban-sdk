@@ -76,7 +76,6 @@ impl soroban_sdk::SpecTypeDef for UdtEnum2 {
         });
 }
 impl soroban_sdk::client::Type for UdtEnum2 {
-    type ArgMethod = soroban_sdk::client::Borrowed;
     type Ret = Self;
 }
 #[doc(hidden)]
@@ -483,7 +482,6 @@ impl soroban_sdk::SpecTypeDef for UdtEnum {
         });
 }
 impl soroban_sdk::client::Type for UdtEnum {
-    type ArgMethod = soroban_sdk::client::Borrowed;
     type Ret = Self;
 }
 #[doc(hidden)]
@@ -1183,7 +1181,6 @@ impl soroban_sdk::SpecTypeDef for UdtTuple {
         });
 }
 impl soroban_sdk::client::Type for UdtTuple {
-    type ArgMethod = soroban_sdk::client::Borrowed;
     type Ret = Self;
 }
 #[doc(hidden)]
@@ -1631,7 +1628,6 @@ impl soroban_sdk::SpecTypeDef for UdtStruct {
         });
 }
 impl soroban_sdk::client::Type for UdtStruct {
-    type ArgMethod = soroban_sdk::client::Borrowed;
     type Ret = Self;
 }
 #[doc(hidden)]
@@ -2174,7 +2170,6 @@ impl soroban_sdk::SpecTypeDef for UdtRecursive {
         });
 }
 impl soroban_sdk::client::Type for UdtRecursive {
-    type ArgMethod = soroban_sdk::client::Borrowed;
     type Ret = Self;
 }
 #[doc(hidden)]
@@ -2664,7 +2659,6 @@ impl soroban_sdk::SpecTypeDef for RecursiveToEnum {
         });
 }
 impl soroban_sdk::client::Type for RecursiveToEnum {
-    type ArgMethod = soroban_sdk::client::Borrowed;
     type Ret = Self;
 }
 #[doc(hidden)]
@@ -3168,7 +3162,6 @@ impl soroban_sdk::SpecTypeDef for RecursiveEnum {
         });
 }
 impl soroban_sdk::client::Type for RecursiveEnum {
-    type ArgMethod = soroban_sdk::client::Borrowed;
     type Ret = Self;
 }
 #[doc(hidden)]
@@ -5023,7 +5016,6 @@ mod test_with_wasm {
                 );
         }
         impl soroban_sdk::client::Type for UdtTuple {
-            type ArgMethod = soroban_sdk::client::Borrowed;
             type Ret = Self;
         }
         #[doc(hidden)]
@@ -5527,7 +5519,6 @@ mod test_with_wasm {
                 );
         }
         impl soroban_sdk::client::Type for UdtStruct {
-            type ArgMethod = soroban_sdk::client::Borrowed;
             type Ret = Self;
         }
         #[doc(hidden)]
@@ -6122,7 +6113,6 @@ mod test_with_wasm {
                 );
         }
         impl soroban_sdk::client::Type for UdtRecursive {
-            type ArgMethod = soroban_sdk::client::Borrowed;
             type Ret = Self;
         }
         #[doc(hidden)]
@@ -6656,7 +6646,6 @@ mod test_with_wasm {
                 );
         }
         impl soroban_sdk::client::Type for RecursiveToEnum {
-            type ArgMethod = soroban_sdk::client::Borrowed;
             type Ret = Self;
         }
         #[doc(hidden)]
@@ -7194,7 +7183,6 @@ mod test_with_wasm {
                 );
         }
         impl soroban_sdk::client::Type for ContractExecutableRef {
-            type ArgMethod = soroban_sdk::client::Borrowed;
             type Ret = Self;
         }
         #[doc(hidden)]
@@ -7752,7 +7740,6 @@ mod test_with_wasm {
                 );
         }
         impl soroban_sdk::client::Type for ContractContext {
-            type ArgMethod = soroban_sdk::client::Borrowed;
             type Ret = Self;
         }
         #[doc(hidden)]
@@ -8373,7 +8360,6 @@ mod test_with_wasm {
                 );
         }
         impl soroban_sdk::client::Type for SubContractInvocation {
-            type ArgMethod = soroban_sdk::client::Borrowed;
             type Ret = Self;
         }
         #[doc(hidden)]
@@ -8925,7 +8911,6 @@ mod test_with_wasm {
                 );
         }
         impl soroban_sdk::client::Type for CreateContractHostFnContext {
-            type ArgMethod = soroban_sdk::client::Borrowed;
             type Ret = Self;
         }
         #[doc(hidden)]
@@ -9511,7 +9496,6 @@ mod test_with_wasm {
                 );
         }
         impl soroban_sdk::client::Type for CreateContractWithConstructorHostFnContext {
-            type ArgMethod = soroban_sdk::client::Borrowed;
             type Ret = Self;
         }
         #[doc(hidden)]
@@ -10210,7 +10194,6 @@ mod test_with_wasm {
                 );
         }
         impl soroban_sdk::client::Type for UdtEnum {
-            type ArgMethod = soroban_sdk::client::Borrowed;
             type Ret = Self;
         }
         #[doc(hidden)]
@@ -11003,7 +10986,6 @@ mod test_with_wasm {
                 );
         }
         impl soroban_sdk::client::Type for RecursiveEnum {
-            type ArgMethod = soroban_sdk::client::Borrowed;
             type Ret = Self;
         }
         #[doc(hidden)]
@@ -11636,7 +11618,6 @@ mod test_with_wasm {
                 );
         }
         impl soroban_sdk::client::Type for ContractExecutable {
-            type ArgMethod = soroban_sdk::client::Borrowed;
             type Ret = Self;
         }
         #[doc(hidden)]
@@ -12350,7 +12331,6 @@ mod test_with_wasm {
                 );
         }
         impl soroban_sdk::client::Type for Context {
-            type ArgMethod = soroban_sdk::client::Borrowed;
             type Ret = Self;
         }
         #[doc(hidden)]
@@ -13173,7 +13153,6 @@ mod test_with_wasm {
                 );
         }
         impl soroban_sdk::client::Type for InvokerContractAuthEntry {
-            type ArgMethod = soroban_sdk::client::Borrowed;
             type Ret = Self;
         }
         #[doc(hidden)]
@@ -13993,7 +13972,6 @@ mod test_with_wasm {
                 );
         }
         impl soroban_sdk::client::Type for Executable {
-            type ArgMethod = soroban_sdk::client::Borrowed;
             type Ret = Self;
         }
         #[doc(hidden)]
@@ -14627,7 +14605,6 @@ mod test_with_wasm {
                 );
         }
         impl soroban_sdk::client::Type for UdtEnum2 {
-            type ArgMethod = soroban_sdk::client::Borrowed;
             type Ret = Self;
         }
         #[doc(hidden)]

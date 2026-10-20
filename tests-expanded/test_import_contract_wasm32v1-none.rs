@@ -319,7 +319,6 @@ mod addcontract {
             );
     }
     impl soroban_sdk::client::Type for ContractExecutableRef {
-        type ArgMethod = soroban_sdk::client::Borrowed;
         type Ret = Self;
     }
     #[doc(hidden)]
@@ -542,7 +541,6 @@ mod addcontract {
             );
     }
     impl soroban_sdk::client::Type for ContractContext {
-        type ArgMethod = soroban_sdk::client::Borrowed;
         type Ret = Self;
     }
     #[doc(hidden)]
@@ -770,7 +768,6 @@ mod addcontract {
             );
     }
     impl soroban_sdk::client::Type for SubContractInvocation {
-        type ArgMethod = soroban_sdk::client::Borrowed;
         type Ret = Self;
     }
     #[doc(hidden)]
@@ -980,7 +977,6 @@ mod addcontract {
             );
     }
     impl soroban_sdk::client::Type for CreateContractHostFnContext {
-        type ArgMethod = soroban_sdk::client::Borrowed;
         type Ret = Self;
     }
     #[doc(hidden)]
@@ -1210,7 +1206,6 @@ mod addcontract {
             );
     }
     impl soroban_sdk::client::Type for CreateContractWithConstructorHostFnContext {
-        type ArgMethod = soroban_sdk::client::Borrowed;
         type Ret = Self;
     }
     #[doc(hidden)]
@@ -1478,7 +1473,6 @@ mod addcontract {
             );
     }
     impl soroban_sdk::client::Type for ContractExecutable {
-        type ArgMethod = soroban_sdk::client::Borrowed;
         type Ret = Self;
     }
     #[doc(hidden)]
@@ -1781,7 +1775,6 @@ mod addcontract {
             );
     }
     impl soroban_sdk::client::Type for Context {
-        type ArgMethod = soroban_sdk::client::Borrowed;
         type Ret = Self;
     }
     #[doc(hidden)]
@@ -2124,7 +2117,6 @@ mod addcontract {
             );
     }
     impl soroban_sdk::client::Type for InvokerContractAuthEntry {
-        type ArgMethod = soroban_sdk::client::Borrowed;
         type Ret = Self;
     }
     #[doc(hidden)]
@@ -2419,7 +2411,6 @@ mod addcontract {
             );
     }
     impl soroban_sdk::client::Type for Executable {
-        type ArgMethod = soroban_sdk::client::Borrowed;
         type Ret = Self;
     }
     #[doc(hidden)]
@@ -2646,7 +2637,6 @@ mod addcontract {
             );
     }
     impl soroban_sdk::client::Type for Error {
-        type ArgMethod = soroban_sdk::client::Borrowed;
         type Ret = Self;
     }
     #[doc(hidden)]
@@ -2879,7 +2869,6 @@ mod addcontract {
             );
     }
     impl soroban_sdk::client::Type for MyError {
-        type ArgMethod = soroban_sdk::client::Borrowed;
         type Ret = Self;
     }
     #[doc(hidden)]
@@ -3559,7 +3548,6 @@ mod eventscontract {
             );
     }
     impl soroban_sdk::client::Type for ContractExecutableRef {
-        type ArgMethod = soroban_sdk::client::Borrowed;
         type Ret = Self;
     }
     #[doc(hidden)]
@@ -3782,7 +3770,6 @@ mod eventscontract {
             );
     }
     impl soroban_sdk::client::Type for ContractContext {
-        type ArgMethod = soroban_sdk::client::Borrowed;
         type Ret = Self;
     }
     #[doc(hidden)]
@@ -4010,7 +3997,6 @@ mod eventscontract {
             );
     }
     impl soroban_sdk::client::Type for SubContractInvocation {
-        type ArgMethod = soroban_sdk::client::Borrowed;
         type Ret = Self;
     }
     #[doc(hidden)]
@@ -4221,7 +4207,6 @@ mod eventscontract {
             );
     }
     impl soroban_sdk::client::Type for CreateContractHostFnContext {
-        type ArgMethod = soroban_sdk::client::Borrowed;
         type Ret = Self;
     }
     #[doc(hidden)]
@@ -4450,7 +4435,6 @@ mod eventscontract {
             );
     }
     impl soroban_sdk::client::Type for CreateContractWithConstructorHostFnContext {
-        type ArgMethod = soroban_sdk::client::Borrowed;
         type Ret = Self;
     }
     #[doc(hidden)]
@@ -4718,7 +4702,6 @@ mod eventscontract {
             );
     }
     impl soroban_sdk::client::Type for ContractExecutable {
-        type ArgMethod = soroban_sdk::client::Borrowed;
         type Ret = Self;
     }
     #[doc(hidden)]
@@ -5021,7 +5004,6 @@ mod eventscontract {
             );
     }
     impl soroban_sdk::client::Type for Context {
-        type ArgMethod = soroban_sdk::client::Borrowed;
         type Ret = Self;
     }
     #[doc(hidden)]
@@ -5364,7 +5346,6 @@ mod eventscontract {
             );
     }
     impl soroban_sdk::client::Type for InvokerContractAuthEntry {
-        type ArgMethod = soroban_sdk::client::Borrowed;
         type Ret = Self;
     }
     #[doc(hidden)]
@@ -5659,7 +5640,6 @@ mod eventscontract {
             );
     }
     impl soroban_sdk::client::Type for Executable {
-        type ArgMethod = soroban_sdk::client::Borrowed;
         type Ret = Self;
     }
     #[doc(hidden)]
@@ -6881,7 +6861,6 @@ impl soroban_sdk::SpecTypeDef for Error {
         });
 }
 impl soroban_sdk::client::Type for Error {
-    type ArgMethod = soroban_sdk::client::Borrowed;
     type Ret = Self;
 }
 #[doc(hidden)]

@@ -40,7 +40,6 @@ impl soroban_sdk::SpecTypeDef for MockProof {
         });
 }
 impl soroban_sdk::client::Type for MockProof {
-    type ArgMethod = soroban_sdk::client::Borrowed;
     type Ret = Self;
 }
 #[doc(hidden)]

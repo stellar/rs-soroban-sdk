@@ -80,7 +80,6 @@ pub mod traits {
             );
     }
     impl soroban_sdk::client::Type for Point {
-        type ArgMethod = soroban_sdk::client::Borrowed;
         type Ret = Self;
     }
     #[doc(hidden)]
@@ -557,7 +556,6 @@ pub mod traits {
             );
     }
     impl soroban_sdk::client::Type for Error {
-        type ArgMethod = soroban_sdk::client::Borrowed;
         type Ret = Self;
     }
     #[doc(hidden)]
@@ -2926,6 +2924,32 @@ mod test {
         let client = ContractClient::new(&e, &contract_id);
         let p = traits::Point { x: 1, y: 2 };
         match (&client.point(&1, &2), &p) {
+            (left_val, right_val) => {
+                if !(*left_val == *right_val) {
+                    let kind = ::core::panicking::AssertKind::Eq;
+                    ::core::panicking::assert_failed(
+                        kind,
+                        &*left_val,
+                        &*right_val,
+                        ::core::option::Option::None,
+                    );
+                }
+            }
+        };
+        match (&client.point(1, 2), &p) {
+            (left_val, right_val) => {
+                if !(*left_val == *right_val) {
+                    let kind = ::core::panicking::AssertKind::Eq;
+                    ::core::panicking::assert_failed(
+                        kind,
+                        &*left_val,
+                        &*right_val,
+                        ::core::option::Option::None,
+                    );
+                }
+            }
+        };
+        match (&client.points(p.clone()).len(), &2) {
             (left_val, right_val) => {
                 if !(*left_val == *right_val) {
                     let kind = ::core::panicking::AssertKind::Eq;
