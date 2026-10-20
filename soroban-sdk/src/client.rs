@@ -21,8 +21,8 @@ use crate::{
     Timepoint, TryFromVal, Val, Vec, I256, U256,
 };
 
-/// Marker for [`Type::ArgMethod`] that a client takes the argument as a reference
-/// to any value that borrows as it, such as `&T` or `&&T`.
+/// Marker for [`Type::ArgMethod`] that a client takes the argument as any value
+/// that borrows as it, such as `T` or `&T`.
 pub struct Borrowed;
 
 /// Marker for [`Type::ArgMethod`] that a client takes the argument as any value

@@ -18,12 +18,12 @@ pub trait IntoArg<T: Type, Method = <T as Type>::ArgMethod> {
     fn into_arg(self, env: &Env) -> Val;
 }
 
-// Any reference that borrows as the type is accepted, so that a reference to a
-// reference is accepted as it would be by deref coercion.
-impl<'a, T, R> IntoArg<T, Borrowed> for &'a R
+// Any value that borrows as the type is accepted, so that the type can be
+// passed by value or by reference.
+impl<T, R> IntoArg<T, Borrowed> for R
 where
     T: Type + IntoVal<Env, Val>,
-    R: ?Sized + Borrow<T>,
+    R: Borrow<T>,
 {
     fn into_arg(self, env: &Env) -> Val {
         let t: &T = self.borrow();

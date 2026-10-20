@@ -84,6 +84,9 @@ mod test {
 
         let p = traits::Point { x: 1, y: 2 };
         assert_eq!(client.point(&1, &2), p);
+        // Borrowed arguments can also be passed by value.
+        assert_eq!(client.point(1, 2), p);
+        assert_eq!(client.points(p.clone()).len(), 2);
         assert_eq!(client.points(&p).len(), 2);
         assert_eq!(client.even(&2), 2);
         assert_eq!(client.try_even(&3), Err(Ok(traits::Error::Odd)));
