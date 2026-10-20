@@ -123,6 +123,56 @@ impl ::test_contracttrait_trait::AllTypes for ContractGlobalPath {}
 impl<'a> ContractGlobalPathClient<'a> {}
 impl ContractGlobalPathArgs {}
 #[doc(hidden)]
+#[allow(non_camel_case_types)]
+pub trait __ContractGlobalPath_AllTypes_types {
+    type u32;
+    type i32;
+    type u64;
+    type i64;
+    type u128;
+    type i128;
+    type bool;
+    type Address;
+    type Bytes;
+    type BytesN;
+    type String;
+    type Symbol;
+    type Vec;
+    type Map;
+    type Duration;
+    type Timepoint;
+    type I256;
+    type U256;
+    type Env;
+    type MyStruct;
+    type MyEnumUnit;
+    type MyEnumVariants;
+}
+impl<T: ::test_contracttrait_trait::AllTypes> __ContractGlobalPath_AllTypes_types for T {
+    type u32 = T::__AllTypes_u32;
+    type i32 = T::__AllTypes_i32;
+    type u64 = T::__AllTypes_u64;
+    type i64 = T::__AllTypes_i64;
+    type u128 = T::__AllTypes_u128;
+    type i128 = T::__AllTypes_i128;
+    type bool = T::__AllTypes_bool;
+    type Address = T::__AllTypes_Address;
+    type Bytes = T::__AllTypes_Bytes;
+    type BytesN = T::__AllTypes_BytesN;
+    type String = T::__AllTypes_String;
+    type Symbol = T::__AllTypes_Symbol;
+    type Vec = T::__AllTypes_Vec;
+    type Map = T::__AllTypes_Map;
+    type Duration = T::__AllTypes_Duration;
+    type Timepoint = T::__AllTypes_Timepoint;
+    type I256 = T::__AllTypes_I256;
+    type U256 = T::__AllTypes_U256;
+    type Env = T::__AllTypes_Env;
+    type MyStruct = T::__AllTypes_MyStruct;
+    type MyEnumUnit = T::__AllTypes_MyEnumUnit;
+    type MyEnumVariants = T::__AllTypes_MyEnumVariants;
+}
+#[doc(hidden)]
 /// Test u32 values.
 /// Returns the input unchanged.
 #[allow(non_snake_case)]
@@ -1224,27 +1274,32 @@ impl ContractGlobalPath {
     #[allow(non_upper_case_globals)]
     /// Test u32 values.
     /// Returns the input unchanged.
-    const __SPEC_XDR_ENTRY_test_u32: soroban_sdk::xdr::r#const::ScSpecEntry =
-        soroban_sdk::xdr::r#const::ScSpecEntry::FunctionV0(
-            soroban_sdk::xdr::r#const::ScSpecFunctionV0 {
-                doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(
-                    b"Test u32 values.\nReturns the input unchanged.",
-                ),
-                name: soroban_sdk::xdr::r#const::ScSymbol(
-                    soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b"test_u32"),
-                ),
-                inputs: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[
-                    soroban_sdk::xdr::r#const::ScSpecFunctionInputV0 {
-                        doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
-                        name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b"v"),
-                        type_: <u32 as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
-                    },
-                ]),
-                outputs: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[
-                    <u32 as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
-                ]),
-            },
-        );
+    const __SPEC_XDR_ENTRY_test_u32: soroban_sdk::xdr::r#const::ScSpecEntry = soroban_sdk::xdr::r#const::ScSpecEntry::FunctionV0(soroban_sdk::xdr::r#const::ScSpecFunctionV0 {
+        doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(
+            b"Test u32 values.\nReturns the input unchanged.",
+        ),
+        name: soroban_sdk::xdr::r#const::ScSymbol(
+            soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b"test_u32"),
+        ),
+        inputs: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(
+            &[
+                soroban_sdk::xdr::r#const::ScSpecFunctionInputV0 {
+                    doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(
+                        b"",
+                    ),
+                    name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(
+                        b"v",
+                    ),
+                    type_: <<ContractGlobalPath as __ContractGlobalPath_AllTypes_types>::u32 as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
+                },
+            ],
+        ),
+        outputs: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(
+            &[
+                <<ContractGlobalPath as __ContractGlobalPath_AllTypes_types>::u32 as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
+            ],
+        ),
+    });
     #[allow(non_snake_case)]
     /// Test u32 values.
     /// Returns the input unchanged.
@@ -1278,27 +1333,32 @@ mod __ContractGlobalPath__test_i32__spec {
 impl ContractGlobalPath {
     #[allow(non_upper_case_globals)]
     /// Test i32 values.
-    const __SPEC_XDR_ENTRY_test_i32: soroban_sdk::xdr::r#const::ScSpecEntry =
-        soroban_sdk::xdr::r#const::ScSpecEntry::FunctionV0(
-            soroban_sdk::xdr::r#const::ScSpecFunctionV0 {
-                doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(
-                    b"Test i32 values.",
-                ),
-                name: soroban_sdk::xdr::r#const::ScSymbol(
-                    soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b"test_i32"),
-                ),
-                inputs: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[
-                    soroban_sdk::xdr::r#const::ScSpecFunctionInputV0 {
-                        doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
-                        name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b"v"),
-                        type_: <i32 as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
-                    },
-                ]),
-                outputs: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[
-                    <i32 as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
-                ]),
-            },
-        );
+    const __SPEC_XDR_ENTRY_test_i32: soroban_sdk::xdr::r#const::ScSpecEntry = soroban_sdk::xdr::r#const::ScSpecEntry::FunctionV0(soroban_sdk::xdr::r#const::ScSpecFunctionV0 {
+        doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(
+            b"Test i32 values.",
+        ),
+        name: soroban_sdk::xdr::r#const::ScSymbol(
+            soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b"test_i32"),
+        ),
+        inputs: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(
+            &[
+                soroban_sdk::xdr::r#const::ScSpecFunctionInputV0 {
+                    doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(
+                        b"",
+                    ),
+                    name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(
+                        b"v",
+                    ),
+                    type_: <<ContractGlobalPath as __ContractGlobalPath_AllTypes_types>::i32 as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
+                },
+            ],
+        ),
+        outputs: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(
+            &[
+                <<ContractGlobalPath as __ContractGlobalPath_AllTypes_types>::i32 as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
+            ],
+        ),
+    });
     #[allow(non_snake_case)]
     /// Test i32 values.
     /// Returns the XDR of this item's contract spec entry, as it is
@@ -1328,25 +1388,30 @@ mod __ContractGlobalPath__test_u64__spec {
 }
 impl ContractGlobalPath {
     #[allow(non_upper_case_globals)]
-    const __SPEC_XDR_ENTRY_test_u64: soroban_sdk::xdr::r#const::ScSpecEntry =
-        soroban_sdk::xdr::r#const::ScSpecEntry::FunctionV0(
-            soroban_sdk::xdr::r#const::ScSpecFunctionV0 {
-                doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
-                name: soroban_sdk::xdr::r#const::ScSymbol(
-                    soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b"test_u64"),
-                ),
-                inputs: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[
-                    soroban_sdk::xdr::r#const::ScSpecFunctionInputV0 {
-                        doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
-                        name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b"v"),
-                        type_: <u64 as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
-                    },
-                ]),
-                outputs: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[
-                    <u64 as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
-                ]),
-            },
-        );
+    const __SPEC_XDR_ENTRY_test_u64: soroban_sdk::xdr::r#const::ScSpecEntry = soroban_sdk::xdr::r#const::ScSpecEntry::FunctionV0(soroban_sdk::xdr::r#const::ScSpecFunctionV0 {
+        doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
+        name: soroban_sdk::xdr::r#const::ScSymbol(
+            soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b"test_u64"),
+        ),
+        inputs: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(
+            &[
+                soroban_sdk::xdr::r#const::ScSpecFunctionInputV0 {
+                    doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(
+                        b"",
+                    ),
+                    name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(
+                        b"v",
+                    ),
+                    type_: <<ContractGlobalPath as __ContractGlobalPath_AllTypes_types>::u64 as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
+                },
+            ],
+        ),
+        outputs: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(
+            &[
+                <<ContractGlobalPath as __ContractGlobalPath_AllTypes_types>::u64 as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
+            ],
+        ),
+    });
     #[allow(non_snake_case)]
     /// Returns the XDR of this item's contract spec entry, as it is
     /// embedded in the contract.
@@ -1375,25 +1440,30 @@ mod __ContractGlobalPath__test_i64__spec {
 }
 impl ContractGlobalPath {
     #[allow(non_upper_case_globals)]
-    const __SPEC_XDR_ENTRY_test_i64: soroban_sdk::xdr::r#const::ScSpecEntry =
-        soroban_sdk::xdr::r#const::ScSpecEntry::FunctionV0(
-            soroban_sdk::xdr::r#const::ScSpecFunctionV0 {
-                doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
-                name: soroban_sdk::xdr::r#const::ScSymbol(
-                    soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b"test_i64"),
-                ),
-                inputs: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[
-                    soroban_sdk::xdr::r#const::ScSpecFunctionInputV0 {
-                        doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
-                        name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b"v"),
-                        type_: <i64 as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
-                    },
-                ]),
-                outputs: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[
-                    <i64 as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
-                ]),
-            },
-        );
+    const __SPEC_XDR_ENTRY_test_i64: soroban_sdk::xdr::r#const::ScSpecEntry = soroban_sdk::xdr::r#const::ScSpecEntry::FunctionV0(soroban_sdk::xdr::r#const::ScSpecFunctionV0 {
+        doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
+        name: soroban_sdk::xdr::r#const::ScSymbol(
+            soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b"test_i64"),
+        ),
+        inputs: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(
+            &[
+                soroban_sdk::xdr::r#const::ScSpecFunctionInputV0 {
+                    doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(
+                        b"",
+                    ),
+                    name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(
+                        b"v",
+                    ),
+                    type_: <<ContractGlobalPath as __ContractGlobalPath_AllTypes_types>::i64 as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
+                },
+            ],
+        ),
+        outputs: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(
+            &[
+                <<ContractGlobalPath as __ContractGlobalPath_AllTypes_types>::i64 as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
+            ],
+        ),
+    });
     #[allow(non_snake_case)]
     /// Returns the XDR of this item's contract spec entry, as it is
     /// embedded in the contract.
@@ -1422,25 +1492,30 @@ mod __ContractGlobalPath__test_u128__spec {
 }
 impl ContractGlobalPath {
     #[allow(non_upper_case_globals)]
-    const __SPEC_XDR_ENTRY_test_u128: soroban_sdk::xdr::r#const::ScSpecEntry =
-        soroban_sdk::xdr::r#const::ScSpecEntry::FunctionV0(
-            soroban_sdk::xdr::r#const::ScSpecFunctionV0 {
-                doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
-                name: soroban_sdk::xdr::r#const::ScSymbol(
-                    soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b"test_u128"),
-                ),
-                inputs: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[
-                    soroban_sdk::xdr::r#const::ScSpecFunctionInputV0 {
-                        doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
-                        name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b"v"),
-                        type_: <u128 as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
-                    },
-                ]),
-                outputs: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[
-                    <u128 as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
-                ]),
-            },
-        );
+    const __SPEC_XDR_ENTRY_test_u128: soroban_sdk::xdr::r#const::ScSpecEntry = soroban_sdk::xdr::r#const::ScSpecEntry::FunctionV0(soroban_sdk::xdr::r#const::ScSpecFunctionV0 {
+        doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
+        name: soroban_sdk::xdr::r#const::ScSymbol(
+            soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b"test_u128"),
+        ),
+        inputs: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(
+            &[
+                soroban_sdk::xdr::r#const::ScSpecFunctionInputV0 {
+                    doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(
+                        b"",
+                    ),
+                    name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(
+                        b"v",
+                    ),
+                    type_: <<ContractGlobalPath as __ContractGlobalPath_AllTypes_types>::u128 as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
+                },
+            ],
+        ),
+        outputs: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(
+            &[
+                <<ContractGlobalPath as __ContractGlobalPath_AllTypes_types>::u128 as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
+            ],
+        ),
+    });
     #[allow(non_snake_case)]
     /// Returns the XDR of this item's contract spec entry, as it is
     /// embedded in the contract.
@@ -1469,25 +1544,30 @@ mod __ContractGlobalPath__test_i128__spec {
 }
 impl ContractGlobalPath {
     #[allow(non_upper_case_globals)]
-    const __SPEC_XDR_ENTRY_test_i128: soroban_sdk::xdr::r#const::ScSpecEntry =
-        soroban_sdk::xdr::r#const::ScSpecEntry::FunctionV0(
-            soroban_sdk::xdr::r#const::ScSpecFunctionV0 {
-                doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
-                name: soroban_sdk::xdr::r#const::ScSymbol(
-                    soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b"test_i128"),
-                ),
-                inputs: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[
-                    soroban_sdk::xdr::r#const::ScSpecFunctionInputV0 {
-                        doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
-                        name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b"v"),
-                        type_: <i128 as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
-                    },
-                ]),
-                outputs: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[
-                    <i128 as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
-                ]),
-            },
-        );
+    const __SPEC_XDR_ENTRY_test_i128: soroban_sdk::xdr::r#const::ScSpecEntry = soroban_sdk::xdr::r#const::ScSpecEntry::FunctionV0(soroban_sdk::xdr::r#const::ScSpecFunctionV0 {
+        doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
+        name: soroban_sdk::xdr::r#const::ScSymbol(
+            soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b"test_i128"),
+        ),
+        inputs: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(
+            &[
+                soroban_sdk::xdr::r#const::ScSpecFunctionInputV0 {
+                    doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(
+                        b"",
+                    ),
+                    name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(
+                        b"v",
+                    ),
+                    type_: <<ContractGlobalPath as __ContractGlobalPath_AllTypes_types>::i128 as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
+                },
+            ],
+        ),
+        outputs: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(
+            &[
+                <<ContractGlobalPath as __ContractGlobalPath_AllTypes_types>::i128 as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
+            ],
+        ),
+    });
     #[allow(non_snake_case)]
     /// Returns the XDR of this item's contract spec entry, as it is
     /// embedded in the contract.
@@ -1516,25 +1596,30 @@ mod __ContractGlobalPath__test_bool__spec {
 }
 impl ContractGlobalPath {
     #[allow(non_upper_case_globals)]
-    const __SPEC_XDR_ENTRY_test_bool: soroban_sdk::xdr::r#const::ScSpecEntry =
-        soroban_sdk::xdr::r#const::ScSpecEntry::FunctionV0(
-            soroban_sdk::xdr::r#const::ScSpecFunctionV0 {
-                doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
-                name: soroban_sdk::xdr::r#const::ScSymbol(
-                    soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b"test_bool"),
-                ),
-                inputs: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[
-                    soroban_sdk::xdr::r#const::ScSpecFunctionInputV0 {
-                        doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
-                        name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b"v"),
-                        type_: <bool as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
-                    },
-                ]),
-                outputs: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[
-                    <bool as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
-                ]),
-            },
-        );
+    const __SPEC_XDR_ENTRY_test_bool: soroban_sdk::xdr::r#const::ScSpecEntry = soroban_sdk::xdr::r#const::ScSpecEntry::FunctionV0(soroban_sdk::xdr::r#const::ScSpecFunctionV0 {
+        doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
+        name: soroban_sdk::xdr::r#const::ScSymbol(
+            soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b"test_bool"),
+        ),
+        inputs: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(
+            &[
+                soroban_sdk::xdr::r#const::ScSpecFunctionInputV0 {
+                    doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(
+                        b"",
+                    ),
+                    name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(
+                        b"v",
+                    ),
+                    type_: <<ContractGlobalPath as __ContractGlobalPath_AllTypes_types>::bool as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
+                },
+            ],
+        ),
+        outputs: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(
+            &[
+                <<ContractGlobalPath as __ContractGlobalPath_AllTypes_types>::bool as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
+            ],
+        ),
+    });
     #[allow(non_snake_case)]
     /// Returns the XDR of this item's contract spec entry, as it is
     /// embedded in the contract.
@@ -1563,25 +1648,30 @@ mod __ContractGlobalPath__test_address__spec {
 }
 impl ContractGlobalPath {
     #[allow(non_upper_case_globals)]
-    const __SPEC_XDR_ENTRY_test_address: soroban_sdk::xdr::r#const::ScSpecEntry =
-        soroban_sdk::xdr::r#const::ScSpecEntry::FunctionV0(
-            soroban_sdk::xdr::r#const::ScSpecFunctionV0 {
-                doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
-                name: soroban_sdk::xdr::r#const::ScSymbol(
-                    soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b"test_address"),
-                ),
-                inputs: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[
-                    soroban_sdk::xdr::r#const::ScSpecFunctionInputV0 {
-                        doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
-                        name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b"v"),
-                        type_: <Address as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
-                    },
-                ]),
-                outputs: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[
-                    <Address as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
-                ]),
-            },
-        );
+    const __SPEC_XDR_ENTRY_test_address: soroban_sdk::xdr::r#const::ScSpecEntry = soroban_sdk::xdr::r#const::ScSpecEntry::FunctionV0(soroban_sdk::xdr::r#const::ScSpecFunctionV0 {
+        doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
+        name: soroban_sdk::xdr::r#const::ScSymbol(
+            soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b"test_address"),
+        ),
+        inputs: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(
+            &[
+                soroban_sdk::xdr::r#const::ScSpecFunctionInputV0 {
+                    doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(
+                        b"",
+                    ),
+                    name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(
+                        b"v",
+                    ),
+                    type_: <<ContractGlobalPath as __ContractGlobalPath_AllTypes_types>::Address as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
+                },
+            ],
+        ),
+        outputs: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(
+            &[
+                <<ContractGlobalPath as __ContractGlobalPath_AllTypes_types>::Address as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
+            ],
+        ),
+    });
     #[allow(non_snake_case)]
     /// Returns the XDR of this item's contract spec entry, as it is
     /// embedded in the contract.
@@ -1610,25 +1700,30 @@ mod __ContractGlobalPath__test_bytes__spec {
 }
 impl ContractGlobalPath {
     #[allow(non_upper_case_globals)]
-    const __SPEC_XDR_ENTRY_test_bytes: soroban_sdk::xdr::r#const::ScSpecEntry =
-        soroban_sdk::xdr::r#const::ScSpecEntry::FunctionV0(
-            soroban_sdk::xdr::r#const::ScSpecFunctionV0 {
-                doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
-                name: soroban_sdk::xdr::r#const::ScSymbol(
-                    soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b"test_bytes"),
-                ),
-                inputs: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[
-                    soroban_sdk::xdr::r#const::ScSpecFunctionInputV0 {
-                        doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
-                        name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b"v"),
-                        type_: <Bytes as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
-                    },
-                ]),
-                outputs: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[
-                    <Bytes as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
-                ]),
-            },
-        );
+    const __SPEC_XDR_ENTRY_test_bytes: soroban_sdk::xdr::r#const::ScSpecEntry = soroban_sdk::xdr::r#const::ScSpecEntry::FunctionV0(soroban_sdk::xdr::r#const::ScSpecFunctionV0 {
+        doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
+        name: soroban_sdk::xdr::r#const::ScSymbol(
+            soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b"test_bytes"),
+        ),
+        inputs: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(
+            &[
+                soroban_sdk::xdr::r#const::ScSpecFunctionInputV0 {
+                    doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(
+                        b"",
+                    ),
+                    name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(
+                        b"v",
+                    ),
+                    type_: <<ContractGlobalPath as __ContractGlobalPath_AllTypes_types>::Bytes as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
+                },
+            ],
+        ),
+        outputs: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(
+            &[
+                <<ContractGlobalPath as __ContractGlobalPath_AllTypes_types>::Bytes as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
+            ],
+        ),
+    });
     #[allow(non_snake_case)]
     /// Returns the XDR of this item's contract spec entry, as it is
     /// embedded in the contract.
@@ -1657,25 +1752,30 @@ mod __ContractGlobalPath__test_bytes_n__spec {
 }
 impl ContractGlobalPath {
     #[allow(non_upper_case_globals)]
-    const __SPEC_XDR_ENTRY_test_bytes_n: soroban_sdk::xdr::r#const::ScSpecEntry =
-        soroban_sdk::xdr::r#const::ScSpecEntry::FunctionV0(
-            soroban_sdk::xdr::r#const::ScSpecFunctionV0 {
-                doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
-                name: soroban_sdk::xdr::r#const::ScSymbol(
-                    soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b"test_bytes_n"),
-                ),
-                inputs: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[
-                    soroban_sdk::xdr::r#const::ScSpecFunctionInputV0 {
-                        doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
-                        name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b"v"),
-                        type_: <BytesN<32> as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
-                    },
-                ]),
-                outputs: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[
-                    <BytesN<32> as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
-                ]),
-            },
-        );
+    const __SPEC_XDR_ENTRY_test_bytes_n: soroban_sdk::xdr::r#const::ScSpecEntry = soroban_sdk::xdr::r#const::ScSpecEntry::FunctionV0(soroban_sdk::xdr::r#const::ScSpecFunctionV0 {
+        doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
+        name: soroban_sdk::xdr::r#const::ScSymbol(
+            soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b"test_bytes_n"),
+        ),
+        inputs: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(
+            &[
+                soroban_sdk::xdr::r#const::ScSpecFunctionInputV0 {
+                    doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(
+                        b"",
+                    ),
+                    name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(
+                        b"v",
+                    ),
+                    type_: <<ContractGlobalPath as __ContractGlobalPath_AllTypes_types>::BytesN as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
+                },
+            ],
+        ),
+        outputs: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(
+            &[
+                <<ContractGlobalPath as __ContractGlobalPath_AllTypes_types>::BytesN as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
+            ],
+        ),
+    });
     #[allow(non_snake_case)]
     /// Returns the XDR of this item's contract spec entry, as it is
     /// embedded in the contract.
@@ -1704,25 +1804,30 @@ mod __ContractGlobalPath__test_string__spec {
 }
 impl ContractGlobalPath {
     #[allow(non_upper_case_globals)]
-    const __SPEC_XDR_ENTRY_test_string: soroban_sdk::xdr::r#const::ScSpecEntry =
-        soroban_sdk::xdr::r#const::ScSpecEntry::FunctionV0(
-            soroban_sdk::xdr::r#const::ScSpecFunctionV0 {
-                doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
-                name: soroban_sdk::xdr::r#const::ScSymbol(
-                    soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b"test_string"),
-                ),
-                inputs: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[
-                    soroban_sdk::xdr::r#const::ScSpecFunctionInputV0 {
-                        doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
-                        name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b"v"),
-                        type_: <String as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
-                    },
-                ]),
-                outputs: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[
-                    <String as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
-                ]),
-            },
-        );
+    const __SPEC_XDR_ENTRY_test_string: soroban_sdk::xdr::r#const::ScSpecEntry = soroban_sdk::xdr::r#const::ScSpecEntry::FunctionV0(soroban_sdk::xdr::r#const::ScSpecFunctionV0 {
+        doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
+        name: soroban_sdk::xdr::r#const::ScSymbol(
+            soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b"test_string"),
+        ),
+        inputs: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(
+            &[
+                soroban_sdk::xdr::r#const::ScSpecFunctionInputV0 {
+                    doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(
+                        b"",
+                    ),
+                    name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(
+                        b"v",
+                    ),
+                    type_: <<ContractGlobalPath as __ContractGlobalPath_AllTypes_types>::String as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
+                },
+            ],
+        ),
+        outputs: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(
+            &[
+                <<ContractGlobalPath as __ContractGlobalPath_AllTypes_types>::String as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
+            ],
+        ),
+    });
     #[allow(non_snake_case)]
     /// Returns the XDR of this item's contract spec entry, as it is
     /// embedded in the contract.
@@ -1751,25 +1856,30 @@ mod __ContractGlobalPath__test_symbol__spec {
 }
 impl ContractGlobalPath {
     #[allow(non_upper_case_globals)]
-    const __SPEC_XDR_ENTRY_test_symbol: soroban_sdk::xdr::r#const::ScSpecEntry =
-        soroban_sdk::xdr::r#const::ScSpecEntry::FunctionV0(
-            soroban_sdk::xdr::r#const::ScSpecFunctionV0 {
-                doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
-                name: soroban_sdk::xdr::r#const::ScSymbol(
-                    soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b"test_symbol"),
-                ),
-                inputs: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[
-                    soroban_sdk::xdr::r#const::ScSpecFunctionInputV0 {
-                        doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
-                        name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b"v"),
-                        type_: <Symbol as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
-                    },
-                ]),
-                outputs: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[
-                    <Symbol as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
-                ]),
-            },
-        );
+    const __SPEC_XDR_ENTRY_test_symbol: soroban_sdk::xdr::r#const::ScSpecEntry = soroban_sdk::xdr::r#const::ScSpecEntry::FunctionV0(soroban_sdk::xdr::r#const::ScSpecFunctionV0 {
+        doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
+        name: soroban_sdk::xdr::r#const::ScSymbol(
+            soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b"test_symbol"),
+        ),
+        inputs: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(
+            &[
+                soroban_sdk::xdr::r#const::ScSpecFunctionInputV0 {
+                    doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(
+                        b"",
+                    ),
+                    name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(
+                        b"v",
+                    ),
+                    type_: <<ContractGlobalPath as __ContractGlobalPath_AllTypes_types>::Symbol as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
+                },
+            ],
+        ),
+        outputs: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(
+            &[
+                <<ContractGlobalPath as __ContractGlobalPath_AllTypes_types>::Symbol as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
+            ],
+        ),
+    });
     #[allow(non_snake_case)]
     /// Returns the XDR of this item's contract spec entry, as it is
     /// embedded in the contract.
@@ -1798,25 +1908,30 @@ mod __ContractGlobalPath__test_vec__spec {
 }
 impl ContractGlobalPath {
     #[allow(non_upper_case_globals)]
-    const __SPEC_XDR_ENTRY_test_vec: soroban_sdk::xdr::r#const::ScSpecEntry =
-        soroban_sdk::xdr::r#const::ScSpecEntry::FunctionV0(
-            soroban_sdk::xdr::r#const::ScSpecFunctionV0 {
-                doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
-                name: soroban_sdk::xdr::r#const::ScSymbol(
-                    soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b"test_vec"),
-                ),
-                inputs: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[
-                    soroban_sdk::xdr::r#const::ScSpecFunctionInputV0 {
-                        doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
-                        name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b"v"),
-                        type_: <Vec<u32> as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
-                    },
-                ]),
-                outputs: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[
-                    <Vec<u32> as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
-                ]),
-            },
-        );
+    const __SPEC_XDR_ENTRY_test_vec: soroban_sdk::xdr::r#const::ScSpecEntry = soroban_sdk::xdr::r#const::ScSpecEntry::FunctionV0(soroban_sdk::xdr::r#const::ScSpecFunctionV0 {
+        doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
+        name: soroban_sdk::xdr::r#const::ScSymbol(
+            soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b"test_vec"),
+        ),
+        inputs: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(
+            &[
+                soroban_sdk::xdr::r#const::ScSpecFunctionInputV0 {
+                    doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(
+                        b"",
+                    ),
+                    name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(
+                        b"v",
+                    ),
+                    type_: <<ContractGlobalPath as __ContractGlobalPath_AllTypes_types>::Vec as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
+                },
+            ],
+        ),
+        outputs: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(
+            &[
+                <<ContractGlobalPath as __ContractGlobalPath_AllTypes_types>::Vec as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
+            ],
+        ),
+    });
     #[allow(non_snake_case)]
     /// Returns the XDR of this item's contract spec entry, as it is
     /// embedded in the contract.
@@ -1845,25 +1960,30 @@ mod __ContractGlobalPath__test_map__spec {
 }
 impl ContractGlobalPath {
     #[allow(non_upper_case_globals)]
-    const __SPEC_XDR_ENTRY_test_map: soroban_sdk::xdr::r#const::ScSpecEntry =
-        soroban_sdk::xdr::r#const::ScSpecEntry::FunctionV0(
-            soroban_sdk::xdr::r#const::ScSpecFunctionV0 {
-                doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
-                name: soroban_sdk::xdr::r#const::ScSymbol(
-                    soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b"test_map"),
-                ),
-                inputs: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[
-                    soroban_sdk::xdr::r#const::ScSpecFunctionInputV0 {
-                        doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
-                        name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b"v"),
-                        type_: <Map<u32, u32> as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
-                    },
-                ]),
-                outputs: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[
-                    <Map<u32, u32> as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
-                ]),
-            },
-        );
+    const __SPEC_XDR_ENTRY_test_map: soroban_sdk::xdr::r#const::ScSpecEntry = soroban_sdk::xdr::r#const::ScSpecEntry::FunctionV0(soroban_sdk::xdr::r#const::ScSpecFunctionV0 {
+        doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
+        name: soroban_sdk::xdr::r#const::ScSymbol(
+            soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b"test_map"),
+        ),
+        inputs: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(
+            &[
+                soroban_sdk::xdr::r#const::ScSpecFunctionInputV0 {
+                    doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(
+                        b"",
+                    ),
+                    name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(
+                        b"v",
+                    ),
+                    type_: <<ContractGlobalPath as __ContractGlobalPath_AllTypes_types>::Map as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
+                },
+            ],
+        ),
+        outputs: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(
+            &[
+                <<ContractGlobalPath as __ContractGlobalPath_AllTypes_types>::Map as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
+            ],
+        ),
+    });
     #[allow(non_snake_case)]
     /// Returns the XDR of this item's contract spec entry, as it is
     /// embedded in the contract.
@@ -1892,25 +2012,30 @@ mod __ContractGlobalPath__test_duration__spec {
 }
 impl ContractGlobalPath {
     #[allow(non_upper_case_globals)]
-    const __SPEC_XDR_ENTRY_test_duration: soroban_sdk::xdr::r#const::ScSpecEntry =
-        soroban_sdk::xdr::r#const::ScSpecEntry::FunctionV0(
-            soroban_sdk::xdr::r#const::ScSpecFunctionV0 {
-                doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
-                name: soroban_sdk::xdr::r#const::ScSymbol(
-                    soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b"test_duration"),
-                ),
-                inputs: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[
-                    soroban_sdk::xdr::r#const::ScSpecFunctionInputV0 {
-                        doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
-                        name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b"v"),
-                        type_: <Duration as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
-                    },
-                ]),
-                outputs: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[
-                    <Duration as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
-                ]),
-            },
-        );
+    const __SPEC_XDR_ENTRY_test_duration: soroban_sdk::xdr::r#const::ScSpecEntry = soroban_sdk::xdr::r#const::ScSpecEntry::FunctionV0(soroban_sdk::xdr::r#const::ScSpecFunctionV0 {
+        doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
+        name: soroban_sdk::xdr::r#const::ScSymbol(
+            soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b"test_duration"),
+        ),
+        inputs: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(
+            &[
+                soroban_sdk::xdr::r#const::ScSpecFunctionInputV0 {
+                    doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(
+                        b"",
+                    ),
+                    name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(
+                        b"v",
+                    ),
+                    type_: <<ContractGlobalPath as __ContractGlobalPath_AllTypes_types>::Duration as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
+                },
+            ],
+        ),
+        outputs: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(
+            &[
+                <<ContractGlobalPath as __ContractGlobalPath_AllTypes_types>::Duration as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
+            ],
+        ),
+    });
     #[allow(non_snake_case)]
     /// Returns the XDR of this item's contract spec entry, as it is
     /// embedded in the contract.
@@ -1940,25 +2065,32 @@ mod __ContractGlobalPath__test_timepoint__spec {
 }
 impl ContractGlobalPath {
     #[allow(non_upper_case_globals)]
-    const __SPEC_XDR_ENTRY_test_timepoint: soroban_sdk::xdr::r#const::ScSpecEntry =
-        soroban_sdk::xdr::r#const::ScSpecEntry::FunctionV0(
-            soroban_sdk::xdr::r#const::ScSpecFunctionV0 {
-                doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
-                name: soroban_sdk::xdr::r#const::ScSymbol(
-                    soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b"test_timepoint"),
-                ),
-                inputs: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[
-                    soroban_sdk::xdr::r#const::ScSpecFunctionInputV0 {
-                        doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
-                        name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b"v"),
-                        type_: <Timepoint as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
-                    },
-                ]),
-                outputs: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[
-                    <Timepoint as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
-                ]),
-            },
-        );
+    const __SPEC_XDR_ENTRY_test_timepoint: soroban_sdk::xdr::r#const::ScSpecEntry = soroban_sdk::xdr::r#const::ScSpecEntry::FunctionV0(soroban_sdk::xdr::r#const::ScSpecFunctionV0 {
+        doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
+        name: soroban_sdk::xdr::r#const::ScSymbol(
+            soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(
+                b"test_timepoint",
+            ),
+        ),
+        inputs: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(
+            &[
+                soroban_sdk::xdr::r#const::ScSpecFunctionInputV0 {
+                    doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(
+                        b"",
+                    ),
+                    name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(
+                        b"v",
+                    ),
+                    type_: <<ContractGlobalPath as __ContractGlobalPath_AllTypes_types>::Timepoint as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
+                },
+            ],
+        ),
+        outputs: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(
+            &[
+                <<ContractGlobalPath as __ContractGlobalPath_AllTypes_types>::Timepoint as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
+            ],
+        ),
+    });
     #[allow(non_snake_case)]
     /// Returns the XDR of this item's contract spec entry, as it is
     /// embedded in the contract.
@@ -1987,25 +2119,30 @@ mod __ContractGlobalPath__test_i256__spec {
 }
 impl ContractGlobalPath {
     #[allow(non_upper_case_globals)]
-    const __SPEC_XDR_ENTRY_test_i256: soroban_sdk::xdr::r#const::ScSpecEntry =
-        soroban_sdk::xdr::r#const::ScSpecEntry::FunctionV0(
-            soroban_sdk::xdr::r#const::ScSpecFunctionV0 {
-                doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
-                name: soroban_sdk::xdr::r#const::ScSymbol(
-                    soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b"test_i256"),
-                ),
-                inputs: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[
-                    soroban_sdk::xdr::r#const::ScSpecFunctionInputV0 {
-                        doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
-                        name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b"v"),
-                        type_: <I256 as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
-                    },
-                ]),
-                outputs: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[
-                    <I256 as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
-                ]),
-            },
-        );
+    const __SPEC_XDR_ENTRY_test_i256: soroban_sdk::xdr::r#const::ScSpecEntry = soroban_sdk::xdr::r#const::ScSpecEntry::FunctionV0(soroban_sdk::xdr::r#const::ScSpecFunctionV0 {
+        doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
+        name: soroban_sdk::xdr::r#const::ScSymbol(
+            soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b"test_i256"),
+        ),
+        inputs: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(
+            &[
+                soroban_sdk::xdr::r#const::ScSpecFunctionInputV0 {
+                    doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(
+                        b"",
+                    ),
+                    name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(
+                        b"v",
+                    ),
+                    type_: <<ContractGlobalPath as __ContractGlobalPath_AllTypes_types>::I256 as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
+                },
+            ],
+        ),
+        outputs: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(
+            &[
+                <<ContractGlobalPath as __ContractGlobalPath_AllTypes_types>::I256 as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
+            ],
+        ),
+    });
     #[allow(non_snake_case)]
     /// Returns the XDR of this item's contract spec entry, as it is
     /// embedded in the contract.
@@ -2034,25 +2171,30 @@ mod __ContractGlobalPath__test_u256__spec {
 }
 impl ContractGlobalPath {
     #[allow(non_upper_case_globals)]
-    const __SPEC_XDR_ENTRY_test_u256: soroban_sdk::xdr::r#const::ScSpecEntry =
-        soroban_sdk::xdr::r#const::ScSpecEntry::FunctionV0(
-            soroban_sdk::xdr::r#const::ScSpecFunctionV0 {
-                doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
-                name: soroban_sdk::xdr::r#const::ScSymbol(
-                    soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b"test_u256"),
-                ),
-                inputs: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[
-                    soroban_sdk::xdr::r#const::ScSpecFunctionInputV0 {
-                        doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
-                        name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b"v"),
-                        type_: <U256 as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
-                    },
-                ]),
-                outputs: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[
-                    <U256 as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
-                ]),
-            },
-        );
+    const __SPEC_XDR_ENTRY_test_u256: soroban_sdk::xdr::r#const::ScSpecEntry = soroban_sdk::xdr::r#const::ScSpecEntry::FunctionV0(soroban_sdk::xdr::r#const::ScSpecFunctionV0 {
+        doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
+        name: soroban_sdk::xdr::r#const::ScSymbol(
+            soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b"test_u256"),
+        ),
+        inputs: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(
+            &[
+                soroban_sdk::xdr::r#const::ScSpecFunctionInputV0 {
+                    doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(
+                        b"",
+                    ),
+                    name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(
+                        b"v",
+                    ),
+                    type_: <<ContractGlobalPath as __ContractGlobalPath_AllTypes_types>::U256 as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
+                },
+            ],
+        ),
+        outputs: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(
+            &[
+                <<ContractGlobalPath as __ContractGlobalPath_AllTypes_types>::U256 as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
+            ],
+        ),
+    });
     #[allow(non_snake_case)]
     /// Returns the XDR of this item's contract spec entry, as it is
     /// embedded in the contract.
@@ -2082,19 +2224,20 @@ mod __ContractGlobalPath__test_env_param__spec {
 }
 impl ContractGlobalPath {
     #[allow(non_upper_case_globals)]
-    const __SPEC_XDR_ENTRY_test_env_param: soroban_sdk::xdr::r#const::ScSpecEntry =
-        soroban_sdk::xdr::r#const::ScSpecEntry::FunctionV0(
-            soroban_sdk::xdr::r#const::ScSpecFunctionV0 {
-                doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
-                name: soroban_sdk::xdr::r#const::ScSymbol(
-                    soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b"test_env_param"),
-                ),
-                inputs: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[]),
-                outputs: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[
-                    <u32 as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
-                ]),
-            },
-        );
+    const __SPEC_XDR_ENTRY_test_env_param: soroban_sdk::xdr::r#const::ScSpecEntry = soroban_sdk::xdr::r#const::ScSpecEntry::FunctionV0(soroban_sdk::xdr::r#const::ScSpecFunctionV0 {
+        doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
+        name: soroban_sdk::xdr::r#const::ScSymbol(
+            soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(
+                b"test_env_param",
+            ),
+        ),
+        inputs: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[]),
+        outputs: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(
+            &[
+                <<ContractGlobalPath as __ContractGlobalPath_AllTypes_types>::u32 as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
+            ],
+        ),
+    });
     #[allow(non_snake_case)]
     /// Returns the XDR of this item's contract spec entry, as it is
     /// embedded in the contract.
@@ -2123,25 +2266,30 @@ mod __ContractGlobalPath__test_struct__spec {
 }
 impl ContractGlobalPath {
     #[allow(non_upper_case_globals)]
-    const __SPEC_XDR_ENTRY_test_struct: soroban_sdk::xdr::r#const::ScSpecEntry =
-        soroban_sdk::xdr::r#const::ScSpecEntry::FunctionV0(
-            soroban_sdk::xdr::r#const::ScSpecFunctionV0 {
-                doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
-                name: soroban_sdk::xdr::r#const::ScSymbol(
-                    soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b"test_struct"),
-                ),
-                inputs: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[
-                    soroban_sdk::xdr::r#const::ScSpecFunctionInputV0 {
-                        doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
-                        name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b"v"),
-                        type_: <MyStruct as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
-                    },
-                ]),
-                outputs: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[
-                    <MyStruct as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
-                ]),
-            },
-        );
+    const __SPEC_XDR_ENTRY_test_struct: soroban_sdk::xdr::r#const::ScSpecEntry = soroban_sdk::xdr::r#const::ScSpecEntry::FunctionV0(soroban_sdk::xdr::r#const::ScSpecFunctionV0 {
+        doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
+        name: soroban_sdk::xdr::r#const::ScSymbol(
+            soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b"test_struct"),
+        ),
+        inputs: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(
+            &[
+                soroban_sdk::xdr::r#const::ScSpecFunctionInputV0 {
+                    doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(
+                        b"",
+                    ),
+                    name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(
+                        b"v",
+                    ),
+                    type_: <<ContractGlobalPath as __ContractGlobalPath_AllTypes_types>::MyStruct as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
+                },
+            ],
+        ),
+        outputs: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(
+            &[
+                <<ContractGlobalPath as __ContractGlobalPath_AllTypes_types>::MyStruct as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
+            ],
+        ),
+    });
     #[allow(non_snake_case)]
     /// Returns the XDR of this item's contract spec entry, as it is
     /// embedded in the contract.
@@ -2171,25 +2319,32 @@ mod __ContractGlobalPath__test_enum_unit__spec {
 }
 impl ContractGlobalPath {
     #[allow(non_upper_case_globals)]
-    const __SPEC_XDR_ENTRY_test_enum_unit: soroban_sdk::xdr::r#const::ScSpecEntry =
-        soroban_sdk::xdr::r#const::ScSpecEntry::FunctionV0(
-            soroban_sdk::xdr::r#const::ScSpecFunctionV0 {
-                doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
-                name: soroban_sdk::xdr::r#const::ScSymbol(
-                    soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b"test_enum_unit"),
-                ),
-                inputs: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[
-                    soroban_sdk::xdr::r#const::ScSpecFunctionInputV0 {
-                        doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
-                        name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b"v"),
-                        type_: <MyEnumUnit as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
-                    },
-                ]),
-                outputs: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[
-                    <MyEnumUnit as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
-                ]),
-            },
-        );
+    const __SPEC_XDR_ENTRY_test_enum_unit: soroban_sdk::xdr::r#const::ScSpecEntry = soroban_sdk::xdr::r#const::ScSpecEntry::FunctionV0(soroban_sdk::xdr::r#const::ScSpecFunctionV0 {
+        doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
+        name: soroban_sdk::xdr::r#const::ScSymbol(
+            soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(
+                b"test_enum_unit",
+            ),
+        ),
+        inputs: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(
+            &[
+                soroban_sdk::xdr::r#const::ScSpecFunctionInputV0 {
+                    doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(
+                        b"",
+                    ),
+                    name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(
+                        b"v",
+                    ),
+                    type_: <<ContractGlobalPath as __ContractGlobalPath_AllTypes_types>::MyEnumUnit as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
+                },
+            ],
+        ),
+        outputs: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(
+            &[
+                <<ContractGlobalPath as __ContractGlobalPath_AllTypes_types>::MyEnumUnit as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
+            ],
+        ),
+    });
     #[allow(non_snake_case)]
     /// Returns the XDR of this item's contract spec entry, as it is
     /// embedded in the contract.
@@ -2219,27 +2374,32 @@ mod __ContractGlobalPath__test_enum_variants__spec {
 }
 impl ContractGlobalPath {
     #[allow(non_upper_case_globals)]
-    const __SPEC_XDR_ENTRY_test_enum_variants: soroban_sdk::xdr::r#const::ScSpecEntry =
-        soroban_sdk::xdr::r#const::ScSpecEntry::FunctionV0(
-            soroban_sdk::xdr::r#const::ScSpecFunctionV0 {
-                doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
-                name: soroban_sdk::xdr::r#const::ScSymbol(
-                    soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(
-                        b"test_enum_variants",
+    const __SPEC_XDR_ENTRY_test_enum_variants: soroban_sdk::xdr::r#const::ScSpecEntry = soroban_sdk::xdr::r#const::ScSpecEntry::FunctionV0(soroban_sdk::xdr::r#const::ScSpecFunctionV0 {
+        doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
+        name: soroban_sdk::xdr::r#const::ScSymbol(
+            soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(
+                b"test_enum_variants",
+            ),
+        ),
+        inputs: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(
+            &[
+                soroban_sdk::xdr::r#const::ScSpecFunctionInputV0 {
+                    doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(
+                        b"",
                     ),
-                ),
-                inputs: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[
-                    soroban_sdk::xdr::r#const::ScSpecFunctionInputV0 {
-                        doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
-                        name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b"v"),
-                        type_: <MyEnumVariants as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
-                    },
-                ]),
-                outputs: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[
-                    <MyEnumVariants as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
-                ]),
-            },
-        );
+                    name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(
+                        b"v",
+                    ),
+                    type_: <<ContractGlobalPath as __ContractGlobalPath_AllTypes_types>::MyEnumVariants as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
+                },
+            ],
+        ),
+        outputs: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(
+            &[
+                <<ContractGlobalPath as __ContractGlobalPath_AllTypes_types>::MyEnumVariants as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
+            ],
+        ),
+    });
     #[allow(non_snake_case)]
     /// Returns the XDR of this item's contract spec entry, as it is
     /// embedded in the contract.
@@ -2266,7 +2426,10 @@ impl<'a> ContractGlobalPathClient<'a> {
     /// Panics if the invoked contract returns an error or panics.
     ///
     /// Use [`Self::try_test_u32`] to receive errors instead of panicking.
-    pub fn test_u32(&self, v: &u32) -> u32 {
+    pub fn test_u32(
+        &self,
+        v: &<ContractGlobalPath as __ContractGlobalPath_AllTypes_types>::u32,
+    ) -> <ContractGlobalPath as __ContractGlobalPath_AllTypes_types>::u32 {
         let _call_scope = soroban_sdk::testutils::ClientCallScope::enter(&self.env, self.config);
         use soroban_sdk::{FromVal, IntoVal};
         let res = self.env.invoke_contract(
@@ -2290,11 +2453,17 @@ impl<'a> ContractGlobalPathClient<'a> {
     /// Returns an error if the invoked contract returns an error or panics. A panic in the invoked contract is caught and returned as an error rather than panicking the caller.
     pub fn try_test_u32(
         &self,
-        v: &u32,
+        v: &<ContractGlobalPath as __ContractGlobalPath_AllTypes_types>::u32,
     ) -> Result<
-        Result<u32, <u32 as soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val>>::Error>,
+        Result<
+            <ContractGlobalPath as __ContractGlobalPath_AllTypes_types>::u32,
+            <<ContractGlobalPath as __ContractGlobalPath_AllTypes_types>::u32 as soroban_sdk::TryFromVal<
+                soroban_sdk::Env,
+                soroban_sdk::Val,
+            >>::Error,
+        >,
         Result<soroban_sdk::Error, soroban_sdk::InvokeError>,
-    > {
+    >{
         let _call_scope = soroban_sdk::testutils::ClientCallScope::enter(&self.env, self.config);
         use soroban_sdk::{FromVal, IntoVal};
         let res = self.env.try_invoke_contract(
@@ -2317,7 +2486,10 @@ impl<'a> ContractGlobalPathClient<'a> {
     /// Panics if the invoked contract returns an error or panics.
     ///
     /// Use [`Self::try_test_i32`] to receive errors instead of panicking.
-    pub fn test_i32(&self, v: &i32) -> i32 {
+    pub fn test_i32(
+        &self,
+        v: &<ContractGlobalPath as __ContractGlobalPath_AllTypes_types>::i32,
+    ) -> <ContractGlobalPath as __ContractGlobalPath_AllTypes_types>::i32 {
         let _call_scope = soroban_sdk::testutils::ClientCallScope::enter(&self.env, self.config);
         use soroban_sdk::{FromVal, IntoVal};
         let res = self.env.invoke_contract(
@@ -2340,11 +2512,17 @@ impl<'a> ContractGlobalPathClient<'a> {
     /// Returns an error if the invoked contract returns an error or panics. A panic in the invoked contract is caught and returned as an error rather than panicking the caller.
     pub fn try_test_i32(
         &self,
-        v: &i32,
+        v: &<ContractGlobalPath as __ContractGlobalPath_AllTypes_types>::i32,
     ) -> Result<
-        Result<i32, <i32 as soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val>>::Error>,
+        Result<
+            <ContractGlobalPath as __ContractGlobalPath_AllTypes_types>::i32,
+            <<ContractGlobalPath as __ContractGlobalPath_AllTypes_types>::i32 as soroban_sdk::TryFromVal<
+                soroban_sdk::Env,
+                soroban_sdk::Val,
+            >>::Error,
+        >,
         Result<soroban_sdk::Error, soroban_sdk::InvokeError>,
-    > {
+    >{
         let _call_scope = soroban_sdk::testutils::ClientCallScope::enter(&self.env, self.config);
         use soroban_sdk::{FromVal, IntoVal};
         let res = self.env.try_invoke_contract(
@@ -2365,7 +2543,10 @@ impl<'a> ContractGlobalPathClient<'a> {
     /// Panics if the invoked contract returns an error or panics.
     ///
     /// Use [`Self::try_test_u64`] to receive errors instead of panicking.
-    pub fn test_u64(&self, v: &u64) -> u64 {
+    pub fn test_u64(
+        &self,
+        v: &<ContractGlobalPath as __ContractGlobalPath_AllTypes_types>::u64,
+    ) -> <ContractGlobalPath as __ContractGlobalPath_AllTypes_types>::u64 {
         let _call_scope = soroban_sdk::testutils::ClientCallScope::enter(&self.env, self.config);
         use soroban_sdk::{FromVal, IntoVal};
         let res = self.env.invoke_contract(
@@ -2386,11 +2567,17 @@ impl<'a> ContractGlobalPathClient<'a> {
     /// Returns an error if the invoked contract returns an error or panics. A panic in the invoked contract is caught and returned as an error rather than panicking the caller.
     pub fn try_test_u64(
         &self,
-        v: &u64,
+        v: &<ContractGlobalPath as __ContractGlobalPath_AllTypes_types>::u64,
     ) -> Result<
-        Result<u64, <u64 as soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val>>::Error>,
+        Result<
+            <ContractGlobalPath as __ContractGlobalPath_AllTypes_types>::u64,
+            <<ContractGlobalPath as __ContractGlobalPath_AllTypes_types>::u64 as soroban_sdk::TryFromVal<
+                soroban_sdk::Env,
+                soroban_sdk::Val,
+            >>::Error,
+        >,
         Result<soroban_sdk::Error, soroban_sdk::InvokeError>,
-    > {
+    >{
         let _call_scope = soroban_sdk::testutils::ClientCallScope::enter(&self.env, self.config);
         use soroban_sdk::{FromVal, IntoVal};
         let res = self.env.try_invoke_contract(
@@ -2411,7 +2598,10 @@ impl<'a> ContractGlobalPathClient<'a> {
     /// Panics if the invoked contract returns an error or panics.
     ///
     /// Use [`Self::try_test_i64`] to receive errors instead of panicking.
-    pub fn test_i64(&self, v: &i64) -> i64 {
+    pub fn test_i64(
+        &self,
+        v: &<ContractGlobalPath as __ContractGlobalPath_AllTypes_types>::i64,
+    ) -> <ContractGlobalPath as __ContractGlobalPath_AllTypes_types>::i64 {
         let _call_scope = soroban_sdk::testutils::ClientCallScope::enter(&self.env, self.config);
         use soroban_sdk::{FromVal, IntoVal};
         let res = self.env.invoke_contract(
@@ -2432,11 +2622,17 @@ impl<'a> ContractGlobalPathClient<'a> {
     /// Returns an error if the invoked contract returns an error or panics. A panic in the invoked contract is caught and returned as an error rather than panicking the caller.
     pub fn try_test_i64(
         &self,
-        v: &i64,
+        v: &<ContractGlobalPath as __ContractGlobalPath_AllTypes_types>::i64,
     ) -> Result<
-        Result<i64, <i64 as soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val>>::Error>,
+        Result<
+            <ContractGlobalPath as __ContractGlobalPath_AllTypes_types>::i64,
+            <<ContractGlobalPath as __ContractGlobalPath_AllTypes_types>::i64 as soroban_sdk::TryFromVal<
+                soroban_sdk::Env,
+                soroban_sdk::Val,
+            >>::Error,
+        >,
         Result<soroban_sdk::Error, soroban_sdk::InvokeError>,
-    > {
+    >{
         let _call_scope = soroban_sdk::testutils::ClientCallScope::enter(&self.env, self.config);
         use soroban_sdk::{FromVal, IntoVal};
         let res = self.env.try_invoke_contract(
@@ -2457,7 +2653,10 @@ impl<'a> ContractGlobalPathClient<'a> {
     /// Panics if the invoked contract returns an error or panics.
     ///
     /// Use [`Self::try_test_u128`] to receive errors instead of panicking.
-    pub fn test_u128(&self, v: &u128) -> u128 {
+    pub fn test_u128(
+        &self,
+        v: &<ContractGlobalPath as __ContractGlobalPath_AllTypes_types>::u128,
+    ) -> <ContractGlobalPath as __ContractGlobalPath_AllTypes_types>::u128 {
         let _call_scope = soroban_sdk::testutils::ClientCallScope::enter(&self.env, self.config);
         use soroban_sdk::{FromVal, IntoVal};
         let res = self.env.invoke_contract(
@@ -2478,11 +2677,17 @@ impl<'a> ContractGlobalPathClient<'a> {
     /// Returns an error if the invoked contract returns an error or panics. A panic in the invoked contract is caught and returned as an error rather than panicking the caller.
     pub fn try_test_u128(
         &self,
-        v: &u128,
+        v: &<ContractGlobalPath as __ContractGlobalPath_AllTypes_types>::u128,
     ) -> Result<
-        Result<u128, <u128 as soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val>>::Error>,
+        Result<
+            <ContractGlobalPath as __ContractGlobalPath_AllTypes_types>::u128,
+            <<ContractGlobalPath as __ContractGlobalPath_AllTypes_types>::u128 as soroban_sdk::TryFromVal<
+                soroban_sdk::Env,
+                soroban_sdk::Val,
+            >>::Error,
+        >,
         Result<soroban_sdk::Error, soroban_sdk::InvokeError>,
-    > {
+    >{
         let _call_scope = soroban_sdk::testutils::ClientCallScope::enter(&self.env, self.config);
         use soroban_sdk::{FromVal, IntoVal};
         let res = self.env.try_invoke_contract(
@@ -2503,7 +2708,10 @@ impl<'a> ContractGlobalPathClient<'a> {
     /// Panics if the invoked contract returns an error or panics.
     ///
     /// Use [`Self::try_test_i128`] to receive errors instead of panicking.
-    pub fn test_i128(&self, v: &i128) -> i128 {
+    pub fn test_i128(
+        &self,
+        v: &<ContractGlobalPath as __ContractGlobalPath_AllTypes_types>::i128,
+    ) -> <ContractGlobalPath as __ContractGlobalPath_AllTypes_types>::i128 {
         let _call_scope = soroban_sdk::testutils::ClientCallScope::enter(&self.env, self.config);
         use soroban_sdk::{FromVal, IntoVal};
         let res = self.env.invoke_contract(
@@ -2524,11 +2732,17 @@ impl<'a> ContractGlobalPathClient<'a> {
     /// Returns an error if the invoked contract returns an error or panics. A panic in the invoked contract is caught and returned as an error rather than panicking the caller.
     pub fn try_test_i128(
         &self,
-        v: &i128,
+        v: &<ContractGlobalPath as __ContractGlobalPath_AllTypes_types>::i128,
     ) -> Result<
-        Result<i128, <i128 as soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val>>::Error>,
+        Result<
+            <ContractGlobalPath as __ContractGlobalPath_AllTypes_types>::i128,
+            <<ContractGlobalPath as __ContractGlobalPath_AllTypes_types>::i128 as soroban_sdk::TryFromVal<
+                soroban_sdk::Env,
+                soroban_sdk::Val,
+            >>::Error,
+        >,
         Result<soroban_sdk::Error, soroban_sdk::InvokeError>,
-    > {
+    >{
         let _call_scope = soroban_sdk::testutils::ClientCallScope::enter(&self.env, self.config);
         use soroban_sdk::{FromVal, IntoVal};
         let res = self.env.try_invoke_contract(
@@ -2549,7 +2763,10 @@ impl<'a> ContractGlobalPathClient<'a> {
     /// Panics if the invoked contract returns an error or panics.
     ///
     /// Use [`Self::try_test_bool`] to receive errors instead of panicking.
-    pub fn test_bool(&self, v: &bool) -> bool {
+    pub fn test_bool(
+        &self,
+        v: &<ContractGlobalPath as __ContractGlobalPath_AllTypes_types>::bool,
+    ) -> <ContractGlobalPath as __ContractGlobalPath_AllTypes_types>::bool {
         let _call_scope = soroban_sdk::testutils::ClientCallScope::enter(&self.env, self.config);
         use soroban_sdk::{FromVal, IntoVal};
         let res = self.env.invoke_contract(
@@ -2570,11 +2787,17 @@ impl<'a> ContractGlobalPathClient<'a> {
     /// Returns an error if the invoked contract returns an error or panics. A panic in the invoked contract is caught and returned as an error rather than panicking the caller.
     pub fn try_test_bool(
         &self,
-        v: &bool,
+        v: &<ContractGlobalPath as __ContractGlobalPath_AllTypes_types>::bool,
     ) -> Result<
-        Result<bool, <bool as soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val>>::Error>,
+        Result<
+            <ContractGlobalPath as __ContractGlobalPath_AllTypes_types>::bool,
+            <<ContractGlobalPath as __ContractGlobalPath_AllTypes_types>::bool as soroban_sdk::TryFromVal<
+                soroban_sdk::Env,
+                soroban_sdk::Val,
+            >>::Error,
+        >,
         Result<soroban_sdk::Error, soroban_sdk::InvokeError>,
-    > {
+    >{
         let _call_scope = soroban_sdk::testutils::ClientCallScope::enter(&self.env, self.config);
         use soroban_sdk::{FromVal, IntoVal};
         let res = self.env.try_invoke_contract(
@@ -2595,7 +2818,10 @@ impl<'a> ContractGlobalPathClient<'a> {
     /// Panics if the invoked contract returns an error or panics.
     ///
     /// Use [`Self::try_test_address`] to receive errors instead of panicking.
-    pub fn test_address(&self, v: &Address) -> Address {
+    pub fn test_address(
+        &self,
+        v: &<ContractGlobalPath as __ContractGlobalPath_AllTypes_types>::Address,
+    ) -> <ContractGlobalPath as __ContractGlobalPath_AllTypes_types>::Address {
         let _call_scope = soroban_sdk::testutils::ClientCallScope::enter(&self.env, self.config);
         use soroban_sdk::{FromVal, IntoVal};
         let res = self.env.invoke_contract(
@@ -2612,14 +2838,17 @@ impl<'a> ContractGlobalPathClient<'a> {
     /// Returns an error if the invoked contract returns an error or panics. A panic in the invoked contract is caught and returned as an error rather than panicking the caller.
     pub fn try_test_address(
         &self,
-        v: &Address,
+        v: &<ContractGlobalPath as __ContractGlobalPath_AllTypes_types>::Address,
     ) -> Result<
         Result<
-            Address,
-            <Address as soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val>>::Error,
+            <ContractGlobalPath as __ContractGlobalPath_AllTypes_types>::Address,
+            <<ContractGlobalPath as __ContractGlobalPath_AllTypes_types>::Address as soroban_sdk::TryFromVal<
+                soroban_sdk::Env,
+                soroban_sdk::Val,
+            >>::Error,
         >,
         Result<soroban_sdk::Error, soroban_sdk::InvokeError>,
-    > {
+    >{
         let _call_scope = soroban_sdk::testutils::ClientCallScope::enter(&self.env, self.config);
         use soroban_sdk::{FromVal, IntoVal};
         let res = self.env.try_invoke_contract(
@@ -2636,7 +2865,10 @@ impl<'a> ContractGlobalPathClient<'a> {
     /// Panics if the invoked contract returns an error or panics.
     ///
     /// Use [`Self::try_test_bytes`] to receive errors instead of panicking.
-    pub fn test_bytes(&self, v: &Bytes) -> Bytes {
+    pub fn test_bytes(
+        &self,
+        v: &<ContractGlobalPath as __ContractGlobalPath_AllTypes_types>::Bytes,
+    ) -> <ContractGlobalPath as __ContractGlobalPath_AllTypes_types>::Bytes {
         let _call_scope = soroban_sdk::testutils::ClientCallScope::enter(&self.env, self.config);
         use soroban_sdk::{FromVal, IntoVal};
         let res = self.env.invoke_contract(
@@ -2653,14 +2885,17 @@ impl<'a> ContractGlobalPathClient<'a> {
     /// Returns an error if the invoked contract returns an error or panics. A panic in the invoked contract is caught and returned as an error rather than panicking the caller.
     pub fn try_test_bytes(
         &self,
-        v: &Bytes,
+        v: &<ContractGlobalPath as __ContractGlobalPath_AllTypes_types>::Bytes,
     ) -> Result<
         Result<
-            Bytes,
-            <Bytes as soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val>>::Error,
+            <ContractGlobalPath as __ContractGlobalPath_AllTypes_types>::Bytes,
+            <<ContractGlobalPath as __ContractGlobalPath_AllTypes_types>::Bytes as soroban_sdk::TryFromVal<
+                soroban_sdk::Env,
+                soroban_sdk::Val,
+            >>::Error,
         >,
         Result<soroban_sdk::Error, soroban_sdk::InvokeError>,
-    > {
+    >{
         let _call_scope = soroban_sdk::testutils::ClientCallScope::enter(&self.env, self.config);
         use soroban_sdk::{FromVal, IntoVal};
         let res = self.env.try_invoke_contract(
@@ -2677,7 +2912,10 @@ impl<'a> ContractGlobalPathClient<'a> {
     /// Panics if the invoked contract returns an error or panics.
     ///
     /// Use [`Self::try_test_bytes_n`] to receive errors instead of panicking.
-    pub fn test_bytes_n(&self, v: &BytesN<32>) -> BytesN<32> {
+    pub fn test_bytes_n(
+        &self,
+        v: &<ContractGlobalPath as __ContractGlobalPath_AllTypes_types>::BytesN,
+    ) -> <ContractGlobalPath as __ContractGlobalPath_AllTypes_types>::BytesN {
         let _call_scope = soroban_sdk::testutils::ClientCallScope::enter(&self.env, self.config);
         use soroban_sdk::{FromVal, IntoVal};
         let res = self.env.invoke_contract(
@@ -2694,14 +2932,17 @@ impl<'a> ContractGlobalPathClient<'a> {
     /// Returns an error if the invoked contract returns an error or panics. A panic in the invoked contract is caught and returned as an error rather than panicking the caller.
     pub fn try_test_bytes_n(
         &self,
-        v: &BytesN<32>,
+        v: &<ContractGlobalPath as __ContractGlobalPath_AllTypes_types>::BytesN,
     ) -> Result<
         Result<
-            BytesN<32>,
-            <BytesN<32> as soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val>>::Error,
+            <ContractGlobalPath as __ContractGlobalPath_AllTypes_types>::BytesN,
+            <<ContractGlobalPath as __ContractGlobalPath_AllTypes_types>::BytesN as soroban_sdk::TryFromVal<
+                soroban_sdk::Env,
+                soroban_sdk::Val,
+            >>::Error,
         >,
         Result<soroban_sdk::Error, soroban_sdk::InvokeError>,
-    > {
+    >{
         let _call_scope = soroban_sdk::testutils::ClientCallScope::enter(&self.env, self.config);
         use soroban_sdk::{FromVal, IntoVal};
         let res = self.env.try_invoke_contract(
@@ -2718,7 +2959,10 @@ impl<'a> ContractGlobalPathClient<'a> {
     /// Panics if the invoked contract returns an error or panics.
     ///
     /// Use [`Self::try_test_string`] to receive errors instead of panicking.
-    pub fn test_string(&self, v: &String) -> String {
+    pub fn test_string(
+        &self,
+        v: &<ContractGlobalPath as __ContractGlobalPath_AllTypes_types>::String,
+    ) -> <ContractGlobalPath as __ContractGlobalPath_AllTypes_types>::String {
         let _call_scope = soroban_sdk::testutils::ClientCallScope::enter(&self.env, self.config);
         use soroban_sdk::{FromVal, IntoVal};
         let res = self.env.invoke_contract(
@@ -2735,14 +2979,17 @@ impl<'a> ContractGlobalPathClient<'a> {
     /// Returns an error if the invoked contract returns an error or panics. A panic in the invoked contract is caught and returned as an error rather than panicking the caller.
     pub fn try_test_string(
         &self,
-        v: &String,
+        v: &<ContractGlobalPath as __ContractGlobalPath_AllTypes_types>::String,
     ) -> Result<
         Result<
-            String,
-            <String as soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val>>::Error,
+            <ContractGlobalPath as __ContractGlobalPath_AllTypes_types>::String,
+            <<ContractGlobalPath as __ContractGlobalPath_AllTypes_types>::String as soroban_sdk::TryFromVal<
+                soroban_sdk::Env,
+                soroban_sdk::Val,
+            >>::Error,
         >,
         Result<soroban_sdk::Error, soroban_sdk::InvokeError>,
-    > {
+    >{
         let _call_scope = soroban_sdk::testutils::ClientCallScope::enter(&self.env, self.config);
         use soroban_sdk::{FromVal, IntoVal};
         let res = self.env.try_invoke_contract(
@@ -2759,7 +3006,10 @@ impl<'a> ContractGlobalPathClient<'a> {
     /// Panics if the invoked contract returns an error or panics.
     ///
     /// Use [`Self::try_test_symbol`] to receive errors instead of panicking.
-    pub fn test_symbol(&self, v: &Symbol) -> Symbol {
+    pub fn test_symbol(
+        &self,
+        v: &<ContractGlobalPath as __ContractGlobalPath_AllTypes_types>::Symbol,
+    ) -> <ContractGlobalPath as __ContractGlobalPath_AllTypes_types>::Symbol {
         let _call_scope = soroban_sdk::testutils::ClientCallScope::enter(&self.env, self.config);
         use soroban_sdk::{FromVal, IntoVal};
         let res = self.env.invoke_contract(
@@ -2776,14 +3026,17 @@ impl<'a> ContractGlobalPathClient<'a> {
     /// Returns an error if the invoked contract returns an error or panics. A panic in the invoked contract is caught and returned as an error rather than panicking the caller.
     pub fn try_test_symbol(
         &self,
-        v: &Symbol,
+        v: &<ContractGlobalPath as __ContractGlobalPath_AllTypes_types>::Symbol,
     ) -> Result<
         Result<
-            Symbol,
-            <Symbol as soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val>>::Error,
+            <ContractGlobalPath as __ContractGlobalPath_AllTypes_types>::Symbol,
+            <<ContractGlobalPath as __ContractGlobalPath_AllTypes_types>::Symbol as soroban_sdk::TryFromVal<
+                soroban_sdk::Env,
+                soroban_sdk::Val,
+            >>::Error,
         >,
         Result<soroban_sdk::Error, soroban_sdk::InvokeError>,
-    > {
+    >{
         let _call_scope = soroban_sdk::testutils::ClientCallScope::enter(&self.env, self.config);
         use soroban_sdk::{FromVal, IntoVal};
         let res = self.env.try_invoke_contract(
@@ -2800,7 +3053,10 @@ impl<'a> ContractGlobalPathClient<'a> {
     /// Panics if the invoked contract returns an error or panics.
     ///
     /// Use [`Self::try_test_vec`] to receive errors instead of panicking.
-    pub fn test_vec(&self, v: &Vec<u32>) -> Vec<u32> {
+    pub fn test_vec(
+        &self,
+        v: &<ContractGlobalPath as __ContractGlobalPath_AllTypes_types>::Vec,
+    ) -> <ContractGlobalPath as __ContractGlobalPath_AllTypes_types>::Vec {
         let _call_scope = soroban_sdk::testutils::ClientCallScope::enter(&self.env, self.config);
         use soroban_sdk::{FromVal, IntoVal};
         let res = self.env.invoke_contract(
@@ -2821,14 +3077,17 @@ impl<'a> ContractGlobalPathClient<'a> {
     /// Returns an error if the invoked contract returns an error or panics. A panic in the invoked contract is caught and returned as an error rather than panicking the caller.
     pub fn try_test_vec(
         &self,
-        v: &Vec<u32>,
+        v: &<ContractGlobalPath as __ContractGlobalPath_AllTypes_types>::Vec,
     ) -> Result<
         Result<
-            Vec<u32>,
-            <Vec<u32> as soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val>>::Error,
+            <ContractGlobalPath as __ContractGlobalPath_AllTypes_types>::Vec,
+            <<ContractGlobalPath as __ContractGlobalPath_AllTypes_types>::Vec as soroban_sdk::TryFromVal<
+                soroban_sdk::Env,
+                soroban_sdk::Val,
+            >>::Error,
         >,
         Result<soroban_sdk::Error, soroban_sdk::InvokeError>,
-    > {
+    >{
         let _call_scope = soroban_sdk::testutils::ClientCallScope::enter(&self.env, self.config);
         use soroban_sdk::{FromVal, IntoVal};
         let res = self.env.try_invoke_contract(
@@ -2849,7 +3108,10 @@ impl<'a> ContractGlobalPathClient<'a> {
     /// Panics if the invoked contract returns an error or panics.
     ///
     /// Use [`Self::try_test_map`] to receive errors instead of panicking.
-    pub fn test_map(&self, v: &Map<u32, u32>) -> Map<u32, u32> {
+    pub fn test_map(
+        &self,
+        v: &<ContractGlobalPath as __ContractGlobalPath_AllTypes_types>::Map,
+    ) -> <ContractGlobalPath as __ContractGlobalPath_AllTypes_types>::Map {
         let _call_scope = soroban_sdk::testutils::ClientCallScope::enter(&self.env, self.config);
         use soroban_sdk::{FromVal, IntoVal};
         let res = self.env.invoke_contract(
@@ -2870,14 +3132,17 @@ impl<'a> ContractGlobalPathClient<'a> {
     /// Returns an error if the invoked contract returns an error or panics. A panic in the invoked contract is caught and returned as an error rather than panicking the caller.
     pub fn try_test_map(
         &self,
-        v: &Map<u32, u32>,
+        v: &<ContractGlobalPath as __ContractGlobalPath_AllTypes_types>::Map,
     ) -> Result<
         Result<
-            Map<u32, u32>,
-            <Map<u32, u32> as soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val>>::Error,
+            <ContractGlobalPath as __ContractGlobalPath_AllTypes_types>::Map,
+            <<ContractGlobalPath as __ContractGlobalPath_AllTypes_types>::Map as soroban_sdk::TryFromVal<
+                soroban_sdk::Env,
+                soroban_sdk::Val,
+            >>::Error,
         >,
         Result<soroban_sdk::Error, soroban_sdk::InvokeError>,
-    > {
+    >{
         let _call_scope = soroban_sdk::testutils::ClientCallScope::enter(&self.env, self.config);
         use soroban_sdk::{FromVal, IntoVal};
         let res = self.env.try_invoke_contract(
@@ -2898,7 +3163,10 @@ impl<'a> ContractGlobalPathClient<'a> {
     /// Panics if the invoked contract returns an error or panics.
     ///
     /// Use [`Self::try_test_duration`] to receive errors instead of panicking.
-    pub fn test_duration(&self, v: &Duration) -> Duration {
+    pub fn test_duration(
+        &self,
+        v: &<ContractGlobalPath as __ContractGlobalPath_AllTypes_types>::Duration,
+    ) -> <ContractGlobalPath as __ContractGlobalPath_AllTypes_types>::Duration {
         let _call_scope = soroban_sdk::testutils::ClientCallScope::enter(&self.env, self.config);
         use soroban_sdk::{FromVal, IntoVal};
         let res = self.env.invoke_contract(
@@ -2915,14 +3183,17 @@ impl<'a> ContractGlobalPathClient<'a> {
     /// Returns an error if the invoked contract returns an error or panics. A panic in the invoked contract is caught and returned as an error rather than panicking the caller.
     pub fn try_test_duration(
         &self,
-        v: &Duration,
+        v: &<ContractGlobalPath as __ContractGlobalPath_AllTypes_types>::Duration,
     ) -> Result<
         Result<
-            Duration,
-            <Duration as soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val>>::Error,
+            <ContractGlobalPath as __ContractGlobalPath_AllTypes_types>::Duration,
+            <<ContractGlobalPath as __ContractGlobalPath_AllTypes_types>::Duration as soroban_sdk::TryFromVal<
+                soroban_sdk::Env,
+                soroban_sdk::Val,
+            >>::Error,
         >,
         Result<soroban_sdk::Error, soroban_sdk::InvokeError>,
-    > {
+    >{
         let _call_scope = soroban_sdk::testutils::ClientCallScope::enter(&self.env, self.config);
         use soroban_sdk::{FromVal, IntoVal};
         let res = self.env.try_invoke_contract(
@@ -2939,7 +3210,10 @@ impl<'a> ContractGlobalPathClient<'a> {
     /// Panics if the invoked contract returns an error or panics.
     ///
     /// Use [`Self::try_test_timepoint`] to receive errors instead of panicking.
-    pub fn test_timepoint(&self, v: &Timepoint) -> Timepoint {
+    pub fn test_timepoint(
+        &self,
+        v: &<ContractGlobalPath as __ContractGlobalPath_AllTypes_types>::Timepoint,
+    ) -> <ContractGlobalPath as __ContractGlobalPath_AllTypes_types>::Timepoint {
         let _call_scope = soroban_sdk::testutils::ClientCallScope::enter(&self.env, self.config);
         use soroban_sdk::{FromVal, IntoVal};
         let res = self.env.invoke_contract(
@@ -2956,14 +3230,17 @@ impl<'a> ContractGlobalPathClient<'a> {
     /// Returns an error if the invoked contract returns an error or panics. A panic in the invoked contract is caught and returned as an error rather than panicking the caller.
     pub fn try_test_timepoint(
         &self,
-        v: &Timepoint,
+        v: &<ContractGlobalPath as __ContractGlobalPath_AllTypes_types>::Timepoint,
     ) -> Result<
         Result<
-            Timepoint,
-            <Timepoint as soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val>>::Error,
+            <ContractGlobalPath as __ContractGlobalPath_AllTypes_types>::Timepoint,
+            <<ContractGlobalPath as __ContractGlobalPath_AllTypes_types>::Timepoint as soroban_sdk::TryFromVal<
+                soroban_sdk::Env,
+                soroban_sdk::Val,
+            >>::Error,
         >,
         Result<soroban_sdk::Error, soroban_sdk::InvokeError>,
-    > {
+    >{
         let _call_scope = soroban_sdk::testutils::ClientCallScope::enter(&self.env, self.config);
         use soroban_sdk::{FromVal, IntoVal};
         let res = self.env.try_invoke_contract(
@@ -2980,7 +3257,10 @@ impl<'a> ContractGlobalPathClient<'a> {
     /// Panics if the invoked contract returns an error or panics.
     ///
     /// Use [`Self::try_test_i256`] to receive errors instead of panicking.
-    pub fn test_i256(&self, v: &I256) -> I256 {
+    pub fn test_i256(
+        &self,
+        v: &<ContractGlobalPath as __ContractGlobalPath_AllTypes_types>::I256,
+    ) -> <ContractGlobalPath as __ContractGlobalPath_AllTypes_types>::I256 {
         let _call_scope = soroban_sdk::testutils::ClientCallScope::enter(&self.env, self.config);
         use soroban_sdk::{FromVal, IntoVal};
         let res = self.env.invoke_contract(
@@ -3001,11 +3281,17 @@ impl<'a> ContractGlobalPathClient<'a> {
     /// Returns an error if the invoked contract returns an error or panics. A panic in the invoked contract is caught and returned as an error rather than panicking the caller.
     pub fn try_test_i256(
         &self,
-        v: &I256,
+        v: &<ContractGlobalPath as __ContractGlobalPath_AllTypes_types>::I256,
     ) -> Result<
-        Result<I256, <I256 as soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val>>::Error>,
+        Result<
+            <ContractGlobalPath as __ContractGlobalPath_AllTypes_types>::I256,
+            <<ContractGlobalPath as __ContractGlobalPath_AllTypes_types>::I256 as soroban_sdk::TryFromVal<
+                soroban_sdk::Env,
+                soroban_sdk::Val,
+            >>::Error,
+        >,
         Result<soroban_sdk::Error, soroban_sdk::InvokeError>,
-    > {
+    >{
         let _call_scope = soroban_sdk::testutils::ClientCallScope::enter(&self.env, self.config);
         use soroban_sdk::{FromVal, IntoVal};
         let res = self.env.try_invoke_contract(
@@ -3026,7 +3312,10 @@ impl<'a> ContractGlobalPathClient<'a> {
     /// Panics if the invoked contract returns an error or panics.
     ///
     /// Use [`Self::try_test_u256`] to receive errors instead of panicking.
-    pub fn test_u256(&self, v: &U256) -> U256 {
+    pub fn test_u256(
+        &self,
+        v: &<ContractGlobalPath as __ContractGlobalPath_AllTypes_types>::U256,
+    ) -> <ContractGlobalPath as __ContractGlobalPath_AllTypes_types>::U256 {
         let _call_scope = soroban_sdk::testutils::ClientCallScope::enter(&self.env, self.config);
         use soroban_sdk::{FromVal, IntoVal};
         let res = self.env.invoke_contract(
@@ -3047,11 +3336,17 @@ impl<'a> ContractGlobalPathClient<'a> {
     /// Returns an error if the invoked contract returns an error or panics. A panic in the invoked contract is caught and returned as an error rather than panicking the caller.
     pub fn try_test_u256(
         &self,
-        v: &U256,
+        v: &<ContractGlobalPath as __ContractGlobalPath_AllTypes_types>::U256,
     ) -> Result<
-        Result<U256, <U256 as soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val>>::Error>,
+        Result<
+            <ContractGlobalPath as __ContractGlobalPath_AllTypes_types>::U256,
+            <<ContractGlobalPath as __ContractGlobalPath_AllTypes_types>::U256 as soroban_sdk::TryFromVal<
+                soroban_sdk::Env,
+                soroban_sdk::Val,
+            >>::Error,
+        >,
         Result<soroban_sdk::Error, soroban_sdk::InvokeError>,
-    > {
+    >{
         let _call_scope = soroban_sdk::testutils::ClientCallScope::enter(&self.env, self.config);
         use soroban_sdk::{FromVal, IntoVal};
         let res = self.env.try_invoke_contract(
@@ -3072,7 +3367,9 @@ impl<'a> ContractGlobalPathClient<'a> {
     /// Panics if the invoked contract returns an error or panics.
     ///
     /// Use [`Self::try_test_env_param`] to receive errors instead of panicking.
-    pub fn test_env_param(&self) -> u32 {
+    pub fn test_env_param(
+        &self,
+    ) -> <ContractGlobalPath as __ContractGlobalPath_AllTypes_types>::u32 {
         let _call_scope = soroban_sdk::testutils::ClientCallScope::enter(&self.env, self.config);
         use soroban_sdk::{FromVal, IntoVal};
         let res = self.env.invoke_contract(
@@ -3090,9 +3387,15 @@ impl<'a> ContractGlobalPathClient<'a> {
     pub fn try_test_env_param(
         &self,
     ) -> Result<
-        Result<u32, <u32 as soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val>>::Error>,
+        Result<
+            <ContractGlobalPath as __ContractGlobalPath_AllTypes_types>::u32,
+            <<ContractGlobalPath as __ContractGlobalPath_AllTypes_types>::u32 as soroban_sdk::TryFromVal<
+                soroban_sdk::Env,
+                soroban_sdk::Val,
+            >>::Error,
+        >,
         Result<soroban_sdk::Error, soroban_sdk::InvokeError>,
-    > {
+    >{
         let _call_scope = soroban_sdk::testutils::ClientCallScope::enter(&self.env, self.config);
         use soroban_sdk::{FromVal, IntoVal};
         let res = self.env.try_invoke_contract(
@@ -3109,7 +3412,10 @@ impl<'a> ContractGlobalPathClient<'a> {
     /// Panics if the invoked contract returns an error or panics.
     ///
     /// Use [`Self::try_test_struct`] to receive errors instead of panicking.
-    pub fn test_struct(&self, v: &MyStruct) -> MyStruct {
+    pub fn test_struct(
+        &self,
+        v: &<ContractGlobalPath as __ContractGlobalPath_AllTypes_types>::MyStruct,
+    ) -> <ContractGlobalPath as __ContractGlobalPath_AllTypes_types>::MyStruct {
         let _call_scope = soroban_sdk::testutils::ClientCallScope::enter(&self.env, self.config);
         use soroban_sdk::{FromVal, IntoVal};
         let res = self.env.invoke_contract(
@@ -3126,14 +3432,17 @@ impl<'a> ContractGlobalPathClient<'a> {
     /// Returns an error if the invoked contract returns an error or panics. A panic in the invoked contract is caught and returned as an error rather than panicking the caller.
     pub fn try_test_struct(
         &self,
-        v: &MyStruct,
+        v: &<ContractGlobalPath as __ContractGlobalPath_AllTypes_types>::MyStruct,
     ) -> Result<
         Result<
-            MyStruct,
-            <MyStruct as soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val>>::Error,
+            <ContractGlobalPath as __ContractGlobalPath_AllTypes_types>::MyStruct,
+            <<ContractGlobalPath as __ContractGlobalPath_AllTypes_types>::MyStruct as soroban_sdk::TryFromVal<
+                soroban_sdk::Env,
+                soroban_sdk::Val,
+            >>::Error,
         >,
         Result<soroban_sdk::Error, soroban_sdk::InvokeError>,
-    > {
+    >{
         let _call_scope = soroban_sdk::testutils::ClientCallScope::enter(&self.env, self.config);
         use soroban_sdk::{FromVal, IntoVal};
         let res = self.env.try_invoke_contract(
@@ -3150,7 +3459,10 @@ impl<'a> ContractGlobalPathClient<'a> {
     /// Panics if the invoked contract returns an error or panics.
     ///
     /// Use [`Self::try_test_enum_unit`] to receive errors instead of panicking.
-    pub fn test_enum_unit(&self, v: &MyEnumUnit) -> MyEnumUnit {
+    pub fn test_enum_unit(
+        &self,
+        v: &<ContractGlobalPath as __ContractGlobalPath_AllTypes_types>::MyEnumUnit,
+    ) -> <ContractGlobalPath as __ContractGlobalPath_AllTypes_types>::MyEnumUnit {
         let _call_scope = soroban_sdk::testutils::ClientCallScope::enter(&self.env, self.config);
         use soroban_sdk::{FromVal, IntoVal};
         let res = self.env.invoke_contract(
@@ -3167,14 +3479,17 @@ impl<'a> ContractGlobalPathClient<'a> {
     /// Returns an error if the invoked contract returns an error or panics. A panic in the invoked contract is caught and returned as an error rather than panicking the caller.
     pub fn try_test_enum_unit(
         &self,
-        v: &MyEnumUnit,
+        v: &<ContractGlobalPath as __ContractGlobalPath_AllTypes_types>::MyEnumUnit,
     ) -> Result<
         Result<
-            MyEnumUnit,
-            <MyEnumUnit as soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val>>::Error,
+            <ContractGlobalPath as __ContractGlobalPath_AllTypes_types>::MyEnumUnit,
+            <<ContractGlobalPath as __ContractGlobalPath_AllTypes_types>::MyEnumUnit as soroban_sdk::TryFromVal<
+                soroban_sdk::Env,
+                soroban_sdk::Val,
+            >>::Error,
         >,
         Result<soroban_sdk::Error, soroban_sdk::InvokeError>,
-    > {
+    >{
         let _call_scope = soroban_sdk::testutils::ClientCallScope::enter(&self.env, self.config);
         use soroban_sdk::{FromVal, IntoVal};
         let res = self.env.try_invoke_contract(
@@ -3191,7 +3506,10 @@ impl<'a> ContractGlobalPathClient<'a> {
     /// Panics if the invoked contract returns an error or panics.
     ///
     /// Use [`Self::try_test_enum_variants`] to receive errors instead of panicking.
-    pub fn test_enum_variants(&self, v: &MyEnumVariants) -> MyEnumVariants {
+    pub fn test_enum_variants(
+        &self,
+        v: &<ContractGlobalPath as __ContractGlobalPath_AllTypes_types>::MyEnumVariants,
+    ) -> <ContractGlobalPath as __ContractGlobalPath_AllTypes_types>::MyEnumVariants {
         let _call_scope = soroban_sdk::testutils::ClientCallScope::enter(&self.env, self.config);
         use soroban_sdk::{FromVal, IntoVal};
         let res = self.env.invoke_contract(
@@ -3208,14 +3526,17 @@ impl<'a> ContractGlobalPathClient<'a> {
     /// Returns an error if the invoked contract returns an error or panics. A panic in the invoked contract is caught and returned as an error rather than panicking the caller.
     pub fn try_test_enum_variants(
         &self,
-        v: &MyEnumVariants,
+        v: &<ContractGlobalPath as __ContractGlobalPath_AllTypes_types>::MyEnumVariants,
     ) -> Result<
         Result<
-            MyEnumVariants,
-            <MyEnumVariants as soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val>>::Error,
+            <ContractGlobalPath as __ContractGlobalPath_AllTypes_types>::MyEnumVariants,
+            <<ContractGlobalPath as __ContractGlobalPath_AllTypes_types>::MyEnumVariants as soroban_sdk::TryFromVal<
+                soroban_sdk::Env,
+                soroban_sdk::Val,
+            >>::Error,
         >,
         Result<soroban_sdk::Error, soroban_sdk::InvokeError>,
-    > {
+    >{
         let _call_scope = soroban_sdk::testutils::ClientCallScope::enter(&self.env, self.config);
         use soroban_sdk::{FromVal, IntoVal};
         let res = self.env.try_invoke_contract(
@@ -3231,93 +3552,129 @@ impl ContractGlobalPathArgs {
     /// Returns the input unchanged.
     #[inline(always)]
     #[allow(clippy::unused_unit)]
-    pub fn test_u32<'i>(v: &'i u32) -> (&'i u32,) {
+    pub fn test_u32<'i>(
+        v: &'i <ContractGlobalPath as __ContractGlobalPath_AllTypes_types>::u32,
+    ) -> (&'i <ContractGlobalPath as __ContractGlobalPath_AllTypes_types>::u32,) {
         (v,)
     }
     /// Test i32 values.
     #[inline(always)]
     #[allow(clippy::unused_unit)]
-    pub fn test_i32<'i>(v: &'i i32) -> (&'i i32,) {
+    pub fn test_i32<'i>(
+        v: &'i <ContractGlobalPath as __ContractGlobalPath_AllTypes_types>::i32,
+    ) -> (&'i <ContractGlobalPath as __ContractGlobalPath_AllTypes_types>::i32,) {
         (v,)
     }
     #[inline(always)]
     #[allow(clippy::unused_unit)]
-    pub fn test_u64<'i>(v: &'i u64) -> (&'i u64,) {
+    pub fn test_u64<'i>(
+        v: &'i <ContractGlobalPath as __ContractGlobalPath_AllTypes_types>::u64,
+    ) -> (&'i <ContractGlobalPath as __ContractGlobalPath_AllTypes_types>::u64,) {
         (v,)
     }
     #[inline(always)]
     #[allow(clippy::unused_unit)]
-    pub fn test_i64<'i>(v: &'i i64) -> (&'i i64,) {
+    pub fn test_i64<'i>(
+        v: &'i <ContractGlobalPath as __ContractGlobalPath_AllTypes_types>::i64,
+    ) -> (&'i <ContractGlobalPath as __ContractGlobalPath_AllTypes_types>::i64,) {
         (v,)
     }
     #[inline(always)]
     #[allow(clippy::unused_unit)]
-    pub fn test_u128<'i>(v: &'i u128) -> (&'i u128,) {
+    pub fn test_u128<'i>(
+        v: &'i <ContractGlobalPath as __ContractGlobalPath_AllTypes_types>::u128,
+    ) -> (&'i <ContractGlobalPath as __ContractGlobalPath_AllTypes_types>::u128,) {
         (v,)
     }
     #[inline(always)]
     #[allow(clippy::unused_unit)]
-    pub fn test_i128<'i>(v: &'i i128) -> (&'i i128,) {
+    pub fn test_i128<'i>(
+        v: &'i <ContractGlobalPath as __ContractGlobalPath_AllTypes_types>::i128,
+    ) -> (&'i <ContractGlobalPath as __ContractGlobalPath_AllTypes_types>::i128,) {
         (v,)
     }
     #[inline(always)]
     #[allow(clippy::unused_unit)]
-    pub fn test_bool<'i>(v: &'i bool) -> (&'i bool,) {
+    pub fn test_bool<'i>(
+        v: &'i <ContractGlobalPath as __ContractGlobalPath_AllTypes_types>::bool,
+    ) -> (&'i <ContractGlobalPath as __ContractGlobalPath_AllTypes_types>::bool,) {
         (v,)
     }
     #[inline(always)]
     #[allow(clippy::unused_unit)]
-    pub fn test_address<'i>(v: &'i Address) -> (&'i Address,) {
+    pub fn test_address<'i>(
+        v: &'i <ContractGlobalPath as __ContractGlobalPath_AllTypes_types>::Address,
+    ) -> (&'i <ContractGlobalPath as __ContractGlobalPath_AllTypes_types>::Address,) {
         (v,)
     }
     #[inline(always)]
     #[allow(clippy::unused_unit)]
-    pub fn test_bytes<'i>(v: &'i Bytes) -> (&'i Bytes,) {
+    pub fn test_bytes<'i>(
+        v: &'i <ContractGlobalPath as __ContractGlobalPath_AllTypes_types>::Bytes,
+    ) -> (&'i <ContractGlobalPath as __ContractGlobalPath_AllTypes_types>::Bytes,) {
         (v,)
     }
     #[inline(always)]
     #[allow(clippy::unused_unit)]
-    pub fn test_bytes_n<'i>(v: &'i BytesN<32>) -> (&'i BytesN<32>,) {
+    pub fn test_bytes_n<'i>(
+        v: &'i <ContractGlobalPath as __ContractGlobalPath_AllTypes_types>::BytesN,
+    ) -> (&'i <ContractGlobalPath as __ContractGlobalPath_AllTypes_types>::BytesN,) {
         (v,)
     }
     #[inline(always)]
     #[allow(clippy::unused_unit)]
-    pub fn test_string<'i>(v: &'i String) -> (&'i String,) {
+    pub fn test_string<'i>(
+        v: &'i <ContractGlobalPath as __ContractGlobalPath_AllTypes_types>::String,
+    ) -> (&'i <ContractGlobalPath as __ContractGlobalPath_AllTypes_types>::String,) {
         (v,)
     }
     #[inline(always)]
     #[allow(clippy::unused_unit)]
-    pub fn test_symbol<'i>(v: &'i Symbol) -> (&'i Symbol,) {
+    pub fn test_symbol<'i>(
+        v: &'i <ContractGlobalPath as __ContractGlobalPath_AllTypes_types>::Symbol,
+    ) -> (&'i <ContractGlobalPath as __ContractGlobalPath_AllTypes_types>::Symbol,) {
         (v,)
     }
     #[inline(always)]
     #[allow(clippy::unused_unit)]
-    pub fn test_vec<'i>(v: &'i Vec<u32>) -> (&'i Vec<u32>,) {
+    pub fn test_vec<'i>(
+        v: &'i <ContractGlobalPath as __ContractGlobalPath_AllTypes_types>::Vec,
+    ) -> (&'i <ContractGlobalPath as __ContractGlobalPath_AllTypes_types>::Vec,) {
         (v,)
     }
     #[inline(always)]
     #[allow(clippy::unused_unit)]
-    pub fn test_map<'i>(v: &'i Map<u32, u32>) -> (&'i Map<u32, u32>,) {
+    pub fn test_map<'i>(
+        v: &'i <ContractGlobalPath as __ContractGlobalPath_AllTypes_types>::Map,
+    ) -> (&'i <ContractGlobalPath as __ContractGlobalPath_AllTypes_types>::Map,) {
         (v,)
     }
     #[inline(always)]
     #[allow(clippy::unused_unit)]
-    pub fn test_duration<'i>(v: &'i Duration) -> (&'i Duration,) {
+    pub fn test_duration<'i>(
+        v: &'i <ContractGlobalPath as __ContractGlobalPath_AllTypes_types>::Duration,
+    ) -> (&'i <ContractGlobalPath as __ContractGlobalPath_AllTypes_types>::Duration,) {
         (v,)
     }
     #[inline(always)]
     #[allow(clippy::unused_unit)]
-    pub fn test_timepoint<'i>(v: &'i Timepoint) -> (&'i Timepoint,) {
+    pub fn test_timepoint<'i>(
+        v: &'i <ContractGlobalPath as __ContractGlobalPath_AllTypes_types>::Timepoint,
+    ) -> (&'i <ContractGlobalPath as __ContractGlobalPath_AllTypes_types>::Timepoint,) {
         (v,)
     }
     #[inline(always)]
     #[allow(clippy::unused_unit)]
-    pub fn test_i256<'i>(v: &'i I256) -> (&'i I256,) {
+    pub fn test_i256<'i>(
+        v: &'i <ContractGlobalPath as __ContractGlobalPath_AllTypes_types>::I256,
+    ) -> (&'i <ContractGlobalPath as __ContractGlobalPath_AllTypes_types>::I256,) {
         (v,)
     }
     #[inline(always)]
     #[allow(clippy::unused_unit)]
-    pub fn test_u256<'i>(v: &'i U256) -> (&'i U256,) {
+    pub fn test_u256<'i>(
+        v: &'i <ContractGlobalPath as __ContractGlobalPath_AllTypes_types>::U256,
+    ) -> (&'i <ContractGlobalPath as __ContractGlobalPath_AllTypes_types>::U256,) {
         (v,)
     }
     #[inline(always)]
@@ -3327,17 +3684,23 @@ impl ContractGlobalPathArgs {
     }
     #[inline(always)]
     #[allow(clippy::unused_unit)]
-    pub fn test_struct<'i>(v: &'i MyStruct) -> (&'i MyStruct,) {
+    pub fn test_struct<'i>(
+        v: &'i <ContractGlobalPath as __ContractGlobalPath_AllTypes_types>::MyStruct,
+    ) -> (&'i <ContractGlobalPath as __ContractGlobalPath_AllTypes_types>::MyStruct,) {
         (v,)
     }
     #[inline(always)]
     #[allow(clippy::unused_unit)]
-    pub fn test_enum_unit<'i>(v: &'i MyEnumUnit) -> (&'i MyEnumUnit,) {
+    pub fn test_enum_unit<'i>(
+        v: &'i <ContractGlobalPath as __ContractGlobalPath_AllTypes_types>::MyEnumUnit,
+    ) -> (&'i <ContractGlobalPath as __ContractGlobalPath_AllTypes_types>::MyEnumUnit,) {
         (v,)
     }
     #[inline(always)]
     #[allow(clippy::unused_unit)]
-    pub fn test_enum_variants<'i>(v: &'i MyEnumVariants) -> (&'i MyEnumVariants,) {
+    pub fn test_enum_variants<'i>(
+        v: &'i <ContractGlobalPath as __ContractGlobalPath_AllTypes_types>::MyEnumVariants,
+    ) -> (&'i <ContractGlobalPath as __ContractGlobalPath_AllTypes_types>::MyEnumVariants,) {
         (v,)
     }
 }

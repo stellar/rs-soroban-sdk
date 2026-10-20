@@ -6,9 +6,25 @@ extern crate core;
 use core::prelude::rust_2021::*;
 use soroban_sdk::{contract, contractimpl, contracttrait, Env};
 pub struct SelfPathTraitSpec;
+#[doc(hidden)]
+#[allow(non_camel_case_types)]
+pub trait __SelfPathTrait_Env {
+    type __SelfPathTrait_Env;
+}
+impl<T: ?Sized> __SelfPathTrait_Env for T {
+    type __SelfPathTrait_Env = Env;
+}
+#[doc(hidden)]
+#[allow(non_camel_case_types)]
+pub trait __SelfPathTrait_u32 {
+    type __SelfPathTrait_u32;
+}
+impl<T: ?Sized> __SelfPathTrait_u32 for T {
+    type __SelfPathTrait_u32 = u32;
+}
 /// Macro for `contractimpl`ing the default functions of the trait that are not overridden.
 pub use __contractimpl_for_self_path_trait as SelfPathTrait;
-pub trait SelfPathTrait {
+pub trait SelfPathTrait: __SelfPathTrait_Env + __SelfPathTrait_u32 {
     fn self_path_method(env: &Env) -> u32 {
         let _ = env;
         200
@@ -132,6 +148,16 @@ impl self::SelfPathTrait for ContractSelfPath {}
 impl<'a> ContractSelfPathClient<'a> {}
 impl ContractSelfPathArgs {}
 #[doc(hidden)]
+#[allow(non_camel_case_types)]
+pub trait __ContractSelfPath_SelfPathTrait_types {
+    type Env;
+    type u32;
+}
+impl<T: self::SelfPathTrait> __ContractSelfPath_SelfPathTrait_types for T {
+    type Env = T::__SelfPathTrait_Env;
+    type u32 = T::__SelfPathTrait_u32;
+}
+#[doc(hidden)]
 #[allow(non_snake_case)]
 #[deprecated(
     note = "use `ContractSelfPathClient::new(&env, &contract_id).self_path_method` instead"
@@ -168,21 +194,20 @@ mod __ContractSelfPath__self_path_method__spec {
 }
 impl ContractSelfPath {
     #[allow(non_upper_case_globals)]
-    const __SPEC_XDR_ENTRY_self_path_method: soroban_sdk::xdr::r#const::ScSpecEntry =
-        soroban_sdk::xdr::r#const::ScSpecEntry::FunctionV0(
-            soroban_sdk::xdr::r#const::ScSpecFunctionV0 {
-                doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
-                name: soroban_sdk::xdr::r#const::ScSymbol(
-                    soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(
-                        b"self_path_method",
-                    ),
-                ),
-                inputs: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[]),
-                outputs: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[
-                    <u32 as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
-                ]),
-            },
-        );
+    const __SPEC_XDR_ENTRY_self_path_method: soroban_sdk::xdr::r#const::ScSpecEntry = soroban_sdk::xdr::r#const::ScSpecEntry::FunctionV0(soroban_sdk::xdr::r#const::ScSpecFunctionV0 {
+        doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
+        name: soroban_sdk::xdr::r#const::ScSymbol(
+            soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(
+                b"self_path_method",
+            ),
+        ),
+        inputs: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[]),
+        outputs: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(
+            &[
+                <<ContractSelfPath as __ContractSelfPath_SelfPathTrait_types>::u32 as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
+            ],
+        ),
+    });
     #[allow(non_snake_case)]
     /// Returns the XDR of this item's contract spec entry, as it is
     /// embedded in the contract.
@@ -206,7 +231,9 @@ impl<'a> ContractSelfPathClient<'a> {
     /// Panics if the invoked contract returns an error or panics.
     ///
     /// Use [`Self::try_self_path_method`] to receive errors instead of panicking.
-    pub fn self_path_method(&self) -> u32 {
+    pub fn self_path_method(
+        &self,
+    ) -> <ContractSelfPath as __ContractSelfPath_SelfPathTrait_types>::u32 {
         use core::ops::Not;
         use soroban_sdk::{FromVal, IntoVal};
         let res = self.env.invoke_contract(
@@ -224,9 +251,15 @@ impl<'a> ContractSelfPathClient<'a> {
     pub fn try_self_path_method(
         &self,
     ) -> Result<
-        Result<u32, <u32 as soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val>>::Error>,
+        Result<
+            <ContractSelfPath as __ContractSelfPath_SelfPathTrait_types>::u32,
+            <<ContractSelfPath as __ContractSelfPath_SelfPathTrait_types>::u32 as soroban_sdk::TryFromVal<
+                soroban_sdk::Env,
+                soroban_sdk::Val,
+            >>::Error,
+        >,
         Result<soroban_sdk::Error, soroban_sdk::InvokeError>,
-    > {
+    >{
         use soroban_sdk::{FromVal, IntoVal};
         let res = self.env.try_invoke_contract(
             &self.address,

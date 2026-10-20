@@ -143,6 +143,33 @@ This proc macro:
    - **Args variants:** Enum variants for function arguments via `derive_args_impl`
    - **Test hooks:** Function registration for test environment via `derive_contract_function_registration_ctor`
 
+## Types of Default Functions
+
+The signatures of default functions are generated into code at the implementer, but the types in them are written relative to the trait definer, e.g. `Address` may only be imported where the trait is defined. Copying the types by name would require the implementer to have every type in scope by the same name.
+
+Instead, at Stage 2, each distinct type in the default functions is captured where the trait is defined, in the associated type of a hidden trait, one trait per type. The hidden traits are implemented for all types and added as supertraits of the trait:
+
+```rust
+#[doc(hidden)]
+pub trait __Pause_Address { type __Pause_Address; }
+impl<T: ?Sized> __Pause_Address for T { type __Pause_Address = Address; }
+
+pub trait Pause: __Pause_Address { ... }
+```
+
+The signatures captured by the trait macro replace each type with a placeholder, e.g. `fn f2(env: &Env, a: __contracttrait_type::Address)`. References are kept outside the placeholder, the ok and error types of a `Result` return are captured separately, and types that mention `Self` are not captured.
+
+At Stage 5, the placeholders are replaced with a projection through a trait local to the implementer, which projects each type from the supertraits of the trait. A supertrait's associated type can only be named through the trait in a generic context, which the local trait's blanket impl provides:
+
+```rust
+pub trait __Contract_Pause_types { type Address; }
+impl<T: Pause> __Contract_Pause_types for T { type Address = T::__Pause_Address; }
+
+// fn f2(env: &Env, a: <Contract as __Contract_Pause_types>::Address)
+```
+
+The placeholder and projected types keep the last segment of the type's path as their name so that types the generated code recognizes by name, e.g. `Env` and `MuxedAddress`, are still recognized.
+
 ## Why the `macro_rules!` Generated Helper Macro?
 
 The two-stage approach with a declarative generated helper macro is necessary because:

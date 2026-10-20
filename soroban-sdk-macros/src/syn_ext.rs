@@ -689,7 +689,9 @@ mod test_fns_parse {
 pub fn is_type_named(ty: &Type, name: &str) -> bool {
     match ty {
         Type::Reference(TypeReference { elem, .. }) => is_type_named(elem, name),
-        Type::Path(TypePath { qself: None, path }) => path
+        // Qualified paths are included so that a type captured where a
+        // `contracttrait` is defined is still recognized by its name.
+        Type::Path(TypePath { path, .. }) => path
             .segments
             .last()
             .is_some_and(|s| s.ident.unraw() == name),

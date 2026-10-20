@@ -558,9 +558,208 @@ impl soroban_sdk::TryFromVal<soroban_sdk::Env, &MyEnumVariants> for soroban_sdk:
     }
 }
 pub struct AllTypesSpec;
+#[doc(hidden)]
+#[allow(non_camel_case_types)]
+pub trait __AllTypes_u32 {
+    type __AllTypes_u32;
+}
+impl<T: ?Sized> __AllTypes_u32 for T {
+    type __AllTypes_u32 = u32;
+}
+#[doc(hidden)]
+#[allow(non_camel_case_types)]
+pub trait __AllTypes_i32 {
+    type __AllTypes_i32;
+}
+impl<T: ?Sized> __AllTypes_i32 for T {
+    type __AllTypes_i32 = i32;
+}
+#[doc(hidden)]
+#[allow(non_camel_case_types)]
+pub trait __AllTypes_u64 {
+    type __AllTypes_u64;
+}
+impl<T: ?Sized> __AllTypes_u64 for T {
+    type __AllTypes_u64 = u64;
+}
+#[doc(hidden)]
+#[allow(non_camel_case_types)]
+pub trait __AllTypes_i64 {
+    type __AllTypes_i64;
+}
+impl<T: ?Sized> __AllTypes_i64 for T {
+    type __AllTypes_i64 = i64;
+}
+#[doc(hidden)]
+#[allow(non_camel_case_types)]
+pub trait __AllTypes_u128 {
+    type __AllTypes_u128;
+}
+impl<T: ?Sized> __AllTypes_u128 for T {
+    type __AllTypes_u128 = u128;
+}
+#[doc(hidden)]
+#[allow(non_camel_case_types)]
+pub trait __AllTypes_i128 {
+    type __AllTypes_i128;
+}
+impl<T: ?Sized> __AllTypes_i128 for T {
+    type __AllTypes_i128 = i128;
+}
+#[doc(hidden)]
+#[allow(non_camel_case_types)]
+pub trait __AllTypes_bool {
+    type __AllTypes_bool;
+}
+impl<T: ?Sized> __AllTypes_bool for T {
+    type __AllTypes_bool = bool;
+}
+#[doc(hidden)]
+#[allow(non_camel_case_types)]
+pub trait __AllTypes_Address {
+    type __AllTypes_Address;
+}
+impl<T: ?Sized> __AllTypes_Address for T {
+    type __AllTypes_Address = Address;
+}
+#[doc(hidden)]
+#[allow(non_camel_case_types)]
+pub trait __AllTypes_Bytes {
+    type __AllTypes_Bytes;
+}
+impl<T: ?Sized> __AllTypes_Bytes for T {
+    type __AllTypes_Bytes = Bytes;
+}
+#[doc(hidden)]
+#[allow(non_camel_case_types)]
+pub trait __AllTypes_BytesN {
+    type __AllTypes_BytesN;
+}
+impl<T: ?Sized> __AllTypes_BytesN for T {
+    type __AllTypes_BytesN = BytesN<32>;
+}
+#[doc(hidden)]
+#[allow(non_camel_case_types)]
+pub trait __AllTypes_String {
+    type __AllTypes_String;
+}
+impl<T: ?Sized> __AllTypes_String for T {
+    type __AllTypes_String = String;
+}
+#[doc(hidden)]
+#[allow(non_camel_case_types)]
+pub trait __AllTypes_Symbol {
+    type __AllTypes_Symbol;
+}
+impl<T: ?Sized> __AllTypes_Symbol for T {
+    type __AllTypes_Symbol = Symbol;
+}
+#[doc(hidden)]
+#[allow(non_camel_case_types)]
+pub trait __AllTypes_Vec {
+    type __AllTypes_Vec;
+}
+impl<T: ?Sized> __AllTypes_Vec for T {
+    type __AllTypes_Vec = Vec<u32>;
+}
+#[doc(hidden)]
+#[allow(non_camel_case_types)]
+pub trait __AllTypes_Map {
+    type __AllTypes_Map;
+}
+impl<T: ?Sized> __AllTypes_Map for T {
+    type __AllTypes_Map = Map<u32, u32>;
+}
+#[doc(hidden)]
+#[allow(non_camel_case_types)]
+pub trait __AllTypes_Duration {
+    type __AllTypes_Duration;
+}
+impl<T: ?Sized> __AllTypes_Duration for T {
+    type __AllTypes_Duration = Duration;
+}
+#[doc(hidden)]
+#[allow(non_camel_case_types)]
+pub trait __AllTypes_Timepoint {
+    type __AllTypes_Timepoint;
+}
+impl<T: ?Sized> __AllTypes_Timepoint for T {
+    type __AllTypes_Timepoint = Timepoint;
+}
+#[doc(hidden)]
+#[allow(non_camel_case_types)]
+pub trait __AllTypes_I256 {
+    type __AllTypes_I256;
+}
+impl<T: ?Sized> __AllTypes_I256 for T {
+    type __AllTypes_I256 = I256;
+}
+#[doc(hidden)]
+#[allow(non_camel_case_types)]
+pub trait __AllTypes_U256 {
+    type __AllTypes_U256;
+}
+impl<T: ?Sized> __AllTypes_U256 for T {
+    type __AllTypes_U256 = U256;
+}
+#[doc(hidden)]
+#[allow(non_camel_case_types)]
+pub trait __AllTypes_Env {
+    type __AllTypes_Env;
+}
+impl<T: ?Sized> __AllTypes_Env for T {
+    type __AllTypes_Env = Env;
+}
+#[doc(hidden)]
+#[allow(non_camel_case_types)]
+pub trait __AllTypes_MyStruct {
+    type __AllTypes_MyStruct;
+}
+impl<T: ?Sized> __AllTypes_MyStruct for T {
+    type __AllTypes_MyStruct = MyStruct;
+}
+#[doc(hidden)]
+#[allow(non_camel_case_types)]
+pub trait __AllTypes_MyEnumUnit {
+    type __AllTypes_MyEnumUnit;
+}
+impl<T: ?Sized> __AllTypes_MyEnumUnit for T {
+    type __AllTypes_MyEnumUnit = MyEnumUnit;
+}
+#[doc(hidden)]
+#[allow(non_camel_case_types)]
+pub trait __AllTypes_MyEnumVariants {
+    type __AllTypes_MyEnumVariants;
+}
+impl<T: ?Sized> __AllTypes_MyEnumVariants for T {
+    type __AllTypes_MyEnumVariants = MyEnumVariants;
+}
 /// Macro for `contractimpl`ing the default functions of the trait that are not overridden.
 pub use __contractimpl_for_all_types as AllTypes;
-pub trait AllTypes {
+pub trait AllTypes:
+    __AllTypes_u32
+    + __AllTypes_i32
+    + __AllTypes_u64
+    + __AllTypes_i64
+    + __AllTypes_u128
+    + __AllTypes_i128
+    + __AllTypes_bool
+    + __AllTypes_Address
+    + __AllTypes_Bytes
+    + __AllTypes_BytesN
+    + __AllTypes_String
+    + __AllTypes_Symbol
+    + __AllTypes_Vec
+    + __AllTypes_Map
+    + __AllTypes_Duration
+    + __AllTypes_Timepoint
+    + __AllTypes_I256
+    + __AllTypes_U256
+    + __AllTypes_Env
+    + __AllTypes_MyStruct
+    + __AllTypes_MyEnumUnit
+    + __AllTypes_MyEnumVariants
+{
     /// Test u32 values.
     /// Returns the input unchanged.
     fn test_u32(v: u32) -> u32 {
