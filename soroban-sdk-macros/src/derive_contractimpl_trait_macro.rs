@@ -8,8 +8,8 @@ use proc_macro2::{Ident, TokenStream as TokenStream2};
 use quote::ToTokens;
 use quote::{format_ident, quote};
 use syn::{
-    ext::IdentExt as _, parse2, parse_quote, GenericArgument, ImplItemFn, ItemTrait, Path,
-    PathArguments, ReturnType, Signature, TraitItem, TraitItemFn, Type, TypePath,
+    ext::IdentExt as _, parse2, parse_quote, ImplItemFn, ItemTrait, Path, ReturnType, Signature,
+    TraitItem, TraitItemFn, Type, TypePath,
 };
 
 /// The root of the placeholder paths that stand in for the types of default
@@ -169,9 +169,7 @@ struct TypeCaptures {
 impl TypeCaptures {
     /// Replaces the types of the signature with placeholders for captured
     /// types. References are kept on the placeholder because the captured type
-    /// cannot hold their lifetimes, and the error and ok types of a `Result`
-    /// are captured separately because the client is generated from the
-    /// `Result` in the signature.
+    /// cannot hold their lifetimes.
     fn capture_sig(&mut self, sig: &mut Signature) {
         for input in sig.inputs.iter_mut() {
             if let syn::FnArg::Typed(pat_type) = input {
@@ -179,12 +177,7 @@ impl TypeCaptures {
             }
         }
         if let ReturnType::Type(_, ty) = &mut sig.output {
-            let args = result_args(ty);
-            if args.is_empty() {
-                self.capture(ty);
-            } else {
-                args.into_iter().for_each(|t| self.capture(t));
-            }
+            self.capture(ty);
         }
     }
 
@@ -207,8 +200,7 @@ impl TypeCaptures {
     }
 
     /// The name of the captured type, which is the last segment of its path,
-    /// so that the generated code can still recognize types by that name, e.g.
-    /// `Env` and `MuxedAddress`.
+    /// so that the generated code can still recognize the `Env` by its name.
     fn name(&mut self, ty: &Type) -> Ident {
         let ty_str = ty.to_token_stream().to_string();
         if let Some((name, _)) = self
@@ -232,29 +224,6 @@ impl TypeCaptures {
         self.types.push((name.clone(), ty.clone()));
         name
     }
-}
-
-/// The ok and error types of a `Result`, or none if the type is not a `Result`.
-fn result_args(ty: &mut Type) -> Vec<&mut Type> {
-    let Type::Path(TypePath { path, .. }) = ty else {
-        return Vec::new();
-    };
-    let Some(segment) = path.segments.last_mut() else {
-        return Vec::new();
-    };
-    let PathArguments::AngleBracketed(args) = &mut segment.arguments else {
-        return Vec::new();
-    };
-    if segment.ident != "Result" || args.args.len() != 2 {
-        return Vec::new();
-    }
-    args.args
-        .iter_mut()
-        .filter_map(|a| match a {
-            GenericArgument::Type(t) => Some(t),
-            _ => None,
-        })
-        .collect()
 }
 
 pub fn generate_call_to_contractimpl_for_trait(

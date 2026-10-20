@@ -1,5 +1,5 @@
 #![no_std]
-use soroban_sdk::{contract, contractimpl};
+use soroban_sdk::{contract, contractimpl, crypto::Hash, Bytes, Env, MuxedAddress};
 
 // =============================================================================
 // Test: Types in default fns resolve where the trait is defined
@@ -9,7 +9,8 @@ use soroban_sdk::{contract, contractimpl};
 
 pub mod traits {
     use soroban_sdk::{
-        contracterror, contracttrait, contracttype, Address, Env, MuxedAddress, Vec,
+        contracterror, contracttrait, contracttype, crypto::Hash, Address, Bytes, Env,
+        MuxedAddress, Vec,
     };
 
     #[contracttype]
@@ -46,6 +47,10 @@ pub mod traits {
         fn address(_env: &Env, a: Address, _m: MuxedAddress) -> Address {
             a
         }
+
+        fn hash(env: &Env, b: Bytes) -> Hash<32> {
+            env.crypto().sha256(&b)
+        }
     }
 }
 
@@ -55,10 +60,21 @@ pub struct Contract;
 #[contractimpl(contracttrait)]
 impl traits::TypesTrait for Contract {}
 
+#[contractimpl]
+impl Contract {
+    pub fn hash_direct(env: &Env, b: Bytes) -> Hash<32> {
+        env.crypto().sha256(&b)
+    }
+
+    pub fn muxed_direct(_env: &Env, m: MuxedAddress) -> MuxedAddress {
+        m
+    }
+}
+
 #[cfg(test)]
 mod test {
     use super::*;
-    use soroban_sdk::{testutils::Address as _, Address, Env};
+    use soroban_sdk::{testutils::Address as _, Address, Bytes, BytesN, Env, MuxedAddress};
 
     #[test]
     fn test_types() {
@@ -72,7 +88,20 @@ mod test {
         assert_eq!(client.even(&2), 2);
         assert_eq!(client.try_even(&3), Err(Ok(traits::Error::Odd)));
 
+        // A muxed address argument accepts anything that converts into one.
         let a = Address::generate(&e);
         assert_eq!(client.address(&a, &a), a);
+        assert_eq!(client.address(&a, a.clone()), a);
+        let m: MuxedAddress = a.clone().into();
+        assert_eq!(client.address(&a, &m), a);
+        assert_eq!(client.muxed_direct(&a).address(), a);
+
+        // A returned hash is received by the client as its bytes.
+        let b = Bytes::from_array(&e, &[1, 2, 3]);
+        let expected: BytesN<32> = e.crypto().sha256(&b).into();
+        let h: BytesN<32> = client.hash(&b);
+        assert_eq!(h, expected);
+        let h: BytesN<32> = client.hash_direct(&b);
+        assert_eq!(h, expected);
     }
 }

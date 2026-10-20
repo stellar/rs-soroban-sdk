@@ -48,6 +48,62 @@
   {
     "function_v0": {
       "doc": "",
+      "name": "hash",
+      "inputs": [
+        {
+          "doc": "",
+          "name": "b",
+          "type": "bytes"
+        }
+      ],
+      "outputs": [
+        {
+          "bytes_n": {
+            "n": 32
+          }
+        }
+      ]
+    }
+  },
+  {
+    "function_v0": {
+      "doc": "",
+      "name": "hash_direct",
+      "inputs": [
+        {
+          "doc": "",
+          "name": "b",
+          "type": "bytes"
+        }
+      ],
+      "outputs": [
+        {
+          "bytes_n": {
+            "n": 32
+          }
+        }
+      ]
+    }
+  },
+  {
+    "function_v0": {
+      "doc": "",
+      "name": "muxed_direct",
+      "inputs": [
+        {
+          "doc": "",
+          "name": "m",
+          "type": "muxed_address"
+        }
+      ],
+      "outputs": [
+        "muxed_address"
+      ]
+    }
+  },
+  {
+    "function_v0": {
+      "doc": "",
       "name": "point",
       "inputs": [
         {

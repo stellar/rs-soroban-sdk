@@ -55,6 +55,10 @@ impl soroban_sdk::SpecTypeDef for DataKey {
             ),
         });
 }
+impl soroban_sdk::ClientType for DataKey {
+    type Arg = soroban_sdk::ClientArgByRef;
+    type Ret = Self;
+}
 #[doc(hidden)]
 #[allow(dead_code)]
 #[link_section = "contractspecv0"]
@@ -345,7 +349,10 @@ impl<'a> ContractClient<'a> {
     /// Panics if the invoked contract returns an error or panics.
     ///
     /// Use [`Self::try_get_data`] to receive errors instead of panicking.
-    pub fn get_data(&self, key: &DataKey) -> Option<i64> {
+    pub fn get_data(
+        &self,
+        key: impl soroban_sdk::ClientArg<DataKey, <DataKey as soroban_sdk::ClientType>::Arg>,
+    ) -> <Option<i64> as soroban_sdk::ClientOutput>::Ok {
         use core::ops::Not;
         use soroban_sdk::{FromVal, IntoVal};
         let res = self.env.invoke_contract(
@@ -355,7 +362,12 @@ impl<'a> ContractClient<'a> {
                 const SYMBOL: soroban_sdk::Symbol = soroban_sdk::Symbol::short("get_data");
                 SYMBOL
             },
-            ::soroban_sdk::Vec::from_array(&self.env, [key.into_val(&self.env)]),
+            ::soroban_sdk::Vec::from_array(
+                &self.env,
+                [soroban_sdk::ClientArg::<DataKey, _>::into_val_for_client(
+                    key, &self.env,
+                )],
+            ),
         );
         res
     }
@@ -366,13 +378,16 @@ impl<'a> ContractClient<'a> {
     /// Returns an error if the invoked contract returns an error or panics. A panic in the invoked contract is caught and returned as an error rather than panicking the caller.
     pub fn try_get_data(
         &self,
-        key: &DataKey,
+        key: impl soroban_sdk::ClientArg<DataKey, <DataKey as soroban_sdk::ClientType>::Arg>,
     ) -> Result<
         Result<
-            Option<i64>,
-            <Option<i64> as soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val>>::Error,
+            <Option<i64> as soroban_sdk::ClientOutput>::Ok,
+            <<Option<i64> as soroban_sdk::ClientOutput>::Ok as soroban_sdk::TryFromVal<
+                soroban_sdk::Env,
+                soroban_sdk::Val,
+            >>::Error,
         >,
-        Result<soroban_sdk::Error, soroban_sdk::InvokeError>,
+        Result<<Option<i64> as soroban_sdk::ClientOutput>::Err, soroban_sdk::InvokeError>,
     > {
         use soroban_sdk::{FromVal, IntoVal};
         let res = self.env.try_invoke_contract(
@@ -382,7 +397,12 @@ impl<'a> ContractClient<'a> {
                 const SYMBOL: soroban_sdk::Symbol = soroban_sdk::Symbol::short("get_data");
                 SYMBOL
             },
-            ::soroban_sdk::Vec::from_array(&self.env, [key.into_val(&self.env)]),
+            ::soroban_sdk::Vec::from_array(
+                &self.env,
+                [soroban_sdk::ClientArg::<DataKey, _>::into_val_for_client(
+                    key, &self.env,
+                )],
+            ),
         );
         res
     }

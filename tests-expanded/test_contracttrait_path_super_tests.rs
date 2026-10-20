@@ -110,7 +110,7 @@ impl<'a> SuperPathTraitClient<'a> {
     /// Panics if the invoked contract returns an error or panics.
     ///
     /// Use [`Self::try_super_path_method`] to receive errors instead of panicking.
-    pub fn super_path_method(&self) -> u32 {
+    pub fn super_path_method(&self) -> <u32 as soroban_sdk::ClientOutput>::Ok {
         let _call_scope = soroban_sdk::testutils::ClientCallScope::enter(&self.env, self.config);
         use soroban_sdk::{FromVal, IntoVal};
         let res = self.env.invoke_contract(
@@ -128,8 +128,14 @@ impl<'a> SuperPathTraitClient<'a> {
     pub fn try_super_path_method(
         &self,
     ) -> Result<
-        Result<u32, <u32 as soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val>>::Error>,
-        Result<soroban_sdk::Error, soroban_sdk::InvokeError>,
+        Result<
+            <u32 as soroban_sdk::ClientOutput>::Ok,
+            <<u32 as soroban_sdk::ClientOutput>::Ok as soroban_sdk::TryFromVal<
+                soroban_sdk::Env,
+                soroban_sdk::Val,
+            >>::Error,
+        >,
+        Result<<u32 as soroban_sdk::ClientOutput>::Err, soroban_sdk::InvokeError>,
     > {
         let _call_scope = soroban_sdk::testutils::ClientCallScope::enter(&self.env, self.config);
         use soroban_sdk::{FromVal, IntoVal};
@@ -405,7 +411,7 @@ pub mod submodule {
         /// Use [`Self::try_super_path_method`] to receive errors instead of panicking.
         pub fn super_path_method(
             &self,
-        ) -> <ContractSuperPath as __ContractSuperPath_SuperPathTrait_types>::u32 {
+        ) -> <<ContractSuperPath as __ContractSuperPath_SuperPathTrait_types>::u32 as soroban_sdk::ClientOutput>::Ok{
             let _call_scope =
                 soroban_sdk::testutils::ClientCallScope::enter(&self.env, self.config);
             use soroban_sdk::{FromVal, IntoVal};
@@ -425,13 +431,16 @@ pub mod submodule {
             &self,
         ) -> Result<
             Result<
-                <ContractSuperPath as __ContractSuperPath_SuperPathTrait_types>::u32,
-                <<ContractSuperPath as __ContractSuperPath_SuperPathTrait_types>::u32 as soroban_sdk::TryFromVal<
+                <<ContractSuperPath as __ContractSuperPath_SuperPathTrait_types>::u32 as soroban_sdk::ClientOutput>::Ok,
+                <<<ContractSuperPath as __ContractSuperPath_SuperPathTrait_types>::u32 as soroban_sdk::ClientOutput>::Ok as soroban_sdk::TryFromVal<
                     soroban_sdk::Env,
                     soroban_sdk::Val,
                 >>::Error,
             >,
-            Result<soroban_sdk::Error, soroban_sdk::InvokeError>,
+            Result<
+                <<ContractSuperPath as __ContractSuperPath_SuperPathTrait_types>::u32 as soroban_sdk::ClientOutput>::Err,
+                soroban_sdk::InvokeError,
+            >,
         >{
             let _call_scope =
                 soroban_sdk::testutils::ClientCallScope::enter(&self.env, self.config);

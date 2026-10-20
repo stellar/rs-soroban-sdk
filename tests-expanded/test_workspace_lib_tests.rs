@@ -59,6 +59,10 @@ impl soroban_sdk::SpecTypeDef for Value {
             ),
         });
 }
+impl soroban_sdk::ClientType for Value {
+    type Arg = soroban_sdk::ClientArgByRef;
+    type Ret = Self;
+}
 #[doc(hidden)]
 #[allow(dead_code)]
 static __SPEC_XDR_TYPE_VALUE: [u8; Value::spec_xdr().len()] = Value::spec_xdr();

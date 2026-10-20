@@ -175,7 +175,10 @@ impl<'a> ContractAClient<'a> {
     /// Panics if the invoked contract returns an error or panics.
     ///
     /// Use [`Self::try_fn1`] to receive errors instead of panicking.
-    pub fn fn1(&self, a: &Address) -> u64 {
+    pub fn fn1(
+        &self,
+        a: impl soroban_sdk::ClientArg<Address, <Address as soroban_sdk::ClientType>::Arg>,
+    ) -> <u64 as soroban_sdk::ClientOutput>::Ok {
         let _call_scope = soroban_sdk::testutils::ClientCallScope::enter(&self.env, self.config);
         use soroban_sdk::{FromVal, IntoVal};
         let res = self.env.invoke_contract(
@@ -185,7 +188,12 @@ impl<'a> ContractAClient<'a> {
                 const SYMBOL: soroban_sdk::Symbol = soroban_sdk::Symbol::short("fn1");
                 SYMBOL
             },
-            ::soroban_sdk::Vec::from_array(&self.env, [a.into_val(&self.env)]),
+            ::soroban_sdk::Vec::from_array(
+                &self.env,
+                [soroban_sdk::ClientArg::<Address, _>::into_val_for_client(
+                    a, &self.env,
+                )],
+            ),
         );
         res
     }
@@ -196,10 +204,16 @@ impl<'a> ContractAClient<'a> {
     /// Returns an error if the invoked contract returns an error or panics. A panic in the invoked contract is caught and returned as an error rather than panicking the caller.
     pub fn try_fn1(
         &self,
-        a: &Address,
+        a: impl soroban_sdk::ClientArg<Address, <Address as soroban_sdk::ClientType>::Arg>,
     ) -> Result<
-        Result<u64, <u64 as soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val>>::Error>,
-        Result<soroban_sdk::Error, soroban_sdk::InvokeError>,
+        Result<
+            <u64 as soroban_sdk::ClientOutput>::Ok,
+            <<u64 as soroban_sdk::ClientOutput>::Ok as soroban_sdk::TryFromVal<
+                soroban_sdk::Env,
+                soroban_sdk::Val,
+            >>::Error,
+        >,
+        Result<<u64 as soroban_sdk::ClientOutput>::Err, soroban_sdk::InvokeError>,
     > {
         let _call_scope = soroban_sdk::testutils::ClientCallScope::enter(&self.env, self.config);
         use soroban_sdk::{FromVal, IntoVal};
@@ -210,7 +224,12 @@ impl<'a> ContractAClient<'a> {
                 const SYMBOL: soroban_sdk::Symbol = soroban_sdk::Symbol::short("fn1");
                 SYMBOL
             },
-            ::soroban_sdk::Vec::from_array(&self.env, [a.into_val(&self.env)]),
+            ::soroban_sdk::Vec::from_array(
+                &self.env,
+                [soroban_sdk::ClientArg::<Address, _>::into_val_for_client(
+                    a, &self.env,
+                )],
+            ),
         );
         res
     }
@@ -1139,6 +1158,10 @@ mod test_a {
                     },
                 );
         }
+        impl soroban_sdk::ClientType for Error {
+            type Arg = soroban_sdk::ClientArgByRef;
+            type Ret = Self;
+        }
         #[doc(hidden)]
         #[allow(dead_code)]
         static __SPEC_XDR_TYPE_ERROR: [u8; Error::spec_xdr().len()] = Error::spec_xdr();
@@ -1662,7 +1685,11 @@ impl<'a> ContractBClient<'a> {
     /// Panics if the invoked contract returns an error or panics.
     ///
     /// Use [`Self::try_fn2`] to receive errors instead of panicking.
-    pub fn fn2(&self, a: &Address, sub: &Address) -> u64 {
+    pub fn fn2(
+        &self,
+        a: impl soroban_sdk::ClientArg<Address, <Address as soroban_sdk::ClientType>::Arg>,
+        sub: impl soroban_sdk::ClientArg<Address, <Address as soroban_sdk::ClientType>::Arg>,
+    ) -> <u64 as soroban_sdk::ClientOutput>::Ok {
         let _call_scope = soroban_sdk::testutils::ClientCallScope::enter(&self.env, self.config);
         use soroban_sdk::{FromVal, IntoVal};
         let res = self.env.invoke_contract(
@@ -1674,7 +1701,10 @@ impl<'a> ContractBClient<'a> {
             },
             ::soroban_sdk::Vec::from_array(
                 &self.env,
-                [a.into_val(&self.env), sub.into_val(&self.env)],
+                [
+                    soroban_sdk::ClientArg::<Address, _>::into_val_for_client(a, &self.env),
+                    soroban_sdk::ClientArg::<Address, _>::into_val_for_client(sub, &self.env),
+                ],
             ),
         );
         res
@@ -1686,11 +1716,17 @@ impl<'a> ContractBClient<'a> {
     /// Returns an error if the invoked contract returns an error or panics. A panic in the invoked contract is caught and returned as an error rather than panicking the caller.
     pub fn try_fn2(
         &self,
-        a: &Address,
-        sub: &Address,
+        a: impl soroban_sdk::ClientArg<Address, <Address as soroban_sdk::ClientType>::Arg>,
+        sub: impl soroban_sdk::ClientArg<Address, <Address as soroban_sdk::ClientType>::Arg>,
     ) -> Result<
-        Result<u64, <u64 as soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val>>::Error>,
-        Result<soroban_sdk::Error, soroban_sdk::InvokeError>,
+        Result<
+            <u64 as soroban_sdk::ClientOutput>::Ok,
+            <<u64 as soroban_sdk::ClientOutput>::Ok as soroban_sdk::TryFromVal<
+                soroban_sdk::Env,
+                soroban_sdk::Val,
+            >>::Error,
+        >,
+        Result<<u64 as soroban_sdk::ClientOutput>::Err, soroban_sdk::InvokeError>,
     > {
         let _call_scope = soroban_sdk::testutils::ClientCallScope::enter(&self.env, self.config);
         use soroban_sdk::{FromVal, IntoVal};
@@ -1703,7 +1739,10 @@ impl<'a> ContractBClient<'a> {
             },
             ::soroban_sdk::Vec::from_array(
                 &self.env,
-                [a.into_val(&self.env), sub.into_val(&self.env)],
+                [
+                    soroban_sdk::ClientArg::<Address, _>::into_val_for_client(a, &self.env),
+                    soroban_sdk::ClientArg::<Address, _>::into_val_for_client(sub, &self.env),
+                ],
             ),
         );
         res
@@ -2738,6 +2777,10 @@ mod test_b {
                         ),
                     },
                 );
+        }
+        impl soroban_sdk::ClientType for Error {
+            type Arg = soroban_sdk::ClientArgByRef;
+            type Ret = Self;
         }
         #[doc(hidden)]
         #[allow(dead_code)]

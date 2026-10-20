@@ -56,7 +56,7 @@ pub mod traits {
         /// Panics if the invoked contract returns an error or panics.
         ///
         /// Use [`Self::try_crate_path_method`] to receive errors instead of panicking.
-        pub fn crate_path_method(&self) -> u32 {
+        pub fn crate_path_method(&self) -> <u32 as soroban_sdk::ClientOutput>::Ok {
             use core::ops::Not;
             use soroban_sdk::{FromVal, IntoVal};
             let res = self.env.invoke_contract(
@@ -75,10 +75,13 @@ pub mod traits {
             &self,
         ) -> Result<
             Result<
-                u32,
-                <u32 as soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val>>::Error,
+                <u32 as soroban_sdk::ClientOutput>::Ok,
+                <<u32 as soroban_sdk::ClientOutput>::Ok as soroban_sdk::TryFromVal<
+                    soroban_sdk::Env,
+                    soroban_sdk::Val,
+                >>::Error,
             >,
-            Result<soroban_sdk::Error, soroban_sdk::InvokeError>,
+            Result<<u32 as soroban_sdk::ClientOutput>::Err, soroban_sdk::InvokeError>,
         > {
             use soroban_sdk::{FromVal, IntoVal};
             let res = self.env.try_invoke_contract(
@@ -241,7 +244,7 @@ impl<'a> ContractCratePathClient<'a> {
     /// Use [`Self::try_crate_path_method`] to receive errors instead of panicking.
     pub fn crate_path_method(
         &self,
-    ) -> <ContractCratePath as __ContractCratePath_CratePathTrait_types>::u32 {
+    ) -> <<ContractCratePath as __ContractCratePath_CratePathTrait_types>::u32 as soroban_sdk::ClientOutput>::Ok{
         use core::ops::Not;
         use soroban_sdk::{FromVal, IntoVal};
         let res = self.env.invoke_contract(
@@ -260,13 +263,16 @@ impl<'a> ContractCratePathClient<'a> {
         &self,
     ) -> Result<
         Result<
-            <ContractCratePath as __ContractCratePath_CratePathTrait_types>::u32,
-            <<ContractCratePath as __ContractCratePath_CratePathTrait_types>::u32 as soroban_sdk::TryFromVal<
+            <<ContractCratePath as __ContractCratePath_CratePathTrait_types>::u32 as soroban_sdk::ClientOutput>::Ok,
+            <<<ContractCratePath as __ContractCratePath_CratePathTrait_types>::u32 as soroban_sdk::ClientOutput>::Ok as soroban_sdk::TryFromVal<
                 soroban_sdk::Env,
                 soroban_sdk::Val,
             >>::Error,
         >,
-        Result<soroban_sdk::Error, soroban_sdk::InvokeError>,
+        Result<
+            <<ContractCratePath as __ContractCratePath_CratePathTrait_types>::u32 as soroban_sdk::ClientOutput>::Err,
+            soroban_sdk::InvokeError,
+        >,
     >{
         use soroban_sdk::{FromVal, IntoVal};
         let res = self.env.try_invoke_contract(

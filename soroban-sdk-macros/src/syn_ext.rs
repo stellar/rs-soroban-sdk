@@ -10,8 +10,8 @@ use syn::{
     parse::{Parse, ParseStream},
     punctuated::Punctuated,
     token::Comma,
-    AngleBracketedGenericArguments, Attribute, GenericArgument, LitStr, Path, PathArguments,
-    PathSegment, ReturnType, Signature, Token, TypePath,
+    Attribute, GenericArgument, LitStr, Path, PathArguments, PathSegment, ReturnType, Signature,
+    Token, TypePath,
 };
 
 /// Gets methods from the implementation that have public visibility. For
@@ -132,21 +132,6 @@ pub fn fn_arg_make_ref(arg: &FnArg, lifetime: Option<&Lifetime>) -> FnArg {
     arg.clone()
 }
 
-/// Returns a clone of FnArg with the type as an Into if the arg is a typed
-/// arg. Mutability from the ident is stripped.
-pub fn fn_arg_make_into(arg: &FnArg) -> FnArg {
-    if let FnArg::Typed(pat_type) = arg {
-        let ty = &pat_type.ty;
-        return FnArg::Typed(PatType {
-            attrs: pat_type.attrs.clone(),
-            pat: Box::new(pat_unwrap_mut(*pat_type.pat.clone())),
-            colon_token: pat_type.colon_token,
-            ty: Box::new(syn::parse_quote! { impl Into<#ty> }),
-        });
-    }
-    arg.clone()
-}
-
 pub enum HasFnsItem {
     Trait(ItemTrait),
     Impl(ItemImpl),
@@ -221,30 +206,30 @@ pub struct Fn {
 }
 
 impl Fn {
-    pub fn output(&self) -> Type {
-        let t = match &self.output {
-            ReturnType::Default => quote!(()),
-            ReturnType::Type(_, typ) => match unpack_result(typ) {
-                Some((t, _)) => quote!(#t),
-                None => quote!(#typ),
-            },
-        };
-        Type::Verbatim(t)
+    /// The type the client returns for the fn's return type.
+    pub fn output(&self, crate_path: &Path) -> Type {
+        let ty = self.output_type();
+        Type::Verbatim(quote!(<#ty as #crate_path::ClientOutput>::Ok))
     }
+
+    /// The type the client's try fn returns for the fn's return type.
     pub fn try_output(&self, crate_path: &Path) -> Type {
-        let (t, e) = match &self.output {
-            ReturnType::Default => (quote!(()), quote!(#crate_path::Error)),
-            ReturnType::Type(_, typ) => match unpack_result(typ) {
-                Some((t, e)) => (quote!(#t), quote!(#e)),
-                None => (quote!(#typ), quote!(#crate_path::Error)),
-            },
-        };
+        let ty = self.output_type();
+        let t = quote!(<#ty as #crate_path::ClientOutput>::Ok);
+        let e = quote!(<#ty as #crate_path::ClientOutput>::Err);
         Type::Verbatim(quote! {
             Result<
                 Result<#t, <#t as #crate_path::TryFromVal<#crate_path::Env, #crate_path::Val>>::Error>,
                 Result<#e, #crate_path::InvokeError>
             >
         })
+    }
+
+    fn output_type(&self) -> Type {
+        match &self.output {
+            ReturnType::Default => Type::Verbatim(quote!(())),
+            ReturnType::Type(_, ty) => (**ty).clone(),
+        }
     }
 }
 
@@ -281,30 +266,6 @@ pub fn strs_to_fns(fn_strs: &[LitStr]) -> Result<Vec<Fn>, Error> {
                 .map_err(|e| Error::new(f.span(), format!("failed to parse function: {e}")))
         })
         .collect()
-}
-
-fn unpack_result(typ: &Type) -> Option<(Type, Type)> {
-    match &typ {
-        Type::Path(TypePath { path, .. }) => {
-            if let Some(PathSegment {
-                ident,
-                arguments:
-                    PathArguments::AngleBracketed(AngleBracketedGenericArguments { args, .. }),
-            }) = path.segments.last()
-            {
-                let args = args.iter().collect::<Vec<_>>();
-                match (&ident.unraw().to_string()[..], args.as_slice()) {
-                    ("Result", [GenericArgument::Type(t), GenericArgument::Type(e)]) => {
-                        Some((t.clone(), e.clone()))
-                    }
-                    _ => None,
-                }
-            } else {
-                None
-            }
-        }
-        _ => None,
-    }
 }
 
 fn flatten_associated_items_in_impl_fns(imp: &mut ItemImpl) -> Result<(), Error> {
@@ -680,21 +641,5 @@ mod test_fns_parse {
             err.to_string().contains("depth limit exceeded"),
             "unexpected error: {err}"
         );
-    }
-}
-
-/// Whether the type is written with the given name as the last segment of its
-/// path, behind any number of references, such as `Hash<32>` or
-/// `&soroban_sdk::crypto::Hash<32>` for `Hash`.
-pub fn is_type_named(ty: &Type, name: &str) -> bool {
-    match ty {
-        Type::Reference(TypeReference { elem, .. }) => is_type_named(elem, name),
-        // Qualified paths are included so that a type captured where a
-        // `contracttrait` is defined is still recognized by its name.
-        Type::Path(TypePath { path, .. }) => path
-            .segments
-            .last()
-            .is_some_and(|s| s.ident.unraw() == name),
-        _ => false,
     }
 }

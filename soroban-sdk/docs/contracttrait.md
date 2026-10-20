@@ -157,7 +157,7 @@ impl<T: ?Sized> __Pause_Address for T { type __Pause_Address = Address; }
 pub trait Pause: __Pause_Address { ... }
 ```
 
-The signatures captured by the trait macro replace each type with a placeholder, e.g. `fn f2(env: &Env, a: __contracttrait_type::Address)`. References are kept outside the placeholder, the ok and error types of a `Result` return are captured separately, and types that mention `Self` are not captured.
+The signatures captured by the trait macro replace each type with a placeholder, e.g. `fn f2(env: &Env, a: __contracttrait_type::Address)`. References are kept outside the placeholder, and types that mention `Self` are not captured.
 
 At Stage 5, the placeholders are replaced with a projection through a trait local to the implementer, which projects each type from the supertraits of the trait. A supertrait's associated type can only be named through the trait in a generic context, which the local trait's blanket impl provides:
 
@@ -168,7 +168,7 @@ impl<T: Pause> __Contract_Pause_types for T { type Address = T::__Pause_Address;
 // fn f2(env: &Env, a: <Contract as __Contract_Pause_types>::Address)
 ```
 
-The placeholder and projected types keep the last segment of the type's path as their name so that types the generated code recognizes by name, e.g. `Env` and `MuxedAddress`, are still recognized.
+The placeholder and projected types keep the last segment of the type's path as their name so that the `Env` argument is still recognized by its name. Every other decision about a type is made through traits implemented on the type, such as `SpecTypeDef` for the spec and `ClientType` for the client, so the projected types need no name.
 
 ## Why the `macro_rules!` Generated Helper Macro?
 
