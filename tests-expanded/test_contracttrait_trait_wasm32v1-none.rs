@@ -76,7 +76,7 @@ impl soroban_sdk::SpecTypeDef for MyStruct {
         });
 }
 impl soroban_sdk::client::Type for MyStruct {
-    type Arg = soroban_sdk::client::Borrowed;
+    type ArgMethod = soroban_sdk::client::Borrowed;
     type Ret = Self;
 }
 #[doc(hidden)]
@@ -240,7 +240,7 @@ impl soroban_sdk::SpecTypeDef for MyEnumUnit {
         });
 }
 impl soroban_sdk::client::Type for MyEnumUnit {
-    type Arg = soroban_sdk::client::Borrowed;
+    type ArgMethod = soroban_sdk::client::Borrowed;
     type Ret = Self;
 }
 #[doc(hidden)]
@@ -414,7 +414,7 @@ impl soroban_sdk::SpecTypeDef for MyEnumVariants {
         });
 }
 impl soroban_sdk::client::Type for MyEnumVariants {
-    type Arg = soroban_sdk::client::Borrowed;
+    type ArgMethod = soroban_sdk::client::Borrowed;
     type Ret = Self;
 }
 #[doc(hidden)]

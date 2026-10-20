@@ -23,11 +23,11 @@ use crate::{
     Symbol, Timepoint, TryFromVal, Val, Vec, I256, U256,
 };
 
-/// Marker for [`Type::Arg`] that a client takes the argument as a reference
+/// Marker for [`Type::ArgMethod`] that a client takes the argument as a reference
 /// to any value that borrows as it, such as `&T` or `&&T`.
 pub struct Borrowed;
 
-/// Marker for [`Type::Arg`] that a client takes the argument as any value
+/// Marker for [`Type::ArgMethod`] that a client takes the argument as any value
 /// that converts into it, as `impl Into<T>`.
 pub struct Converted;
 
@@ -41,18 +41,18 @@ pub struct Converted;
 pub trait Type {
     /// How a client takes the type as an argument, either [`Borrowed`]
     /// or [`Converted`].
-    type Arg;
+    type ArgMethod;
     /// The type a client returns for the type.
     type Ret;
 }
 
 /// Trait for the values a client function accepts for an argument of type `T`,
-/// which are decided by the type's [`Type::Arg`].
+/// which are decided by the type's [`Type::ArgMethod`].
 ///
-/// `Method` defaults to the type's [`Type::Arg`] and is only a parameter so that
+/// `Method` defaults to the type's [`Type::ArgMethod`] and is only a parameter so that
 /// the impls for each method do not overlap, as the compiler does not use an
 /// associated type to tell impls apart.
-pub trait IntoArg<T: Type, Method = <T as Type>::Arg> {
+pub trait IntoArg<T: Type, Method = <T as Type>::ArgMethod> {
     fn into_arg(self, env: &Env) -> Val;
 }
 
@@ -122,7 +122,7 @@ macro_rules! impl_client_type {
     ($($t:ty),* $(,)?) => {
         $(
             impl Type for $t {
-                type Arg = Borrowed;
+                type ArgMethod = Borrowed;
                 type Ret = $t;
             }
         )*
@@ -162,41 +162,41 @@ impl_client_type! {
 // A muxed address argument accepts anything that converts into one, such as an
 // Address.
 impl Type for MuxedAddress {
-    type Arg = Converted;
+    type ArgMethod = Converted;
     type Ret = MuxedAddress;
 }
 
 impl<const N: usize> Type for BytesN<N> {
-    type Arg = Borrowed;
+    type ArgMethod = Borrowed;
     type Ret = BytesN<N>;
 }
 
 // A hash can only be constructed by the host, so a client receives the bytes of
 // a returned hash.
 impl<const N: usize> Type for Hash<N> {
-    type Arg = Borrowed;
+    type ArgMethod = Borrowed;
     type Ret = BytesN<N>;
 }
 
 impl<T: Type> Type for Option<T> {
-    type Arg = Borrowed;
+    type ArgMethod = Borrowed;
     type Ret = Option<T::Ret>;
 }
 
 impl<T: Type> Type for Vec<T> {
-    type Arg = Borrowed;
+    type ArgMethod = Borrowed;
     type Ret = Vec<T::Ret>;
 }
 
 impl<K: Type, V: Type> Type for Map<K, V> {
-    type Arg = Borrowed;
+    type ArgMethod = Borrowed;
     type Ret = Map<K::Ret, V::Ret>;
 }
 
 macro_rules! impl_client_type_for_tuple {
     ($($t:ident),+) => {
         impl<$($t: Type),+> Type for ($($t,)+) {
-            type Arg = Borrowed;
+            type ArgMethod = Borrowed;
             type Ret = ($($t::Ret,)+);
         }
     };

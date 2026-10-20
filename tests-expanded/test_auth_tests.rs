@@ -1150,7 +1150,7 @@ mod test_a {
                 );
         }
         impl soroban_sdk::client::Type for Error {
-            type Arg = soroban_sdk::client::Borrowed;
+            type ArgMethod = soroban_sdk::client::Borrowed;
             type Ret = Self;
         }
         #[doc(hidden)]
@@ -2761,7 +2761,7 @@ mod test_b {
                 );
         }
         impl soroban_sdk::client::Type for Error {
-            type Arg = soroban_sdk::client::Borrowed;
+            type ArgMethod = soroban_sdk::client::Borrowed;
             type Ret = Self;
         }
         #[doc(hidden)]
