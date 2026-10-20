@@ -49,10 +49,10 @@ pub trait Type {
 /// Trait for the values a client function accepts for an argument of type `T`,
 /// which are decided by the type's [`Type::Arg`].
 ///
-/// `Mode` defaults to the type's [`Type::Arg`] and is only a parameter so that
-/// the impls for each mode do not overlap, as the compiler does not use an
+/// `Method` defaults to the type's [`Type::Arg`] and is only a parameter so that
+/// the impls for each method do not overlap, as the compiler does not use an
 /// associated type to tell impls apart.
-pub trait IntoArg<T: Type, Mode = <T as Type>::Arg> {
+pub trait IntoArg<T: Type, Method = <T as Type>::Arg> {
     fn into_arg(self, env: &Env) -> Val;
 }
 
