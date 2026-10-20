@@ -2,7 +2,7 @@
 //! values of contract functions.
 //!
 //! [`Type`] gives the types that a client uses for a Rust type that appears in
-//! a contract function, [`IntoArg`] the values a client accepts for an argument,
+//! a contract function, [`IntoArg`](crate::IntoArg) the values a client accepts for an argument,
 //! and [`Output`] the values a client returns.
 //!
 //! The macros refer to every argument and return type of a client function
@@ -11,16 +11,14 @@
 //! resolves to. A type alias therefore has the client types of the type it
 //! aliases.
 
-use core::borrow::Borrow;
-
 use crate::{
     crypto::{
         bls12_381::{Bls12381Fp, Bls12381Fp2, Bls12381Fr, Bls12381G1Affine, Bls12381G2Affine},
         bn254::{Bn254Fp, Bn254Fr, Bn254G1Affine, Bn254G2Affine},
         Hash,
     },
-    Address, Bytes, BytesN, Duration, Env, Error, IntoVal, InvokeError, Map, MuxedAddress, String,
-    Symbol, Timepoint, TryFromVal, Val, Vec, I256, U256,
+    Address, Bytes, BytesN, Duration, Env, Error, InvokeError, Map, MuxedAddress, String, Symbol,
+    Timepoint, TryFromVal, Val, Vec, I256, U256,
 };
 
 /// Marker for [`Type::ArgMethod`] that a client takes the argument as a reference
@@ -44,40 +42,6 @@ pub trait Type {
     type ArgMethod;
     /// The type a client returns for the type.
     type Ret;
-}
-
-/// Trait for the values a client function accepts for an argument of type `T`,
-/// which are decided by the type's [`Type::ArgMethod`].
-///
-/// `Method` defaults to the type's [`Type::ArgMethod`] and is only a parameter so that
-/// the impls for each method do not overlap, as the compiler does not use an
-/// associated type to tell impls apart.
-pub trait IntoArg<T: Type, Method = <T as Type>::ArgMethod> {
-    fn into_arg(self, env: &Env) -> Val;
-}
-
-// Any reference that borrows as the type is accepted, so that a reference to a
-// reference is accepted as it would be by deref coercion.
-impl<'a, T, R> IntoArg<T, Borrowed> for &'a R
-where
-    T: Type + IntoVal<Env, Val>,
-    R: ?Sized + Borrow<T>,
-{
-    fn into_arg(self, env: &Env) -> Val {
-        let t: &T = self.borrow();
-        t.into_val(env)
-    }
-}
-
-impl<T, X> IntoArg<T, Converted> for X
-where
-    T: Type + IntoVal<Env, Val>,
-    X: Into<T>,
-{
-    fn into_arg(self, env: &Env) -> Val {
-        let t: T = self.into();
-        t.into_val(env)
-    }
 }
 
 /// Trait for the return type of a contract function, giving the value a client

@@ -1233,6 +1233,9 @@ pub use spec_type_def::{SpecName, SpecTypeDef};
 
 pub mod client;
 
+mod into_arg;
+pub use into_arg::IntoArg;
+
 #[doc(hidden)]
 #[deprecated(note = "use storage")]
 pub mod data {

@@ -386,8 +386,8 @@ impl<'a> ContractClient<'a> {
     /// Use [`Self::try_fn_struct_a`] to receive errors instead of panicking.
     pub fn fn_struct_a(
         &self,
-        f1: impl soroban_sdk::client::IntoArg<u32>,
-        f2: impl soroban_sdk::client::IntoArg<bool>,
+        f1: impl soroban_sdk::IntoArg<u32>,
+        f2: impl soroban_sdk::IntoArg<bool>,
     ) -> soroban_sdk::client::Ret<StructA> {
         use core::ops::Not;
         use soroban_sdk::{FromVal, IntoVal};
@@ -397,8 +397,8 @@ impl<'a> ContractClient<'a> {
             ::soroban_sdk::Vec::from_array(
                 &self.env,
                 [
-                    soroban_sdk::client::IntoArg::<u32>::into_arg(f1, &self.env),
-                    soroban_sdk::client::IntoArg::<bool>::into_arg(f2, &self.env),
+                    soroban_sdk::IntoArg::<u32>::into_arg(f1, &self.env),
+                    soroban_sdk::IntoArg::<bool>::into_arg(f2, &self.env),
                 ],
             ),
         );
@@ -411,8 +411,8 @@ impl<'a> ContractClient<'a> {
     /// Returns an error if the invoked contract returns an error or panics. A panic in the invoked contract is caught and returned as an error rather than panicking the caller.
     pub fn try_fn_struct_a(
         &self,
-        f1: impl soroban_sdk::client::IntoArg<u32>,
-        f2: impl soroban_sdk::client::IntoArg<bool>,
+        f1: impl soroban_sdk::IntoArg<u32>,
+        f2: impl soroban_sdk::IntoArg<bool>,
     ) -> soroban_sdk::client::TryRet<StructA> {
         use soroban_sdk::{FromVal, IntoVal};
         let res = self.env.try_invoke_contract(
@@ -421,8 +421,8 @@ impl<'a> ContractClient<'a> {
             ::soroban_sdk::Vec::from_array(
                 &self.env,
                 [
-                    soroban_sdk::client::IntoArg::<u32>::into_arg(f1, &self.env),
-                    soroban_sdk::client::IntoArg::<bool>::into_arg(f2, &self.env),
+                    soroban_sdk::IntoArg::<u32>::into_arg(f1, &self.env),
+                    soroban_sdk::IntoArg::<bool>::into_arg(f2, &self.env),
                 ],
             ),
         );
@@ -437,8 +437,8 @@ impl<'a> ContractClient<'a> {
     /// Use [`Self::try_fn_struct_tuple_a`] to receive errors instead of panicking.
     pub fn fn_struct_tuple_a(
         &self,
-        f1: impl soroban_sdk::client::IntoArg<i64>,
-        f2: impl soroban_sdk::client::IntoArg<i64>,
+        f1: impl soroban_sdk::IntoArg<i64>,
+        f2: impl soroban_sdk::IntoArg<i64>,
     ) -> soroban_sdk::client::Ret<StructTupleA> {
         use core::ops::Not;
         use soroban_sdk::{FromVal, IntoVal};
@@ -448,8 +448,8 @@ impl<'a> ContractClient<'a> {
             ::soroban_sdk::Vec::from_array(
                 &self.env,
                 [
-                    soroban_sdk::client::IntoArg::<i64>::into_arg(f1, &self.env),
-                    soroban_sdk::client::IntoArg::<i64>::into_arg(f2, &self.env),
+                    soroban_sdk::IntoArg::<i64>::into_arg(f1, &self.env),
+                    soroban_sdk::IntoArg::<i64>::into_arg(f2, &self.env),
                 ],
             ),
         );
@@ -462,8 +462,8 @@ impl<'a> ContractClient<'a> {
     /// Returns an error if the invoked contract returns an error or panics. A panic in the invoked contract is caught and returned as an error rather than panicking the caller.
     pub fn try_fn_struct_tuple_a(
         &self,
-        f1: impl soroban_sdk::client::IntoArg<i64>,
-        f2: impl soroban_sdk::client::IntoArg<i64>,
+        f1: impl soroban_sdk::IntoArg<i64>,
+        f2: impl soroban_sdk::IntoArg<i64>,
     ) -> soroban_sdk::client::TryRet<StructTupleA> {
         use soroban_sdk::{FromVal, IntoVal};
         let res = self.env.try_invoke_contract(
@@ -472,8 +472,8 @@ impl<'a> ContractClient<'a> {
             ::soroban_sdk::Vec::from_array(
                 &self.env,
                 [
-                    soroban_sdk::client::IntoArg::<i64>::into_arg(f1, &self.env),
-                    soroban_sdk::client::IntoArg::<i64>::into_arg(f2, &self.env),
+                    soroban_sdk::IntoArg::<i64>::into_arg(f1, &self.env),
+                    soroban_sdk::IntoArg::<i64>::into_arg(f2, &self.env),
                 ],
             ),
         );
@@ -558,7 +558,7 @@ impl<'a> ContractClient<'a> {
     /// Use [`Self::try_fn_error_a`] to receive errors instead of panicking.
     pub fn fn_error_a(
         &self,
-        input: impl soroban_sdk::client::IntoArg<u32>,
+        input: impl soroban_sdk::IntoArg<u32>,
     ) -> soroban_sdk::client::Ret<Result<u32, ErrorA>> {
         use core::ops::Not;
         use soroban_sdk::{FromVal, IntoVal};
@@ -567,9 +567,7 @@ impl<'a> ContractClient<'a> {
             &{ soroban_sdk::Symbol::new(&self.env, "fn_error_a") },
             ::soroban_sdk::Vec::from_array(
                 &self.env,
-                [soroban_sdk::client::IntoArg::<u32>::into_arg(
-                    input, &self.env,
-                )],
+                [soroban_sdk::IntoArg::<u32>::into_arg(input, &self.env)],
             ),
         );
         res
@@ -581,7 +579,7 @@ impl<'a> ContractClient<'a> {
     /// Returns an error if the invoked contract returns an error or panics. A panic in the invoked contract is caught and returned as an error rather than panicking the caller.
     pub fn try_fn_error_a(
         &self,
-        input: impl soroban_sdk::client::IntoArg<u32>,
+        input: impl soroban_sdk::IntoArg<u32>,
     ) -> soroban_sdk::client::TryRet<Result<u32, ErrorA>> {
         use soroban_sdk::{FromVal, IntoVal};
         let res = self.env.try_invoke_contract(
@@ -589,9 +587,7 @@ impl<'a> ContractClient<'a> {
             &{ soroban_sdk::Symbol::new(&self.env, "fn_error_a") },
             ::soroban_sdk::Vec::from_array(
                 &self.env,
-                [soroban_sdk::client::IntoArg::<u32>::into_arg(
-                    input, &self.env,
-                )],
+                [soroban_sdk::IntoArg::<u32>::into_arg(input, &self.env)],
             ),
         );
         res
@@ -605,8 +601,8 @@ impl<'a> ContractClient<'a> {
     /// Use [`Self::try_fn_event_a`] to receive errors instead of panicking.
     pub fn fn_event_a(
         &self,
-        f1: impl soroban_sdk::client::IntoArg<Address>,
-        f2: impl soroban_sdk::client::IntoArg<String>,
+        f1: impl soroban_sdk::IntoArg<Address>,
+        f2: impl soroban_sdk::IntoArg<String>,
     ) -> soroban_sdk::client::Ret<()> {
         use core::ops::Not;
         use soroban_sdk::{FromVal, IntoVal};
@@ -616,8 +612,8 @@ impl<'a> ContractClient<'a> {
             ::soroban_sdk::Vec::from_array(
                 &self.env,
                 [
-                    soroban_sdk::client::IntoArg::<Address>::into_arg(f1, &self.env),
-                    soroban_sdk::client::IntoArg::<String>::into_arg(f2, &self.env),
+                    soroban_sdk::IntoArg::<Address>::into_arg(f1, &self.env),
+                    soroban_sdk::IntoArg::<String>::into_arg(f2, &self.env),
                 ],
             ),
         );
@@ -630,8 +626,8 @@ impl<'a> ContractClient<'a> {
     /// Returns an error if the invoked contract returns an error or panics. A panic in the invoked contract is caught and returned as an error rather than panicking the caller.
     pub fn try_fn_event_a(
         &self,
-        f1: impl soroban_sdk::client::IntoArg<Address>,
-        f2: impl soroban_sdk::client::IntoArg<String>,
+        f1: impl soroban_sdk::IntoArg<Address>,
+        f2: impl soroban_sdk::IntoArg<String>,
     ) -> soroban_sdk::client::TryRet<()> {
         use soroban_sdk::{FromVal, IntoVal};
         let res = self.env.try_invoke_contract(
@@ -640,8 +636,8 @@ impl<'a> ContractClient<'a> {
             ::soroban_sdk::Vec::from_array(
                 &self.env,
                 [
-                    soroban_sdk::client::IntoArg::<Address>::into_arg(f1, &self.env),
-                    soroban_sdk::client::IntoArg::<String>::into_arg(f2, &self.env),
+                    soroban_sdk::IntoArg::<Address>::into_arg(f1, &self.env),
+                    soroban_sdk::IntoArg::<String>::into_arg(f2, &self.env),
                 ],
             ),
         );

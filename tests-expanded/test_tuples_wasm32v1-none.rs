@@ -186,7 +186,7 @@ impl<'a> ContractClient<'a> {
     /// Use [`Self::try_void_fn`] to receive errors instead of panicking.
     pub fn void_fn(
         &self,
-        _void_arg: impl soroban_sdk::client::IntoArg<()>,
+        _void_arg: impl soroban_sdk::IntoArg<()>,
     ) -> soroban_sdk::client::Ret<()> {
         use core::ops::Not;
         use soroban_sdk::{FromVal, IntoVal};
@@ -199,9 +199,7 @@ impl<'a> ContractClient<'a> {
             },
             ::soroban_sdk::Vec::from_array(
                 &self.env,
-                [soroban_sdk::client::IntoArg::<()>::into_arg(
-                    _void_arg, &self.env,
-                )],
+                [soroban_sdk::IntoArg::<()>::into_arg(_void_arg, &self.env)],
             ),
         );
         res
@@ -213,7 +211,7 @@ impl<'a> ContractClient<'a> {
     /// Returns an error if the invoked contract returns an error or panics. A panic in the invoked contract is caught and returned as an error rather than panicking the caller.
     pub fn try_void_fn(
         &self,
-        _void_arg: impl soroban_sdk::client::IntoArg<()>,
+        _void_arg: impl soroban_sdk::IntoArg<()>,
     ) -> soroban_sdk::client::TryRet<()> {
         use soroban_sdk::{FromVal, IntoVal};
         let res = self.env.try_invoke_contract(
@@ -225,9 +223,7 @@ impl<'a> ContractClient<'a> {
             },
             ::soroban_sdk::Vec::from_array(
                 &self.env,
-                [soroban_sdk::client::IntoArg::<()>::into_arg(
-                    _void_arg, &self.env,
-                )],
+                [soroban_sdk::IntoArg::<()>::into_arg(_void_arg, &self.env)],
             ),
         );
         res
@@ -241,7 +237,7 @@ impl<'a> ContractClient<'a> {
     /// Use [`Self::try_tuple1`] to receive errors instead of panicking.
     pub fn tuple1(
         &self,
-        arg: impl soroban_sdk::client::IntoArg<(u32,)>,
+        arg: impl soroban_sdk::IntoArg<(u32,)>,
     ) -> soroban_sdk::client::Ret<(u32,)> {
         use core::ops::Not;
         use soroban_sdk::{FromVal, IntoVal};
@@ -254,9 +250,7 @@ impl<'a> ContractClient<'a> {
             },
             ::soroban_sdk::Vec::from_array(
                 &self.env,
-                [soroban_sdk::client::IntoArg::<(u32,)>::into_arg(
-                    arg, &self.env,
-                )],
+                [soroban_sdk::IntoArg::<(u32,)>::into_arg(arg, &self.env)],
             ),
         );
         res
@@ -268,7 +262,7 @@ impl<'a> ContractClient<'a> {
     /// Returns an error if the invoked contract returns an error or panics. A panic in the invoked contract is caught and returned as an error rather than panicking the caller.
     pub fn try_tuple1(
         &self,
-        arg: impl soroban_sdk::client::IntoArg<(u32,)>,
+        arg: impl soroban_sdk::IntoArg<(u32,)>,
     ) -> soroban_sdk::client::TryRet<(u32,)> {
         use soroban_sdk::{FromVal, IntoVal};
         let res = self.env.try_invoke_contract(
@@ -280,9 +274,7 @@ impl<'a> ContractClient<'a> {
             },
             ::soroban_sdk::Vec::from_array(
                 &self.env,
-                [soroban_sdk::client::IntoArg::<(u32,)>::into_arg(
-                    arg, &self.env,
-                )],
+                [soroban_sdk::IntoArg::<(u32,)>::into_arg(arg, &self.env)],
             ),
         );
         res
@@ -296,7 +288,7 @@ impl<'a> ContractClient<'a> {
     /// Use [`Self::try_tuple2`] to receive errors instead of panicking.
     pub fn tuple2(
         &self,
-        arg: impl soroban_sdk::client::IntoArg<(u32, i64)>,
+        arg: impl soroban_sdk::IntoArg<(u32, i64)>,
     ) -> soroban_sdk::client::Ret<(u32, i64)> {
         use core::ops::Not;
         use soroban_sdk::{FromVal, IntoVal};
@@ -309,9 +301,7 @@ impl<'a> ContractClient<'a> {
             },
             ::soroban_sdk::Vec::from_array(
                 &self.env,
-                [soroban_sdk::client::IntoArg::<(u32, i64)>::into_arg(
-                    arg, &self.env,
-                )],
+                [soroban_sdk::IntoArg::<(u32, i64)>::into_arg(arg, &self.env)],
             ),
         );
         res
@@ -323,7 +313,7 @@ impl<'a> ContractClient<'a> {
     /// Returns an error if the invoked contract returns an error or panics. A panic in the invoked contract is caught and returned as an error rather than panicking the caller.
     pub fn try_tuple2(
         &self,
-        arg: impl soroban_sdk::client::IntoArg<(u32, i64)>,
+        arg: impl soroban_sdk::IntoArg<(u32, i64)>,
     ) -> soroban_sdk::client::TryRet<(u32, i64)> {
         use soroban_sdk::{FromVal, IntoVal};
         let res = self.env.try_invoke_contract(
@@ -335,9 +325,7 @@ impl<'a> ContractClient<'a> {
             },
             ::soroban_sdk::Vec::from_array(
                 &self.env,
-                [soroban_sdk::client::IntoArg::<(u32, i64)>::into_arg(
-                    arg, &self.env,
-                )],
+                [soroban_sdk::IntoArg::<(u32, i64)>::into_arg(arg, &self.env)],
             ),
         );
         res

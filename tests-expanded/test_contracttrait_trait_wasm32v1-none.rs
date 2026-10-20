@@ -870,10 +870,7 @@ impl<'a> AllTypesClient<'a> {
     /// Panics if the invoked contract returns an error or panics.
     ///
     /// Use [`Self::try_test_u32`] to receive errors instead of panicking.
-    pub fn test_u32(
-        &self,
-        v: impl soroban_sdk::client::IntoArg<u32>,
-    ) -> soroban_sdk::client::Ret<u32> {
+    pub fn test_u32(&self, v: impl soroban_sdk::IntoArg<u32>) -> soroban_sdk::client::Ret<u32> {
         use core::ops::Not;
         use soroban_sdk::{FromVal, IntoVal};
         let res = self.env.invoke_contract(
@@ -885,7 +882,7 @@ impl<'a> AllTypesClient<'a> {
             },
             ::soroban_sdk::Vec::from_array(
                 &self.env,
-                [soroban_sdk::client::IntoArg::<u32>::into_arg(v, &self.env)],
+                [soroban_sdk::IntoArg::<u32>::into_arg(v, &self.env)],
             ),
         );
         res
@@ -900,7 +897,7 @@ impl<'a> AllTypesClient<'a> {
     /// Returns an error if the invoked contract returns an error or panics. A panic in the invoked contract is caught and returned as an error rather than panicking the caller.
     pub fn try_test_u32(
         &self,
-        v: impl soroban_sdk::client::IntoArg<u32>,
+        v: impl soroban_sdk::IntoArg<u32>,
     ) -> soroban_sdk::client::TryRet<u32> {
         use soroban_sdk::{FromVal, IntoVal};
         let res = self.env.try_invoke_contract(
@@ -912,7 +909,7 @@ impl<'a> AllTypesClient<'a> {
             },
             ::soroban_sdk::Vec::from_array(
                 &self.env,
-                [soroban_sdk::client::IntoArg::<u32>::into_arg(v, &self.env)],
+                [soroban_sdk::IntoArg::<u32>::into_arg(v, &self.env)],
             ),
         );
         res
@@ -926,10 +923,7 @@ impl<'a> AllTypesClient<'a> {
     /// Panics if the invoked contract returns an error or panics.
     ///
     /// Use [`Self::try_test_i32`] to receive errors instead of panicking.
-    pub fn test_i32(
-        &self,
-        v: impl soroban_sdk::client::IntoArg<i32>,
-    ) -> soroban_sdk::client::Ret<i32> {
+    pub fn test_i32(&self, v: impl soroban_sdk::IntoArg<i32>) -> soroban_sdk::client::Ret<i32> {
         use core::ops::Not;
         use soroban_sdk::{FromVal, IntoVal};
         let res = self.env.invoke_contract(
@@ -941,7 +935,7 @@ impl<'a> AllTypesClient<'a> {
             },
             ::soroban_sdk::Vec::from_array(
                 &self.env,
-                [soroban_sdk::client::IntoArg::<i32>::into_arg(v, &self.env)],
+                [soroban_sdk::IntoArg::<i32>::into_arg(v, &self.env)],
             ),
         );
         res
@@ -955,7 +949,7 @@ impl<'a> AllTypesClient<'a> {
     /// Returns an error if the invoked contract returns an error or panics. A panic in the invoked contract is caught and returned as an error rather than panicking the caller.
     pub fn try_test_i32(
         &self,
-        v: impl soroban_sdk::client::IntoArg<i32>,
+        v: impl soroban_sdk::IntoArg<i32>,
     ) -> soroban_sdk::client::TryRet<i32> {
         use soroban_sdk::{FromVal, IntoVal};
         let res = self.env.try_invoke_contract(
@@ -967,7 +961,7 @@ impl<'a> AllTypesClient<'a> {
             },
             ::soroban_sdk::Vec::from_array(
                 &self.env,
-                [soroban_sdk::client::IntoArg::<i32>::into_arg(v, &self.env)],
+                [soroban_sdk::IntoArg::<i32>::into_arg(v, &self.env)],
             ),
         );
         res
@@ -979,10 +973,7 @@ impl<'a> AllTypesClient<'a> {
     /// Panics if the invoked contract returns an error or panics.
     ///
     /// Use [`Self::try_test_u64`] to receive errors instead of panicking.
-    pub fn test_u64(
-        &self,
-        v: impl soroban_sdk::client::IntoArg<u64>,
-    ) -> soroban_sdk::client::Ret<u64> {
+    pub fn test_u64(&self, v: impl soroban_sdk::IntoArg<u64>) -> soroban_sdk::client::Ret<u64> {
         use core::ops::Not;
         use soroban_sdk::{FromVal, IntoVal};
         let res = self.env.invoke_contract(
@@ -994,7 +985,7 @@ impl<'a> AllTypesClient<'a> {
             },
             ::soroban_sdk::Vec::from_array(
                 &self.env,
-                [soroban_sdk::client::IntoArg::<u64>::into_arg(v, &self.env)],
+                [soroban_sdk::IntoArg::<u64>::into_arg(v, &self.env)],
             ),
         );
         res
@@ -1006,7 +997,7 @@ impl<'a> AllTypesClient<'a> {
     /// Returns an error if the invoked contract returns an error or panics. A panic in the invoked contract is caught and returned as an error rather than panicking the caller.
     pub fn try_test_u64(
         &self,
-        v: impl soroban_sdk::client::IntoArg<u64>,
+        v: impl soroban_sdk::IntoArg<u64>,
     ) -> soroban_sdk::client::TryRet<u64> {
         use soroban_sdk::{FromVal, IntoVal};
         let res = self.env.try_invoke_contract(
@@ -1018,7 +1009,7 @@ impl<'a> AllTypesClient<'a> {
             },
             ::soroban_sdk::Vec::from_array(
                 &self.env,
-                [soroban_sdk::client::IntoArg::<u64>::into_arg(v, &self.env)],
+                [soroban_sdk::IntoArg::<u64>::into_arg(v, &self.env)],
             ),
         );
         res
@@ -1030,10 +1021,7 @@ impl<'a> AllTypesClient<'a> {
     /// Panics if the invoked contract returns an error or panics.
     ///
     /// Use [`Self::try_test_i64`] to receive errors instead of panicking.
-    pub fn test_i64(
-        &self,
-        v: impl soroban_sdk::client::IntoArg<i64>,
-    ) -> soroban_sdk::client::Ret<i64> {
+    pub fn test_i64(&self, v: impl soroban_sdk::IntoArg<i64>) -> soroban_sdk::client::Ret<i64> {
         use core::ops::Not;
         use soroban_sdk::{FromVal, IntoVal};
         let res = self.env.invoke_contract(
@@ -1045,7 +1033,7 @@ impl<'a> AllTypesClient<'a> {
             },
             ::soroban_sdk::Vec::from_array(
                 &self.env,
-                [soroban_sdk::client::IntoArg::<i64>::into_arg(v, &self.env)],
+                [soroban_sdk::IntoArg::<i64>::into_arg(v, &self.env)],
             ),
         );
         res
@@ -1057,7 +1045,7 @@ impl<'a> AllTypesClient<'a> {
     /// Returns an error if the invoked contract returns an error or panics. A panic in the invoked contract is caught and returned as an error rather than panicking the caller.
     pub fn try_test_i64(
         &self,
-        v: impl soroban_sdk::client::IntoArg<i64>,
+        v: impl soroban_sdk::IntoArg<i64>,
     ) -> soroban_sdk::client::TryRet<i64> {
         use soroban_sdk::{FromVal, IntoVal};
         let res = self.env.try_invoke_contract(
@@ -1069,7 +1057,7 @@ impl<'a> AllTypesClient<'a> {
             },
             ::soroban_sdk::Vec::from_array(
                 &self.env,
-                [soroban_sdk::client::IntoArg::<i64>::into_arg(v, &self.env)],
+                [soroban_sdk::IntoArg::<i64>::into_arg(v, &self.env)],
             ),
         );
         res
@@ -1081,10 +1069,7 @@ impl<'a> AllTypesClient<'a> {
     /// Panics if the invoked contract returns an error or panics.
     ///
     /// Use [`Self::try_test_u128`] to receive errors instead of panicking.
-    pub fn test_u128(
-        &self,
-        v: impl soroban_sdk::client::IntoArg<u128>,
-    ) -> soroban_sdk::client::Ret<u128> {
+    pub fn test_u128(&self, v: impl soroban_sdk::IntoArg<u128>) -> soroban_sdk::client::Ret<u128> {
         use core::ops::Not;
         use soroban_sdk::{FromVal, IntoVal};
         let res = self.env.invoke_contract(
@@ -1096,7 +1081,7 @@ impl<'a> AllTypesClient<'a> {
             },
             ::soroban_sdk::Vec::from_array(
                 &self.env,
-                [soroban_sdk::client::IntoArg::<u128>::into_arg(v, &self.env)],
+                [soroban_sdk::IntoArg::<u128>::into_arg(v, &self.env)],
             ),
         );
         res
@@ -1108,7 +1093,7 @@ impl<'a> AllTypesClient<'a> {
     /// Returns an error if the invoked contract returns an error or panics. A panic in the invoked contract is caught and returned as an error rather than panicking the caller.
     pub fn try_test_u128(
         &self,
-        v: impl soroban_sdk::client::IntoArg<u128>,
+        v: impl soroban_sdk::IntoArg<u128>,
     ) -> soroban_sdk::client::TryRet<u128> {
         use soroban_sdk::{FromVal, IntoVal};
         let res = self.env.try_invoke_contract(
@@ -1120,7 +1105,7 @@ impl<'a> AllTypesClient<'a> {
             },
             ::soroban_sdk::Vec::from_array(
                 &self.env,
-                [soroban_sdk::client::IntoArg::<u128>::into_arg(v, &self.env)],
+                [soroban_sdk::IntoArg::<u128>::into_arg(v, &self.env)],
             ),
         );
         res
@@ -1132,10 +1117,7 @@ impl<'a> AllTypesClient<'a> {
     /// Panics if the invoked contract returns an error or panics.
     ///
     /// Use [`Self::try_test_i128`] to receive errors instead of panicking.
-    pub fn test_i128(
-        &self,
-        v: impl soroban_sdk::client::IntoArg<i128>,
-    ) -> soroban_sdk::client::Ret<i128> {
+    pub fn test_i128(&self, v: impl soroban_sdk::IntoArg<i128>) -> soroban_sdk::client::Ret<i128> {
         use core::ops::Not;
         use soroban_sdk::{FromVal, IntoVal};
         let res = self.env.invoke_contract(
@@ -1147,7 +1129,7 @@ impl<'a> AllTypesClient<'a> {
             },
             ::soroban_sdk::Vec::from_array(
                 &self.env,
-                [soroban_sdk::client::IntoArg::<i128>::into_arg(v, &self.env)],
+                [soroban_sdk::IntoArg::<i128>::into_arg(v, &self.env)],
             ),
         );
         res
@@ -1159,7 +1141,7 @@ impl<'a> AllTypesClient<'a> {
     /// Returns an error if the invoked contract returns an error or panics. A panic in the invoked contract is caught and returned as an error rather than panicking the caller.
     pub fn try_test_i128(
         &self,
-        v: impl soroban_sdk::client::IntoArg<i128>,
+        v: impl soroban_sdk::IntoArg<i128>,
     ) -> soroban_sdk::client::TryRet<i128> {
         use soroban_sdk::{FromVal, IntoVal};
         let res = self.env.try_invoke_contract(
@@ -1171,7 +1153,7 @@ impl<'a> AllTypesClient<'a> {
             },
             ::soroban_sdk::Vec::from_array(
                 &self.env,
-                [soroban_sdk::client::IntoArg::<i128>::into_arg(v, &self.env)],
+                [soroban_sdk::IntoArg::<i128>::into_arg(v, &self.env)],
             ),
         );
         res
@@ -1183,10 +1165,7 @@ impl<'a> AllTypesClient<'a> {
     /// Panics if the invoked contract returns an error or panics.
     ///
     /// Use [`Self::try_test_bool`] to receive errors instead of panicking.
-    pub fn test_bool(
-        &self,
-        v: impl soroban_sdk::client::IntoArg<bool>,
-    ) -> soroban_sdk::client::Ret<bool> {
+    pub fn test_bool(&self, v: impl soroban_sdk::IntoArg<bool>) -> soroban_sdk::client::Ret<bool> {
         use core::ops::Not;
         use soroban_sdk::{FromVal, IntoVal};
         let res = self.env.invoke_contract(
@@ -1198,7 +1177,7 @@ impl<'a> AllTypesClient<'a> {
             },
             ::soroban_sdk::Vec::from_array(
                 &self.env,
-                [soroban_sdk::client::IntoArg::<bool>::into_arg(v, &self.env)],
+                [soroban_sdk::IntoArg::<bool>::into_arg(v, &self.env)],
             ),
         );
         res
@@ -1210,7 +1189,7 @@ impl<'a> AllTypesClient<'a> {
     /// Returns an error if the invoked contract returns an error or panics. A panic in the invoked contract is caught and returned as an error rather than panicking the caller.
     pub fn try_test_bool(
         &self,
-        v: impl soroban_sdk::client::IntoArg<bool>,
+        v: impl soroban_sdk::IntoArg<bool>,
     ) -> soroban_sdk::client::TryRet<bool> {
         use soroban_sdk::{FromVal, IntoVal};
         let res = self.env.try_invoke_contract(
@@ -1222,7 +1201,7 @@ impl<'a> AllTypesClient<'a> {
             },
             ::soroban_sdk::Vec::from_array(
                 &self.env,
-                [soroban_sdk::client::IntoArg::<bool>::into_arg(v, &self.env)],
+                [soroban_sdk::IntoArg::<bool>::into_arg(v, &self.env)],
             ),
         );
         res
@@ -1236,7 +1215,7 @@ impl<'a> AllTypesClient<'a> {
     /// Use [`Self::try_test_address`] to receive errors instead of panicking.
     pub fn test_address(
         &self,
-        v: impl soroban_sdk::client::IntoArg<Address>,
+        v: impl soroban_sdk::IntoArg<Address>,
     ) -> soroban_sdk::client::Ret<Address> {
         use core::ops::Not;
         use soroban_sdk::{FromVal, IntoVal};
@@ -1245,9 +1224,7 @@ impl<'a> AllTypesClient<'a> {
             &{ soroban_sdk::Symbol::new(&self.env, "test_address") },
             ::soroban_sdk::Vec::from_array(
                 &self.env,
-                [soroban_sdk::client::IntoArg::<Address>::into_arg(
-                    v, &self.env,
-                )],
+                [soroban_sdk::IntoArg::<Address>::into_arg(v, &self.env)],
             ),
         );
         res
@@ -1259,7 +1236,7 @@ impl<'a> AllTypesClient<'a> {
     /// Returns an error if the invoked contract returns an error or panics. A panic in the invoked contract is caught and returned as an error rather than panicking the caller.
     pub fn try_test_address(
         &self,
-        v: impl soroban_sdk::client::IntoArg<Address>,
+        v: impl soroban_sdk::IntoArg<Address>,
     ) -> soroban_sdk::client::TryRet<Address> {
         use soroban_sdk::{FromVal, IntoVal};
         let res = self.env.try_invoke_contract(
@@ -1267,9 +1244,7 @@ impl<'a> AllTypesClient<'a> {
             &{ soroban_sdk::Symbol::new(&self.env, "test_address") },
             ::soroban_sdk::Vec::from_array(
                 &self.env,
-                [soroban_sdk::client::IntoArg::<Address>::into_arg(
-                    v, &self.env,
-                )],
+                [soroban_sdk::IntoArg::<Address>::into_arg(v, &self.env)],
             ),
         );
         res
@@ -1283,7 +1258,7 @@ impl<'a> AllTypesClient<'a> {
     /// Use [`Self::try_test_bytes`] to receive errors instead of panicking.
     pub fn test_bytes(
         &self,
-        v: impl soroban_sdk::client::IntoArg<Bytes>,
+        v: impl soroban_sdk::IntoArg<Bytes>,
     ) -> soroban_sdk::client::Ret<Bytes> {
         use core::ops::Not;
         use soroban_sdk::{FromVal, IntoVal};
@@ -1292,9 +1267,7 @@ impl<'a> AllTypesClient<'a> {
             &{ soroban_sdk::Symbol::new(&self.env, "test_bytes") },
             ::soroban_sdk::Vec::from_array(
                 &self.env,
-                [soroban_sdk::client::IntoArg::<Bytes>::into_arg(
-                    v, &self.env,
-                )],
+                [soroban_sdk::IntoArg::<Bytes>::into_arg(v, &self.env)],
             ),
         );
         res
@@ -1306,7 +1279,7 @@ impl<'a> AllTypesClient<'a> {
     /// Returns an error if the invoked contract returns an error or panics. A panic in the invoked contract is caught and returned as an error rather than panicking the caller.
     pub fn try_test_bytes(
         &self,
-        v: impl soroban_sdk::client::IntoArg<Bytes>,
+        v: impl soroban_sdk::IntoArg<Bytes>,
     ) -> soroban_sdk::client::TryRet<Bytes> {
         use soroban_sdk::{FromVal, IntoVal};
         let res = self.env.try_invoke_contract(
@@ -1314,9 +1287,7 @@ impl<'a> AllTypesClient<'a> {
             &{ soroban_sdk::Symbol::new(&self.env, "test_bytes") },
             ::soroban_sdk::Vec::from_array(
                 &self.env,
-                [soroban_sdk::client::IntoArg::<Bytes>::into_arg(
-                    v, &self.env,
-                )],
+                [soroban_sdk::IntoArg::<Bytes>::into_arg(v, &self.env)],
             ),
         );
         res
@@ -1330,7 +1301,7 @@ impl<'a> AllTypesClient<'a> {
     /// Use [`Self::try_test_bytes_n`] to receive errors instead of panicking.
     pub fn test_bytes_n(
         &self,
-        v: impl soroban_sdk::client::IntoArg<BytesN<32>>,
+        v: impl soroban_sdk::IntoArg<BytesN<32>>,
     ) -> soroban_sdk::client::Ret<BytesN<32>> {
         use core::ops::Not;
         use soroban_sdk::{FromVal, IntoVal};
@@ -1339,9 +1310,7 @@ impl<'a> AllTypesClient<'a> {
             &{ soroban_sdk::Symbol::new(&self.env, "test_bytes_n") },
             ::soroban_sdk::Vec::from_array(
                 &self.env,
-                [soroban_sdk::client::IntoArg::<BytesN<32>>::into_arg(
-                    v, &self.env,
-                )],
+                [soroban_sdk::IntoArg::<BytesN<32>>::into_arg(v, &self.env)],
             ),
         );
         res
@@ -1353,7 +1322,7 @@ impl<'a> AllTypesClient<'a> {
     /// Returns an error if the invoked contract returns an error or panics. A panic in the invoked contract is caught and returned as an error rather than panicking the caller.
     pub fn try_test_bytes_n(
         &self,
-        v: impl soroban_sdk::client::IntoArg<BytesN<32>>,
+        v: impl soroban_sdk::IntoArg<BytesN<32>>,
     ) -> soroban_sdk::client::TryRet<BytesN<32>> {
         use soroban_sdk::{FromVal, IntoVal};
         let res = self.env.try_invoke_contract(
@@ -1361,9 +1330,7 @@ impl<'a> AllTypesClient<'a> {
             &{ soroban_sdk::Symbol::new(&self.env, "test_bytes_n") },
             ::soroban_sdk::Vec::from_array(
                 &self.env,
-                [soroban_sdk::client::IntoArg::<BytesN<32>>::into_arg(
-                    v, &self.env,
-                )],
+                [soroban_sdk::IntoArg::<BytesN<32>>::into_arg(v, &self.env)],
             ),
         );
         res
@@ -1377,7 +1344,7 @@ impl<'a> AllTypesClient<'a> {
     /// Use [`Self::try_test_string`] to receive errors instead of panicking.
     pub fn test_string(
         &self,
-        v: impl soroban_sdk::client::IntoArg<String>,
+        v: impl soroban_sdk::IntoArg<String>,
     ) -> soroban_sdk::client::Ret<String> {
         use core::ops::Not;
         use soroban_sdk::{FromVal, IntoVal};
@@ -1386,9 +1353,7 @@ impl<'a> AllTypesClient<'a> {
             &{ soroban_sdk::Symbol::new(&self.env, "test_string") },
             ::soroban_sdk::Vec::from_array(
                 &self.env,
-                [soroban_sdk::client::IntoArg::<String>::into_arg(
-                    v, &self.env,
-                )],
+                [soroban_sdk::IntoArg::<String>::into_arg(v, &self.env)],
             ),
         );
         res
@@ -1400,7 +1365,7 @@ impl<'a> AllTypesClient<'a> {
     /// Returns an error if the invoked contract returns an error or panics. A panic in the invoked contract is caught and returned as an error rather than panicking the caller.
     pub fn try_test_string(
         &self,
-        v: impl soroban_sdk::client::IntoArg<String>,
+        v: impl soroban_sdk::IntoArg<String>,
     ) -> soroban_sdk::client::TryRet<String> {
         use soroban_sdk::{FromVal, IntoVal};
         let res = self.env.try_invoke_contract(
@@ -1408,9 +1373,7 @@ impl<'a> AllTypesClient<'a> {
             &{ soroban_sdk::Symbol::new(&self.env, "test_string") },
             ::soroban_sdk::Vec::from_array(
                 &self.env,
-                [soroban_sdk::client::IntoArg::<String>::into_arg(
-                    v, &self.env,
-                )],
+                [soroban_sdk::IntoArg::<String>::into_arg(v, &self.env)],
             ),
         );
         res
@@ -1424,7 +1387,7 @@ impl<'a> AllTypesClient<'a> {
     /// Use [`Self::try_test_symbol`] to receive errors instead of panicking.
     pub fn test_symbol(
         &self,
-        v: impl soroban_sdk::client::IntoArg<Symbol>,
+        v: impl soroban_sdk::IntoArg<Symbol>,
     ) -> soroban_sdk::client::Ret<Symbol> {
         use core::ops::Not;
         use soroban_sdk::{FromVal, IntoVal};
@@ -1433,9 +1396,7 @@ impl<'a> AllTypesClient<'a> {
             &{ soroban_sdk::Symbol::new(&self.env, "test_symbol") },
             ::soroban_sdk::Vec::from_array(
                 &self.env,
-                [soroban_sdk::client::IntoArg::<Symbol>::into_arg(
-                    v, &self.env,
-                )],
+                [soroban_sdk::IntoArg::<Symbol>::into_arg(v, &self.env)],
             ),
         );
         res
@@ -1447,7 +1408,7 @@ impl<'a> AllTypesClient<'a> {
     /// Returns an error if the invoked contract returns an error or panics. A panic in the invoked contract is caught and returned as an error rather than panicking the caller.
     pub fn try_test_symbol(
         &self,
-        v: impl soroban_sdk::client::IntoArg<Symbol>,
+        v: impl soroban_sdk::IntoArg<Symbol>,
     ) -> soroban_sdk::client::TryRet<Symbol> {
         use soroban_sdk::{FromVal, IntoVal};
         let res = self.env.try_invoke_contract(
@@ -1455,9 +1416,7 @@ impl<'a> AllTypesClient<'a> {
             &{ soroban_sdk::Symbol::new(&self.env, "test_symbol") },
             ::soroban_sdk::Vec::from_array(
                 &self.env,
-                [soroban_sdk::client::IntoArg::<Symbol>::into_arg(
-                    v, &self.env,
-                )],
+                [soroban_sdk::IntoArg::<Symbol>::into_arg(v, &self.env)],
             ),
         );
         res
@@ -1471,7 +1430,7 @@ impl<'a> AllTypesClient<'a> {
     /// Use [`Self::try_test_vec`] to receive errors instead of panicking.
     pub fn test_vec(
         &self,
-        v: impl soroban_sdk::client::IntoArg<Vec<u32>>,
+        v: impl soroban_sdk::IntoArg<Vec<u32>>,
     ) -> soroban_sdk::client::Ret<Vec<u32>> {
         use core::ops::Not;
         use soroban_sdk::{FromVal, IntoVal};
@@ -1484,9 +1443,7 @@ impl<'a> AllTypesClient<'a> {
             },
             ::soroban_sdk::Vec::from_array(
                 &self.env,
-                [soroban_sdk::client::IntoArg::<Vec<u32>>::into_arg(
-                    v, &self.env,
-                )],
+                [soroban_sdk::IntoArg::<Vec<u32>>::into_arg(v, &self.env)],
             ),
         );
         res
@@ -1498,7 +1455,7 @@ impl<'a> AllTypesClient<'a> {
     /// Returns an error if the invoked contract returns an error or panics. A panic in the invoked contract is caught and returned as an error rather than panicking the caller.
     pub fn try_test_vec(
         &self,
-        v: impl soroban_sdk::client::IntoArg<Vec<u32>>,
+        v: impl soroban_sdk::IntoArg<Vec<u32>>,
     ) -> soroban_sdk::client::TryRet<Vec<u32>> {
         use soroban_sdk::{FromVal, IntoVal};
         let res = self.env.try_invoke_contract(
@@ -1510,9 +1467,7 @@ impl<'a> AllTypesClient<'a> {
             },
             ::soroban_sdk::Vec::from_array(
                 &self.env,
-                [soroban_sdk::client::IntoArg::<Vec<u32>>::into_arg(
-                    v, &self.env,
-                )],
+                [soroban_sdk::IntoArg::<Vec<u32>>::into_arg(v, &self.env)],
             ),
         );
         res
@@ -1526,7 +1481,7 @@ impl<'a> AllTypesClient<'a> {
     /// Use [`Self::try_test_map`] to receive errors instead of panicking.
     pub fn test_map(
         &self,
-        v: impl soroban_sdk::client::IntoArg<Map<u32, u32>>,
+        v: impl soroban_sdk::IntoArg<Map<u32, u32>>,
     ) -> soroban_sdk::client::Ret<Map<u32, u32>> {
         use core::ops::Not;
         use soroban_sdk::{FromVal, IntoVal};
@@ -1539,7 +1494,7 @@ impl<'a> AllTypesClient<'a> {
             },
             ::soroban_sdk::Vec::from_array(
                 &self.env,
-                [soroban_sdk::client::IntoArg::<Map<u32, u32>>::into_arg(
+                [soroban_sdk::IntoArg::<Map<u32, u32>>::into_arg(
                     v, &self.env,
                 )],
             ),
@@ -1553,7 +1508,7 @@ impl<'a> AllTypesClient<'a> {
     /// Returns an error if the invoked contract returns an error or panics. A panic in the invoked contract is caught and returned as an error rather than panicking the caller.
     pub fn try_test_map(
         &self,
-        v: impl soroban_sdk::client::IntoArg<Map<u32, u32>>,
+        v: impl soroban_sdk::IntoArg<Map<u32, u32>>,
     ) -> soroban_sdk::client::TryRet<Map<u32, u32>> {
         use soroban_sdk::{FromVal, IntoVal};
         let res = self.env.try_invoke_contract(
@@ -1565,7 +1520,7 @@ impl<'a> AllTypesClient<'a> {
             },
             ::soroban_sdk::Vec::from_array(
                 &self.env,
-                [soroban_sdk::client::IntoArg::<Map<u32, u32>>::into_arg(
+                [soroban_sdk::IntoArg::<Map<u32, u32>>::into_arg(
                     v, &self.env,
                 )],
             ),
@@ -1581,7 +1536,7 @@ impl<'a> AllTypesClient<'a> {
     /// Use [`Self::try_test_duration`] to receive errors instead of panicking.
     pub fn test_duration(
         &self,
-        v: impl soroban_sdk::client::IntoArg<Duration>,
+        v: impl soroban_sdk::IntoArg<Duration>,
     ) -> soroban_sdk::client::Ret<Duration> {
         use core::ops::Not;
         use soroban_sdk::{FromVal, IntoVal};
@@ -1590,9 +1545,7 @@ impl<'a> AllTypesClient<'a> {
             &{ soroban_sdk::Symbol::new(&self.env, "test_duration") },
             ::soroban_sdk::Vec::from_array(
                 &self.env,
-                [soroban_sdk::client::IntoArg::<Duration>::into_arg(
-                    v, &self.env,
-                )],
+                [soroban_sdk::IntoArg::<Duration>::into_arg(v, &self.env)],
             ),
         );
         res
@@ -1604,7 +1557,7 @@ impl<'a> AllTypesClient<'a> {
     /// Returns an error if the invoked contract returns an error or panics. A panic in the invoked contract is caught and returned as an error rather than panicking the caller.
     pub fn try_test_duration(
         &self,
-        v: impl soroban_sdk::client::IntoArg<Duration>,
+        v: impl soroban_sdk::IntoArg<Duration>,
     ) -> soroban_sdk::client::TryRet<Duration> {
         use soroban_sdk::{FromVal, IntoVal};
         let res = self.env.try_invoke_contract(
@@ -1612,9 +1565,7 @@ impl<'a> AllTypesClient<'a> {
             &{ soroban_sdk::Symbol::new(&self.env, "test_duration") },
             ::soroban_sdk::Vec::from_array(
                 &self.env,
-                [soroban_sdk::client::IntoArg::<Duration>::into_arg(
-                    v, &self.env,
-                )],
+                [soroban_sdk::IntoArg::<Duration>::into_arg(v, &self.env)],
             ),
         );
         res
@@ -1628,7 +1579,7 @@ impl<'a> AllTypesClient<'a> {
     /// Use [`Self::try_test_timepoint`] to receive errors instead of panicking.
     pub fn test_timepoint(
         &self,
-        v: impl soroban_sdk::client::IntoArg<Timepoint>,
+        v: impl soroban_sdk::IntoArg<Timepoint>,
     ) -> soroban_sdk::client::Ret<Timepoint> {
         use core::ops::Not;
         use soroban_sdk::{FromVal, IntoVal};
@@ -1637,9 +1588,7 @@ impl<'a> AllTypesClient<'a> {
             &{ soroban_sdk::Symbol::new(&self.env, "test_timepoint") },
             ::soroban_sdk::Vec::from_array(
                 &self.env,
-                [soroban_sdk::client::IntoArg::<Timepoint>::into_arg(
-                    v, &self.env,
-                )],
+                [soroban_sdk::IntoArg::<Timepoint>::into_arg(v, &self.env)],
             ),
         );
         res
@@ -1651,7 +1600,7 @@ impl<'a> AllTypesClient<'a> {
     /// Returns an error if the invoked contract returns an error or panics. A panic in the invoked contract is caught and returned as an error rather than panicking the caller.
     pub fn try_test_timepoint(
         &self,
-        v: impl soroban_sdk::client::IntoArg<Timepoint>,
+        v: impl soroban_sdk::IntoArg<Timepoint>,
     ) -> soroban_sdk::client::TryRet<Timepoint> {
         use soroban_sdk::{FromVal, IntoVal};
         let res = self.env.try_invoke_contract(
@@ -1659,9 +1608,7 @@ impl<'a> AllTypesClient<'a> {
             &{ soroban_sdk::Symbol::new(&self.env, "test_timepoint") },
             ::soroban_sdk::Vec::from_array(
                 &self.env,
-                [soroban_sdk::client::IntoArg::<Timepoint>::into_arg(
-                    v, &self.env,
-                )],
+                [soroban_sdk::IntoArg::<Timepoint>::into_arg(v, &self.env)],
             ),
         );
         res
@@ -1673,10 +1620,7 @@ impl<'a> AllTypesClient<'a> {
     /// Panics if the invoked contract returns an error or panics.
     ///
     /// Use [`Self::try_test_i256`] to receive errors instead of panicking.
-    pub fn test_i256(
-        &self,
-        v: impl soroban_sdk::client::IntoArg<I256>,
-    ) -> soroban_sdk::client::Ret<I256> {
+    pub fn test_i256(&self, v: impl soroban_sdk::IntoArg<I256>) -> soroban_sdk::client::Ret<I256> {
         use core::ops::Not;
         use soroban_sdk::{FromVal, IntoVal};
         let res = self.env.invoke_contract(
@@ -1688,7 +1632,7 @@ impl<'a> AllTypesClient<'a> {
             },
             ::soroban_sdk::Vec::from_array(
                 &self.env,
-                [soroban_sdk::client::IntoArg::<I256>::into_arg(v, &self.env)],
+                [soroban_sdk::IntoArg::<I256>::into_arg(v, &self.env)],
             ),
         );
         res
@@ -1700,7 +1644,7 @@ impl<'a> AllTypesClient<'a> {
     /// Returns an error if the invoked contract returns an error or panics. A panic in the invoked contract is caught and returned as an error rather than panicking the caller.
     pub fn try_test_i256(
         &self,
-        v: impl soroban_sdk::client::IntoArg<I256>,
+        v: impl soroban_sdk::IntoArg<I256>,
     ) -> soroban_sdk::client::TryRet<I256> {
         use soroban_sdk::{FromVal, IntoVal};
         let res = self.env.try_invoke_contract(
@@ -1712,7 +1656,7 @@ impl<'a> AllTypesClient<'a> {
             },
             ::soroban_sdk::Vec::from_array(
                 &self.env,
-                [soroban_sdk::client::IntoArg::<I256>::into_arg(v, &self.env)],
+                [soroban_sdk::IntoArg::<I256>::into_arg(v, &self.env)],
             ),
         );
         res
@@ -1724,10 +1668,7 @@ impl<'a> AllTypesClient<'a> {
     /// Panics if the invoked contract returns an error or panics.
     ///
     /// Use [`Self::try_test_u256`] to receive errors instead of panicking.
-    pub fn test_u256(
-        &self,
-        v: impl soroban_sdk::client::IntoArg<U256>,
-    ) -> soroban_sdk::client::Ret<U256> {
+    pub fn test_u256(&self, v: impl soroban_sdk::IntoArg<U256>) -> soroban_sdk::client::Ret<U256> {
         use core::ops::Not;
         use soroban_sdk::{FromVal, IntoVal};
         let res = self.env.invoke_contract(
@@ -1739,7 +1680,7 @@ impl<'a> AllTypesClient<'a> {
             },
             ::soroban_sdk::Vec::from_array(
                 &self.env,
-                [soroban_sdk::client::IntoArg::<U256>::into_arg(v, &self.env)],
+                [soroban_sdk::IntoArg::<U256>::into_arg(v, &self.env)],
             ),
         );
         res
@@ -1751,7 +1692,7 @@ impl<'a> AllTypesClient<'a> {
     /// Returns an error if the invoked contract returns an error or panics. A panic in the invoked contract is caught and returned as an error rather than panicking the caller.
     pub fn try_test_u256(
         &self,
-        v: impl soroban_sdk::client::IntoArg<U256>,
+        v: impl soroban_sdk::IntoArg<U256>,
     ) -> soroban_sdk::client::TryRet<U256> {
         use soroban_sdk::{FromVal, IntoVal};
         let res = self.env.try_invoke_contract(
@@ -1763,7 +1704,7 @@ impl<'a> AllTypesClient<'a> {
             },
             ::soroban_sdk::Vec::from_array(
                 &self.env,
-                [soroban_sdk::client::IntoArg::<U256>::into_arg(v, &self.env)],
+                [soroban_sdk::IntoArg::<U256>::into_arg(v, &self.env)],
             ),
         );
         res
@@ -1808,7 +1749,7 @@ impl<'a> AllTypesClient<'a> {
     /// Use [`Self::try_test_struct`] to receive errors instead of panicking.
     pub fn test_struct(
         &self,
-        v: impl soroban_sdk::client::IntoArg<MyStruct>,
+        v: impl soroban_sdk::IntoArg<MyStruct>,
     ) -> soroban_sdk::client::Ret<MyStruct> {
         use core::ops::Not;
         use soroban_sdk::{FromVal, IntoVal};
@@ -1817,9 +1758,7 @@ impl<'a> AllTypesClient<'a> {
             &{ soroban_sdk::Symbol::new(&self.env, "test_struct") },
             ::soroban_sdk::Vec::from_array(
                 &self.env,
-                [soroban_sdk::client::IntoArg::<MyStruct>::into_arg(
-                    v, &self.env,
-                )],
+                [soroban_sdk::IntoArg::<MyStruct>::into_arg(v, &self.env)],
             ),
         );
         res
@@ -1831,7 +1770,7 @@ impl<'a> AllTypesClient<'a> {
     /// Returns an error if the invoked contract returns an error or panics. A panic in the invoked contract is caught and returned as an error rather than panicking the caller.
     pub fn try_test_struct(
         &self,
-        v: impl soroban_sdk::client::IntoArg<MyStruct>,
+        v: impl soroban_sdk::IntoArg<MyStruct>,
     ) -> soroban_sdk::client::TryRet<MyStruct> {
         use soroban_sdk::{FromVal, IntoVal};
         let res = self.env.try_invoke_contract(
@@ -1839,9 +1778,7 @@ impl<'a> AllTypesClient<'a> {
             &{ soroban_sdk::Symbol::new(&self.env, "test_struct") },
             ::soroban_sdk::Vec::from_array(
                 &self.env,
-                [soroban_sdk::client::IntoArg::<MyStruct>::into_arg(
-                    v, &self.env,
-                )],
+                [soroban_sdk::IntoArg::<MyStruct>::into_arg(v, &self.env)],
             ),
         );
         res
@@ -1855,7 +1792,7 @@ impl<'a> AllTypesClient<'a> {
     /// Use [`Self::try_test_enum_unit`] to receive errors instead of panicking.
     pub fn test_enum_unit(
         &self,
-        v: impl soroban_sdk::client::IntoArg<MyEnumUnit>,
+        v: impl soroban_sdk::IntoArg<MyEnumUnit>,
     ) -> soroban_sdk::client::Ret<MyEnumUnit> {
         use core::ops::Not;
         use soroban_sdk::{FromVal, IntoVal};
@@ -1864,9 +1801,7 @@ impl<'a> AllTypesClient<'a> {
             &{ soroban_sdk::Symbol::new(&self.env, "test_enum_unit") },
             ::soroban_sdk::Vec::from_array(
                 &self.env,
-                [soroban_sdk::client::IntoArg::<MyEnumUnit>::into_arg(
-                    v, &self.env,
-                )],
+                [soroban_sdk::IntoArg::<MyEnumUnit>::into_arg(v, &self.env)],
             ),
         );
         res
@@ -1878,7 +1813,7 @@ impl<'a> AllTypesClient<'a> {
     /// Returns an error if the invoked contract returns an error or panics. A panic in the invoked contract is caught and returned as an error rather than panicking the caller.
     pub fn try_test_enum_unit(
         &self,
-        v: impl soroban_sdk::client::IntoArg<MyEnumUnit>,
+        v: impl soroban_sdk::IntoArg<MyEnumUnit>,
     ) -> soroban_sdk::client::TryRet<MyEnumUnit> {
         use soroban_sdk::{FromVal, IntoVal};
         let res = self.env.try_invoke_contract(
@@ -1886,9 +1821,7 @@ impl<'a> AllTypesClient<'a> {
             &{ soroban_sdk::Symbol::new(&self.env, "test_enum_unit") },
             ::soroban_sdk::Vec::from_array(
                 &self.env,
-                [soroban_sdk::client::IntoArg::<MyEnumUnit>::into_arg(
-                    v, &self.env,
-                )],
+                [soroban_sdk::IntoArg::<MyEnumUnit>::into_arg(v, &self.env)],
             ),
         );
         res
@@ -1902,7 +1835,7 @@ impl<'a> AllTypesClient<'a> {
     /// Use [`Self::try_test_enum_variants`] to receive errors instead of panicking.
     pub fn test_enum_variants(
         &self,
-        v: impl soroban_sdk::client::IntoArg<MyEnumVariants>,
+        v: impl soroban_sdk::IntoArg<MyEnumVariants>,
     ) -> soroban_sdk::client::Ret<MyEnumVariants> {
         use core::ops::Not;
         use soroban_sdk::{FromVal, IntoVal};
@@ -1911,7 +1844,7 @@ impl<'a> AllTypesClient<'a> {
             &{ soroban_sdk::Symbol::new(&self.env, "test_enum_variants") },
             ::soroban_sdk::Vec::from_array(
                 &self.env,
-                [soroban_sdk::client::IntoArg::<MyEnumVariants>::into_arg(
+                [soroban_sdk::IntoArg::<MyEnumVariants>::into_arg(
                     v, &self.env,
                 )],
             ),
@@ -1925,7 +1858,7 @@ impl<'a> AllTypesClient<'a> {
     /// Returns an error if the invoked contract returns an error or panics. A panic in the invoked contract is caught and returned as an error rather than panicking the caller.
     pub fn try_test_enum_variants(
         &self,
-        v: impl soroban_sdk::client::IntoArg<MyEnumVariants>,
+        v: impl soroban_sdk::IntoArg<MyEnumVariants>,
     ) -> soroban_sdk::client::TryRet<MyEnumVariants> {
         use soroban_sdk::{FromVal, IntoVal};
         let res = self.env.try_invoke_contract(
@@ -1933,7 +1866,7 @@ impl<'a> AllTypesClient<'a> {
             &{ soroban_sdk::Symbol::new(&self.env, "test_enum_variants") },
             ::soroban_sdk::Vec::from_array(
                 &self.env,
-                [soroban_sdk::client::IntoArg::<MyEnumVariants>::into_arg(
+                [soroban_sdk::IntoArg::<MyEnumVariants>::into_arg(
                     v, &self.env,
                 )],
             ),

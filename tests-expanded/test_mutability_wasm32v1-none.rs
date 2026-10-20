@@ -92,8 +92,8 @@ impl<'a> ContractClient<'a> {
     /// Use [`Self::try_calc`] to receive errors instead of panicking.
     pub fn calc(
         &self,
-        a: impl soroban_sdk::client::IntoArg<u32>,
-        b: impl soroban_sdk::client::IntoArg<u32>,
+        a: impl soroban_sdk::IntoArg<u32>,
+        b: impl soroban_sdk::IntoArg<u32>,
     ) -> soroban_sdk::client::Ret<u32> {
         use core::ops::Not;
         use soroban_sdk::{FromVal, IntoVal};
@@ -107,8 +107,8 @@ impl<'a> ContractClient<'a> {
             ::soroban_sdk::Vec::from_array(
                 &self.env,
                 [
-                    soroban_sdk::client::IntoArg::<u32>::into_arg(a, &self.env),
-                    soroban_sdk::client::IntoArg::<u32>::into_arg(b, &self.env),
+                    soroban_sdk::IntoArg::<u32>::into_arg(a, &self.env),
+                    soroban_sdk::IntoArg::<u32>::into_arg(b, &self.env),
                 ],
             ),
         );
@@ -121,8 +121,8 @@ impl<'a> ContractClient<'a> {
     /// Returns an error if the invoked contract returns an error or panics. A panic in the invoked contract is caught and returned as an error rather than panicking the caller.
     pub fn try_calc(
         &self,
-        a: impl soroban_sdk::client::IntoArg<u32>,
-        b: impl soroban_sdk::client::IntoArg<u32>,
+        a: impl soroban_sdk::IntoArg<u32>,
+        b: impl soroban_sdk::IntoArg<u32>,
     ) -> soroban_sdk::client::TryRet<u32> {
         use soroban_sdk::{FromVal, IntoVal};
         let res = self.env.try_invoke_contract(
@@ -135,8 +135,8 @@ impl<'a> ContractClient<'a> {
             ::soroban_sdk::Vec::from_array(
                 &self.env,
                 [
-                    soroban_sdk::client::IntoArg::<u32>::into_arg(a, &self.env),
-                    soroban_sdk::client::IntoArg::<u32>::into_arg(b, &self.env),
+                    soroban_sdk::IntoArg::<u32>::into_arg(a, &self.env),
+                    soroban_sdk::IntoArg::<u32>::into_arg(b, &self.env),
                 ],
             ),
         );
