@@ -1012,8 +1012,8 @@ impl<'a> ContractClient<'a> {
     /// Use [`Self::try_single_value`] to receive errors instead of panicking.
     pub fn single_value(
         &self,
-        from: impl soroban_sdk::client::Arg<Address, <Address as soroban_sdk::client::Type>::Arg>,
-        amount: impl soroban_sdk::client::Arg<i128, <i128 as soroban_sdk::client::Type>::Arg>,
+        from: impl soroban_sdk::client::Arg<Address>,
+        amount: impl soroban_sdk::client::Arg<i128>,
     ) -> <() as soroban_sdk::client::Output>::Ok {
         use core::ops::Not;
         use soroban_sdk::{FromVal, IntoVal};
@@ -1023,8 +1023,8 @@ impl<'a> ContractClient<'a> {
             ::soroban_sdk::Vec::from_array(
                 &self.env,
                 [
-                    soroban_sdk::client::Arg::<Address, _>::into_val_for_client(from, &self.env),
-                    soroban_sdk::client::Arg::<i128, _>::into_val_for_client(amount, &self.env),
+                    soroban_sdk::client::Arg::<Address>::into_val_for_client(from, &self.env),
+                    soroban_sdk::client::Arg::<i128>::into_val_for_client(amount, &self.env),
                 ],
             ),
         );
@@ -1037,8 +1037,8 @@ impl<'a> ContractClient<'a> {
     /// Returns an error if the invoked contract returns an error or panics. A panic in the invoked contract is caught and returned as an error rather than panicking the caller.
     pub fn try_single_value(
         &self,
-        from: impl soroban_sdk::client::Arg<Address, <Address as soroban_sdk::client::Type>::Arg>,
-        amount: impl soroban_sdk::client::Arg<i128, <i128 as soroban_sdk::client::Type>::Arg>,
+        from: impl soroban_sdk::client::Arg<Address>,
+        amount: impl soroban_sdk::client::Arg<i128>,
     ) -> Result<
         Result<
             <() as soroban_sdk::client::Output>::Ok,
@@ -1056,8 +1056,8 @@ impl<'a> ContractClient<'a> {
             ::soroban_sdk::Vec::from_array(
                 &self.env,
                 [
-                    soroban_sdk::client::Arg::<Address, _>::into_val_for_client(from, &self.env),
-                    soroban_sdk::client::Arg::<i128, _>::into_val_for_client(amount, &self.env),
+                    soroban_sdk::client::Arg::<Address>::into_val_for_client(from, &self.env),
+                    soroban_sdk::client::Arg::<i128>::into_val_for_client(amount, &self.env),
                 ],
             ),
         );
@@ -1072,7 +1072,7 @@ impl<'a> ContractClient<'a> {
     /// Use [`Self::try_single_value_void`] to receive errors instead of panicking.
     pub fn single_value_void(
         &self,
-        from: impl soroban_sdk::client::Arg<Address, <Address as soroban_sdk::client::Type>::Arg>,
+        from: impl soroban_sdk::client::Arg<Address>,
     ) -> <() as soroban_sdk::client::Output>::Ok {
         use core::ops::Not;
         use soroban_sdk::{FromVal, IntoVal};
@@ -1081,7 +1081,7 @@ impl<'a> ContractClient<'a> {
             &{ soroban_sdk::Symbol::new(&self.env, "single_value_void") },
             ::soroban_sdk::Vec::from_array(
                 &self.env,
-                [soroban_sdk::client::Arg::<Address, _>::into_val_for_client(
+                [soroban_sdk::client::Arg::<Address>::into_val_for_client(
                     from, &self.env,
                 )],
             ),
@@ -1095,7 +1095,7 @@ impl<'a> ContractClient<'a> {
     /// Returns an error if the invoked contract returns an error or panics. A panic in the invoked contract is caught and returned as an error rather than panicking the caller.
     pub fn try_single_value_void(
         &self,
-        from: impl soroban_sdk::client::Arg<Address, <Address as soroban_sdk::client::Type>::Arg>,
+        from: impl soroban_sdk::client::Arg<Address>,
     ) -> Result<
         Result<
             <() as soroban_sdk::client::Output>::Ok,
@@ -1112,7 +1112,7 @@ impl<'a> ContractClient<'a> {
             &{ soroban_sdk::Symbol::new(&self.env, "single_value_void") },
             ::soroban_sdk::Vec::from_array(
                 &self.env,
-                [soroban_sdk::client::Arg::<Address, _>::into_val_for_client(
+                [soroban_sdk::client::Arg::<Address>::into_val_for_client(
                     from, &self.env,
                 )],
             ),
@@ -1128,9 +1128,9 @@ impl<'a> ContractClient<'a> {
     /// Use [`Self::try_vec_values`] to receive errors instead of panicking.
     pub fn vec_values(
         &self,
-        from: impl soroban_sdk::client::Arg<Address, <Address as soroban_sdk::client::Type>::Arg>,
-        a: impl soroban_sdk::client::Arg<u32, <u32 as soroban_sdk::client::Type>::Arg>,
-        b: impl soroban_sdk::client::Arg<u32, <u32 as soroban_sdk::client::Type>::Arg>,
+        from: impl soroban_sdk::client::Arg<Address>,
+        a: impl soroban_sdk::client::Arg<u32>,
+        b: impl soroban_sdk::client::Arg<u32>,
     ) -> <() as soroban_sdk::client::Output>::Ok {
         use core::ops::Not;
         use soroban_sdk::{FromVal, IntoVal};
@@ -1140,9 +1140,9 @@ impl<'a> ContractClient<'a> {
             ::soroban_sdk::Vec::from_array(
                 &self.env,
                 [
-                    soroban_sdk::client::Arg::<Address, _>::into_val_for_client(from, &self.env),
-                    soroban_sdk::client::Arg::<u32, _>::into_val_for_client(a, &self.env),
-                    soroban_sdk::client::Arg::<u32, _>::into_val_for_client(b, &self.env),
+                    soroban_sdk::client::Arg::<Address>::into_val_for_client(from, &self.env),
+                    soroban_sdk::client::Arg::<u32>::into_val_for_client(a, &self.env),
+                    soroban_sdk::client::Arg::<u32>::into_val_for_client(b, &self.env),
                 ],
             ),
         );
@@ -1155,9 +1155,9 @@ impl<'a> ContractClient<'a> {
     /// Returns an error if the invoked contract returns an error or panics. A panic in the invoked contract is caught and returned as an error rather than panicking the caller.
     pub fn try_vec_values(
         &self,
-        from: impl soroban_sdk::client::Arg<Address, <Address as soroban_sdk::client::Type>::Arg>,
-        a: impl soroban_sdk::client::Arg<u32, <u32 as soroban_sdk::client::Type>::Arg>,
-        b: impl soroban_sdk::client::Arg<u32, <u32 as soroban_sdk::client::Type>::Arg>,
+        from: impl soroban_sdk::client::Arg<Address>,
+        a: impl soroban_sdk::client::Arg<u32>,
+        b: impl soroban_sdk::client::Arg<u32>,
     ) -> Result<
         Result<
             <() as soroban_sdk::client::Output>::Ok,
@@ -1175,9 +1175,9 @@ impl<'a> ContractClient<'a> {
             ::soroban_sdk::Vec::from_array(
                 &self.env,
                 [
-                    soroban_sdk::client::Arg::<Address, _>::into_val_for_client(from, &self.env),
-                    soroban_sdk::client::Arg::<u32, _>::into_val_for_client(a, &self.env),
-                    soroban_sdk::client::Arg::<u32, _>::into_val_for_client(b, &self.env),
+                    soroban_sdk::client::Arg::<Address>::into_val_for_client(from, &self.env),
+                    soroban_sdk::client::Arg::<u32>::into_val_for_client(a, &self.env),
+                    soroban_sdk::client::Arg::<u32>::into_val_for_client(b, &self.env),
                 ],
             ),
         );
@@ -1192,9 +1192,9 @@ impl<'a> ContractClient<'a> {
     /// Use [`Self::try_map_values`] to receive errors instead of panicking.
     pub fn map_values(
         &self,
-        from: impl soroban_sdk::client::Arg<Address, <Address as soroban_sdk::client::Type>::Arg>,
-        a: impl soroban_sdk::client::Arg<u32, <u32 as soroban_sdk::client::Type>::Arg>,
-        b: impl soroban_sdk::client::Arg<u32, <u32 as soroban_sdk::client::Type>::Arg>,
+        from: impl soroban_sdk::client::Arg<Address>,
+        a: impl soroban_sdk::client::Arg<u32>,
+        b: impl soroban_sdk::client::Arg<u32>,
     ) -> <() as soroban_sdk::client::Output>::Ok {
         use core::ops::Not;
         use soroban_sdk::{FromVal, IntoVal};
@@ -1204,9 +1204,9 @@ impl<'a> ContractClient<'a> {
             ::soroban_sdk::Vec::from_array(
                 &self.env,
                 [
-                    soroban_sdk::client::Arg::<Address, _>::into_val_for_client(from, &self.env),
-                    soroban_sdk::client::Arg::<u32, _>::into_val_for_client(a, &self.env),
-                    soroban_sdk::client::Arg::<u32, _>::into_val_for_client(b, &self.env),
+                    soroban_sdk::client::Arg::<Address>::into_val_for_client(from, &self.env),
+                    soroban_sdk::client::Arg::<u32>::into_val_for_client(a, &self.env),
+                    soroban_sdk::client::Arg::<u32>::into_val_for_client(b, &self.env),
                 ],
             ),
         );
@@ -1219,9 +1219,9 @@ impl<'a> ContractClient<'a> {
     /// Returns an error if the invoked contract returns an error or panics. A panic in the invoked contract is caught and returned as an error rather than panicking the caller.
     pub fn try_map_values(
         &self,
-        from: impl soroban_sdk::client::Arg<Address, <Address as soroban_sdk::client::Type>::Arg>,
-        a: impl soroban_sdk::client::Arg<u32, <u32 as soroban_sdk::client::Type>::Arg>,
-        b: impl soroban_sdk::client::Arg<u32, <u32 as soroban_sdk::client::Type>::Arg>,
+        from: impl soroban_sdk::client::Arg<Address>,
+        a: impl soroban_sdk::client::Arg<u32>,
+        b: impl soroban_sdk::client::Arg<u32>,
     ) -> Result<
         Result<
             <() as soroban_sdk::client::Output>::Ok,
@@ -1239,9 +1239,9 @@ impl<'a> ContractClient<'a> {
             ::soroban_sdk::Vec::from_array(
                 &self.env,
                 [
-                    soroban_sdk::client::Arg::<Address, _>::into_val_for_client(from, &self.env),
-                    soroban_sdk::client::Arg::<u32, _>::into_val_for_client(a, &self.env),
-                    soroban_sdk::client::Arg::<u32, _>::into_val_for_client(b, &self.env),
+                    soroban_sdk::client::Arg::<Address>::into_val_for_client(from, &self.env),
+                    soroban_sdk::client::Arg::<u32>::into_val_for_client(a, &self.env),
+                    soroban_sdk::client::Arg::<u32>::into_val_for_client(b, &self.env),
                 ],
             ),
         );
@@ -1256,12 +1256,9 @@ impl<'a> ContractClient<'a> {
     /// Use [`Self::try_transfer`] to receive errors instead of panicking.
     pub fn transfer(
         &self,
-        from: impl soroban_sdk::client::Arg<Address, <Address as soroban_sdk::client::Type>::Arg>,
-        to: impl soroban_sdk::client::Arg<
-            MuxedAddress,
-            <MuxedAddress as soroban_sdk::client::Type>::Arg,
-        >,
-        amount: impl soroban_sdk::client::Arg<i128, <i128 as soroban_sdk::client::Type>::Arg>,
+        from: impl soroban_sdk::client::Arg<Address>,
+        to: impl soroban_sdk::client::Arg<MuxedAddress>,
+        amount: impl soroban_sdk::client::Arg<i128>,
     ) -> <() as soroban_sdk::client::Output>::Ok {
         use core::ops::Not;
         use soroban_sdk::{FromVal, IntoVal};
@@ -1275,9 +1272,9 @@ impl<'a> ContractClient<'a> {
             ::soroban_sdk::Vec::from_array(
                 &self.env,
                 [
-                    soroban_sdk::client::Arg::<Address, _>::into_val_for_client(from, &self.env),
-                    soroban_sdk::client::Arg::<MuxedAddress, _>::into_val_for_client(to, &self.env),
-                    soroban_sdk::client::Arg::<i128, _>::into_val_for_client(amount, &self.env),
+                    soroban_sdk::client::Arg::<Address>::into_val_for_client(from, &self.env),
+                    soroban_sdk::client::Arg::<MuxedAddress>::into_val_for_client(to, &self.env),
+                    soroban_sdk::client::Arg::<i128>::into_val_for_client(amount, &self.env),
                 ],
             ),
         );
@@ -1290,12 +1287,9 @@ impl<'a> ContractClient<'a> {
     /// Returns an error if the invoked contract returns an error or panics. A panic in the invoked contract is caught and returned as an error rather than panicking the caller.
     pub fn try_transfer(
         &self,
-        from: impl soroban_sdk::client::Arg<Address, <Address as soroban_sdk::client::Type>::Arg>,
-        to: impl soroban_sdk::client::Arg<
-            MuxedAddress,
-            <MuxedAddress as soroban_sdk::client::Type>::Arg,
-        >,
-        amount: impl soroban_sdk::client::Arg<i128, <i128 as soroban_sdk::client::Type>::Arg>,
+        from: impl soroban_sdk::client::Arg<Address>,
+        to: impl soroban_sdk::client::Arg<MuxedAddress>,
+        amount: impl soroban_sdk::client::Arg<i128>,
     ) -> Result<
         Result<
             <() as soroban_sdk::client::Output>::Ok,
@@ -1317,9 +1311,9 @@ impl<'a> ContractClient<'a> {
             ::soroban_sdk::Vec::from_array(
                 &self.env,
                 [
-                    soroban_sdk::client::Arg::<Address, _>::into_val_for_client(from, &self.env),
-                    soroban_sdk::client::Arg::<MuxedAddress, _>::into_val_for_client(to, &self.env),
-                    soroban_sdk::client::Arg::<i128, _>::into_val_for_client(amount, &self.env),
+                    soroban_sdk::client::Arg::<Address>::into_val_for_client(from, &self.env),
+                    soroban_sdk::client::Arg::<MuxedAddress>::into_val_for_client(to, &self.env),
+                    soroban_sdk::client::Arg::<i128>::into_val_for_client(amount, &self.env),
                 ],
             ),
         );
@@ -1334,9 +1328,9 @@ impl<'a> ContractClient<'a> {
     /// Use [`Self::try_failed_transfer`] to receive errors instead of panicking.
     pub fn failed_transfer(
         &self,
-        from: impl soroban_sdk::client::Arg<Address, <Address as soroban_sdk::client::Type>::Arg>,
-        to: impl soroban_sdk::client::Arg<Address, <Address as soroban_sdk::client::Type>::Arg>,
-        amount: impl soroban_sdk::client::Arg<i128, <i128 as soroban_sdk::client::Type>::Arg>,
+        from: impl soroban_sdk::client::Arg<Address>,
+        to: impl soroban_sdk::client::Arg<Address>,
+        amount: impl soroban_sdk::client::Arg<i128>,
     ) -> <() as soroban_sdk::client::Output>::Ok {
         use core::ops::Not;
         use soroban_sdk::{FromVal, IntoVal};
@@ -1346,9 +1340,9 @@ impl<'a> ContractClient<'a> {
             ::soroban_sdk::Vec::from_array(
                 &self.env,
                 [
-                    soroban_sdk::client::Arg::<Address, _>::into_val_for_client(from, &self.env),
-                    soroban_sdk::client::Arg::<Address, _>::into_val_for_client(to, &self.env),
-                    soroban_sdk::client::Arg::<i128, _>::into_val_for_client(amount, &self.env),
+                    soroban_sdk::client::Arg::<Address>::into_val_for_client(from, &self.env),
+                    soroban_sdk::client::Arg::<Address>::into_val_for_client(to, &self.env),
+                    soroban_sdk::client::Arg::<i128>::into_val_for_client(amount, &self.env),
                 ],
             ),
         );
@@ -1361,9 +1355,9 @@ impl<'a> ContractClient<'a> {
     /// Returns an error if the invoked contract returns an error or panics. A panic in the invoked contract is caught and returned as an error rather than panicking the caller.
     pub fn try_failed_transfer(
         &self,
-        from: impl soroban_sdk::client::Arg<Address, <Address as soroban_sdk::client::Type>::Arg>,
-        to: impl soroban_sdk::client::Arg<Address, <Address as soroban_sdk::client::Type>::Arg>,
-        amount: impl soroban_sdk::client::Arg<i128, <i128 as soroban_sdk::client::Type>::Arg>,
+        from: impl soroban_sdk::client::Arg<Address>,
+        to: impl soroban_sdk::client::Arg<Address>,
+        amount: impl soroban_sdk::client::Arg<i128>,
     ) -> Result<
         Result<
             <() as soroban_sdk::client::Output>::Ok,
@@ -1381,9 +1375,9 @@ impl<'a> ContractClient<'a> {
             ::soroban_sdk::Vec::from_array(
                 &self.env,
                 [
-                    soroban_sdk::client::Arg::<Address, _>::into_val_for_client(from, &self.env),
-                    soroban_sdk::client::Arg::<Address, _>::into_val_for_client(to, &self.env),
-                    soroban_sdk::client::Arg::<i128, _>::into_val_for_client(amount, &self.env),
+                    soroban_sdk::client::Arg::<Address>::into_val_for_client(from, &self.env),
+                    soroban_sdk::client::Arg::<Address>::into_val_for_client(to, &self.env),
+                    soroban_sdk::client::Arg::<i128>::into_val_for_client(amount, &self.env),
                 ],
             ),
         );

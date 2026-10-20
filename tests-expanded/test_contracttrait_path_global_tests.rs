@@ -2430,7 +2430,6 @@ impl<'a> ContractGlobalPathClient<'a> {
         &self,
         v: impl soroban_sdk::client::Arg<
             <ContractGlobalPath as __ContractGlobalPath_AllTypes_types>::u32,
-            <<ContractGlobalPath as __ContractGlobalPath_AllTypes_types>::u32 as soroban_sdk::client::Type>::Arg,
         >,
     ) -> <<ContractGlobalPath as __ContractGlobalPath_AllTypes_types>::u32 as soroban_sdk::client::Output>::Ok{
         let _call_scope = soroban_sdk::testutils::ClientCallScope::enter(&self.env, self.config);
@@ -2446,7 +2445,6 @@ impl<'a> ContractGlobalPathClient<'a> {
                 &self.env,
                 [soroban_sdk::client::Arg::<
                     <ContractGlobalPath as __ContractGlobalPath_AllTypes_types>::u32,
-                    _,
                 >::into_val_for_client(v, &self.env)],
             ),
         );
@@ -2464,7 +2462,6 @@ impl<'a> ContractGlobalPathClient<'a> {
         &self,
         v: impl soroban_sdk::client::Arg<
             <ContractGlobalPath as __ContractGlobalPath_AllTypes_types>::u32,
-            <<ContractGlobalPath as __ContractGlobalPath_AllTypes_types>::u32 as soroban_sdk::client::Type>::Arg,
         >,
     ) -> Result<
         Result<
@@ -2492,7 +2489,6 @@ impl<'a> ContractGlobalPathClient<'a> {
                 &self.env,
                 [soroban_sdk::client::Arg::<
                     <ContractGlobalPath as __ContractGlobalPath_AllTypes_types>::u32,
-                    _,
                 >::into_val_for_client(v, &self.env)],
             ),
         );
@@ -2511,7 +2507,6 @@ impl<'a> ContractGlobalPathClient<'a> {
         &self,
         v: impl soroban_sdk::client::Arg<
             <ContractGlobalPath as __ContractGlobalPath_AllTypes_types>::i32,
-            <<ContractGlobalPath as __ContractGlobalPath_AllTypes_types>::i32 as soroban_sdk::client::Type>::Arg,
         >,
     ) -> <<ContractGlobalPath as __ContractGlobalPath_AllTypes_types>::i32 as soroban_sdk::client::Output>::Ok{
         let _call_scope = soroban_sdk::testutils::ClientCallScope::enter(&self.env, self.config);
@@ -2527,7 +2522,6 @@ impl<'a> ContractGlobalPathClient<'a> {
                 &self.env,
                 [soroban_sdk::client::Arg::<
                     <ContractGlobalPath as __ContractGlobalPath_AllTypes_types>::i32,
-                    _,
                 >::into_val_for_client(v, &self.env)],
             ),
         );
@@ -2544,7 +2538,6 @@ impl<'a> ContractGlobalPathClient<'a> {
         &self,
         v: impl soroban_sdk::client::Arg<
             <ContractGlobalPath as __ContractGlobalPath_AllTypes_types>::i32,
-            <<ContractGlobalPath as __ContractGlobalPath_AllTypes_types>::i32 as soroban_sdk::client::Type>::Arg,
         >,
     ) -> Result<
         Result<
@@ -2572,7 +2565,6 @@ impl<'a> ContractGlobalPathClient<'a> {
                 &self.env,
                 [soroban_sdk::client::Arg::<
                     <ContractGlobalPath as __ContractGlobalPath_AllTypes_types>::i32,
-                    _,
                 >::into_val_for_client(v, &self.env)],
             ),
         );
@@ -2589,7 +2581,6 @@ impl<'a> ContractGlobalPathClient<'a> {
         &self,
         v: impl soroban_sdk::client::Arg<
             <ContractGlobalPath as __ContractGlobalPath_AllTypes_types>::u64,
-            <<ContractGlobalPath as __ContractGlobalPath_AllTypes_types>::u64 as soroban_sdk::client::Type>::Arg,
         >,
     ) -> <<ContractGlobalPath as __ContractGlobalPath_AllTypes_types>::u64 as soroban_sdk::client::Output>::Ok{
         let _call_scope = soroban_sdk::testutils::ClientCallScope::enter(&self.env, self.config);
@@ -2605,7 +2596,6 @@ impl<'a> ContractGlobalPathClient<'a> {
                 &self.env,
                 [soroban_sdk::client::Arg::<
                     <ContractGlobalPath as __ContractGlobalPath_AllTypes_types>::u64,
-                    _,
                 >::into_val_for_client(v, &self.env)],
             ),
         );
@@ -2620,7 +2610,6 @@ impl<'a> ContractGlobalPathClient<'a> {
         &self,
         v: impl soroban_sdk::client::Arg<
             <ContractGlobalPath as __ContractGlobalPath_AllTypes_types>::u64,
-            <<ContractGlobalPath as __ContractGlobalPath_AllTypes_types>::u64 as soroban_sdk::client::Type>::Arg,
         >,
     ) -> Result<
         Result<
@@ -2648,7 +2637,6 @@ impl<'a> ContractGlobalPathClient<'a> {
                 &self.env,
                 [soroban_sdk::client::Arg::<
                     <ContractGlobalPath as __ContractGlobalPath_AllTypes_types>::u64,
-                    _,
                 >::into_val_for_client(v, &self.env)],
             ),
         );
@@ -2665,7 +2653,6 @@ impl<'a> ContractGlobalPathClient<'a> {
         &self,
         v: impl soroban_sdk::client::Arg<
             <ContractGlobalPath as __ContractGlobalPath_AllTypes_types>::i64,
-            <<ContractGlobalPath as __ContractGlobalPath_AllTypes_types>::i64 as soroban_sdk::client::Type>::Arg,
         >,
     ) -> <<ContractGlobalPath as __ContractGlobalPath_AllTypes_types>::i64 as soroban_sdk::client::Output>::Ok{
         let _call_scope = soroban_sdk::testutils::ClientCallScope::enter(&self.env, self.config);
@@ -2681,7 +2668,6 @@ impl<'a> ContractGlobalPathClient<'a> {
                 &self.env,
                 [soroban_sdk::client::Arg::<
                     <ContractGlobalPath as __ContractGlobalPath_AllTypes_types>::i64,
-                    _,
                 >::into_val_for_client(v, &self.env)],
             ),
         );
@@ -2696,7 +2682,6 @@ impl<'a> ContractGlobalPathClient<'a> {
         &self,
         v: impl soroban_sdk::client::Arg<
             <ContractGlobalPath as __ContractGlobalPath_AllTypes_types>::i64,
-            <<ContractGlobalPath as __ContractGlobalPath_AllTypes_types>::i64 as soroban_sdk::client::Type>::Arg,
         >,
     ) -> Result<
         Result<
@@ -2724,7 +2709,6 @@ impl<'a> ContractGlobalPathClient<'a> {
                 &self.env,
                 [soroban_sdk::client::Arg::<
                     <ContractGlobalPath as __ContractGlobalPath_AllTypes_types>::i64,
-                    _,
                 >::into_val_for_client(v, &self.env)],
             ),
         );
@@ -2741,7 +2725,6 @@ impl<'a> ContractGlobalPathClient<'a> {
         &self,
         v: impl soroban_sdk::client::Arg<
             <ContractGlobalPath as __ContractGlobalPath_AllTypes_types>::u128,
-            <<ContractGlobalPath as __ContractGlobalPath_AllTypes_types>::u128 as soroban_sdk::client::Type>::Arg,
         >,
     ) -> <<ContractGlobalPath as __ContractGlobalPath_AllTypes_types>::u128 as soroban_sdk::client::Output>::Ok{
         let _call_scope = soroban_sdk::testutils::ClientCallScope::enter(&self.env, self.config);
@@ -2757,7 +2740,6 @@ impl<'a> ContractGlobalPathClient<'a> {
                 &self.env,
                 [soroban_sdk::client::Arg::<
                     <ContractGlobalPath as __ContractGlobalPath_AllTypes_types>::u128,
-                    _,
                 >::into_val_for_client(v, &self.env)],
             ),
         );
@@ -2772,7 +2754,6 @@ impl<'a> ContractGlobalPathClient<'a> {
         &self,
         v: impl soroban_sdk::client::Arg<
             <ContractGlobalPath as __ContractGlobalPath_AllTypes_types>::u128,
-            <<ContractGlobalPath as __ContractGlobalPath_AllTypes_types>::u128 as soroban_sdk::client::Type>::Arg,
         >,
     ) -> Result<
         Result<
@@ -2800,7 +2781,6 @@ impl<'a> ContractGlobalPathClient<'a> {
                 &self.env,
                 [soroban_sdk::client::Arg::<
                     <ContractGlobalPath as __ContractGlobalPath_AllTypes_types>::u128,
-                    _,
                 >::into_val_for_client(v, &self.env)],
             ),
         );
@@ -2817,7 +2797,6 @@ impl<'a> ContractGlobalPathClient<'a> {
         &self,
         v: impl soroban_sdk::client::Arg<
             <ContractGlobalPath as __ContractGlobalPath_AllTypes_types>::i128,
-            <<ContractGlobalPath as __ContractGlobalPath_AllTypes_types>::i128 as soroban_sdk::client::Type>::Arg,
         >,
     ) -> <<ContractGlobalPath as __ContractGlobalPath_AllTypes_types>::i128 as soroban_sdk::client::Output>::Ok{
         let _call_scope = soroban_sdk::testutils::ClientCallScope::enter(&self.env, self.config);
@@ -2833,7 +2812,6 @@ impl<'a> ContractGlobalPathClient<'a> {
                 &self.env,
                 [soroban_sdk::client::Arg::<
                     <ContractGlobalPath as __ContractGlobalPath_AllTypes_types>::i128,
-                    _,
                 >::into_val_for_client(v, &self.env)],
             ),
         );
@@ -2848,7 +2826,6 @@ impl<'a> ContractGlobalPathClient<'a> {
         &self,
         v: impl soroban_sdk::client::Arg<
             <ContractGlobalPath as __ContractGlobalPath_AllTypes_types>::i128,
-            <<ContractGlobalPath as __ContractGlobalPath_AllTypes_types>::i128 as soroban_sdk::client::Type>::Arg,
         >,
     ) -> Result<
         Result<
@@ -2876,7 +2853,6 @@ impl<'a> ContractGlobalPathClient<'a> {
                 &self.env,
                 [soroban_sdk::client::Arg::<
                     <ContractGlobalPath as __ContractGlobalPath_AllTypes_types>::i128,
-                    _,
                 >::into_val_for_client(v, &self.env)],
             ),
         );
@@ -2893,7 +2869,6 @@ impl<'a> ContractGlobalPathClient<'a> {
         &self,
         v: impl soroban_sdk::client::Arg<
             <ContractGlobalPath as __ContractGlobalPath_AllTypes_types>::bool,
-            <<ContractGlobalPath as __ContractGlobalPath_AllTypes_types>::bool as soroban_sdk::client::Type>::Arg,
         >,
     ) -> <<ContractGlobalPath as __ContractGlobalPath_AllTypes_types>::bool as soroban_sdk::client::Output>::Ok{
         let _call_scope = soroban_sdk::testutils::ClientCallScope::enter(&self.env, self.config);
@@ -2909,7 +2884,6 @@ impl<'a> ContractGlobalPathClient<'a> {
                 &self.env,
                 [soroban_sdk::client::Arg::<
                     <ContractGlobalPath as __ContractGlobalPath_AllTypes_types>::bool,
-                    _,
                 >::into_val_for_client(v, &self.env)],
             ),
         );
@@ -2924,7 +2898,6 @@ impl<'a> ContractGlobalPathClient<'a> {
         &self,
         v: impl soroban_sdk::client::Arg<
             <ContractGlobalPath as __ContractGlobalPath_AllTypes_types>::bool,
-            <<ContractGlobalPath as __ContractGlobalPath_AllTypes_types>::bool as soroban_sdk::client::Type>::Arg,
         >,
     ) -> Result<
         Result<
@@ -2952,7 +2925,6 @@ impl<'a> ContractGlobalPathClient<'a> {
                 &self.env,
                 [soroban_sdk::client::Arg::<
                     <ContractGlobalPath as __ContractGlobalPath_AllTypes_types>::bool,
-                    _,
                 >::into_val_for_client(v, &self.env)],
             ),
         );
@@ -2969,7 +2941,6 @@ impl<'a> ContractGlobalPathClient<'a> {
         &self,
         v: impl soroban_sdk::client::Arg<
             <ContractGlobalPath as __ContractGlobalPath_AllTypes_types>::Address,
-            <<ContractGlobalPath as __ContractGlobalPath_AllTypes_types>::Address as soroban_sdk::client::Type>::Arg,
         >,
     ) -> <<ContractGlobalPath as __ContractGlobalPath_AllTypes_types>::Address as soroban_sdk::client::Output>::Ok{
         let _call_scope = soroban_sdk::testutils::ClientCallScope::enter(&self.env, self.config);
@@ -2981,7 +2952,6 @@ impl<'a> ContractGlobalPathClient<'a> {
                 &self.env,
                 [soroban_sdk::client::Arg::<
                     <ContractGlobalPath as __ContractGlobalPath_AllTypes_types>::Address,
-                    _,
                 >::into_val_for_client(v, &self.env)],
             ),
         );
@@ -2996,7 +2966,6 @@ impl<'a> ContractGlobalPathClient<'a> {
         &self,
         v: impl soroban_sdk::client::Arg<
             <ContractGlobalPath as __ContractGlobalPath_AllTypes_types>::Address,
-            <<ContractGlobalPath as __ContractGlobalPath_AllTypes_types>::Address as soroban_sdk::client::Type>::Arg,
         >,
     ) -> Result<
         Result<
@@ -3020,7 +2989,6 @@ impl<'a> ContractGlobalPathClient<'a> {
                 &self.env,
                 [soroban_sdk::client::Arg::<
                     <ContractGlobalPath as __ContractGlobalPath_AllTypes_types>::Address,
-                    _,
                 >::into_val_for_client(v, &self.env)],
             ),
         );
@@ -3037,7 +3005,6 @@ impl<'a> ContractGlobalPathClient<'a> {
         &self,
         v: impl soroban_sdk::client::Arg<
             <ContractGlobalPath as __ContractGlobalPath_AllTypes_types>::Bytes,
-            <<ContractGlobalPath as __ContractGlobalPath_AllTypes_types>::Bytes as soroban_sdk::client::Type>::Arg,
         >,
     ) -> <<ContractGlobalPath as __ContractGlobalPath_AllTypes_types>::Bytes as soroban_sdk::client::Output>::Ok{
         let _call_scope = soroban_sdk::testutils::ClientCallScope::enter(&self.env, self.config);
@@ -3049,7 +3016,6 @@ impl<'a> ContractGlobalPathClient<'a> {
                 &self.env,
                 [soroban_sdk::client::Arg::<
                     <ContractGlobalPath as __ContractGlobalPath_AllTypes_types>::Bytes,
-                    _,
                 >::into_val_for_client(v, &self.env)],
             ),
         );
@@ -3064,7 +3030,6 @@ impl<'a> ContractGlobalPathClient<'a> {
         &self,
         v: impl soroban_sdk::client::Arg<
             <ContractGlobalPath as __ContractGlobalPath_AllTypes_types>::Bytes,
-            <<ContractGlobalPath as __ContractGlobalPath_AllTypes_types>::Bytes as soroban_sdk::client::Type>::Arg,
         >,
     ) -> Result<
         Result<
@@ -3088,7 +3053,6 @@ impl<'a> ContractGlobalPathClient<'a> {
                 &self.env,
                 [soroban_sdk::client::Arg::<
                     <ContractGlobalPath as __ContractGlobalPath_AllTypes_types>::Bytes,
-                    _,
                 >::into_val_for_client(v, &self.env)],
             ),
         );
@@ -3105,7 +3069,6 @@ impl<'a> ContractGlobalPathClient<'a> {
         &self,
         v: impl soroban_sdk::client::Arg<
             <ContractGlobalPath as __ContractGlobalPath_AllTypes_types>::BytesN,
-            <<ContractGlobalPath as __ContractGlobalPath_AllTypes_types>::BytesN as soroban_sdk::client::Type>::Arg,
         >,
     ) -> <<ContractGlobalPath as __ContractGlobalPath_AllTypes_types>::BytesN as soroban_sdk::client::Output>::Ok{
         let _call_scope = soroban_sdk::testutils::ClientCallScope::enter(&self.env, self.config);
@@ -3117,7 +3080,6 @@ impl<'a> ContractGlobalPathClient<'a> {
                 &self.env,
                 [soroban_sdk::client::Arg::<
                     <ContractGlobalPath as __ContractGlobalPath_AllTypes_types>::BytesN,
-                    _,
                 >::into_val_for_client(v, &self.env)],
             ),
         );
@@ -3132,7 +3094,6 @@ impl<'a> ContractGlobalPathClient<'a> {
         &self,
         v: impl soroban_sdk::client::Arg<
             <ContractGlobalPath as __ContractGlobalPath_AllTypes_types>::BytesN,
-            <<ContractGlobalPath as __ContractGlobalPath_AllTypes_types>::BytesN as soroban_sdk::client::Type>::Arg,
         >,
     ) -> Result<
         Result<
@@ -3156,7 +3117,6 @@ impl<'a> ContractGlobalPathClient<'a> {
                 &self.env,
                 [soroban_sdk::client::Arg::<
                     <ContractGlobalPath as __ContractGlobalPath_AllTypes_types>::BytesN,
-                    _,
                 >::into_val_for_client(v, &self.env)],
             ),
         );
@@ -3173,7 +3133,6 @@ impl<'a> ContractGlobalPathClient<'a> {
         &self,
         v: impl soroban_sdk::client::Arg<
             <ContractGlobalPath as __ContractGlobalPath_AllTypes_types>::String,
-            <<ContractGlobalPath as __ContractGlobalPath_AllTypes_types>::String as soroban_sdk::client::Type>::Arg,
         >,
     ) -> <<ContractGlobalPath as __ContractGlobalPath_AllTypes_types>::String as soroban_sdk::client::Output>::Ok{
         let _call_scope = soroban_sdk::testutils::ClientCallScope::enter(&self.env, self.config);
@@ -3185,7 +3144,6 @@ impl<'a> ContractGlobalPathClient<'a> {
                 &self.env,
                 [soroban_sdk::client::Arg::<
                     <ContractGlobalPath as __ContractGlobalPath_AllTypes_types>::String,
-                    _,
                 >::into_val_for_client(v, &self.env)],
             ),
         );
@@ -3200,7 +3158,6 @@ impl<'a> ContractGlobalPathClient<'a> {
         &self,
         v: impl soroban_sdk::client::Arg<
             <ContractGlobalPath as __ContractGlobalPath_AllTypes_types>::String,
-            <<ContractGlobalPath as __ContractGlobalPath_AllTypes_types>::String as soroban_sdk::client::Type>::Arg,
         >,
     ) -> Result<
         Result<
@@ -3224,7 +3181,6 @@ impl<'a> ContractGlobalPathClient<'a> {
                 &self.env,
                 [soroban_sdk::client::Arg::<
                     <ContractGlobalPath as __ContractGlobalPath_AllTypes_types>::String,
-                    _,
                 >::into_val_for_client(v, &self.env)],
             ),
         );
@@ -3241,7 +3197,6 @@ impl<'a> ContractGlobalPathClient<'a> {
         &self,
         v: impl soroban_sdk::client::Arg<
             <ContractGlobalPath as __ContractGlobalPath_AllTypes_types>::Symbol,
-            <<ContractGlobalPath as __ContractGlobalPath_AllTypes_types>::Symbol as soroban_sdk::client::Type>::Arg,
         >,
     ) -> <<ContractGlobalPath as __ContractGlobalPath_AllTypes_types>::Symbol as soroban_sdk::client::Output>::Ok{
         let _call_scope = soroban_sdk::testutils::ClientCallScope::enter(&self.env, self.config);
@@ -3253,7 +3208,6 @@ impl<'a> ContractGlobalPathClient<'a> {
                 &self.env,
                 [soroban_sdk::client::Arg::<
                     <ContractGlobalPath as __ContractGlobalPath_AllTypes_types>::Symbol,
-                    _,
                 >::into_val_for_client(v, &self.env)],
             ),
         );
@@ -3268,7 +3222,6 @@ impl<'a> ContractGlobalPathClient<'a> {
         &self,
         v: impl soroban_sdk::client::Arg<
             <ContractGlobalPath as __ContractGlobalPath_AllTypes_types>::Symbol,
-            <<ContractGlobalPath as __ContractGlobalPath_AllTypes_types>::Symbol as soroban_sdk::client::Type>::Arg,
         >,
     ) -> Result<
         Result<
@@ -3292,7 +3245,6 @@ impl<'a> ContractGlobalPathClient<'a> {
                 &self.env,
                 [soroban_sdk::client::Arg::<
                     <ContractGlobalPath as __ContractGlobalPath_AllTypes_types>::Symbol,
-                    _,
                 >::into_val_for_client(v, &self.env)],
             ),
         );
@@ -3309,7 +3261,6 @@ impl<'a> ContractGlobalPathClient<'a> {
         &self,
         v: impl soroban_sdk::client::Arg<
             <ContractGlobalPath as __ContractGlobalPath_AllTypes_types>::Vec,
-            <<ContractGlobalPath as __ContractGlobalPath_AllTypes_types>::Vec as soroban_sdk::client::Type>::Arg,
         >,
     ) -> <<ContractGlobalPath as __ContractGlobalPath_AllTypes_types>::Vec as soroban_sdk::client::Output>::Ok{
         let _call_scope = soroban_sdk::testutils::ClientCallScope::enter(&self.env, self.config);
@@ -3325,7 +3276,6 @@ impl<'a> ContractGlobalPathClient<'a> {
                 &self.env,
                 [soroban_sdk::client::Arg::<
                     <ContractGlobalPath as __ContractGlobalPath_AllTypes_types>::Vec,
-                    _,
                 >::into_val_for_client(v, &self.env)],
             ),
         );
@@ -3340,7 +3290,6 @@ impl<'a> ContractGlobalPathClient<'a> {
         &self,
         v: impl soroban_sdk::client::Arg<
             <ContractGlobalPath as __ContractGlobalPath_AllTypes_types>::Vec,
-            <<ContractGlobalPath as __ContractGlobalPath_AllTypes_types>::Vec as soroban_sdk::client::Type>::Arg,
         >,
     ) -> Result<
         Result<
@@ -3368,7 +3317,6 @@ impl<'a> ContractGlobalPathClient<'a> {
                 &self.env,
                 [soroban_sdk::client::Arg::<
                     <ContractGlobalPath as __ContractGlobalPath_AllTypes_types>::Vec,
-                    _,
                 >::into_val_for_client(v, &self.env)],
             ),
         );
@@ -3385,7 +3333,6 @@ impl<'a> ContractGlobalPathClient<'a> {
         &self,
         v: impl soroban_sdk::client::Arg<
             <ContractGlobalPath as __ContractGlobalPath_AllTypes_types>::Map,
-            <<ContractGlobalPath as __ContractGlobalPath_AllTypes_types>::Map as soroban_sdk::client::Type>::Arg,
         >,
     ) -> <<ContractGlobalPath as __ContractGlobalPath_AllTypes_types>::Map as soroban_sdk::client::Output>::Ok{
         let _call_scope = soroban_sdk::testutils::ClientCallScope::enter(&self.env, self.config);
@@ -3401,7 +3348,6 @@ impl<'a> ContractGlobalPathClient<'a> {
                 &self.env,
                 [soroban_sdk::client::Arg::<
                     <ContractGlobalPath as __ContractGlobalPath_AllTypes_types>::Map,
-                    _,
                 >::into_val_for_client(v, &self.env)],
             ),
         );
@@ -3416,7 +3362,6 @@ impl<'a> ContractGlobalPathClient<'a> {
         &self,
         v: impl soroban_sdk::client::Arg<
             <ContractGlobalPath as __ContractGlobalPath_AllTypes_types>::Map,
-            <<ContractGlobalPath as __ContractGlobalPath_AllTypes_types>::Map as soroban_sdk::client::Type>::Arg,
         >,
     ) -> Result<
         Result<
@@ -3444,7 +3389,6 @@ impl<'a> ContractGlobalPathClient<'a> {
                 &self.env,
                 [soroban_sdk::client::Arg::<
                     <ContractGlobalPath as __ContractGlobalPath_AllTypes_types>::Map,
-                    _,
                 >::into_val_for_client(v, &self.env)],
             ),
         );
@@ -3461,7 +3405,6 @@ impl<'a> ContractGlobalPathClient<'a> {
         &self,
         v: impl soroban_sdk::client::Arg<
             <ContractGlobalPath as __ContractGlobalPath_AllTypes_types>::Duration,
-            <<ContractGlobalPath as __ContractGlobalPath_AllTypes_types>::Duration as soroban_sdk::client::Type>::Arg,
         >,
     ) -> <<ContractGlobalPath as __ContractGlobalPath_AllTypes_types>::Duration as soroban_sdk::client::Output>::Ok{
         let _call_scope = soroban_sdk::testutils::ClientCallScope::enter(&self.env, self.config);
@@ -3473,7 +3416,6 @@ impl<'a> ContractGlobalPathClient<'a> {
                 &self.env,
                 [soroban_sdk::client::Arg::<
                     <ContractGlobalPath as __ContractGlobalPath_AllTypes_types>::Duration,
-                    _,
                 >::into_val_for_client(v, &self.env)],
             ),
         );
@@ -3488,7 +3430,6 @@ impl<'a> ContractGlobalPathClient<'a> {
         &self,
         v: impl soroban_sdk::client::Arg<
             <ContractGlobalPath as __ContractGlobalPath_AllTypes_types>::Duration,
-            <<ContractGlobalPath as __ContractGlobalPath_AllTypes_types>::Duration as soroban_sdk::client::Type>::Arg,
         >,
     ) -> Result<
         Result<
@@ -3512,7 +3453,6 @@ impl<'a> ContractGlobalPathClient<'a> {
                 &self.env,
                 [soroban_sdk::client::Arg::<
                     <ContractGlobalPath as __ContractGlobalPath_AllTypes_types>::Duration,
-                    _,
                 >::into_val_for_client(v, &self.env)],
             ),
         );
@@ -3529,7 +3469,6 @@ impl<'a> ContractGlobalPathClient<'a> {
         &self,
         v: impl soroban_sdk::client::Arg<
             <ContractGlobalPath as __ContractGlobalPath_AllTypes_types>::Timepoint,
-            <<ContractGlobalPath as __ContractGlobalPath_AllTypes_types>::Timepoint as soroban_sdk::client::Type>::Arg,
         >,
     ) -> <<ContractGlobalPath as __ContractGlobalPath_AllTypes_types>::Timepoint as soroban_sdk::client::Output>::Ok{
         let _call_scope = soroban_sdk::testutils::ClientCallScope::enter(&self.env, self.config);
@@ -3541,7 +3480,6 @@ impl<'a> ContractGlobalPathClient<'a> {
                 &self.env,
                 [soroban_sdk::client::Arg::<
                     <ContractGlobalPath as __ContractGlobalPath_AllTypes_types>::Timepoint,
-                    _,
                 >::into_val_for_client(v, &self.env)],
             ),
         );
@@ -3556,7 +3494,6 @@ impl<'a> ContractGlobalPathClient<'a> {
         &self,
         v: impl soroban_sdk::client::Arg<
             <ContractGlobalPath as __ContractGlobalPath_AllTypes_types>::Timepoint,
-            <<ContractGlobalPath as __ContractGlobalPath_AllTypes_types>::Timepoint as soroban_sdk::client::Type>::Arg,
         >,
     ) -> Result<
         Result<
@@ -3580,7 +3517,6 @@ impl<'a> ContractGlobalPathClient<'a> {
                 &self.env,
                 [soroban_sdk::client::Arg::<
                     <ContractGlobalPath as __ContractGlobalPath_AllTypes_types>::Timepoint,
-                    _,
                 >::into_val_for_client(v, &self.env)],
             ),
         );
@@ -3597,7 +3533,6 @@ impl<'a> ContractGlobalPathClient<'a> {
         &self,
         v: impl soroban_sdk::client::Arg<
             <ContractGlobalPath as __ContractGlobalPath_AllTypes_types>::I256,
-            <<ContractGlobalPath as __ContractGlobalPath_AllTypes_types>::I256 as soroban_sdk::client::Type>::Arg,
         >,
     ) -> <<ContractGlobalPath as __ContractGlobalPath_AllTypes_types>::I256 as soroban_sdk::client::Output>::Ok{
         let _call_scope = soroban_sdk::testutils::ClientCallScope::enter(&self.env, self.config);
@@ -3613,7 +3548,6 @@ impl<'a> ContractGlobalPathClient<'a> {
                 &self.env,
                 [soroban_sdk::client::Arg::<
                     <ContractGlobalPath as __ContractGlobalPath_AllTypes_types>::I256,
-                    _,
                 >::into_val_for_client(v, &self.env)],
             ),
         );
@@ -3628,7 +3562,6 @@ impl<'a> ContractGlobalPathClient<'a> {
         &self,
         v: impl soroban_sdk::client::Arg<
             <ContractGlobalPath as __ContractGlobalPath_AllTypes_types>::I256,
-            <<ContractGlobalPath as __ContractGlobalPath_AllTypes_types>::I256 as soroban_sdk::client::Type>::Arg,
         >,
     ) -> Result<
         Result<
@@ -3656,7 +3589,6 @@ impl<'a> ContractGlobalPathClient<'a> {
                 &self.env,
                 [soroban_sdk::client::Arg::<
                     <ContractGlobalPath as __ContractGlobalPath_AllTypes_types>::I256,
-                    _,
                 >::into_val_for_client(v, &self.env)],
             ),
         );
@@ -3673,7 +3605,6 @@ impl<'a> ContractGlobalPathClient<'a> {
         &self,
         v: impl soroban_sdk::client::Arg<
             <ContractGlobalPath as __ContractGlobalPath_AllTypes_types>::U256,
-            <<ContractGlobalPath as __ContractGlobalPath_AllTypes_types>::U256 as soroban_sdk::client::Type>::Arg,
         >,
     ) -> <<ContractGlobalPath as __ContractGlobalPath_AllTypes_types>::U256 as soroban_sdk::client::Output>::Ok{
         let _call_scope = soroban_sdk::testutils::ClientCallScope::enter(&self.env, self.config);
@@ -3689,7 +3620,6 @@ impl<'a> ContractGlobalPathClient<'a> {
                 &self.env,
                 [soroban_sdk::client::Arg::<
                     <ContractGlobalPath as __ContractGlobalPath_AllTypes_types>::U256,
-                    _,
                 >::into_val_for_client(v, &self.env)],
             ),
         );
@@ -3704,7 +3634,6 @@ impl<'a> ContractGlobalPathClient<'a> {
         &self,
         v: impl soroban_sdk::client::Arg<
             <ContractGlobalPath as __ContractGlobalPath_AllTypes_types>::U256,
-            <<ContractGlobalPath as __ContractGlobalPath_AllTypes_types>::U256 as soroban_sdk::client::Type>::Arg,
         >,
     ) -> Result<
         Result<
@@ -3732,7 +3661,6 @@ impl<'a> ContractGlobalPathClient<'a> {
                 &self.env,
                 [soroban_sdk::client::Arg::<
                     <ContractGlobalPath as __ContractGlobalPath_AllTypes_types>::U256,
-                    _,
                 >::into_val_for_client(v, &self.env)],
             ),
         );
@@ -3797,7 +3725,6 @@ impl<'a> ContractGlobalPathClient<'a> {
         &self,
         v: impl soroban_sdk::client::Arg<
             <ContractGlobalPath as __ContractGlobalPath_AllTypes_types>::MyStruct,
-            <<ContractGlobalPath as __ContractGlobalPath_AllTypes_types>::MyStruct as soroban_sdk::client::Type>::Arg,
         >,
     ) -> <<ContractGlobalPath as __ContractGlobalPath_AllTypes_types>::MyStruct as soroban_sdk::client::Output>::Ok{
         let _call_scope = soroban_sdk::testutils::ClientCallScope::enter(&self.env, self.config);
@@ -3809,7 +3736,6 @@ impl<'a> ContractGlobalPathClient<'a> {
                 &self.env,
                 [soroban_sdk::client::Arg::<
                     <ContractGlobalPath as __ContractGlobalPath_AllTypes_types>::MyStruct,
-                    _,
                 >::into_val_for_client(v, &self.env)],
             ),
         );
@@ -3824,7 +3750,6 @@ impl<'a> ContractGlobalPathClient<'a> {
         &self,
         v: impl soroban_sdk::client::Arg<
             <ContractGlobalPath as __ContractGlobalPath_AllTypes_types>::MyStruct,
-            <<ContractGlobalPath as __ContractGlobalPath_AllTypes_types>::MyStruct as soroban_sdk::client::Type>::Arg,
         >,
     ) -> Result<
         Result<
@@ -3848,7 +3773,6 @@ impl<'a> ContractGlobalPathClient<'a> {
                 &self.env,
                 [soroban_sdk::client::Arg::<
                     <ContractGlobalPath as __ContractGlobalPath_AllTypes_types>::MyStruct,
-                    _,
                 >::into_val_for_client(v, &self.env)],
             ),
         );
@@ -3865,7 +3789,6 @@ impl<'a> ContractGlobalPathClient<'a> {
         &self,
         v: impl soroban_sdk::client::Arg<
             <ContractGlobalPath as __ContractGlobalPath_AllTypes_types>::MyEnumUnit,
-            <<ContractGlobalPath as __ContractGlobalPath_AllTypes_types>::MyEnumUnit as soroban_sdk::client::Type>::Arg,
         >,
     ) -> <<ContractGlobalPath as __ContractGlobalPath_AllTypes_types>::MyEnumUnit as soroban_sdk::client::Output>::Ok{
         let _call_scope = soroban_sdk::testutils::ClientCallScope::enter(&self.env, self.config);
@@ -3877,7 +3800,6 @@ impl<'a> ContractGlobalPathClient<'a> {
                 &self.env,
                 [soroban_sdk::client::Arg::<
                     <ContractGlobalPath as __ContractGlobalPath_AllTypes_types>::MyEnumUnit,
-                    _,
                 >::into_val_for_client(v, &self.env)],
             ),
         );
@@ -3892,7 +3814,6 @@ impl<'a> ContractGlobalPathClient<'a> {
         &self,
         v: impl soroban_sdk::client::Arg<
             <ContractGlobalPath as __ContractGlobalPath_AllTypes_types>::MyEnumUnit,
-            <<ContractGlobalPath as __ContractGlobalPath_AllTypes_types>::MyEnumUnit as soroban_sdk::client::Type>::Arg,
         >,
     ) -> Result<
         Result<
@@ -3916,7 +3837,6 @@ impl<'a> ContractGlobalPathClient<'a> {
                 &self.env,
                 [soroban_sdk::client::Arg::<
                     <ContractGlobalPath as __ContractGlobalPath_AllTypes_types>::MyEnumUnit,
-                    _,
                 >::into_val_for_client(v, &self.env)],
             ),
         );
@@ -3933,7 +3853,6 @@ impl<'a> ContractGlobalPathClient<'a> {
         &self,
         v: impl soroban_sdk::client::Arg<
             <ContractGlobalPath as __ContractGlobalPath_AllTypes_types>::MyEnumVariants,
-            <<ContractGlobalPath as __ContractGlobalPath_AllTypes_types>::MyEnumVariants as soroban_sdk::client::Type>::Arg,
         >,
     ) -> <<ContractGlobalPath as __ContractGlobalPath_AllTypes_types>::MyEnumVariants as soroban_sdk::client::Output>::Ok{
         let _call_scope = soroban_sdk::testutils::ClientCallScope::enter(&self.env, self.config);
@@ -3945,7 +3864,6 @@ impl<'a> ContractGlobalPathClient<'a> {
                 &self.env,
                 [soroban_sdk::client::Arg::<
                     <ContractGlobalPath as __ContractGlobalPath_AllTypes_types>::MyEnumVariants,
-                    _,
                 >::into_val_for_client(v, &self.env)],
             ),
         );
@@ -3960,7 +3878,6 @@ impl<'a> ContractGlobalPathClient<'a> {
         &self,
         v: impl soroban_sdk::client::Arg<
             <ContractGlobalPath as __ContractGlobalPath_AllTypes_types>::MyEnumVariants,
-            <<ContractGlobalPath as __ContractGlobalPath_AllTypes_types>::MyEnumVariants as soroban_sdk::client::Type>::Arg,
         >,
     ) -> Result<
         Result<
@@ -3984,7 +3901,6 @@ impl<'a> ContractGlobalPathClient<'a> {
                 &self.env,
                 [soroban_sdk::client::Arg::<
                     <ContractGlobalPath as __ContractGlobalPath_AllTypes_types>::MyEnumVariants,
-                    _,
                 >::into_val_for_client(v, &self.env)],
             ),
         );

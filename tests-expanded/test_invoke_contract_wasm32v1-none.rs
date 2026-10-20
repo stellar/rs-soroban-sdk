@@ -106,9 +106,9 @@ impl<'a> ContractClient<'a> {
     /// Use [`Self::try_add_with`] to receive errors instead of panicking.
     pub fn add_with(
         &self,
-        x: impl soroban_sdk::client::Arg<i32, <i32 as soroban_sdk::client::Type>::Arg>,
-        y: impl soroban_sdk::client::Arg<i32, <i32 as soroban_sdk::client::Type>::Arg>,
-        contract_id: impl soroban_sdk::client::Arg<Address, <Address as soroban_sdk::client::Type>::Arg>,
+        x: impl soroban_sdk::client::Arg<i32>,
+        y: impl soroban_sdk::client::Arg<i32>,
+        contract_id: impl soroban_sdk::client::Arg<Address>,
     ) -> <i32 as soroban_sdk::client::Output>::Ok {
         use core::ops::Not;
         use soroban_sdk::{FromVal, IntoVal};
@@ -122,9 +122,9 @@ impl<'a> ContractClient<'a> {
             ::soroban_sdk::Vec::from_array(
                 &self.env,
                 [
-                    soroban_sdk::client::Arg::<i32, _>::into_val_for_client(x, &self.env),
-                    soroban_sdk::client::Arg::<i32, _>::into_val_for_client(y, &self.env),
-                    soroban_sdk::client::Arg::<Address, _>::into_val_for_client(
+                    soroban_sdk::client::Arg::<i32>::into_val_for_client(x, &self.env),
+                    soroban_sdk::client::Arg::<i32>::into_val_for_client(y, &self.env),
+                    soroban_sdk::client::Arg::<Address>::into_val_for_client(
                         contract_id,
                         &self.env,
                     ),
@@ -140,9 +140,9 @@ impl<'a> ContractClient<'a> {
     /// Returns an error if the invoked contract returns an error or panics. A panic in the invoked contract is caught and returned as an error rather than panicking the caller.
     pub fn try_add_with(
         &self,
-        x: impl soroban_sdk::client::Arg<i32, <i32 as soroban_sdk::client::Type>::Arg>,
-        y: impl soroban_sdk::client::Arg<i32, <i32 as soroban_sdk::client::Type>::Arg>,
-        contract_id: impl soroban_sdk::client::Arg<Address, <Address as soroban_sdk::client::Type>::Arg>,
+        x: impl soroban_sdk::client::Arg<i32>,
+        y: impl soroban_sdk::client::Arg<i32>,
+        contract_id: impl soroban_sdk::client::Arg<Address>,
     ) -> Result<
         Result<
             <i32 as soroban_sdk::client::Output>::Ok,
@@ -164,9 +164,9 @@ impl<'a> ContractClient<'a> {
             ::soroban_sdk::Vec::from_array(
                 &self.env,
                 [
-                    soroban_sdk::client::Arg::<i32, _>::into_val_for_client(x, &self.env),
-                    soroban_sdk::client::Arg::<i32, _>::into_val_for_client(y, &self.env),
-                    soroban_sdk::client::Arg::<Address, _>::into_val_for_client(
+                    soroban_sdk::client::Arg::<i32>::into_val_for_client(x, &self.env),
+                    soroban_sdk::client::Arg::<i32>::into_val_for_client(y, &self.env),
+                    soroban_sdk::client::Arg::<Address>::into_val_for_client(
                         contract_id,
                         &self.env,
                     ),
@@ -320,8 +320,8 @@ impl<'a> AddContractClient<'a> {
     /// Use [`Self::try_add`] to receive errors instead of panicking.
     pub fn add(
         &self,
-        a: impl soroban_sdk::client::Arg<i32, <i32 as soroban_sdk::client::Type>::Arg>,
-        b: impl soroban_sdk::client::Arg<i32, <i32 as soroban_sdk::client::Type>::Arg>,
+        a: impl soroban_sdk::client::Arg<i32>,
+        b: impl soroban_sdk::client::Arg<i32>,
     ) -> <i32 as soroban_sdk::client::Output>::Ok {
         use core::ops::Not;
         use soroban_sdk::{FromVal, IntoVal};
@@ -335,8 +335,8 @@ impl<'a> AddContractClient<'a> {
             ::soroban_sdk::Vec::from_array(
                 &self.env,
                 [
-                    soroban_sdk::client::Arg::<i32, _>::into_val_for_client(a, &self.env),
-                    soroban_sdk::client::Arg::<i32, _>::into_val_for_client(b, &self.env),
+                    soroban_sdk::client::Arg::<i32>::into_val_for_client(a, &self.env),
+                    soroban_sdk::client::Arg::<i32>::into_val_for_client(b, &self.env),
                 ],
             ),
         );
@@ -349,8 +349,8 @@ impl<'a> AddContractClient<'a> {
     /// Returns an error if the invoked contract returns an error or panics. A panic in the invoked contract is caught and returned as an error rather than panicking the caller.
     pub fn try_add(
         &self,
-        a: impl soroban_sdk::client::Arg<i32, <i32 as soroban_sdk::client::Type>::Arg>,
-        b: impl soroban_sdk::client::Arg<i32, <i32 as soroban_sdk::client::Type>::Arg>,
+        a: impl soroban_sdk::client::Arg<i32>,
+        b: impl soroban_sdk::client::Arg<i32>,
     ) -> Result<
         Result<
             <i32 as soroban_sdk::client::Output>::Ok,
@@ -372,8 +372,8 @@ impl<'a> AddContractClient<'a> {
             ::soroban_sdk::Vec::from_array(
                 &self.env,
                 [
-                    soroban_sdk::client::Arg::<i32, _>::into_val_for_client(a, &self.env),
-                    soroban_sdk::client::Arg::<i32, _>::into_val_for_client(b, &self.env),
+                    soroban_sdk::client::Arg::<i32>::into_val_for_client(a, &self.env),
+                    soroban_sdk::client::Arg::<i32>::into_val_for_client(b, &self.env),
                 ],
             ),
         );

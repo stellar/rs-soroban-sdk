@@ -274,7 +274,7 @@ impl<'a> ContractClient<'a> {
     /// Use [`Self::try_void_fn`] to receive errors instead of panicking.
     pub fn void_fn(
         &self,
-        _void_arg: impl soroban_sdk::client::Arg<(), <() as soroban_sdk::client::Type>::Arg>,
+        _void_arg: impl soroban_sdk::client::Arg<()>,
     ) -> <() as soroban_sdk::client::Output>::Ok {
         let _call_scope = soroban_sdk::testutils::ClientCallScope::enter(&self.env, self.config);
         use soroban_sdk::{FromVal, IntoVal};
@@ -287,7 +287,7 @@ impl<'a> ContractClient<'a> {
             },
             ::soroban_sdk::Vec::from_array(
                 &self.env,
-                [soroban_sdk::client::Arg::<(), _>::into_val_for_client(
+                [soroban_sdk::client::Arg::<()>::into_val_for_client(
                     _void_arg, &self.env,
                 )],
             ),
@@ -301,7 +301,7 @@ impl<'a> ContractClient<'a> {
     /// Returns an error if the invoked contract returns an error or panics. A panic in the invoked contract is caught and returned as an error rather than panicking the caller.
     pub fn try_void_fn(
         &self,
-        _void_arg: impl soroban_sdk::client::Arg<(), <() as soroban_sdk::client::Type>::Arg>,
+        _void_arg: impl soroban_sdk::client::Arg<()>,
     ) -> Result<
         Result<
             <() as soroban_sdk::client::Output>::Ok,
@@ -323,7 +323,7 @@ impl<'a> ContractClient<'a> {
             },
             ::soroban_sdk::Vec::from_array(
                 &self.env,
-                [soroban_sdk::client::Arg::<(), _>::into_val_for_client(
+                [soroban_sdk::client::Arg::<()>::into_val_for_client(
                     _void_arg, &self.env,
                 )],
             ),
@@ -339,7 +339,7 @@ impl<'a> ContractClient<'a> {
     /// Use [`Self::try_tuple1`] to receive errors instead of panicking.
     pub fn tuple1(
         &self,
-        arg: impl soroban_sdk::client::Arg<(u32,), <(u32,) as soroban_sdk::client::Type>::Arg>,
+        arg: impl soroban_sdk::client::Arg<(u32,)>,
     ) -> <(u32,) as soroban_sdk::client::Output>::Ok {
         let _call_scope = soroban_sdk::testutils::ClientCallScope::enter(&self.env, self.config);
         use soroban_sdk::{FromVal, IntoVal};
@@ -352,7 +352,7 @@ impl<'a> ContractClient<'a> {
             },
             ::soroban_sdk::Vec::from_array(
                 &self.env,
-                [soroban_sdk::client::Arg::<(u32,), _>::into_val_for_client(
+                [soroban_sdk::client::Arg::<(u32,)>::into_val_for_client(
                     arg, &self.env,
                 )],
             ),
@@ -366,7 +366,7 @@ impl<'a> ContractClient<'a> {
     /// Returns an error if the invoked contract returns an error or panics. A panic in the invoked contract is caught and returned as an error rather than panicking the caller.
     pub fn try_tuple1(
         &self,
-        arg: impl soroban_sdk::client::Arg<(u32,), <(u32,) as soroban_sdk::client::Type>::Arg>,
+        arg: impl soroban_sdk::client::Arg<(u32,)>,
     ) -> Result<
         Result<
             <(u32,) as soroban_sdk::client::Output>::Ok,
@@ -388,7 +388,7 @@ impl<'a> ContractClient<'a> {
             },
             ::soroban_sdk::Vec::from_array(
                 &self.env,
-                [soroban_sdk::client::Arg::<(u32,), _>::into_val_for_client(
+                [soroban_sdk::client::Arg::<(u32,)>::into_val_for_client(
                     arg, &self.env,
                 )],
             ),
@@ -404,7 +404,7 @@ impl<'a> ContractClient<'a> {
     /// Use [`Self::try_tuple2`] to receive errors instead of panicking.
     pub fn tuple2(
         &self,
-        arg: impl soroban_sdk::client::Arg<(u32, i64), <(u32, i64) as soroban_sdk::client::Type>::Arg>,
+        arg: impl soroban_sdk::client::Arg<(u32, i64)>,
     ) -> <(u32, i64) as soroban_sdk::client::Output>::Ok {
         let _call_scope = soroban_sdk::testutils::ClientCallScope::enter(&self.env, self.config);
         use soroban_sdk::{FromVal, IntoVal};
@@ -417,7 +417,9 @@ impl<'a> ContractClient<'a> {
             },
             ::soroban_sdk::Vec::from_array(
                 &self.env,
-                [soroban_sdk::client::Arg::<(u32, i64), _>::into_val_for_client(arg, &self.env)],
+                [soroban_sdk::client::Arg::<(u32, i64)>::into_val_for_client(
+                    arg, &self.env,
+                )],
             ),
         );
         res
@@ -429,7 +431,7 @@ impl<'a> ContractClient<'a> {
     /// Returns an error if the invoked contract returns an error or panics. A panic in the invoked contract is caught and returned as an error rather than panicking the caller.
     pub fn try_tuple2(
         &self,
-        arg: impl soroban_sdk::client::Arg<(u32, i64), <(u32, i64) as soroban_sdk::client::Type>::Arg>,
+        arg: impl soroban_sdk::client::Arg<(u32, i64)>,
     ) -> Result<
         Result<
             <(u32, i64) as soroban_sdk::client::Output>::Ok,
@@ -451,7 +453,9 @@ impl<'a> ContractClient<'a> {
             },
             ::soroban_sdk::Vec::from_array(
                 &self.env,
-                [soroban_sdk::client::Arg::<(u32, i64), _>::into_val_for_client(arg, &self.env)],
+                [soroban_sdk::client::Arg::<(u32, i64)>::into_val_for_client(
+                    arg, &self.env,
+                )],
             ),
         );
         res
@@ -756,7 +760,7 @@ mod test {
             /// Use [`Self::try_tuple1`] to receive errors instead of panicking.
             pub fn tuple1(
                 &self,
-                arg: impl soroban_sdk::client::Arg<(u32,), <(u32,) as soroban_sdk::client::Type>::Arg>,
+                arg: impl soroban_sdk::client::Arg<(u32,)>,
             ) -> <(u32,) as soroban_sdk::client::Output>::Ok {
                 let _call_scope =
                     soroban_sdk::testutils::ClientCallScope::enter(&self.env, self.config);
@@ -770,7 +774,7 @@ mod test {
                     },
                     ::soroban_sdk::Vec::from_array(
                         &self.env,
-                        [soroban_sdk::client::Arg::<(u32,), _>::into_val_for_client(
+                        [soroban_sdk::client::Arg::<(u32,)>::into_val_for_client(
                             arg, &self.env,
                         )],
                     ),
@@ -784,7 +788,7 @@ mod test {
             /// Returns an error if the invoked contract returns an error or panics. A panic in the invoked contract is caught and returned as an error rather than panicking the caller.
             pub fn try_tuple1(
                 &self,
-                arg: impl soroban_sdk::client::Arg<(u32,), <(u32,) as soroban_sdk::client::Type>::Arg>,
+                arg: impl soroban_sdk::client::Arg<(u32,)>,
             ) -> Result<
                 Result<
                     <(u32,) as soroban_sdk::client::Output>::Ok,
@@ -807,7 +811,7 @@ mod test {
                     },
                     ::soroban_sdk::Vec::from_array(
                         &self.env,
-                        [soroban_sdk::client::Arg::<(u32,), _>::into_val_for_client(
+                        [soroban_sdk::client::Arg::<(u32,)>::into_val_for_client(
                             arg, &self.env,
                         )],
                     ),
@@ -823,10 +827,7 @@ mod test {
             /// Use [`Self::try_tuple2`] to receive errors instead of panicking.
             pub fn tuple2(
                 &self,
-                arg: impl soroban_sdk::client::Arg<
-                    (u32, i64),
-                    <(u32, i64) as soroban_sdk::client::Type>::Arg,
-                >,
+                arg: impl soroban_sdk::client::Arg<(u32, i64)>,
             ) -> <(u32, i64) as soroban_sdk::client::Output>::Ok {
                 let _call_scope =
                     soroban_sdk::testutils::ClientCallScope::enter(&self.env, self.config);
@@ -840,11 +841,9 @@ mod test {
                     },
                     ::soroban_sdk::Vec::from_array(
                         &self.env,
-                        [
-                            soroban_sdk::client::Arg::<(u32, i64), _>::into_val_for_client(
-                                arg, &self.env,
-                            ),
-                        ],
+                        [soroban_sdk::client::Arg::<(u32, i64)>::into_val_for_client(
+                            arg, &self.env,
+                        )],
                     ),
                 );
                 res
@@ -856,10 +855,7 @@ mod test {
             /// Returns an error if the invoked contract returns an error or panics. A panic in the invoked contract is caught and returned as an error rather than panicking the caller.
             pub fn try_tuple2(
                 &self,
-                arg: impl soroban_sdk::client::Arg<
-                    (u32, i64),
-                    <(u32, i64) as soroban_sdk::client::Type>::Arg,
-                >,
+                arg: impl soroban_sdk::client::Arg<(u32, i64)>,
             ) -> Result<
                 Result<
                     <(u32, i64) as soroban_sdk::client::Output>::Ok,
@@ -882,11 +878,9 @@ mod test {
                     },
                     ::soroban_sdk::Vec::from_array(
                         &self.env,
-                        [
-                            soroban_sdk::client::Arg::<(u32, i64), _>::into_val_for_client(
-                                arg, &self.env,
-                            ),
-                        ],
+                        [soroban_sdk::client::Arg::<(u32, i64)>::into_val_for_client(
+                            arg, &self.env,
+                        )],
                     ),
                 );
                 res
@@ -900,7 +894,7 @@ mod test {
             /// Use [`Self::try_void_fn`] to receive errors instead of panicking.
             pub fn void_fn(
                 &self,
-                void_arg: impl soroban_sdk::client::Arg<(), <() as soroban_sdk::client::Type>::Arg>,
+                void_arg: impl soroban_sdk::client::Arg<()>,
             ) -> <() as soroban_sdk::client::Output>::Ok {
                 let _call_scope =
                     soroban_sdk::testutils::ClientCallScope::enter(&self.env, self.config);
@@ -914,7 +908,7 @@ mod test {
                     },
                     ::soroban_sdk::Vec::from_array(
                         &self.env,
-                        [soroban_sdk::client::Arg::<(), _>::into_val_for_client(
+                        [soroban_sdk::client::Arg::<()>::into_val_for_client(
                             void_arg, &self.env,
                         )],
                     ),
@@ -928,7 +922,7 @@ mod test {
             /// Returns an error if the invoked contract returns an error or panics. A panic in the invoked contract is caught and returned as an error rather than panicking the caller.
             pub fn try_void_fn(
                 &self,
-                void_arg: impl soroban_sdk::client::Arg<(), <() as soroban_sdk::client::Type>::Arg>,
+                void_arg: impl soroban_sdk::client::Arg<()>,
             ) -> Result<
                 Result<
                     <() as soroban_sdk::client::Output>::Ok,
@@ -951,7 +945,7 @@ mod test {
                     },
                     ::soroban_sdk::Vec::from_array(
                         &self.env,
-                        [soroban_sdk::client::Arg::<(), _>::into_val_for_client(
+                        [soroban_sdk::client::Arg::<()>::into_val_for_client(
                             void_arg, &self.env,
                         )],
                     ),

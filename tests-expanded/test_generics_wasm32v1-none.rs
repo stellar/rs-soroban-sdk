@@ -99,9 +99,9 @@ impl<'a> ContractClient<'a> {
     /// Use [`Self::try_exec`] to receive errors instead of panicking.
     pub fn exec(
         &self,
-        i1: impl soroban_sdk::client::Arg<u32, <u32 as soroban_sdk::client::Type>::Arg>,
-        i2: impl soroban_sdk::client::Arg<u32, <u32 as soroban_sdk::client::Type>::Arg>,
-        i3: impl soroban_sdk::client::Arg<u32, <u32 as soroban_sdk::client::Type>::Arg>,
+        i1: impl soroban_sdk::client::Arg<u32>,
+        i2: impl soroban_sdk::client::Arg<u32>,
+        i3: impl soroban_sdk::client::Arg<u32>,
     ) -> <u32 as soroban_sdk::client::Output>::Ok {
         use core::ops::Not;
         use soroban_sdk::{FromVal, IntoVal};
@@ -115,9 +115,9 @@ impl<'a> ContractClient<'a> {
             ::soroban_sdk::Vec::from_array(
                 &self.env,
                 [
-                    soroban_sdk::client::Arg::<u32, _>::into_val_for_client(i1, &self.env),
-                    soroban_sdk::client::Arg::<u32, _>::into_val_for_client(i2, &self.env),
-                    soroban_sdk::client::Arg::<u32, _>::into_val_for_client(i3, &self.env),
+                    soroban_sdk::client::Arg::<u32>::into_val_for_client(i1, &self.env),
+                    soroban_sdk::client::Arg::<u32>::into_val_for_client(i2, &self.env),
+                    soroban_sdk::client::Arg::<u32>::into_val_for_client(i3, &self.env),
                 ],
             ),
         );
@@ -130,9 +130,9 @@ impl<'a> ContractClient<'a> {
     /// Returns an error if the invoked contract returns an error or panics. A panic in the invoked contract is caught and returned as an error rather than panicking the caller.
     pub fn try_exec(
         &self,
-        i1: impl soroban_sdk::client::Arg<u32, <u32 as soroban_sdk::client::Type>::Arg>,
-        i2: impl soroban_sdk::client::Arg<u32, <u32 as soroban_sdk::client::Type>::Arg>,
-        i3: impl soroban_sdk::client::Arg<u32, <u32 as soroban_sdk::client::Type>::Arg>,
+        i1: impl soroban_sdk::client::Arg<u32>,
+        i2: impl soroban_sdk::client::Arg<u32>,
+        i3: impl soroban_sdk::client::Arg<u32>,
     ) -> Result<
         Result<
             <u32 as soroban_sdk::client::Output>::Ok,
@@ -154,9 +154,9 @@ impl<'a> ContractClient<'a> {
             ::soroban_sdk::Vec::from_array(
                 &self.env,
                 [
-                    soroban_sdk::client::Arg::<u32, _>::into_val_for_client(i1, &self.env),
-                    soroban_sdk::client::Arg::<u32, _>::into_val_for_client(i2, &self.env),
-                    soroban_sdk::client::Arg::<u32, _>::into_val_for_client(i3, &self.env),
+                    soroban_sdk::client::Arg::<u32>::into_val_for_client(i1, &self.env),
+                    soroban_sdk::client::Arg::<u32>::into_val_for_client(i2, &self.env),
+                    soroban_sdk::client::Arg::<u32>::into_val_for_client(i3, &self.env),
                 ],
             ),
         );

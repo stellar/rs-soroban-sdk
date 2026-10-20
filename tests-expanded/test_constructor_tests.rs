@@ -877,7 +877,7 @@ impl<'a> ContractClient<'a> {
     /// Use [`Self::try_get_data`] to receive errors instead of panicking.
     pub fn get_data(
         &self,
-        key: impl soroban_sdk::client::Arg<DataKey, <DataKey as soroban_sdk::client::Type>::Arg>,
+        key: impl soroban_sdk::client::Arg<DataKey>,
     ) -> <Option<i64> as soroban_sdk::client::Output>::Ok {
         let _call_scope = soroban_sdk::testutils::ClientCallScope::enter(&self.env, self.config);
         use soroban_sdk::{FromVal, IntoVal};
@@ -890,7 +890,7 @@ impl<'a> ContractClient<'a> {
             },
             ::soroban_sdk::Vec::from_array(
                 &self.env,
-                [soroban_sdk::client::Arg::<DataKey, _>::into_val_for_client(
+                [soroban_sdk::client::Arg::<DataKey>::into_val_for_client(
                     key, &self.env,
                 )],
             ),
@@ -904,7 +904,7 @@ impl<'a> ContractClient<'a> {
     /// Returns an error if the invoked contract returns an error or panics. A panic in the invoked contract is caught and returned as an error rather than panicking the caller.
     pub fn try_get_data(
         &self,
-        key: impl soroban_sdk::client::Arg<DataKey, <DataKey as soroban_sdk::client::Type>::Arg>,
+        key: impl soroban_sdk::client::Arg<DataKey>,
     ) -> Result<
         Result<
             <Option<i64> as soroban_sdk::client::Output>::Ok,
@@ -926,7 +926,7 @@ impl<'a> ContractClient<'a> {
             },
             ::soroban_sdk::Vec::from_array(
                 &self.env,
-                [soroban_sdk::client::Arg::<DataKey, _>::into_val_for_client(
+                [soroban_sdk::client::Arg::<DataKey>::into_val_for_client(
                     key, &self.env,
                 )],
             ),

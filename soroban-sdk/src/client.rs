@@ -47,8 +47,12 @@ pub trait Type {
 }
 
 /// Trait for the values a client function accepts for an argument of type `T`,
-/// which are decided by `Mode`, the type's [`Type::Arg`].
-pub trait Arg<T, Mode> {
+/// which are decided by the type's [`Type::Arg`].
+///
+/// `Mode` defaults to the type's [`Type::Arg`] and is only a parameter so that
+/// the impls for each mode do not overlap, as the compiler does not use an
+/// associated type to tell impls apart.
+pub trait Arg<T: Type, Mode = <T as Type>::Arg> {
     fn into_val_for_client(self, env: &Env) -> Val;
 }
 
@@ -56,7 +60,7 @@ pub trait Arg<T, Mode> {
 // reference is accepted as it would be by deref coercion.
 impl<'a, T, R> Arg<T, ArgByRef> for &'a R
 where
-    T: IntoVal<Env, Val>,
+    T: Type + IntoVal<Env, Val>,
     R: ?Sized + Borrow<T>,
 {
     fn into_val_for_client(self, env: &Env) -> Val {
@@ -67,7 +71,7 @@ where
 
 impl<T, X> Arg<T, ArgByInto> for X
 where
-    T: IntoVal<Env, Val>,
+    T: Type + IntoVal<Env, Val>,
     X: Into<T>,
 {
     fn into_val_for_client(self, env: &Env) -> Val {
