@@ -1077,7 +1077,7 @@ mod test_with_wasm {
                 );
         }
         impl soroban_sdk::client::Type for ContractExecutableRef {
-            type Arg = soroban_sdk::client::ArgByRef;
+            type Arg = soroban_sdk::client::ArgByBorrow;
             type Ret = Self;
         }
         #[doc(hidden)]
@@ -1635,7 +1635,7 @@ mod test_with_wasm {
                 );
         }
         impl soroban_sdk::client::Type for ContractContext {
-            type Arg = soroban_sdk::client::ArgByRef;
+            type Arg = soroban_sdk::client::ArgByBorrow;
             type Ret = Self;
         }
         #[doc(hidden)]
@@ -2256,7 +2256,7 @@ mod test_with_wasm {
                 );
         }
         impl soroban_sdk::client::Type for SubContractInvocation {
-            type Arg = soroban_sdk::client::ArgByRef;
+            type Arg = soroban_sdk::client::ArgByBorrow;
             type Ret = Self;
         }
         #[doc(hidden)]
@@ -2807,7 +2807,7 @@ mod test_with_wasm {
                 );
         }
         impl soroban_sdk::client::Type for CreateContractHostFnContext {
-            type Arg = soroban_sdk::client::ArgByRef;
+            type Arg = soroban_sdk::client::ArgByBorrow;
             type Ret = Self;
         }
         #[doc(hidden)]
@@ -3393,7 +3393,7 @@ mod test_with_wasm {
                 );
         }
         impl soroban_sdk::client::Type for CreateContractWithConstructorHostFnContext {
-            type Arg = soroban_sdk::client::ArgByRef;
+            type Arg = soroban_sdk::client::ArgByBorrow;
             type Ret = Self;
         }
         #[doc(hidden)]
@@ -4093,7 +4093,7 @@ mod test_with_wasm {
                 );
         }
         impl soroban_sdk::client::Type for ContractExecutable {
-            type Arg = soroban_sdk::client::ArgByRef;
+            type Arg = soroban_sdk::client::ArgByBorrow;
             type Ret = Self;
         }
         #[doc(hidden)]
@@ -4808,7 +4808,7 @@ mod test_with_wasm {
                 );
         }
         impl soroban_sdk::client::Type for Context {
-            type Arg = soroban_sdk::client::ArgByRef;
+            type Arg = soroban_sdk::client::ArgByBorrow;
             type Ret = Self;
         }
         #[doc(hidden)]
@@ -5631,7 +5631,7 @@ mod test_with_wasm {
                 );
         }
         impl soroban_sdk::client::Type for InvokerContractAuthEntry {
-            type Arg = soroban_sdk::client::ArgByRef;
+            type Arg = soroban_sdk::client::ArgByBorrow;
             type Ret = Self;
         }
         #[doc(hidden)]
@@ -6452,7 +6452,7 @@ mod test_with_wasm {
                 );
         }
         impl soroban_sdk::client::Type for Executable {
-            type Arg = soroban_sdk::client::ArgByRef;
+            type Arg = soroban_sdk::client::ArgByBorrow;
             type Ret = Self;
         }
         #[doc(hidden)]

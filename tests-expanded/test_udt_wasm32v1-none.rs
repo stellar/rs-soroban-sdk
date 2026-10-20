@@ -76,7 +76,7 @@ impl soroban_sdk::SpecTypeDef for UdtEnum2 {
         });
 }
 impl soroban_sdk::client::Type for UdtEnum2 {
-    type Arg = soroban_sdk::client::ArgByRef;
+    type Arg = soroban_sdk::client::ArgByBorrow;
     type Ret = Self;
 }
 #[doc(hidden)]
@@ -249,7 +249,7 @@ impl soroban_sdk::SpecTypeDef for UdtEnum {
         });
 }
 impl soroban_sdk::client::Type for UdtEnum {
-    type Arg = soroban_sdk::client::ArgByRef;
+    type Arg = soroban_sdk::client::ArgByBorrow;
     type Ret = Self;
 }
 #[doc(hidden)]
@@ -495,7 +495,7 @@ impl soroban_sdk::SpecTypeDef for UdtTuple {
         });
 }
 impl soroban_sdk::client::Type for UdtTuple {
-    type Arg = soroban_sdk::client::ArgByRef;
+    type Arg = soroban_sdk::client::ArgByBorrow;
     type Ret = Self;
 }
 #[doc(hidden)]
@@ -662,7 +662,7 @@ impl soroban_sdk::SpecTypeDef for UdtStruct {
         });
 }
 impl soroban_sdk::client::Type for UdtStruct {
-    type Arg = soroban_sdk::client::ArgByRef;
+    type Arg = soroban_sdk::client::ArgByBorrow;
     type Ret = Self;
 }
 #[doc(hidden)]
@@ -838,7 +838,7 @@ impl soroban_sdk::SpecTypeDef for UdtRecursive {
         });
 }
 impl soroban_sdk::client::Type for UdtRecursive {
-    type Arg = soroban_sdk::client::ArgByRef;
+    type Arg = soroban_sdk::client::ArgByBorrow;
     type Ret = Self;
 }
 #[doc(hidden)]
@@ -1006,7 +1006,7 @@ impl soroban_sdk::SpecTypeDef for RecursiveToEnum {
         });
 }
 impl soroban_sdk::client::Type for RecursiveToEnum {
-    type Arg = soroban_sdk::client::ArgByRef;
+    type Arg = soroban_sdk::client::ArgByBorrow;
     type Ret = Self;
 }
 #[doc(hidden)]
@@ -1181,7 +1181,7 @@ impl soroban_sdk::SpecTypeDef for RecursiveEnum {
         });
 }
 impl soroban_sdk::client::Type for RecursiveEnum {
-    type Arg = soroban_sdk::client::ArgByRef;
+    type Arg = soroban_sdk::client::ArgByBorrow;
     type Ret = Self;
 }
 #[doc(hidden)]

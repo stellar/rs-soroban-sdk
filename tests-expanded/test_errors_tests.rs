@@ -163,7 +163,7 @@ impl soroban_sdk::SpecTypeDef for Flag {
         });
 }
 impl soroban_sdk::client::Type for Flag {
-    type Arg = soroban_sdk::client::ArgByRef;
+    type Arg = soroban_sdk::client::ArgByBorrow;
     type Ret = Self;
 }
 #[doc(hidden)]
@@ -583,7 +583,7 @@ impl soroban_sdk::SpecTypeDef for Error {
         });
 }
 impl soroban_sdk::client::Type for Error {
-    type Arg = soroban_sdk::client::ArgByRef;
+    type Arg = soroban_sdk::client::ArgByBorrow;
     type Ret = Self;
 }
 #[doc(hidden)]

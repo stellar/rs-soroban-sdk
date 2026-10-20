@@ -10,12 +10,12 @@ use crate::{
     symbol, syn_ext,
 };
 
-/// Emits the `client::Type` impl for a user-defined type, which a client takes by
-/// reference and returns as itself.
+/// Emits the `client::Type` impl for a user-defined type, which a client takes as
+/// a borrow and returns as itself.
 pub fn client_type_gen(path: &Path, ident: &Ident) -> TokenStream {
     quote! {
         impl #path::client::Type for #ident {
-            type Arg = #path::client::ArgByRef;
+            type Arg = #path::client::ArgByBorrow;
             type Ret = Self;
         }
     }

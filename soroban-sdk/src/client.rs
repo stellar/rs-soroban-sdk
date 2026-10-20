@@ -23,9 +23,9 @@ use crate::{
     Timepoint, Val, Vec, I256, U256,
 };
 
-/// Marker for [`Type::Arg`] that a client takes the argument by
-/// reference, as `&T`.
-pub struct ArgByRef;
+/// Marker for [`Type::Arg`] that a client takes the argument as a reference
+/// to any value that borrows as it, such as `&T` or `&&T`.
+pub struct ArgByBorrow;
 
 /// Marker for [`Type::Arg`] that a client takes the argument as any value
 /// that converts into it, as `impl Into<T>`.
@@ -39,7 +39,7 @@ pub struct ArgByInto;
     note = "types used in contract functions must be supported by contract clients, such as types marked `#[contracttype]`"
 )]
 pub trait Type {
-    /// How a client takes the type as an argument, either [`ArgByRef`]
+    /// How a client takes the type as an argument, either [`ArgByBorrow`]
     /// or [`ArgByInto`].
     type Arg;
     /// The type a client returns for the type.
@@ -58,7 +58,7 @@ pub trait Arg<T: Type, Mode = <T as Type>::Arg> {
 
 // Any reference that borrows as the type is accepted, so that a reference to a
 // reference is accepted as it would be by deref coercion.
-impl<'a, T, R> Arg<T, ArgByRef> for &'a R
+impl<'a, T, R> Arg<T, ArgByBorrow> for &'a R
 where
     T: Type + IntoVal<Env, Val>,
     R: ?Sized + Borrow<T>,
@@ -103,7 +103,7 @@ macro_rules! impl_client_type {
     ($($t:ty),* $(,)?) => {
         $(
             impl Type for $t {
-                type Arg = ArgByRef;
+                type Arg = ArgByBorrow;
                 type Ret = $t;
             }
         )*
@@ -148,36 +148,36 @@ impl Type for MuxedAddress {
 }
 
 impl<const N: usize> Type for BytesN<N> {
-    type Arg = ArgByRef;
+    type Arg = ArgByBorrow;
     type Ret = BytesN<N>;
 }
 
 // A hash can only be constructed by the host, so a client receives the bytes of
 // a returned hash.
 impl<const N: usize> Type for Hash<N> {
-    type Arg = ArgByRef;
+    type Arg = ArgByBorrow;
     type Ret = BytesN<N>;
 }
 
 impl<T: Type> Type for Option<T> {
-    type Arg = ArgByRef;
+    type Arg = ArgByBorrow;
     type Ret = Option<T::Ret>;
 }
 
 impl<T: Type> Type for Vec<T> {
-    type Arg = ArgByRef;
+    type Arg = ArgByBorrow;
     type Ret = Vec<T::Ret>;
 }
 
 impl<K: Type, V: Type> Type for Map<K, V> {
-    type Arg = ArgByRef;
+    type Arg = ArgByBorrow;
     type Ret = Map<K::Ret, V::Ret>;
 }
 
 macro_rules! impl_client_type_for_tuple {
     ($($t:ident),+) => {
         impl<$($t: Type),+> Type for ($($t,)+) {
-            type Arg = ArgByRef;
+            type Arg = ArgByBorrow;
             type Ret = ($($t::Ret,)+);
         }
     };

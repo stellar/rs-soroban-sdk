@@ -56,7 +56,7 @@ impl soroban_sdk::SpecTypeDef for DataKey {
         });
 }
 impl soroban_sdk::client::Type for DataKey {
-    type Arg = soroban_sdk::client::ArgByRef;
+    type Arg = soroban_sdk::client::ArgByBorrow;
     type Ret = Self;
 }
 #[doc(hidden)]
