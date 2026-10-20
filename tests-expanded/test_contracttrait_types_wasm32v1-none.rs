@@ -80,7 +80,7 @@ pub mod traits {
             );
     }
     impl soroban_sdk::client::Type for Point {
-        type Arg = soroban_sdk::client::ArgByBorrow;
+        type Arg = soroban_sdk::client::Borrowed;
         type Ret = Self;
     }
     #[doc(hidden)]
@@ -237,7 +237,7 @@ pub mod traits {
             );
     }
     impl soroban_sdk::client::Type for Error {
-        type Arg = soroban_sdk::client::ArgByBorrow;
+        type Arg = soroban_sdk::client::Borrowed;
         type Ret = Self;
     }
     #[doc(hidden)]

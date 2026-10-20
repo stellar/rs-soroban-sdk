@@ -15,7 +15,7 @@ use crate::{
 pub fn client_type_gen(path: &Path, ident: &Ident) -> TokenStream {
     quote! {
         impl #path::client::Type for #ident {
-            type Arg = #path::client::ArgByBorrow;
+            type Arg = #path::client::Borrowed;
             type Ret = Self;
         }
     }
