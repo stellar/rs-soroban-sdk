@@ -73,6 +73,9 @@ impl soroban_sdk::SpecTypeDef for StructA {
             ),
         });
 }
+impl soroban_sdk::client::Type for StructA {
+    type Ret = Self;
+}
 #[doc(hidden)]
 #[allow(dead_code)]
 static __SPEC_XDR_TYPE_STRUCTA: [u8; StructA::spec_xdr().len()] = StructA::spec_xdr();
@@ -548,6 +551,9 @@ impl soroban_sdk::SpecTypeDef for StructB {
                 <Self as soroban_sdk::SpecName>::SPEC_NAME,
             ),
         });
+}
+impl soroban_sdk::client::Type for StructB {
+    type Ret = Self;
 }
 #[doc(hidden)]
 #[allow(dead_code)]
@@ -1025,6 +1031,9 @@ impl soroban_sdk::SpecTypeDef for StructC {
             ),
         });
 }
+impl soroban_sdk::client::Type for StructC {
+    type Ret = Self;
+}
 #[doc(hidden)]
 #[allow(dead_code)]
 static __SPEC_XDR_TYPE_STRUCTC: [u8; StructC::spec_xdr().len()] = StructC::spec_xdr();
@@ -1497,6 +1506,9 @@ impl soroban_sdk::SpecTypeDef for StructTupleA {
             ),
         });
 }
+impl soroban_sdk::client::Type for StructTupleA {
+    type Ret = Self;
+}
 #[doc(hidden)]
 #[allow(dead_code)]
 static __SPEC_XDR_TYPE_STRUCTTUPLEA: [u8; StructTupleA::spec_xdr().len()] =
@@ -1924,6 +1936,9 @@ impl soroban_sdk::SpecTypeDef for StructTupleB {
                 <Self as soroban_sdk::SpecName>::SPEC_NAME,
             ),
         });
+}
+impl soroban_sdk::client::Type for StructTupleB {
+    type Ret = Self;
 }
 #[doc(hidden)]
 #[allow(dead_code)]
@@ -2353,6 +2368,9 @@ impl soroban_sdk::SpecTypeDef for StructTupleC {
                 <Self as soroban_sdk::SpecName>::SPEC_NAME,
             ),
         });
+}
+impl soroban_sdk::client::Type for StructTupleC {
+    type Ret = Self;
 }
 #[doc(hidden)]
 #[allow(dead_code)]
@@ -2793,6 +2811,9 @@ impl soroban_sdk::SpecTypeDef for EnumA {
                 <Self as soroban_sdk::SpecName>::SPEC_NAME,
             ),
         });
+}
+impl soroban_sdk::client::Type for EnumA {
+    type Ret = Self;
 }
 #[doc(hidden)]
 #[allow(dead_code)]
@@ -3331,6 +3352,9 @@ impl soroban_sdk::SpecTypeDef for EnumB {
                 <Self as soroban_sdk::SpecName>::SPEC_NAME,
             ),
         });
+}
+impl soroban_sdk::client::Type for EnumB {
+    type Ret = Self;
 }
 #[doc(hidden)]
 #[allow(dead_code)]
@@ -3999,6 +4023,9 @@ impl soroban_sdk::SpecTypeDef for EnumC {
             ),
         });
 }
+impl soroban_sdk::client::Type for EnumC {
+    type Ret = Self;
+}
 #[doc(hidden)]
 #[allow(dead_code)]
 static __SPEC_XDR_TYPE_ENUMC: [u8; EnumC::spec_xdr().len()] = EnumC::spec_xdr();
@@ -4616,6 +4643,9 @@ impl soroban_sdk::SpecTypeDef for EnumIntA {
             ),
         });
 }
+impl soroban_sdk::client::Type for EnumIntA {
+    type Ret = Self;
+}
 #[doc(hidden)]
 #[allow(dead_code)]
 static __SPEC_XDR_TYPE_ENUMINTA: [u8; EnumIntA::spec_xdr().len()] = EnumIntA::spec_xdr();
@@ -5017,6 +5047,9 @@ impl soroban_sdk::SpecTypeDef for EnumIntB {
                 <Self as soroban_sdk::SpecName>::SPEC_NAME,
             ),
         });
+}
+impl soroban_sdk::client::Type for EnumIntB {
+    type Ret = Self;
 }
 #[doc(hidden)]
 #[allow(dead_code)]
@@ -5420,6 +5453,9 @@ impl soroban_sdk::SpecTypeDef for EnumIntC {
             ),
         });
 }
+impl soroban_sdk::client::Type for EnumIntC {
+    type Ret = Self;
+}
 #[doc(hidden)]
 #[allow(dead_code)]
 static __SPEC_XDR_TYPE_ENUMINTC: [u8; EnumIntC::spec_xdr().len()] = EnumIntC::spec_xdr();
@@ -5822,6 +5858,9 @@ impl soroban_sdk::SpecTypeDef for ErrorA {
             ),
         });
 }
+impl soroban_sdk::client::Type for ErrorA {
+    type Ret = Self;
+}
 #[doc(hidden)]
 #[allow(dead_code)]
 static __SPEC_XDR_TYPE_ERRORA: [u8; ErrorA::spec_xdr().len()] = ErrorA::spec_xdr();
@@ -6054,6 +6093,9 @@ impl soroban_sdk::SpecTypeDef for ErrorB {
             ),
         });
 }
+impl soroban_sdk::client::Type for ErrorB {
+    type Ret = Self;
+}
 #[doc(hidden)]
 #[allow(dead_code)]
 static __SPEC_XDR_TYPE_ERRORB: [u8; ErrorB::spec_xdr().len()] = ErrorB::spec_xdr();
@@ -6285,6 +6327,9 @@ impl soroban_sdk::SpecTypeDef for ErrorC {
                 <Self as soroban_sdk::SpecName>::SPEC_NAME,
             ),
         });
+}
+impl soroban_sdk::client::Type for ErrorC {
+    type Ret = Self;
 }
 #[doc(hidden)]
 #[allow(dead_code)]

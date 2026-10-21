@@ -2314,6 +2314,13 @@ dependencies = [
 ]
 
 [[package]]
+name = "test_contracttrait_types"
+version = "30.0.0"
+dependencies = [
+ "soroban-sdk 30.0.0",
+]
+
+[[package]]
 name = "test_empty"
 version = "30.0.0"
 dependencies = [

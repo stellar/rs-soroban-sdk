@@ -1,7 +1,7 @@
 use itertools::Itertools;
 use proc_macro2::TokenStream;
 use quote::{format_ident, quote};
-use syn::{Error, FnArg, LitStr, Path, Type, TypePath, TypeReference};
+use syn::{Error, FnArg, Ident, LitStr, Path, Type, TypePath, TypeReference};
 
 use syn::ext::IdentExt as _;
 
@@ -10,10 +10,14 @@ use crate::{
     symbol, syn_ext,
 };
 
-/// Whether the argument's type is written as `MuxedAddress`, so that the client
-/// can accept anything that converts into one.
-fn is_muxed_address_type(arg: &FnArg) -> bool {
-    matches!(arg, FnArg::Typed(pat_type) if syn_ext::is_type_named(&pat_type.ty, "MuxedAddress"))
+/// Emits the `client::Type` impl for a user-defined type, which a client returns
+/// as itself.
+pub fn client_type_gen(path: &Path, ident: &Ident) -> TokenStream {
+    quote! {
+        impl #path::client::Type for #ident {
+            type Ret = Self;
+        }
+    }
 }
 
 pub fn derive_client_type(crate_path: &Path, ty: &str, name: &str) -> TokenStream {
@@ -172,7 +176,9 @@ pub fn derive_client_impl(crate_path: &Path, name: &str, fns: &[syn_ext::Fn]) ->
                 FnArg::Receiver(_) => None,
             });
 
-            // Map all remaining inputs.
+            // Map all remaining inputs. The client takes each in the form its
+            // type's `client::Type` gives, as a reference or as anything that
+            // converts into it.
             let (fn_input_types, fn_input_conversions): (Vec<_>, Vec<_>) = f
                 .inputs
                 .iter()
@@ -185,25 +191,20 @@ pub fn derive_client_impl(crate_path: &Path, name: &str, fns: &[syn_ext::Fn]) ->
                             format_ident!("_")
                         }
                     };
-
-                    let is_muxed_address = is_muxed_address_type(t);
-                    let converted_type = if is_muxed_address {
-                        syn_ext::fn_arg_make_into(t)
-                    } else {
-                        syn_ext::fn_arg_make_ref(t, None)
+                    let ty = match t {
+                        FnArg::Typed(pat_type) => syn_ext::type_unwrap_ref(*pat_type.ty.clone()),
+                        FnArg::Receiver(_) => Type::Verbatim(quote!(Self)),
                     };
-
-                    // Generate argument conversion into Val
-                    let conversion = if is_muxed_address {
-                        quote! { #ident.into().into_val(&self.env) }
-                    } else {
-                        quote! { #ident.into_val(&self.env) }
+                    let input_type = quote! {
+                        #ident: impl #crate_path::client::IntoArg<#ty>
                     };
-
-                    (converted_type, conversion)
+                    let conversion = quote! {
+                        ::core::borrow::Borrow::<#ty>::borrow(&#crate_path::client::IntoArg::<#ty>::into_arg(#ident)).into_val(&self.env)
+                    };
+                    (input_type, conversion)
                 })
                 .multiunzip();
-            let fn_output = f.output();
+            let fn_output = f.output(crate_path);
             let fn_try_output = f.try_output(crate_path);
             let (fn_doc_attrs, fn_attrs): (Vec<_>, Vec<_>) = f
                 .attrs

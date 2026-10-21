@@ -71,6 +71,9 @@ impl soroban_sdk::SpecTypeDef for Flag {
             ),
         });
 }
+impl soroban_sdk::client::Type for Flag {
+    type Ret = Self;
+}
 #[doc(hidden)]
 #[allow(dead_code)]
 #[link_section = "contractspecv0"]
@@ -222,6 +225,9 @@ impl soroban_sdk::SpecTypeDef for Error {
                 <Self as soroban_sdk::SpecName>::SPEC_NAME,
             ),
         });
+}
+impl soroban_sdk::client::Type for Error {
+    type Ret = Self;
 }
 #[doc(hidden)]
 #[allow(dead_code)]
@@ -467,7 +473,10 @@ impl<'a> ContractClient<'a> {
     /// Panics if the invoked contract returns an error or panics.
     ///
     /// Use [`Self::try_hello`] to receive errors instead of panicking.
-    pub fn hello(&self, flag: &Flag) -> Symbol {
+    pub fn hello(
+        &self,
+        flag: impl soroban_sdk::client::IntoArg<Flag>,
+    ) -> soroban_sdk::client::Ret<Result<Symbol, Error>> {
         use core::ops::Not;
         use soroban_sdk::{FromVal, IntoVal};
         let res = self.env.invoke_contract(
@@ -477,7 +486,13 @@ impl<'a> ContractClient<'a> {
                 const SYMBOL: soroban_sdk::Symbol = soroban_sdk::Symbol::short("hello");
                 SYMBOL
             },
-            ::soroban_sdk::Vec::from_array(&self.env, [flag.into_val(&self.env)]),
+            ::soroban_sdk::Vec::from_array(
+                &self.env,
+                [::core::borrow::Borrow::<Flag>::borrow(
+                    &soroban_sdk::client::IntoArg::<Flag>::into_arg(flag),
+                )
+                .into_val(&self.env)],
+            ),
         );
         res
     }
@@ -488,14 +503,8 @@ impl<'a> ContractClient<'a> {
     /// Returns an error if the invoked contract returns an error or panics. A panic in the invoked contract is caught and returned as an error rather than panicking the caller.
     pub fn try_hello(
         &self,
-        flag: &Flag,
-    ) -> Result<
-        Result<
-            Symbol,
-            <Symbol as soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val>>::Error,
-        >,
-        Result<Error, soroban_sdk::InvokeError>,
-    > {
+        flag: impl soroban_sdk::client::IntoArg<Flag>,
+    ) -> soroban_sdk::client::TryRet<Result<Symbol, Error>> {
         use soroban_sdk::{FromVal, IntoVal};
         let res = self.env.try_invoke_contract(
             &self.address,
@@ -504,7 +513,13 @@ impl<'a> ContractClient<'a> {
                 const SYMBOL: soroban_sdk::Symbol = soroban_sdk::Symbol::short("hello");
                 SYMBOL
             },
-            ::soroban_sdk::Vec::from_array(&self.env, [flag.into_val(&self.env)]),
+            ::soroban_sdk::Vec::from_array(
+                &self.env,
+                [::core::borrow::Borrow::<Flag>::borrow(
+                    &soroban_sdk::client::IntoArg::<Flag>::into_arg(flag),
+                )
+                .into_val(&self.env)],
+            ),
         );
         res
     }

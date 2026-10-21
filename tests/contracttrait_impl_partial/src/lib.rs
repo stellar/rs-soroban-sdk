@@ -1,9 +1,6 @@
 #![no_std]
-use soroban_sdk::{
-    contract, contractimpl, Address, Bytes, BytesN, Duration, Env, Map, String, Symbol, Timepoint,
-    Vec, I256, U256,
-};
-use test_contracttrait_trait::{AllTypes, MyEnumUnit, MyEnumVariants, MyStruct};
+use soroban_sdk::{contract, contractimpl, Env, String};
+use test_contracttrait_trait::{AllTypes, MyStruct};
 
 #[contract]
 pub struct Contract;
@@ -35,7 +32,11 @@ impl AllTypes for Contract {
 #[cfg(test)]
 mod test {
     use super::*;
-    use soroban_sdk::{map, symbol_short, testutils::Address as _, vec, Env};
+    use soroban_sdk::{
+        map, symbol_short, testutils::Address as _, vec, Address, Bytes, BytesN, Duration, Env,
+        Timepoint, I256, U256,
+    };
+    use test_contracttrait_trait::{MyEnumUnit, MyEnumVariants};
 
     #[test]
     fn test_partial_override() {

@@ -1,0 +1,195 @@
+//! Types that generated contract clients use for the arguments and return
+//! values of contract functions.
+//!
+//! [`Type`] gives the types that a client uses for a Rust type that appears in
+//! a contract function, [`IntoArg`] the values a client accepts for an argument,
+//! and [`Output`] the values a client returns.
+//!
+//! The macros refer to every argument and return type of a client function
+//! through these traits, rather than deciding by the type's name, so that the
+//! compiler resolves the type and the client types come from the type the name
+//! resolves to. A type alias therefore has the client types of the type it
+//! aliases.
+
+use core::borrow::Borrow;
+
+use crate::{
+    crypto::{
+        bls12_381::{Bls12381Fp, Bls12381Fp2, Bls12381Fr, Bls12381G1Affine, Bls12381G2Affine},
+        bn254::{Bn254Fp, Bn254Fr, Bn254G1Affine, Bn254G2Affine},
+        Hash,
+    },
+    Address, Bytes, BytesN, Duration, Env, Error, InvokeError, Map, MuxedAddress, String, Symbol,
+    Timepoint, TryFromVal, Val, Vec, I256, U256,
+};
+
+/// Trait for types that can be an argument or return value of a contract
+/// client function.
+#[diagnostic::on_unimplemented(
+    message = "`{Self}` cannot be used in a contract client",
+    label = "not a contract type",
+    note = "types used in contract functions must be supported by contract clients, such as types marked `#[contracttype]`"
+)]
+pub trait Type {
+    /// The type a client returns for the type.
+    type Ret;
+}
+
+/// Trait for the values a client function accepts for an argument of type `T`.
+///
+/// Any value that borrows as `T` is accepted, so that an argument can be passed
+/// by value or by reference. Types that other types convert into accept those
+/// types too, such as a [`MuxedAddress`] argument accepting an [`Address`].
+pub trait IntoArg<T> {
+    type Arg: Borrow<T>;
+    fn into_arg(self) -> Self::Arg;
+}
+
+impl<T, R> IntoArg<T> for R
+where
+    T: Type,
+    R: Borrow<T>,
+{
+    type Arg = R;
+    fn into_arg(self) -> R {
+        self
+    }
+}
+
+#[diagnostic::do_not_recommend]
+impl IntoArg<MuxedAddress> for Address {
+    type Arg = MuxedAddress;
+    fn into_arg(self) -> MuxedAddress {
+        self.into()
+    }
+}
+
+#[diagnostic::do_not_recommend]
+impl IntoArg<MuxedAddress> for &Address {
+    type Arg = MuxedAddress;
+    fn into_arg(self) -> MuxedAddress {
+        self.into()
+    }
+}
+
+/// Trait for the return type of a contract function, giving the value a client
+/// returns, and the error a client returns when the contract returns an error.
+pub trait Output {
+    type Ok;
+    type Err;
+}
+
+impl<T: Type> Output for T {
+    type Ok = T::Ret;
+    type Err = Error;
+}
+
+// Result does not implement Type, so that it is only unpacked as the
+// return type of a contract function.
+impl<T: Type, E> Output for Result<T, E> {
+    type Ok = T::Ret;
+    type Err = E;
+}
+
+/// The value a client function returns for a contract function that returns
+/// `T`.
+///
+/// It is the [`Type::Ret`] of `T`, or of the ok type if `T` is a `Result`. For
+/// example, a client returns `BytesN<32>` for a contract function that returns
+/// `Hash<32>`.
+pub type Ret<T> = <T as Output>::Ok;
+
+/// The value a client's `try_` function returns for a contract function that
+/// returns `T`.
+///
+/// The outer result is an error if the invocation fails, holding the contract's
+/// error if it returned one, or the [`InvokeError`] otherwise. The inner result
+/// is an error if the returned value cannot be converted into [`Ret<T>`].
+pub type TryRet<T> = Result<
+    Result<Ret<T>, <Ret<T> as TryFromVal<Env, Val>>::Error>,
+    Result<<T as Output>::Err, InvokeError>,
+>;
+
+macro_rules! impl_client_type {
+    ($($t:ty),* $(,)?) => {
+        $(
+            impl Type for $t {
+                type Ret = $t;
+            }
+        )*
+    };
+}
+
+impl_client_type! {
+    Val,
+    bool,
+    (),
+    Error,
+    u32,
+    i32,
+    u64,
+    i64,
+    Timepoint,
+    Duration,
+    u128,
+    i128,
+    U256,
+    I256,
+    Bytes,
+    String,
+    Symbol,
+    Address,
+    MuxedAddress,
+    Bls12381Fp,
+    Bls12381Fp2,
+    Bls12381G1Affine,
+    Bls12381G2Affine,
+    Bls12381Fr,
+    Bn254Fp,
+    Bn254G1Affine,
+    Bn254G2Affine,
+    Bn254Fr,
+}
+
+impl<const N: usize> Type for BytesN<N> {
+    type Ret = BytesN<N>;
+}
+
+// A hash can only be constructed by the host, so a client receives the bytes of
+// a returned hash.
+impl<const N: usize> Type for Hash<N> {
+    type Ret = BytesN<N>;
+}
+
+impl<T: Type> Type for Option<T> {
+    type Ret = Option<T::Ret>;
+}
+
+impl<T: Type> Type for Vec<T> {
+    type Ret = Vec<T::Ret>;
+}
+
+impl<K: Type, V: Type> Type for Map<K, V> {
+    type Ret = Map<K::Ret, V::Ret>;
+}
+
+macro_rules! impl_client_type_for_tuple {
+    ($($t:ident),+) => {
+        impl<$($t: Type),+> Type for ($($t,)+) {
+            type Ret = ($($t::Ret,)+);
+        }
+    };
+}
+
+impl_client_type_for_tuple!(T0);
+impl_client_type_for_tuple!(T0, T1);
+impl_client_type_for_tuple!(T0, T1, T2);
+impl_client_type_for_tuple!(T0, T1, T2, T3);
+impl_client_type_for_tuple!(T0, T1, T2, T3, T4);
+impl_client_type_for_tuple!(T0, T1, T2, T3, T4, T5);
+impl_client_type_for_tuple!(T0, T1, T2, T3, T4, T5, T6);
+impl_client_type_for_tuple!(T0, T1, T2, T3, T4, T5, T6, T7);
+impl_client_type_for_tuple!(T0, T1, T2, T3, T4, T5, T6, T7, T8);
+impl_client_type_for_tuple!(T0, T1, T2, T3, T4, T5, T6, T7, T8, T9);
+impl_client_type_for_tuple!(T0, T1, T2, T3, T4, T5, T6, T7, T8, T9, T10);
+impl_client_type_for_tuple!(T0, T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11);

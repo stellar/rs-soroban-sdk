@@ -59,6 +59,9 @@ impl soroban_sdk::SpecTypeDef for Value {
             ),
         });
 }
+impl soroban_sdk::client::Type for Value {
+    type Ret = Self;
+}
 #[doc(hidden)]
 #[allow(dead_code)]
 #[link_section = "contractspecv0"]

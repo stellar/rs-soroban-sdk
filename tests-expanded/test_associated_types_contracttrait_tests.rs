@@ -117,9 +117,25 @@ impl soroban_sdk::testutils::ContractFunctionSet for Contract {
 }
 pub struct DefaultImpl;
 pub struct TraitSpec;
+#[doc(hidden)]
+#[allow(non_camel_case_types)]
+pub trait __Trait_Env {
+    type __Trait_Env;
+}
+impl<__T: ?Sized> __Trait_Env for __T {
+    type __Trait_Env = Env;
+}
+#[doc(hidden)]
+#[allow(non_camel_case_types)]
+pub trait __Trait_String {
+    type __Trait_String;
+}
+impl<__T: ?Sized> __Trait_String for __T {
+    type __Trait_String = String;
+}
 /// Macro for `contractimpl`ing the default functions of the trait that are not overridden.
 pub use __contractimpl_for_trait as Trait;
-pub trait Trait {
+pub trait Trait: __Trait_Env + __Trait_String {
     type Impl: Trait;
     fn exec(env: &Env) -> String {
         Self::Impl::exec(env)
@@ -205,7 +221,7 @@ impl<'a> TraitClient<'a> {
     /// Panics if the invoked contract returns an error or panics.
     ///
     /// Use [`Self::try_exec`] to receive errors instead of panicking.
-    pub fn exec(&self) -> String {
+    pub fn exec(&self) -> soroban_sdk::client::Ret<String> {
         let _call_scope = soroban_sdk::testutils::ClientCallScope::enter(&self.env, self.config);
         use soroban_sdk::{FromVal, IntoVal};
         let res = self.env.invoke_contract(
@@ -224,15 +240,7 @@ impl<'a> TraitClient<'a> {
     /// # Errors
     ///
     /// Returns an error if the invoked contract returns an error or panics. A panic in the invoked contract is caught and returned as an error rather than panicking the caller.
-    pub fn try_exec(
-        &self,
-    ) -> Result<
-        Result<
-            String,
-            <String as soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val>>::Error,
-        >,
-        Result<soroban_sdk::Error, soroban_sdk::InvokeError>,
-    > {
+    pub fn try_exec(&self) -> soroban_sdk::client::TryRet<String> {
         let _call_scope = soroban_sdk::testutils::ClientCallScope::enter(&self.env, self.config);
         use soroban_sdk::{FromVal, IntoVal};
         let res = self.env.try_invoke_contract(
@@ -297,6 +305,24 @@ impl Trait for Contract {
 impl<'a> ContractClient<'a> {}
 impl ContractArgs {}
 #[doc(hidden)]
+#[allow(non_camel_case_types)]
+pub trait __Contract_Trait_project {
+    type Env;
+    type String;
+}
+impl<__T: Trait> __Contract_Trait_project for __T {
+    type Env = __T::__Trait_Env;
+    type String = __T::__Trait_String;
+}
+#[doc(hidden)]
+#[allow(non_snake_case)]
+pub mod __Contract_Trait_types {
+    #[allow(non_camel_case_types)]
+    pub type Env = <super::Contract as super::__Contract_Trait_project>::Env;
+    #[allow(non_camel_case_types)]
+    pub type String = <super::Contract as super::__Contract_Trait_project>::String;
+}
+#[doc(hidden)]
 #[allow(non_snake_case)]
 #[deprecated(note = "use `ContractClient::new(&env, &contract_id).exec` instead")]
 #[allow(deprecated)]
@@ -354,7 +380,7 @@ impl Contract {
                 ),
                 inputs: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[]),
                 outputs: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[
-                    <String as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
+                    <__Contract_Trait_types::String as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
                 ]),
             },
         );
@@ -380,7 +406,7 @@ impl<'a> ContractClient<'a> {
     /// Panics if the invoked contract returns an error or panics.
     ///
     /// Use [`Self::try_exec`] to receive errors instead of panicking.
-    pub fn exec(&self) -> String {
+    pub fn exec(&self) -> soroban_sdk::client::Ret<__Contract_Trait_types::String> {
         let _call_scope = soroban_sdk::testutils::ClientCallScope::enter(&self.env, self.config);
         use soroban_sdk::{FromVal, IntoVal};
         let res = self.env.invoke_contract(
@@ -399,15 +425,7 @@ impl<'a> ContractClient<'a> {
     /// # Errors
     ///
     /// Returns an error if the invoked contract returns an error or panics. A panic in the invoked contract is caught and returned as an error rather than panicking the caller.
-    pub fn try_exec(
-        &self,
-    ) -> Result<
-        Result<
-            String,
-            <String as soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val>>::Error,
-        >,
-        Result<soroban_sdk::Error, soroban_sdk::InvokeError>,
-    > {
+    pub fn try_exec(&self) -> soroban_sdk::client::TryRet<__Contract_Trait_types::String> {
         let _call_scope = soroban_sdk::testutils::ClientCallScope::enter(&self.env, self.config);
         use soroban_sdk::{FromVal, IntoVal};
         let res = self.env.try_invoke_contract(
@@ -549,7 +567,7 @@ impl<'a> ContractClient<'a> {
     /// Panics if the invoked contract returns an error or panics.
     ///
     /// Use [`Self::try_exec2`] to receive errors instead of panicking.
-    pub fn exec2(&self) -> String {
+    pub fn exec2(&self) -> soroban_sdk::client::Ret<String> {
         let _call_scope = soroban_sdk::testutils::ClientCallScope::enter(&self.env, self.config);
         use soroban_sdk::{FromVal, IntoVal};
         let res = self.env.invoke_contract(
@@ -568,15 +586,7 @@ impl<'a> ContractClient<'a> {
     /// # Errors
     ///
     /// Returns an error if the invoked contract returns an error or panics. A panic in the invoked contract is caught and returned as an error rather than panicking the caller.
-    pub fn try_exec2(
-        &self,
-    ) -> Result<
-        Result<
-            String,
-            <String as soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val>>::Error,
-        >,
-        Result<soroban_sdk::Error, soroban_sdk::InvokeError>,
-    > {
+    pub fn try_exec2(&self) -> soroban_sdk::client::TryRet<String> {
         let _call_scope = soroban_sdk::testutils::ClientCallScope::enter(&self.env, self.config);
         use soroban_sdk::{FromVal, IntoVal};
         let res = self.env.try_invoke_contract(
@@ -817,7 +827,7 @@ mod test_with_wasm {
             /// Panics if the invoked contract returns an error or panics.
             ///
             /// Use [`Self::try_exec`] to receive errors instead of panicking.
-            pub fn exec(&self) -> soroban_sdk::String {
+            pub fn exec(&self) -> soroban_sdk::client::Ret<soroban_sdk::String> {
                 let _call_scope =
                     soroban_sdk::testutils::ClientCallScope::enter(&self.env, self.config);
                 use soroban_sdk::{FromVal, IntoVal};
@@ -837,18 +847,7 @@ mod test_with_wasm {
             /// # Errors
             ///
             /// Returns an error if the invoked contract returns an error or panics. A panic in the invoked contract is caught and returned as an error rather than panicking the caller.
-            pub fn try_exec(
-                &self,
-            ) -> Result<
-                Result<
-                    soroban_sdk::String,
-                    <soroban_sdk::String as soroban_sdk::TryFromVal<
-                        soroban_sdk::Env,
-                        soroban_sdk::Val,
-                    >>::Error,
-                >,
-                Result<soroban_sdk::Error, soroban_sdk::InvokeError>,
-            > {
+            pub fn try_exec(&self) -> soroban_sdk::client::TryRet<soroban_sdk::String> {
                 let _call_scope =
                     soroban_sdk::testutils::ClientCallScope::enter(&self.env, self.config);
                 use soroban_sdk::{FromVal, IntoVal};
@@ -870,7 +869,7 @@ mod test_with_wasm {
             /// Panics if the invoked contract returns an error or panics.
             ///
             /// Use [`Self::try_exec2`] to receive errors instead of panicking.
-            pub fn exec2(&self) -> soroban_sdk::String {
+            pub fn exec2(&self) -> soroban_sdk::client::Ret<soroban_sdk::String> {
                 let _call_scope =
                     soroban_sdk::testutils::ClientCallScope::enter(&self.env, self.config);
                 use soroban_sdk::{FromVal, IntoVal};
@@ -890,18 +889,7 @@ mod test_with_wasm {
             /// # Errors
             ///
             /// Returns an error if the invoked contract returns an error or panics. A panic in the invoked contract is caught and returned as an error rather than panicking the caller.
-            pub fn try_exec2(
-                &self,
-            ) -> Result<
-                Result<
-                    soroban_sdk::String,
-                    <soroban_sdk::String as soroban_sdk::TryFromVal<
-                        soroban_sdk::Env,
-                        soroban_sdk::Val,
-                    >>::Error,
-                >,
-                Result<soroban_sdk::Error, soroban_sdk::InvokeError>,
-            > {
+            pub fn try_exec2(&self) -> soroban_sdk::client::TryRet<soroban_sdk::String> {
                 let _call_scope =
                     soroban_sdk::testutils::ClientCallScope::enter(&self.env, self.config);
                 use soroban_sdk::{FromVal, IntoVal};
@@ -1030,6 +1018,9 @@ mod test_with_wasm {
                         ),
                     },
                 );
+        }
+        impl soroban_sdk::client::Type for ContractExecutableRef {
+            type Ret = Self;
         }
         #[doc(hidden)]
         #[allow(dead_code)]
@@ -1584,6 +1575,9 @@ mod test_with_wasm {
                         ),
                     },
                 );
+        }
+        impl soroban_sdk::client::Type for ContractContext {
+            type Ret = Self;
         }
         #[doc(hidden)]
         #[allow(dead_code)]
@@ -2202,6 +2196,9 @@ mod test_with_wasm {
                     },
                 );
         }
+        impl soroban_sdk::client::Type for SubContractInvocation {
+            type Ret = Self;
+        }
         #[doc(hidden)]
         #[allow(dead_code)]
         static __SPEC_XDR_TYPE_SUBCONTRACTINVOCATION: [u8; SubContractInvocation::spec_xdr()
@@ -2748,6 +2745,9 @@ mod test_with_wasm {
                         ),
                     },
                 );
+        }
+        impl soroban_sdk::client::Type for CreateContractHostFnContext {
+            type Ret = Self;
         }
         #[doc(hidden)]
         #[allow(dead_code)]
@@ -3330,6 +3330,9 @@ mod test_with_wasm {
                         ),
                     },
                 );
+        }
+        impl soroban_sdk::client::Type for CreateContractWithConstructorHostFnContext {
+            type Ret = Self;
         }
         #[doc(hidden)]
         #[allow(dead_code)]
@@ -4026,6 +4029,9 @@ mod test_with_wasm {
                         ),
                     },
                 );
+        }
+        impl soroban_sdk::client::Type for ContractExecutable {
+            type Ret = Self;
         }
         #[doc(hidden)]
         #[allow(dead_code)]
@@ -4737,6 +4743,9 @@ mod test_with_wasm {
                         ),
                     },
                 );
+        }
+        impl soroban_sdk::client::Type for Context {
+            type Ret = Self;
         }
         #[doc(hidden)]
         #[allow(dead_code)]
@@ -5557,6 +5566,9 @@ mod test_with_wasm {
                     },
                 );
         }
+        impl soroban_sdk::client::Type for InvokerContractAuthEntry {
+            type Ret = Self;
+        }
         #[doc(hidden)]
         #[allow(dead_code)]
         static __SPEC_XDR_TYPE_INVOKERCONTRACTAUTHENTRY: [u8; InvokerContractAuthEntry::spec_xdr(
@@ -6373,6 +6385,9 @@ mod test_with_wasm {
                         ),
                     },
                 );
+        }
+        impl soroban_sdk::client::Type for Executable {
+            type Ret = Self;
         }
         #[doc(hidden)]
         #[allow(dead_code)]
