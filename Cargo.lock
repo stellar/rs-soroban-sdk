@@ -1237,7 +1237,7 @@ dependencies = [
 
 [[package]]
 name = "proc_macros"
-version = "30.0.0"
+version = "30.0.0-rc.1"
 dependencies = [
  "quote",
  "syn 2.0.103",
@@ -1740,7 +1740,7 @@ dependencies = [
 
 [[package]]
 name = "soroban-ledger-snapshot"
-version = "30.0.0"
+version = "30.0.0-rc.1"
 dependencies = [
  "serde",
  "serde_json",
@@ -1752,7 +1752,7 @@ dependencies = [
 
 [[package]]
 name = "soroban-meta"
-version = "30.0.0"
+version = "30.0.0-rc.1"
 dependencies = [
  "stellar-xdr 30.0.0",
  "thiserror",
@@ -1780,7 +1780,7 @@ dependencies = [
 
 [[package]]
 name = "soroban-sdk"
-version = "30.0.0"
+version = "30.0.0-rc.1"
 dependencies = [
  "arbitrary",
  "ark-bls12-381",
@@ -1806,8 +1806,8 @@ dependencies = [
  "soroban-env-guest 30.0.0",
  "soroban-env-host 30.0.0",
  "soroban-ledger-snapshot",
- "soroban-sdk-macros 30.0.0",
- "soroban-spec 30.0.0",
+ "soroban-sdk-macros 30.0.0-rc.1",
+ "soroban-spec 30.0.0-rc.1",
  "stellar-strkey 1.0.0",
  "stellar-xdr 30.0.0",
  "trybuild",
@@ -1837,7 +1837,7 @@ dependencies = [
 
 [[package]]
 name = "soroban-sdk-macros"
-version = "30.0.0"
+version = "30.0.0-rc.1"
 dependencies = [
  "darling",
  "heck",
@@ -1847,9 +1847,9 @@ dependencies = [
  "quote",
  "sha2",
  "soroban-env-common 30.0.0",
- "soroban-sdk 30.0.0",
- "soroban-spec 30.0.0",
- "soroban-spec-rust 30.0.0",
+ "soroban-sdk 30.0.0-rc.1",
+ "soroban-spec 30.0.0-rc.1",
+ "soroban-spec-rust 30.0.0-rc.1",
  "stellar-xdr 30.0.0",
  "syn 2.0.103",
 ]
@@ -1869,7 +1869,7 @@ dependencies = [
 
 [[package]]
 name = "soroban-spec"
-version = "30.0.0"
+version = "30.0.0-rc.1"
 dependencies = [
  "base64",
  "hex",
@@ -1896,7 +1896,7 @@ dependencies = [
 
 [[package]]
 name = "soroban-spec-rust"
-version = "30.0.0"
+version = "30.0.0-rc.1"
 dependencies = [
  "pretty_assertions",
  "prettyplease",
@@ -1904,7 +1904,7 @@ dependencies = [
  "quote",
  "sha2",
  "soroban-meta",
- "soroban-spec 30.0.0",
+ "soroban-spec 30.0.0-rc.1",
  "stellar-xdr 30.0.0",
  "syn 2.0.103",
  "thiserror",
@@ -1912,17 +1912,17 @@ dependencies = [
 
 [[package]]
 name = "soroban-token-sdk"
-version = "30.0.0"
+version = "30.0.0-rc.1"
 dependencies = [
- "soroban-sdk 30.0.0",
+ "soroban-sdk 30.0.0-rc.1",
 ]
 
 [[package]]
 name = "soroban-token-spec"
-version = "30.0.0"
+version = "30.0.0-rc.1"
 dependencies = [
- "soroban-sdk 30.0.0",
- "soroban-spec 30.0.0",
+ "soroban-sdk 30.0.0-rc.1",
+ "soroban-spec 30.0.0-rc.1",
  "soroban-token-sdk",
 ]
 
@@ -1954,10 +1954,10 @@ dependencies = [
 
 [[package]]
 name = "spec-json"
-version = "30.0.0"
+version = "30.0.0-rc.1"
 dependencies = [
  "serde_json",
- "soroban-spec 30.0.0",
+ "soroban-spec 30.0.0-rc.1",
  "stellar-xdr 30.0.0",
 ]
 
@@ -2007,10 +2007,10 @@ checksum = "a2eb9349b6444b326872e140eb1cf5e7c522154d69e7a0ffb0fb81c06b37543f"
 
 [[package]]
 name = "stellar-asset-spec"
-version = "30.0.0"
+version = "30.0.0-rc.1"
 dependencies = [
- "soroban-sdk 30.0.0",
- "soroban-spec 30.0.0",
+ "soroban-sdk 30.0.0-rc.1",
+ "soroban-spec 30.0.0-rc.1",
  "soroban-token-spec",
 ]
 
@@ -2148,280 +2148,280 @@ dependencies = [
 
 [[package]]
 name = "test_account"
-version = "30.0.0"
+version = "30.0.0-rc.1"
 dependencies = [
- "soroban-sdk 30.0.0",
+ "soroban-sdk 30.0.0-rc.1",
 ]
 
 [[package]]
 name = "test_add_i128"
-version = "30.0.0"
+version = "30.0.0-rc.1"
 dependencies = [
- "soroban-sdk 30.0.0",
+ "soroban-sdk 30.0.0-rc.1",
 ]
 
 [[package]]
 name = "test_add_u128"
-version = "30.0.0"
+version = "30.0.0-rc.1"
 dependencies = [
- "soroban-sdk 30.0.0",
+ "soroban-sdk 30.0.0-rc.1",
 ]
 
 [[package]]
 name = "test_add_u64"
-version = "30.0.0"
+version = "30.0.0-rc.1"
 dependencies = [
- "soroban-sdk 30.0.0",
+ "soroban-sdk 30.0.0-rc.1",
 ]
 
 [[package]]
 name = "test_alloc"
-version = "30.0.0"
+version = "30.0.0-rc.1"
 dependencies = [
- "soroban-sdk 30.0.0",
+ "soroban-sdk 30.0.0-rc.1",
 ]
 
 [[package]]
 name = "test_associated_type_chained"
-version = "30.0.0"
+version = "30.0.0-rc.1"
 dependencies = [
- "soroban-sdk 30.0.0",
+ "soroban-sdk 30.0.0-rc.1",
 ]
 
 [[package]]
 name = "test_associated_types"
-version = "30.0.0"
+version = "30.0.0-rc.1"
 dependencies = [
- "soroban-sdk 30.0.0",
+ "soroban-sdk 30.0.0-rc.1",
 ]
 
 [[package]]
 name = "test_associated_types_contracttrait"
-version = "30.0.0"
+version = "30.0.0-rc.1"
 dependencies = [
- "soroban-sdk 30.0.0",
+ "soroban-sdk 30.0.0-rc.1",
 ]
 
 [[package]]
 name = "test_attributes"
-version = "30.0.0"
+version = "30.0.0-rc.1"
 dependencies = [
- "soroban-sdk 30.0.0",
- "soroban-spec 30.0.0",
+ "soroban-sdk 30.0.0-rc.1",
+ "soroban-spec 30.0.0-rc.1",
 ]
 
 [[package]]
 name = "test_auth"
-version = "30.0.0"
+version = "30.0.0-rc.1"
 dependencies = [
- "soroban-sdk 30.0.0",
+ "soroban-sdk 30.0.0-rc.1",
 ]
 
 [[package]]
 name = "test_bls"
-version = "30.0.0"
+version = "30.0.0-rc.1"
 dependencies = [
- "soroban-sdk 30.0.0",
+ "soroban-sdk 30.0.0-rc.1",
 ]
 
 [[package]]
 name = "test_bn254"
-version = "30.0.0"
+version = "30.0.0-rc.1"
 dependencies = [
  "hex",
- "soroban-sdk 30.0.0",
+ "soroban-sdk 30.0.0-rc.1",
 ]
 
 [[package]]
 name = "test_constructor"
-version = "30.0.0"
+version = "30.0.0-rc.1"
 dependencies = [
- "soroban-sdk 30.0.0",
+ "soroban-sdk 30.0.0-rc.1",
 ]
 
 [[package]]
 name = "test_constructor_with_auth"
-version = "30.0.0"
+version = "30.0.0-rc.1"
 dependencies = [
- "soroban-sdk 30.0.0",
+ "soroban-sdk 30.0.0-rc.1",
 ]
 
 [[package]]
 name = "test_contract_data"
-version = "30.0.0"
+version = "30.0.0-rc.1"
 dependencies = [
- "soroban-sdk 30.0.0",
+ "soroban-sdk 30.0.0-rc.1",
 ]
 
 [[package]]
 name = "test_contracttrait_impl_full"
-version = "30.0.0"
+version = "30.0.0-rc.1"
 dependencies = [
- "soroban-sdk 30.0.0",
+ "soroban-sdk 30.0.0-rc.1",
  "test_contracttrait_trait",
 ]
 
 [[package]]
 name = "test_contracttrait_impl_partial"
-version = "30.0.0"
+version = "30.0.0-rc.1"
 dependencies = [
- "soroban-sdk 30.0.0",
+ "soroban-sdk 30.0.0-rc.1",
  "test_contracttrait_trait",
 ]
 
 [[package]]
 name = "test_contracttrait_path_crate"
-version = "30.0.0"
+version = "30.0.0-rc.1"
 dependencies = [
- "soroban-sdk 30.0.0",
+ "soroban-sdk 30.0.0-rc.1",
 ]
 
 [[package]]
 name = "test_contracttrait_path_global"
-version = "30.0.0"
+version = "30.0.0-rc.1"
 dependencies = [
- "soroban-sdk 30.0.0",
+ "soroban-sdk 30.0.0-rc.1",
  "test_contracttrait_trait",
 ]
 
 [[package]]
 name = "test_contracttrait_path_relative"
-version = "30.0.0"
+version = "30.0.0-rc.1"
 dependencies = [
- "soroban-sdk 30.0.0",
+ "soroban-sdk 30.0.0-rc.1",
 ]
 
 [[package]]
 name = "test_contracttrait_path_self"
-version = "30.0.0"
+version = "30.0.0-rc.1"
 dependencies = [
- "soroban-sdk 30.0.0",
+ "soroban-sdk 30.0.0-rc.1",
 ]
 
 [[package]]
 name = "test_contracttrait_path_super"
-version = "30.0.0"
+version = "30.0.0-rc.1"
 dependencies = [
- "soroban-sdk 30.0.0",
+ "soroban-sdk 30.0.0-rc.1",
 ]
 
 [[package]]
 name = "test_contracttrait_trait"
-version = "30.0.0"
+version = "30.0.0-rc.1"
 dependencies = [
- "soroban-sdk 30.0.0",
+ "soroban-sdk 30.0.0-rc.1",
  "stellar-xdr 30.0.0",
 ]
 
 [[package]]
 name = "test_empty"
-version = "30.0.0"
+version = "30.0.0-rc.1"
 dependencies = [
- "soroban-sdk 30.0.0",
+ "soroban-sdk 30.0.0-rc.1",
 ]
 
 [[package]]
 name = "test_empty2"
-version = "30.0.0"
+version = "30.0.0-rc.1"
 dependencies = [
- "soroban-sdk 30.0.0",
+ "soroban-sdk 30.0.0-rc.1",
 ]
 
 [[package]]
 name = "test_errors"
-version = "30.0.0"
+version = "30.0.0-rc.1"
 dependencies = [
- "soroban-sdk 30.0.0",
+ "soroban-sdk 30.0.0-rc.1",
 ]
 
 [[package]]
 name = "test_events"
-version = "30.0.0"
+version = "30.0.0-rc.1"
 dependencies = [
- "soroban-sdk 30.0.0",
+ "soroban-sdk 30.0.0-rc.1",
 ]
 
 [[package]]
 name = "test_events_ref"
-version = "30.0.0"
+version = "30.0.0-rc.1"
 dependencies = [
- "soroban-sdk 30.0.0",
+ "soroban-sdk 30.0.0-rc.1",
 ]
 
 [[package]]
 name = "test_fuzz"
-version = "30.0.0"
+version = "30.0.0-rc.1"
 dependencies = [
- "soroban-sdk 30.0.0",
+ "soroban-sdk 30.0.0-rc.1",
 ]
 
 [[package]]
 name = "test_fuzz_afl"
-version = "30.0.0"
+version = "30.0.0-rc.1"
 dependencies = [
- "soroban-sdk 30.0.0",
+ "soroban-sdk 30.0.0-rc.1",
 ]
 
 [[package]]
 name = "test_generics"
-version = "30.0.0"
+version = "30.0.0-rc.1"
 dependencies = [
- "soroban-sdk 30.0.0",
+ "soroban-sdk 30.0.0-rc.1",
 ]
 
 [[package]]
 name = "test_import_contract"
-version = "30.0.0"
+version = "30.0.0-rc.1"
 dependencies = [
- "soroban-sdk 30.0.0",
+ "soroban-sdk 30.0.0-rc.1",
 ]
 
 [[package]]
 name = "test_invoke_contract"
-version = "30.0.0"
+version = "30.0.0-rc.1"
 dependencies = [
- "soroban-sdk 30.0.0",
+ "soroban-sdk 30.0.0-rc.1",
 ]
 
 [[package]]
 name = "test_logging"
-version = "30.0.0"
+version = "30.0.0-rc.1"
 dependencies = [
- "soroban-sdk 30.0.0",
+ "soroban-sdk 30.0.0-rc.1",
 ]
 
 [[package]]
 name = "test_macros"
-version = "30.0.0"
+version = "30.0.0-rc.1"
 dependencies = [
  "proc_macros",
- "soroban-sdk 30.0.0",
+ "soroban-sdk 30.0.0-rc.1",
 ]
 
 [[package]]
 name = "test_modular"
-version = "30.0.0"
+version = "30.0.0-rc.1"
 dependencies = [
- "soroban-sdk 30.0.0",
+ "soroban-sdk 30.0.0-rc.1",
 ]
 
 [[package]]
 name = "test_multiimpl"
-version = "30.0.0"
+version = "30.0.0-rc.1"
 dependencies = [
- "soroban-sdk 30.0.0",
+ "soroban-sdk 30.0.0-rc.1",
 ]
 
 [[package]]
 name = "test_mutability"
-version = "30.0.0"
+version = "30.0.0-rc.1"
 dependencies = [
- "soroban-sdk 30.0.0",
+ "soroban-sdk 30.0.0-rc.1",
 ]
 
 [[package]]
 name = "test_spec_import_v2"
-version = "30.0.0"
+version = "30.0.0-rc.1"
 dependencies = [
  "soroban-sdk 29.0.1",
  "test_spec_lib_v2",
@@ -2429,82 +2429,82 @@ dependencies = [
 
 [[package]]
 name = "test_spec_import_v3"
-version = "30.0.0"
+version = "30.0.0-rc.1"
 dependencies = [
- "soroban-sdk 30.0.0",
+ "soroban-sdk 30.0.0-rc.1",
  "test_spec_lib_v3",
 ]
 
 [[package]]
 name = "test_spec_lib_v2"
-version = "30.0.0"
+version = "30.0.0-rc.1"
 dependencies = [
  "soroban-sdk 29.0.1",
 ]
 
 [[package]]
 name = "test_spec_lib_v3"
-version = "30.0.0"
+version = "30.0.0-rc.1"
 dependencies = [
- "soroban-sdk 30.0.0",
+ "soroban-sdk 30.0.0-rc.1",
 ]
 
 [[package]]
 name = "test_spec_shaking_v2"
-version = "30.0.0"
+version = "30.0.0-rc.1"
 dependencies = [
  "soroban-meta",
  "soroban-sdk 29.0.1",
- "soroban-spec 30.0.0",
+ "soroban-spec 30.0.0-rc.1",
  "stellar-xdr 30.0.0",
  "test_spec_lib_v2",
 ]
 
 [[package]]
 name = "test_spec_shaking_v3"
-version = "30.0.0"
+version = "30.0.0-rc.1"
 dependencies = [
  "soroban-meta",
- "soroban-sdk 30.0.0",
- "soroban-spec 30.0.0",
+ "soroban-sdk 30.0.0-rc.1",
+ "soroban-spec 30.0.0-rc.1",
  "stellar-xdr 30.0.0",
  "test_spec_lib_v3",
 ]
 
 [[package]]
 name = "test_tuples"
-version = "30.0.0"
+version = "30.0.0-rc.1"
 dependencies = [
- "soroban-sdk 30.0.0",
+ "soroban-sdk 30.0.0-rc.1",
 ]
 
 [[package]]
 name = "test_udt"
-version = "30.0.0"
+version = "30.0.0-rc.1"
 dependencies = [
- "soroban-sdk 30.0.0",
+ "soroban-sdk 30.0.0-rc.1",
 ]
 
 [[package]]
 name = "test_workspace_contract"
-version = "30.0.0"
+version = "30.0.0-rc.1"
 dependencies = [
- "soroban-sdk 30.0.0",
+ "soroban-sdk 30.0.0-rc.1",
  "test_workspace_lib",
 ]
 
 [[package]]
 name = "test_workspace_lib"
-version = "30.0.0"
+version = "30.0.0-rc.1"
 dependencies = [
- "soroban-sdk 30.0.0",
+ "soroban-sdk 30.0.0-rc.1",
 ]
 
 [[package]]
 name = "test_zero"
-version = "30.0.0"
+version = "30.0.0-rc.1"
 dependencies = [
- "soroban-sdk 30.0.0",
+ "soroban-sdk 30.0.0-rc.1",
 ]
 
 [[package]]
