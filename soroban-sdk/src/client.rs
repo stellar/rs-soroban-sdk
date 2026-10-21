@@ -2,7 +2,7 @@
 //! values of contract functions.
 //!
 //! [`Type`] gives the types that a client uses for a Rust type that appears in
-//! a contract function, [`IntoArg`](crate::IntoArg) the values a client accepts for an argument,
+//! a contract function, [`IntoArg`] the values a client accepts for an argument,
 //! and [`Output`] the values a client returns.
 //!
 //! The macros refer to every argument and return type of a client function
@@ -10,6 +10,8 @@
 //! compiler resolves the type and the client types come from the type the name
 //! resolves to. A type alias therefore has the client types of the type it
 //! aliases.
+
+use core::borrow::Borrow;
 
 use crate::{
     crypto::{
@@ -31,6 +33,43 @@ use crate::{
 pub trait Type {
     /// The type a client returns for the type.
     type Ret;
+}
+
+/// Trait for the values a client function accepts for an argument of type `T`.
+///
+/// Any value that borrows as `T` is accepted, so that an argument can be passed
+/// by value or by reference. Types that other types convert into accept those
+/// types too, such as a [`MuxedAddress`] argument accepting an [`Address`].
+pub trait IntoArg<T> {
+    type Arg: Borrow<T>;
+    fn into_arg(self) -> Self::Arg;
+}
+
+impl<T, R> IntoArg<T> for R
+where
+    T: Type,
+    R: Borrow<T>,
+{
+    type Arg = R;
+    fn into_arg(self) -> R {
+        self
+    }
+}
+
+#[diagnostic::do_not_recommend]
+impl IntoArg<MuxedAddress> for Address {
+    type Arg = MuxedAddress;
+    fn into_arg(self) -> MuxedAddress {
+        self.into()
+    }
+}
+
+#[diagnostic::do_not_recommend]
+impl IntoArg<MuxedAddress> for &Address {
+    type Arg = MuxedAddress;
+    fn into_arg(self) -> MuxedAddress {
+        self.into()
+    }
 }
 
 /// Trait for the return type of a contract function, giving the value a client

@@ -350,7 +350,7 @@ impl<'a> ContractClient<'a> {
     /// Use [`Self::try_get_data`] to receive errors instead of panicking.
     pub fn get_data(
         &self,
-        key: impl soroban_sdk::IntoArg<DataKey>,
+        key: impl soroban_sdk::client::IntoArg<DataKey>,
     ) -> soroban_sdk::client::Ret<Option<i64>> {
         use core::ops::Not;
         use soroban_sdk::{FromVal, IntoVal};
@@ -364,7 +364,7 @@ impl<'a> ContractClient<'a> {
             ::soroban_sdk::Vec::from_array(
                 &self.env,
                 [::core::borrow::Borrow::<DataKey>::borrow(
-                    &soroban_sdk::IntoArg::<DataKey>::into_arg(key),
+                    &soroban_sdk::client::IntoArg::<DataKey>::into_arg(key),
                 )
                 .into_val(&self.env)],
             ),
@@ -378,7 +378,7 @@ impl<'a> ContractClient<'a> {
     /// Returns an error if the invoked contract returns an error or panics. A panic in the invoked contract is caught and returned as an error rather than panicking the caller.
     pub fn try_get_data(
         &self,
-        key: impl soroban_sdk::IntoArg<DataKey>,
+        key: impl soroban_sdk::client::IntoArg<DataKey>,
     ) -> soroban_sdk::client::TryRet<Option<i64>> {
         use soroban_sdk::{FromVal, IntoVal};
         let res = self.env.try_invoke_contract(
@@ -391,7 +391,7 @@ impl<'a> ContractClient<'a> {
             ::soroban_sdk::Vec::from_array(
                 &self.env,
                 [::core::borrow::Borrow::<DataKey>::borrow(
-                    &soroban_sdk::IntoArg::<DataKey>::into_arg(key),
+                    &soroban_sdk::client::IntoArg::<DataKey>::into_arg(key),
                 )
                 .into_val(&self.env)],
             ),

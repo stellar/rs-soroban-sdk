@@ -91,8 +91,8 @@ impl<'a> ContractClient<'a> {
     /// Use [`Self::try_add`] to receive errors instead of panicking.
     pub fn add(
         &self,
-        a: impl soroban_sdk::IntoArg<i128>,
-        b: impl soroban_sdk::IntoArg<i128>,
+        a: impl soroban_sdk::client::IntoArg<i128>,
+        b: impl soroban_sdk::client::IntoArg<i128>,
     ) -> soroban_sdk::client::Ret<i128> {
         use core::ops::Not;
         use soroban_sdk::{FromVal, IntoVal};
@@ -107,11 +107,11 @@ impl<'a> ContractClient<'a> {
                 &self.env,
                 [
                     ::core::borrow::Borrow::<i128>::borrow(
-                        &soroban_sdk::IntoArg::<i128>::into_arg(a),
+                        &soroban_sdk::client::IntoArg::<i128>::into_arg(a),
                     )
                     .into_val(&self.env),
                     ::core::borrow::Borrow::<i128>::borrow(
-                        &soroban_sdk::IntoArg::<i128>::into_arg(b),
+                        &soroban_sdk::client::IntoArg::<i128>::into_arg(b),
                     )
                     .into_val(&self.env),
                 ],
@@ -126,8 +126,8 @@ impl<'a> ContractClient<'a> {
     /// Returns an error if the invoked contract returns an error or panics. A panic in the invoked contract is caught and returned as an error rather than panicking the caller.
     pub fn try_add(
         &self,
-        a: impl soroban_sdk::IntoArg<i128>,
-        b: impl soroban_sdk::IntoArg<i128>,
+        a: impl soroban_sdk::client::IntoArg<i128>,
+        b: impl soroban_sdk::client::IntoArg<i128>,
     ) -> soroban_sdk::client::TryRet<i128> {
         use soroban_sdk::{FromVal, IntoVal};
         let res = self.env.try_invoke_contract(
@@ -141,11 +141,11 @@ impl<'a> ContractClient<'a> {
                 &self.env,
                 [
                     ::core::borrow::Borrow::<i128>::borrow(
-                        &soroban_sdk::IntoArg::<i128>::into_arg(a),
+                        &soroban_sdk::client::IntoArg::<i128>::into_arg(a),
                     )
                     .into_val(&self.env),
                     ::core::borrow::Borrow::<i128>::borrow(
-                        &soroban_sdk::IntoArg::<i128>::into_arg(b),
+                        &soroban_sdk::client::IntoArg::<i128>::into_arg(b),
                     )
                     .into_val(&self.env),
                 ],

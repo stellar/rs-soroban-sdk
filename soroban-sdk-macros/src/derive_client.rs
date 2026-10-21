@@ -196,10 +196,10 @@ pub fn derive_client_impl(crate_path: &Path, name: &str, fns: &[syn_ext::Fn]) ->
                         FnArg::Receiver(_) => Type::Verbatim(quote!(Self)),
                     };
                     let input_type = quote! {
-                        #ident: impl #crate_path::IntoArg<#ty>
+                        #ident: impl #crate_path::client::IntoArg<#ty>
                     };
                     let conversion = quote! {
-                        ::core::borrow::Borrow::<#ty>::borrow(&#crate_path::IntoArg::<#ty>::into_arg(#ident)).into_val(&self.env)
+                        ::core::borrow::Borrow::<#ty>::borrow(&#crate_path::client::IntoArg::<#ty>::into_arg(#ident)).into_val(&self.env)
                     };
                     (input_type, conversion)
                 })
