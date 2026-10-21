@@ -1680,7 +1680,7 @@ dependencies = [
 
 [[package]]
 name = "soroban-ledger-snapshot"
-version = "30.0.0"
+version = "30.0.0-rc.1"
 dependencies = [
  "serde",
  "serde_json",
@@ -1692,7 +1692,7 @@ dependencies = [
 
 [[package]]
 name = "soroban-meta"
-version = "30.0.0"
+version = "30.0.0-rc.1"
 dependencies = [
  "stellar-xdr",
  "thiserror 1.0.69",
@@ -1701,7 +1701,7 @@ dependencies = [
 
 [[package]]
 name = "soroban-sdk"
-version = "30.0.0"
+version = "30.0.0-rc.1"
 dependencies = [
  "arbitrary",
  "bytes-lit",
@@ -1726,7 +1726,7 @@ dependencies = [
 
 [[package]]
 name = "soroban-sdk-macros"
-version = "30.0.0"
+version = "30.0.0-rc.1"
 dependencies = [
  "darling 0.20.11",
  "heck",
@@ -1744,7 +1744,7 @@ dependencies = [
 
 [[package]]
 name = "soroban-spec"
-version = "30.0.0"
+version = "30.0.0-rc.1"
 dependencies = [
  "base64",
  "stellar-xdr",
@@ -1754,7 +1754,7 @@ dependencies = [
 
 [[package]]
 name = "soroban-spec-rust"
-version = "30.0.0"
+version = "30.0.0-rc.1"
 dependencies = [
  "prettyplease",
  "proc-macro2",
@@ -1891,7 +1891,7 @@ dependencies = [
 
 [[package]]
 name = "test_fuzz_afl"
-version = "30.0.0"
+version = "30.0.0-rc.1"
 dependencies = [
  "soroban-sdk",
 ]
