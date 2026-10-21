@@ -97,7 +97,10 @@ impl<'a> ContractAClient<'a> {
             },
             ::soroban_sdk::Vec::from_array(
                 &self.env,
-                [soroban_sdk::IntoArg::<Address>::into_arg(a, &self.env)],
+                [::core::borrow::Borrow::<Address>::borrow(
+                    &soroban_sdk::IntoArg::<Address>::into_arg(a),
+                )
+                .into_val(&self.env)],
             ),
         );
         res
@@ -121,7 +124,10 @@ impl<'a> ContractAClient<'a> {
             },
             ::soroban_sdk::Vec::from_array(
                 &self.env,
-                [soroban_sdk::IntoArg::<Address>::into_arg(a, &self.env)],
+                [::core::borrow::Borrow::<Address>::borrow(
+                    &soroban_sdk::IntoArg::<Address>::into_arg(a),
+                )
+                .into_val(&self.env)],
             ),
         );
         res
@@ -265,8 +271,14 @@ impl<'a> ContractBClient<'a> {
             ::soroban_sdk::Vec::from_array(
                 &self.env,
                 [
-                    soroban_sdk::IntoArg::<Address>::into_arg(a, &self.env),
-                    soroban_sdk::IntoArg::<Address>::into_arg(sub, &self.env),
+                    ::core::borrow::Borrow::<Address>::borrow(
+                        &soroban_sdk::IntoArg::<Address>::into_arg(a),
+                    )
+                    .into_val(&self.env),
+                    ::core::borrow::Borrow::<Address>::borrow(
+                        &soroban_sdk::IntoArg::<Address>::into_arg(sub),
+                    )
+                    .into_val(&self.env),
                 ],
             ),
         );
@@ -293,8 +305,14 @@ impl<'a> ContractBClient<'a> {
             ::soroban_sdk::Vec::from_array(
                 &self.env,
                 [
-                    soroban_sdk::IntoArg::<Address>::into_arg(a, &self.env),
-                    soroban_sdk::IntoArg::<Address>::into_arg(sub, &self.env),
+                    ::core::borrow::Borrow::<Address>::borrow(
+                        &soroban_sdk::IntoArg::<Address>::into_arg(a),
+                    )
+                    .into_val(&self.env),
+                    ::core::borrow::Borrow::<Address>::borrow(
+                        &soroban_sdk::IntoArg::<Address>::into_arg(sub),
+                    )
+                    .into_val(&self.env),
                 ],
             ),
         );

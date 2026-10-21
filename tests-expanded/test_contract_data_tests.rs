@@ -290,8 +290,14 @@ impl<'a> ContractClient<'a> {
             ::soroban_sdk::Vec::from_array(
                 &self.env,
                 [
-                    soroban_sdk::IntoArg::<Symbol>::into_arg(key, &self.env),
-                    soroban_sdk::IntoArg::<Symbol>::into_arg(val, &self.env),
+                    ::core::borrow::Borrow::<Symbol>::borrow(
+                        &soroban_sdk::IntoArg::<Symbol>::into_arg(key),
+                    )
+                    .into_val(&self.env),
+                    ::core::borrow::Borrow::<Symbol>::borrow(
+                        &soroban_sdk::IntoArg::<Symbol>::into_arg(val),
+                    )
+                    .into_val(&self.env),
                 ],
             ),
         );
@@ -319,8 +325,14 @@ impl<'a> ContractClient<'a> {
             ::soroban_sdk::Vec::from_array(
                 &self.env,
                 [
-                    soroban_sdk::IntoArg::<Symbol>::into_arg(key, &self.env),
-                    soroban_sdk::IntoArg::<Symbol>::into_arg(val, &self.env),
+                    ::core::borrow::Borrow::<Symbol>::borrow(
+                        &soroban_sdk::IntoArg::<Symbol>::into_arg(key),
+                    )
+                    .into_val(&self.env),
+                    ::core::borrow::Borrow::<Symbol>::borrow(
+                        &soroban_sdk::IntoArg::<Symbol>::into_arg(val),
+                    )
+                    .into_val(&self.env),
                 ],
             ),
         );
@@ -348,7 +360,10 @@ impl<'a> ContractClient<'a> {
             },
             ::soroban_sdk::Vec::from_array(
                 &self.env,
-                [soroban_sdk::IntoArg::<Symbol>::into_arg(key, &self.env)],
+                [::core::borrow::Borrow::<Symbol>::borrow(
+                    &soroban_sdk::IntoArg::<Symbol>::into_arg(key),
+                )
+                .into_val(&self.env)],
             ),
         );
         res
@@ -373,7 +388,10 @@ impl<'a> ContractClient<'a> {
             },
             ::soroban_sdk::Vec::from_array(
                 &self.env,
-                [soroban_sdk::IntoArg::<Symbol>::into_arg(key, &self.env)],
+                [::core::borrow::Borrow::<Symbol>::borrow(
+                    &soroban_sdk::IntoArg::<Symbol>::into_arg(key),
+                )
+                .into_val(&self.env)],
             ),
         );
         res
@@ -397,7 +415,10 @@ impl<'a> ContractClient<'a> {
             },
             ::soroban_sdk::Vec::from_array(
                 &self.env,
-                [soroban_sdk::IntoArg::<Symbol>::into_arg(key, &self.env)],
+                [::core::borrow::Borrow::<Symbol>::borrow(
+                    &soroban_sdk::IntoArg::<Symbol>::into_arg(key),
+                )
+                .into_val(&self.env)],
             ),
         );
         res
@@ -422,7 +443,10 @@ impl<'a> ContractClient<'a> {
             },
             ::soroban_sdk::Vec::from_array(
                 &self.env,
-                [soroban_sdk::IntoArg::<Symbol>::into_arg(key, &self.env)],
+                [::core::borrow::Borrow::<Symbol>::borrow(
+                    &soroban_sdk::IntoArg::<Symbol>::into_arg(key),
+                )
+                .into_val(&self.env)],
             ),
         );
         res

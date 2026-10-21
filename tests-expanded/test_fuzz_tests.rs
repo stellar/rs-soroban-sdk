@@ -198,8 +198,14 @@ impl<'a> ContractClient<'a> {
             ::soroban_sdk::Vec::from_array(
                 &self.env,
                 [
-                    soroban_sdk::IntoArg::<U256>::into_arg(a, &self.env),
-                    soroban_sdk::IntoArg::<U256>::into_arg(b, &self.env),
+                    ::core::borrow::Borrow::<U256>::borrow(
+                        &soroban_sdk::IntoArg::<U256>::into_arg(a),
+                    )
+                    .into_val(&self.env),
+                    ::core::borrow::Borrow::<U256>::borrow(
+                        &soroban_sdk::IntoArg::<U256>::into_arg(b),
+                    )
+                    .into_val(&self.env),
                 ],
             ),
         );
@@ -227,8 +233,14 @@ impl<'a> ContractClient<'a> {
             ::soroban_sdk::Vec::from_array(
                 &self.env,
                 [
-                    soroban_sdk::IntoArg::<U256>::into_arg(a, &self.env),
-                    soroban_sdk::IntoArg::<U256>::into_arg(b, &self.env),
+                    ::core::borrow::Borrow::<U256>::borrow(
+                        &soroban_sdk::IntoArg::<U256>::into_arg(a),
+                    )
+                    .into_val(&self.env),
+                    ::core::borrow::Borrow::<U256>::borrow(
+                        &soroban_sdk::IntoArg::<U256>::into_arg(b),
+                    )
+                    .into_val(&self.env),
                 ],
             ),
         );

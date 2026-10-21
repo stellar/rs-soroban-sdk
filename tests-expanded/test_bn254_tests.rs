@@ -814,9 +814,10 @@ impl<'a> ContractClient<'a> {
             &{ soroban_sdk::Symbol::new(&self.env, "verify_pairing") },
             ::soroban_sdk::Vec::from_array(
                 &self.env,
-                [soroban_sdk::IntoArg::<MockProof>::into_arg(
-                    proof, &self.env,
-                )],
+                [::core::borrow::Borrow::<MockProof>::borrow(
+                    &soroban_sdk::IntoArg::<MockProof>::into_arg(proof),
+                )
+                .into_val(&self.env)],
             ),
         );
         res
@@ -837,9 +838,10 @@ impl<'a> ContractClient<'a> {
             &{ soroban_sdk::Symbol::new(&self.env, "verify_pairing") },
             ::soroban_sdk::Vec::from_array(
                 &self.env,
-                [soroban_sdk::IntoArg::<MockProof>::into_arg(
-                    proof, &self.env,
-                )],
+                [::core::borrow::Borrow::<MockProof>::borrow(
+                    &soroban_sdk::IntoArg::<MockProof>::into_arg(proof),
+                )
+                .into_val(&self.env)],
             ),
         );
         res
@@ -868,8 +870,18 @@ impl<'a> ContractClient<'a> {
             ::soroban_sdk::Vec::from_array(
                 &self.env,
                 [
-                    soroban_sdk::IntoArg::<Bn254G1Affine>::into_arg(a, &self.env),
-                    soroban_sdk::IntoArg::<Bn254G1Affine>::into_arg(b, &self.env),
+                    ::core::borrow::Borrow::<Bn254G1Affine>::borrow(&soroban_sdk::IntoArg::<
+                        Bn254G1Affine,
+                    >::into_arg(
+                        a
+                    ))
+                    .into_val(&self.env),
+                    ::core::borrow::Borrow::<Bn254G1Affine>::borrow(&soroban_sdk::IntoArg::<
+                        Bn254G1Affine,
+                    >::into_arg(
+                        b
+                    ))
+                    .into_val(&self.env),
                 ],
             ),
         );
@@ -897,8 +909,18 @@ impl<'a> ContractClient<'a> {
             ::soroban_sdk::Vec::from_array(
                 &self.env,
                 [
-                    soroban_sdk::IntoArg::<Bn254G1Affine>::into_arg(a, &self.env),
-                    soroban_sdk::IntoArg::<Bn254G1Affine>::into_arg(b, &self.env),
+                    ::core::borrow::Borrow::<Bn254G1Affine>::borrow(&soroban_sdk::IntoArg::<
+                        Bn254G1Affine,
+                    >::into_arg(
+                        a
+                    ))
+                    .into_val(&self.env),
+                    ::core::borrow::Borrow::<Bn254G1Affine>::borrow(&soroban_sdk::IntoArg::<
+                        Bn254G1Affine,
+                    >::into_arg(
+                        b
+                    ))
+                    .into_val(&self.env),
                 ],
             ),
         );
@@ -928,8 +950,16 @@ impl<'a> ContractClient<'a> {
             ::soroban_sdk::Vec::from_array(
                 &self.env,
                 [
-                    soroban_sdk::IntoArg::<Bn254G1Affine>::into_arg(p, &self.env),
-                    soroban_sdk::IntoArg::<Bn254Fr>::into_arg(s, &self.env),
+                    ::core::borrow::Borrow::<Bn254G1Affine>::borrow(&soroban_sdk::IntoArg::<
+                        Bn254G1Affine,
+                    >::into_arg(
+                        p
+                    ))
+                    .into_val(&self.env),
+                    ::core::borrow::Borrow::<Bn254Fr>::borrow(
+                        &soroban_sdk::IntoArg::<Bn254Fr>::into_arg(s),
+                    )
+                    .into_val(&self.env),
                 ],
             ),
         );
@@ -957,8 +987,16 @@ impl<'a> ContractClient<'a> {
             ::soroban_sdk::Vec::from_array(
                 &self.env,
                 [
-                    soroban_sdk::IntoArg::<Bn254G1Affine>::into_arg(p, &self.env),
-                    soroban_sdk::IntoArg::<Bn254Fr>::into_arg(s, &self.env),
+                    ::core::borrow::Borrow::<Bn254G1Affine>::borrow(&soroban_sdk::IntoArg::<
+                        Bn254G1Affine,
+                    >::into_arg(
+                        p
+                    ))
+                    .into_val(&self.env),
+                    ::core::borrow::Borrow::<Bn254Fr>::borrow(
+                        &soroban_sdk::IntoArg::<Bn254Fr>::into_arg(s),
+                    )
+                    .into_val(&self.env),
                 ],
             ),
         );
@@ -984,8 +1022,16 @@ impl<'a> ContractClient<'a> {
             ::soroban_sdk::Vec::from_array(
                 &self.env,
                 [
-                    soroban_sdk::IntoArg::<Vec<Bn254Fr>>::into_arg(values, &self.env),
-                    soroban_sdk::IntoArg::<u32>::into_arg(index, &self.env),
+                    ::core::borrow::Borrow::<Vec<Bn254Fr>>::borrow(&soroban_sdk::IntoArg::<
+                        Vec<Bn254Fr>,
+                    >::into_arg(
+                        values
+                    ))
+                    .into_val(&self.env),
+                    ::core::borrow::Borrow::<u32>::borrow(&soroban_sdk::IntoArg::<u32>::into_arg(
+                        index,
+                    ))
+                    .into_val(&self.env),
                 ],
             ),
         );
@@ -1009,8 +1055,16 @@ impl<'a> ContractClient<'a> {
             ::soroban_sdk::Vec::from_array(
                 &self.env,
                 [
-                    soroban_sdk::IntoArg::<Vec<Bn254Fr>>::into_arg(values, &self.env),
-                    soroban_sdk::IntoArg::<u32>::into_arg(index, &self.env),
+                    ::core::borrow::Borrow::<Vec<Bn254Fr>>::borrow(&soroban_sdk::IntoArg::<
+                        Vec<Bn254Fr>,
+                    >::into_arg(
+                        values
+                    ))
+                    .into_val(&self.env),
+                    ::core::borrow::Borrow::<u32>::borrow(&soroban_sdk::IntoArg::<u32>::into_arg(
+                        index,
+                    ))
+                    .into_val(&self.env),
                 ],
             ),
         );

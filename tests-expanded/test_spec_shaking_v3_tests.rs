@@ -16000,7 +16000,10 @@ mod wasm_imported {
                 &{ soroban_sdk::Symbol::new(&self.env, "fn_error_a") },
                 ::soroban_sdk::Vec::from_array(
                     &self.env,
-                    [soroban_sdk::IntoArg::<u32>::into_arg(input, &self.env)],
+                    [::core::borrow::Borrow::<u32>::borrow(
+                        &soroban_sdk::IntoArg::<u32>::into_arg(input),
+                    )
+                    .into_val(&self.env)],
                 ),
             );
             res
@@ -16022,7 +16025,10 @@ mod wasm_imported {
                 &{ soroban_sdk::Symbol::new(&self.env, "fn_error_a") },
                 ::soroban_sdk::Vec::from_array(
                     &self.env,
-                    [soroban_sdk::IntoArg::<u32>::into_arg(input, &self.env)],
+                    [::core::borrow::Borrow::<u32>::borrow(
+                        &soroban_sdk::IntoArg::<u32>::into_arg(input),
+                    )
+                    .into_val(&self.env)],
                 ),
             );
             res
@@ -16048,8 +16054,14 @@ mod wasm_imported {
                 ::soroban_sdk::Vec::from_array(
                     &self.env,
                     [
-                        soroban_sdk::IntoArg::<soroban_sdk::Address>::into_arg(f1, &self.env),
-                        soroban_sdk::IntoArg::<soroban_sdk::String>::into_arg(f2, &self.env),
+                        ::core::borrow::Borrow::<soroban_sdk::Address>::borrow(
+                            &soroban_sdk::IntoArg::<soroban_sdk::Address>::into_arg(f1),
+                        )
+                        .into_val(&self.env),
+                        ::core::borrow::Borrow::<soroban_sdk::String>::borrow(
+                            &soroban_sdk::IntoArg::<soroban_sdk::String>::into_arg(f2),
+                        )
+                        .into_val(&self.env),
                     ],
                 ),
             );
@@ -16074,8 +16086,14 @@ mod wasm_imported {
                 ::soroban_sdk::Vec::from_array(
                     &self.env,
                     [
-                        soroban_sdk::IntoArg::<soroban_sdk::Address>::into_arg(f1, &self.env),
-                        soroban_sdk::IntoArg::<soroban_sdk::String>::into_arg(f2, &self.env),
+                        ::core::borrow::Borrow::<soroban_sdk::Address>::borrow(
+                            &soroban_sdk::IntoArg::<soroban_sdk::Address>::into_arg(f1),
+                        )
+                        .into_val(&self.env),
+                        ::core::borrow::Borrow::<soroban_sdk::String>::borrow(
+                            &soroban_sdk::IntoArg::<soroban_sdk::String>::into_arg(f2),
+                        )
+                        .into_val(&self.env),
                     ],
                 ),
             );
@@ -16136,8 +16154,14 @@ mod wasm_imported {
                 ::soroban_sdk::Vec::from_array(
                     &self.env,
                     [
-                        soroban_sdk::IntoArg::<u32>::into_arg(f1, &self.env),
-                        soroban_sdk::IntoArg::<bool>::into_arg(f2, &self.env),
+                        ::core::borrow::Borrow::<u32>::borrow(
+                            &soroban_sdk::IntoArg::<u32>::into_arg(f1),
+                        )
+                        .into_val(&self.env),
+                        ::core::borrow::Borrow::<bool>::borrow(
+                            &soroban_sdk::IntoArg::<bool>::into_arg(f2),
+                        )
+                        .into_val(&self.env),
                     ],
                 ),
             );
@@ -16162,8 +16186,14 @@ mod wasm_imported {
                 ::soroban_sdk::Vec::from_array(
                     &self.env,
                     [
-                        soroban_sdk::IntoArg::<u32>::into_arg(f1, &self.env),
-                        soroban_sdk::IntoArg::<bool>::into_arg(f2, &self.env),
+                        ::core::borrow::Borrow::<u32>::borrow(
+                            &soroban_sdk::IntoArg::<u32>::into_arg(f1),
+                        )
+                        .into_val(&self.env),
+                        ::core::borrow::Borrow::<bool>::borrow(
+                            &soroban_sdk::IntoArg::<bool>::into_arg(f2),
+                        )
+                        .into_val(&self.env),
                     ],
                 ),
             );
@@ -16224,8 +16254,14 @@ mod wasm_imported {
                 ::soroban_sdk::Vec::from_array(
                     &self.env,
                     [
-                        soroban_sdk::IntoArg::<i64>::into_arg(f1, &self.env),
-                        soroban_sdk::IntoArg::<i64>::into_arg(f2, &self.env),
+                        ::core::borrow::Borrow::<i64>::borrow(
+                            &soroban_sdk::IntoArg::<i64>::into_arg(f1),
+                        )
+                        .into_val(&self.env),
+                        ::core::borrow::Borrow::<i64>::borrow(
+                            &soroban_sdk::IntoArg::<i64>::into_arg(f2),
+                        )
+                        .into_val(&self.env),
                     ],
                 ),
             );
@@ -16250,8 +16286,14 @@ mod wasm_imported {
                 ::soroban_sdk::Vec::from_array(
                     &self.env,
                     [
-                        soroban_sdk::IntoArg::<i64>::into_arg(f1, &self.env),
-                        soroban_sdk::IntoArg::<i64>::into_arg(f2, &self.env),
+                        ::core::borrow::Borrow::<i64>::borrow(
+                            &soroban_sdk::IntoArg::<i64>::into_arg(f1),
+                        )
+                        .into_val(&self.env),
+                        ::core::borrow::Borrow::<i64>::borrow(
+                            &soroban_sdk::IntoArg::<i64>::into_arg(f2),
+                        )
+                        .into_val(&self.env),
                     ],
                 ),
             );
@@ -37261,17 +37303,26 @@ impl<'a> ContractClient<'a> {
     ) -> soroban_sdk::client::Ret<()> {
         let _call_scope = soroban_sdk::testutils::ClientCallScope::enter(&self.env, self.config);
         use soroban_sdk::{FromVal, IntoVal};
-        let res = self.env.invoke_contract(
-            &self.address,
-            &{ soroban_sdk::Symbol::new(&self.env, "with_param") },
-            ::soroban_sdk::Vec::from_array(
-                &self.env,
-                [
-                    soroban_sdk::IntoArg::<UsedParamStruct>::into_arg(_s, &self.env),
-                    soroban_sdk::IntoArg::<UsedParamIntEnum>::into_arg(_ie, &self.env),
-                ],
-            ),
-        );
+        let res =
+            self.env.invoke_contract(
+                &self.address,
+                &{ soroban_sdk::Symbol::new(&self.env, "with_param") },
+                ::soroban_sdk::Vec::from_array(
+                    &self.env,
+                    [
+                        ::core::borrow::Borrow::<UsedParamStruct>::borrow(&soroban_sdk::IntoArg::<
+                            UsedParamStruct,
+                        >::into_arg(
+                            _s
+                        ))
+                        .into_val(&self.env),
+                        ::core::borrow::Borrow::<UsedParamIntEnum>::borrow(
+                            &soroban_sdk::IntoArg::<UsedParamIntEnum>::into_arg(_ie),
+                        )
+                        .into_val(&self.env),
+                    ],
+                ),
+            );
         res
     }
     /// Call `with_param` function on the contract.
@@ -37286,17 +37337,26 @@ impl<'a> ContractClient<'a> {
     ) -> soroban_sdk::client::TryRet<()> {
         let _call_scope = soroban_sdk::testutils::ClientCallScope::enter(&self.env, self.config);
         use soroban_sdk::{FromVal, IntoVal};
-        let res = self.env.try_invoke_contract(
-            &self.address,
-            &{ soroban_sdk::Symbol::new(&self.env, "with_param") },
-            ::soroban_sdk::Vec::from_array(
-                &self.env,
-                [
-                    soroban_sdk::IntoArg::<UsedParamStruct>::into_arg(_s, &self.env),
-                    soroban_sdk::IntoArg::<UsedParamIntEnum>::into_arg(_ie, &self.env),
-                ],
-            ),
-        );
+        let res =
+            self.env.try_invoke_contract(
+                &self.address,
+                &{ soroban_sdk::Symbol::new(&self.env, "with_param") },
+                ::soroban_sdk::Vec::from_array(
+                    &self.env,
+                    [
+                        ::core::borrow::Borrow::<UsedParamStruct>::borrow(&soroban_sdk::IntoArg::<
+                            UsedParamStruct,
+                        >::into_arg(
+                            _s
+                        ))
+                        .into_val(&self.env),
+                        ::core::borrow::Borrow::<UsedParamIntEnum>::borrow(
+                            &soroban_sdk::IntoArg::<UsedParamIntEnum>::into_arg(_ie),
+                        )
+                        .into_val(&self.env),
+                    ],
+                ),
+            );
         res
     }
     /// Call `with_return` function on the contract.
@@ -37376,14 +37436,18 @@ impl<'a> ContractClient<'a> {
     ) -> soroban_sdk::client::Ret<()> {
         let _call_scope = soroban_sdk::testutils::ClientCallScope::enter(&self.env, self.config);
         use soroban_sdk::{FromVal, IntoVal};
-        let res = self.env.invoke_contract(
-            &self.address,
-            &{ soroban_sdk::Symbol::new(&self.env, "with_panic_error") },
-            ::soroban_sdk::Vec::from_array(
-                &self.env,
-                [soroban_sdk::IntoArg::<bool>::into_arg(fail, &self.env)],
-            ),
-        );
+        let res =
+            self.env.invoke_contract(
+                &self.address,
+                &{ soroban_sdk::Symbol::new(&self.env, "with_panic_error") },
+                ::soroban_sdk::Vec::from_array(
+                    &self.env,
+                    [::core::borrow::Borrow::<bool>::borrow(
+                        &soroban_sdk::IntoArg::<bool>::into_arg(fail),
+                    )
+                    .into_val(&self.env)],
+                ),
+            );
         res
     }
     /// Call `with_panic_error` function on the contract.
@@ -37397,14 +37461,18 @@ impl<'a> ContractClient<'a> {
     ) -> soroban_sdk::client::TryRet<()> {
         let _call_scope = soroban_sdk::testutils::ClientCallScope::enter(&self.env, self.config);
         use soroban_sdk::{FromVal, IntoVal};
-        let res = self.env.try_invoke_contract(
-            &self.address,
-            &{ soroban_sdk::Symbol::new(&self.env, "with_panic_error") },
-            ::soroban_sdk::Vec::from_array(
-                &self.env,
-                [soroban_sdk::IntoArg::<bool>::into_arg(fail, &self.env)],
-            ),
-        );
+        let res =
+            self.env.try_invoke_contract(
+                &self.address,
+                &{ soroban_sdk::Symbol::new(&self.env, "with_panic_error") },
+                ::soroban_sdk::Vec::from_array(
+                    &self.env,
+                    [::core::borrow::Borrow::<bool>::borrow(
+                        &soroban_sdk::IntoArg::<bool>::into_arg(fail),
+                    )
+                    .into_val(&self.env)],
+                ),
+            );
         res
     }
     /// Call `with_assert_error` function on the contract.
@@ -37420,14 +37488,18 @@ impl<'a> ContractClient<'a> {
     ) -> soroban_sdk::client::Ret<()> {
         let _call_scope = soroban_sdk::testutils::ClientCallScope::enter(&self.env, self.config);
         use soroban_sdk::{FromVal, IntoVal};
-        let res = self.env.invoke_contract(
-            &self.address,
-            &{ soroban_sdk::Symbol::new(&self.env, "with_assert_error") },
-            ::soroban_sdk::Vec::from_array(
-                &self.env,
-                [soroban_sdk::IntoArg::<bool>::into_arg(ok, &self.env)],
-            ),
-        );
+        let res =
+            self.env.invoke_contract(
+                &self.address,
+                &{ soroban_sdk::Symbol::new(&self.env, "with_assert_error") },
+                ::soroban_sdk::Vec::from_array(
+                    &self.env,
+                    [::core::borrow::Borrow::<bool>::borrow(
+                        &soroban_sdk::IntoArg::<bool>::into_arg(ok),
+                    )
+                    .into_val(&self.env)],
+                ),
+            );
         res
     }
     /// Call `with_assert_error` function on the contract.
@@ -37441,14 +37513,18 @@ impl<'a> ContractClient<'a> {
     ) -> soroban_sdk::client::TryRet<()> {
         let _call_scope = soroban_sdk::testutils::ClientCallScope::enter(&self.env, self.config);
         use soroban_sdk::{FromVal, IntoVal};
-        let res = self.env.try_invoke_contract(
-            &self.address,
-            &{ soroban_sdk::Symbol::new(&self.env, "with_assert_error") },
-            ::soroban_sdk::Vec::from_array(
-                &self.env,
-                [soroban_sdk::IntoArg::<bool>::into_arg(ok, &self.env)],
-            ),
-        );
+        let res =
+            self.env.try_invoke_contract(
+                &self.address,
+                &{ soroban_sdk::Symbol::new(&self.env, "with_assert_error") },
+                ::soroban_sdk::Vec::from_array(
+                    &self.env,
+                    [::core::borrow::Borrow::<bool>::borrow(
+                        &soroban_sdk::IntoArg::<bool>::into_arg(ok),
+                    )
+                    .into_val(&self.env)],
+                ),
+            );
         res
     }
     /// Call `with_panic_raw_error` function on the contract.
@@ -37464,14 +37540,18 @@ impl<'a> ContractClient<'a> {
     ) -> soroban_sdk::client::Ret<()> {
         let _call_scope = soroban_sdk::testutils::ClientCallScope::enter(&self.env, self.config);
         use soroban_sdk::{FromVal, IntoVal};
-        let res = self.env.invoke_contract(
-            &self.address,
-            &{ soroban_sdk::Symbol::new(&self.env, "with_panic_raw_error") },
-            ::soroban_sdk::Vec::from_array(
-                &self.env,
-                [soroban_sdk::IntoArg::<bool>::into_arg(fail, &self.env)],
-            ),
-        );
+        let res =
+            self.env.invoke_contract(
+                &self.address,
+                &{ soroban_sdk::Symbol::new(&self.env, "with_panic_raw_error") },
+                ::soroban_sdk::Vec::from_array(
+                    &self.env,
+                    [::core::borrow::Borrow::<bool>::borrow(
+                        &soroban_sdk::IntoArg::<bool>::into_arg(fail),
+                    )
+                    .into_val(&self.env)],
+                ),
+            );
         res
     }
     /// Call `with_panic_raw_error` function on the contract.
@@ -37485,14 +37565,18 @@ impl<'a> ContractClient<'a> {
     ) -> soroban_sdk::client::TryRet<()> {
         let _call_scope = soroban_sdk::testutils::ClientCallScope::enter(&self.env, self.config);
         use soroban_sdk::{FromVal, IntoVal};
-        let res = self.env.try_invoke_contract(
-            &self.address,
-            &{ soroban_sdk::Symbol::new(&self.env, "with_panic_raw_error") },
-            ::soroban_sdk::Vec::from_array(
-                &self.env,
-                [soroban_sdk::IntoArg::<bool>::into_arg(fail, &self.env)],
-            ),
-        );
+        let res =
+            self.env.try_invoke_contract(
+                &self.address,
+                &{ soroban_sdk::Symbol::new(&self.env, "with_panic_raw_error") },
+                ::soroban_sdk::Vec::from_array(
+                    &self.env,
+                    [::core::borrow::Borrow::<bool>::borrow(
+                        &soroban_sdk::IntoArg::<bool>::into_arg(fail),
+                    )
+                    .into_val(&self.env)],
+                ),
+            );
         res
     }
     /// Call `with_vec` function on the contract.
@@ -37508,20 +37592,22 @@ impl<'a> ContractClient<'a> {
     ) -> soroban_sdk::client::Ret<()> {
         let _call_scope = soroban_sdk::testutils::ClientCallScope::enter(&self.env, self.config);
         use soroban_sdk::{FromVal, IntoVal};
-        let res = self.env.invoke_contract(
-            &self.address,
-            &{
-                #[allow(deprecated)]
-                const SYMBOL: soroban_sdk::Symbol = soroban_sdk::Symbol::short("with_vec");
-                SYMBOL
-            },
-            ::soroban_sdk::Vec::from_array(
-                &self.env,
-                [soroban_sdk::IntoArg::<Vec<UsedVecElement>>::into_arg(
-                    _v, &self.env,
-                )],
-            ),
-        );
+        let res =
+            self.env.invoke_contract(
+                &self.address,
+                &{
+                    #[allow(deprecated)]
+                    const SYMBOL: soroban_sdk::Symbol = soroban_sdk::Symbol::short("with_vec");
+                    SYMBOL
+                },
+                ::soroban_sdk::Vec::from_array(
+                    &self.env,
+                    [::core::borrow::Borrow::<Vec<UsedVecElement>>::borrow(
+                        &soroban_sdk::IntoArg::<Vec<UsedVecElement>>::into_arg(_v),
+                    )
+                    .into_val(&self.env)],
+                ),
+            );
         res
     }
     /// Call `with_vec` function on the contract.
@@ -37535,20 +37621,22 @@ impl<'a> ContractClient<'a> {
     ) -> soroban_sdk::client::TryRet<()> {
         let _call_scope = soroban_sdk::testutils::ClientCallScope::enter(&self.env, self.config);
         use soroban_sdk::{FromVal, IntoVal};
-        let res = self.env.try_invoke_contract(
-            &self.address,
-            &{
-                #[allow(deprecated)]
-                const SYMBOL: soroban_sdk::Symbol = soroban_sdk::Symbol::short("with_vec");
-                SYMBOL
-            },
-            ::soroban_sdk::Vec::from_array(
-                &self.env,
-                [soroban_sdk::IntoArg::<Vec<UsedVecElement>>::into_arg(
-                    _v, &self.env,
-                )],
-            ),
-        );
+        let res =
+            self.env.try_invoke_contract(
+                &self.address,
+                &{
+                    #[allow(deprecated)]
+                    const SYMBOL: soroban_sdk::Symbol = soroban_sdk::Symbol::short("with_vec");
+                    SYMBOL
+                },
+                ::soroban_sdk::Vec::from_array(
+                    &self.env,
+                    [::core::borrow::Borrow::<Vec<UsedVecElement>>::borrow(
+                        &soroban_sdk::IntoArg::<Vec<UsedVecElement>>::into_arg(_v),
+                    )
+                    .into_val(&self.env)],
+                ),
+            );
         res
     }
     /// Call `with_vec_nested` function on the contract.
@@ -37569,9 +37657,10 @@ impl<'a> ContractClient<'a> {
             &{ soroban_sdk::Symbol::new(&self.env, "with_vec_nested") },
             ::soroban_sdk::Vec::from_array(
                 &self.env,
-                [soroban_sdk::IntoArg::<Vec<UsedVecElementNested>>::into_arg(
-                    _v, &self.env,
-                )],
+                [::core::borrow::Borrow::<Vec<UsedVecElementNested>>::borrow(
+                    &soroban_sdk::IntoArg::<Vec<UsedVecElementNested>>::into_arg(_v),
+                )
+                .into_val(&self.env)],
             ),
         );
         res
@@ -37592,9 +37681,10 @@ impl<'a> ContractClient<'a> {
             &{ soroban_sdk::Symbol::new(&self.env, "with_vec_nested") },
             ::soroban_sdk::Vec::from_array(
                 &self.env,
-                [soroban_sdk::IntoArg::<Vec<UsedVecElementNested>>::into_arg(
-                    _v, &self.env,
-                )],
+                [::core::borrow::Borrow::<Vec<UsedVecElementNested>>::borrow(
+                    &soroban_sdk::IntoArg::<Vec<UsedVecElementNested>>::into_arg(_v),
+                )
+                .into_val(&self.env)],
             ),
         );
         res
@@ -37621,7 +37711,12 @@ impl<'a> ContractClient<'a> {
             },
             ::soroban_sdk::Vec::from_array(
                 &self.env,
-                [soroban_sdk::IntoArg::<Map<UsedMapKey, UsedMapVal>>::into_arg(_m, &self.env)],
+                [
+                    ::core::borrow::Borrow::<Map<UsedMapKey, UsedMapVal>>::borrow(
+                        &soroban_sdk::IntoArg::<Map<UsedMapKey, UsedMapVal>>::into_arg(_m),
+                    )
+                    .into_val(&self.env),
+                ],
             ),
         );
         res
@@ -37646,7 +37741,12 @@ impl<'a> ContractClient<'a> {
             },
             ::soroban_sdk::Vec::from_array(
                 &self.env,
-                [soroban_sdk::IntoArg::<Map<UsedMapKey, UsedMapVal>>::into_arg(_m, &self.env)],
+                [
+                    ::core::borrow::Borrow::<Map<UsedMapKey, UsedMapVal>>::borrow(
+                        &soroban_sdk::IntoArg::<Map<UsedMapKey, UsedMapVal>>::into_arg(_m),
+                    )
+                    .into_val(&self.env),
+                ],
             ),
         );
         res
@@ -37669,9 +37769,10 @@ impl<'a> ContractClient<'a> {
             &{ soroban_sdk::Symbol::new(&self.env, "with_option") },
             ::soroban_sdk::Vec::from_array(
                 &self.env,
-                [soroban_sdk::IntoArg::<Option<UsedOptionElement>>::into_arg(
-                    _o, &self.env,
-                )],
+                [::core::borrow::Borrow::<Option<UsedOptionElement>>::borrow(
+                    &soroban_sdk::IntoArg::<Option<UsedOptionElement>>::into_arg(_o),
+                )
+                .into_val(&self.env)],
             ),
         );
         res
@@ -37692,9 +37793,10 @@ impl<'a> ContractClient<'a> {
             &{ soroban_sdk::Symbol::new(&self.env, "with_option") },
             ::soroban_sdk::Vec::from_array(
                 &self.env,
-                [soroban_sdk::IntoArg::<Option<UsedOptionElement>>::into_arg(
-                    _o, &self.env,
-                )],
+                [::core::borrow::Borrow::<Option<UsedOptionElement>>::borrow(
+                    &soroban_sdk::IntoArg::<Option<UsedOptionElement>>::into_arg(_o),
+                )
+                .into_val(&self.env)],
             ),
         );
         res
@@ -37746,16 +37848,20 @@ impl<'a> ContractClient<'a> {
     ) -> soroban_sdk::client::Ret<()> {
         let _call_scope = soroban_sdk::testutils::ClientCallScope::enter(&self.env, self.config);
         use soroban_sdk::{FromVal, IntoVal};
-        let res = self.env.invoke_contract(
-            &self.address,
-            &{ soroban_sdk::Symbol::new(&self.env, "with_recursion") },
-            ::soroban_sdk::Vec::from_array(
-                &self.env,
-                [soroban_sdk::IntoArg::<UsedRecursiveRoot>::into_arg(
-                    _r, &self.env,
-                )],
-            ),
-        );
+        let res =
+            self.env.invoke_contract(
+                &self.address,
+                &{ soroban_sdk::Symbol::new(&self.env, "with_recursion") },
+                ::soroban_sdk::Vec::from_array(
+                    &self.env,
+                    [
+                        ::core::borrow::Borrow::<UsedRecursiveRoot>::borrow(
+                            &soroban_sdk::IntoArg::<UsedRecursiveRoot>::into_arg(_r),
+                        )
+                        .into_val(&self.env),
+                    ],
+                ),
+            );
         res
     }
     /// Call `with_recursion` function on the contract.
@@ -37769,16 +37875,20 @@ impl<'a> ContractClient<'a> {
     ) -> soroban_sdk::client::TryRet<()> {
         let _call_scope = soroban_sdk::testutils::ClientCallScope::enter(&self.env, self.config);
         use soroban_sdk::{FromVal, IntoVal};
-        let res = self.env.try_invoke_contract(
-            &self.address,
-            &{ soroban_sdk::Symbol::new(&self.env, "with_recursion") },
-            ::soroban_sdk::Vec::from_array(
-                &self.env,
-                [soroban_sdk::IntoArg::<UsedRecursiveRoot>::into_arg(
-                    _r, &self.env,
-                )],
-            ),
-        );
+        let res =
+            self.env.try_invoke_contract(
+                &self.address,
+                &{ soroban_sdk::Symbol::new(&self.env, "with_recursion") },
+                ::soroban_sdk::Vec::from_array(
+                    &self.env,
+                    [
+                        ::core::borrow::Borrow::<UsedRecursiveRoot>::borrow(
+                            &soroban_sdk::IntoArg::<UsedRecursiveRoot>::into_arg(_r),
+                        )
+                        .into_val(&self.env),
+                    ],
+                ),
+            );
         res
     }
     /// Call `with_self_recursion` function on the contract.
@@ -37799,7 +37909,10 @@ impl<'a> ContractClient<'a> {
             &{ soroban_sdk::Symbol::new(&self.env, "with_self_recursion") },
             ::soroban_sdk::Vec::from_array(
                 &self.env,
-                [soroban_sdk::IntoArg::<UsedSelfRef>::into_arg(_r, &self.env)],
+                [::core::borrow::Borrow::<UsedSelfRef>::borrow(
+                    &soroban_sdk::IntoArg::<UsedSelfRef>::into_arg(_r),
+                )
+                .into_val(&self.env)],
             ),
         );
         res
@@ -37820,7 +37933,10 @@ impl<'a> ContractClient<'a> {
             &{ soroban_sdk::Symbol::new(&self.env, "with_self_recursion") },
             ::soroban_sdk::Vec::from_array(
                 &self.env,
-                [soroban_sdk::IntoArg::<UsedSelfRef>::into_arg(_r, &self.env)],
+                [::core::borrow::Borrow::<UsedSelfRef>::borrow(
+                    &soroban_sdk::IntoArg::<UsedSelfRef>::into_arg(_r),
+                )
+                .into_val(&self.env)],
             ),
         );
         res
@@ -37844,9 +37960,10 @@ impl<'a> ContractClient<'a> {
             ::soroban_sdk::Vec::from_array(
                 &self.env,
                 [
-                    soroban_sdk::IntoArg::<Vec<soroban_sdk::auth::Context>>::into_arg(
-                        _c, &self.env,
-                    ),
+                    ::core::borrow::Borrow::<Vec<soroban_sdk::auth::Context>>::borrow(
+                        &soroban_sdk::IntoArg::<Vec<soroban_sdk::auth::Context>>::into_arg(_c),
+                    )
+                    .into_val(&self.env),
                 ],
             ),
         );
@@ -37869,9 +37986,10 @@ impl<'a> ContractClient<'a> {
             ::soroban_sdk::Vec::from_array(
                 &self.env,
                 [
-                    soroban_sdk::IntoArg::<Vec<soroban_sdk::auth::Context>>::into_arg(
-                        _c, &self.env,
-                    ),
+                    ::core::borrow::Borrow::<Vec<soroban_sdk::auth::Context>>::borrow(
+                        &soroban_sdk::IntoArg::<Vec<soroban_sdk::auth::Context>>::into_arg(_c),
+                    )
+                    .into_val(&self.env),
                 ],
             ),
         );
@@ -37890,16 +38008,25 @@ impl<'a> ContractClient<'a> {
     ) -> soroban_sdk::client::Ret<()> {
         let _call_scope = soroban_sdk::testutils::ClientCallScope::enter(&self.env, self.config);
         use soroban_sdk::{FromVal, IntoVal};
-        let res = self.env.invoke_contract(
-            &self.address,
-            &{ soroban_sdk::Symbol::new(&self.env, "with_invoker_auth") },
-            ::soroban_sdk::Vec::from_array(
-                &self.env,
-                [soroban_sdk::IntoArg::<
-                    soroban_sdk::auth::InvokerContractAuthEntry,
-                >::into_arg(_i, &self.env)],
-            ),
-        );
+        let res = self
+            .env
+            .invoke_contract(
+                &self.address,
+                &{ soroban_sdk::Symbol::new(&self.env, "with_invoker_auth") },
+                ::soroban_sdk::Vec::from_array(
+                    &self.env,
+                    [
+                        ::core::borrow::Borrow::<
+                            soroban_sdk::auth::InvokerContractAuthEntry,
+                        >::borrow(
+                                &soroban_sdk::IntoArg::<
+                                    soroban_sdk::auth::InvokerContractAuthEntry,
+                                >::into_arg(_i),
+                            )
+                            .into_val(&self.env),
+                    ],
+                ),
+            );
         res
     }
     /// Call `with_invoker_auth` function on the contract.
@@ -37913,16 +38040,25 @@ impl<'a> ContractClient<'a> {
     ) -> soroban_sdk::client::TryRet<()> {
         let _call_scope = soroban_sdk::testutils::ClientCallScope::enter(&self.env, self.config);
         use soroban_sdk::{FromVal, IntoVal};
-        let res = self.env.try_invoke_contract(
-            &self.address,
-            &{ soroban_sdk::Symbol::new(&self.env, "with_invoker_auth") },
-            ::soroban_sdk::Vec::from_array(
-                &self.env,
-                [soroban_sdk::IntoArg::<
-                    soroban_sdk::auth::InvokerContractAuthEntry,
-                >::into_arg(_i, &self.env)],
-            ),
-        );
+        let res = self
+            .env
+            .try_invoke_contract(
+                &self.address,
+                &{ soroban_sdk::Symbol::new(&self.env, "with_invoker_auth") },
+                ::soroban_sdk::Vec::from_array(
+                    &self.env,
+                    [
+                        ::core::borrow::Borrow::<
+                            soroban_sdk::auth::InvokerContractAuthEntry,
+                        >::borrow(
+                                &soroban_sdk::IntoArg::<
+                                    soroban_sdk::auth::InvokerContractAuthEntry,
+                                >::into_arg(_i),
+                            )
+                            .into_val(&self.env),
+                    ],
+                ),
+            );
         res
     }
     /// Call `with_executable` function on the contract.
@@ -37943,9 +38079,10 @@ impl<'a> ContractClient<'a> {
             &{ soroban_sdk::Symbol::new(&self.env, "with_executable") },
             ::soroban_sdk::Vec::from_array(
                 &self.env,
-                [soroban_sdk::IntoArg::<soroban_sdk::Executable>::into_arg(
-                    _e, &self.env,
-                )],
+                [::core::borrow::Borrow::<soroban_sdk::Executable>::borrow(
+                    &soroban_sdk::IntoArg::<soroban_sdk::Executable>::into_arg(_e),
+                )
+                .into_val(&self.env)],
             ),
         );
         res
@@ -37966,9 +38103,10 @@ impl<'a> ContractClient<'a> {
             &{ soroban_sdk::Symbol::new(&self.env, "with_executable") },
             ::soroban_sdk::Vec::from_array(
                 &self.env,
-                [soroban_sdk::IntoArg::<soroban_sdk::Executable>::into_arg(
-                    _e, &self.env,
-                )],
+                [::core::borrow::Borrow::<soroban_sdk::Executable>::borrow(
+                    &soroban_sdk::IntoArg::<soroban_sdk::Executable>::into_arg(_e),
+                )
+                .into_val(&self.env)],
             ),
         );
         res
@@ -38151,9 +38289,10 @@ impl<'a> ContractClient<'a> {
             &{ soroban_sdk::Symbol::new(&self.env, "with_lib_struct") },
             ::soroban_sdk::Vec::from_array(
                 &self.env,
-                [soroban_sdk::IntoArg::<test_spec_lib::StructC>::into_arg(
-                    _s, &self.env,
-                )],
+                [::core::borrow::Borrow::<test_spec_lib::StructC>::borrow(
+                    &soroban_sdk::IntoArg::<test_spec_lib::StructC>::into_arg(_s),
+                )
+                .into_val(&self.env)],
             ),
         );
         res
@@ -38174,9 +38313,10 @@ impl<'a> ContractClient<'a> {
             &{ soroban_sdk::Symbol::new(&self.env, "with_lib_struct") },
             ::soroban_sdk::Vec::from_array(
                 &self.env,
-                [soroban_sdk::IntoArg::<test_spec_lib::StructC>::into_arg(
-                    _s, &self.env,
-                )],
+                [::core::borrow::Borrow::<test_spec_lib::StructC>::borrow(
+                    &soroban_sdk::IntoArg::<test_spec_lib::StructC>::into_arg(_s),
+                )
+                .into_val(&self.env)],
             ),
         );
         res
@@ -38199,9 +38339,10 @@ impl<'a> ContractClient<'a> {
             &{ soroban_sdk::Symbol::new(&self.env, "with_wasm_imported") },
             ::soroban_sdk::Vec::from_array(
                 &self.env,
-                [soroban_sdk::IntoArg::<wasm_imported::StructA>::into_arg(
-                    _s, &self.env,
-                )],
+                [::core::borrow::Borrow::<wasm_imported::StructA>::borrow(
+                    &soroban_sdk::IntoArg::<wasm_imported::StructA>::into_arg(_s),
+                )
+                .into_val(&self.env)],
             ),
         );
         res
@@ -38222,9 +38363,10 @@ impl<'a> ContractClient<'a> {
             &{ soroban_sdk::Symbol::new(&self.env, "with_wasm_imported") },
             ::soroban_sdk::Vec::from_array(
                 &self.env,
-                [soroban_sdk::IntoArg::<wasm_imported::StructA>::into_arg(
-                    _s, &self.env,
-                )],
+                [::core::borrow::Borrow::<wasm_imported::StructA>::borrow(
+                    &soroban_sdk::IntoArg::<wasm_imported::StructA>::into_arg(_s),
+                )
+                .into_val(&self.env)],
             ),
         );
         res
@@ -38242,16 +38384,20 @@ impl<'a> ContractClient<'a> {
     ) -> soroban_sdk::client::Ret<()> {
         let _call_scope = soroban_sdk::testutils::ClientCallScope::enter(&self.env, self.config);
         use soroban_sdk::{FromVal, IntoVal};
-        let res = self.env.invoke_contract(
-            &self.address,
-            &{ soroban_sdk::Symbol::new(&self.env, "with_non_pub") },
-            ::soroban_sdk::Vec::from_array(
-                &self.env,
-                [soroban_sdk::IntoArg::<UsedNonPubStruct>::into_arg(
-                    _s, &self.env,
-                )],
-            ),
-        );
+        let res =
+            self.env.invoke_contract(
+                &self.address,
+                &{ soroban_sdk::Symbol::new(&self.env, "with_non_pub") },
+                ::soroban_sdk::Vec::from_array(
+                    &self.env,
+                    [
+                        ::core::borrow::Borrow::<UsedNonPubStruct>::borrow(
+                            &soroban_sdk::IntoArg::<UsedNonPubStruct>::into_arg(_s),
+                        )
+                        .into_val(&self.env),
+                    ],
+                ),
+            );
         res
     }
     /// Call `with_non_pub` function on the contract.
@@ -38265,16 +38411,20 @@ impl<'a> ContractClient<'a> {
     ) -> soroban_sdk::client::TryRet<()> {
         let _call_scope = soroban_sdk::testutils::ClientCallScope::enter(&self.env, self.config);
         use soroban_sdk::{FromVal, IntoVal};
-        let res = self.env.try_invoke_contract(
-            &self.address,
-            &{ soroban_sdk::Symbol::new(&self.env, "with_non_pub") },
-            ::soroban_sdk::Vec::from_array(
-                &self.env,
-                [soroban_sdk::IntoArg::<UsedNonPubStruct>::into_arg(
-                    _s, &self.env,
-                )],
-            ),
-        );
+        let res =
+            self.env.try_invoke_contract(
+                &self.address,
+                &{ soroban_sdk::Symbol::new(&self.env, "with_non_pub") },
+                ::soroban_sdk::Vec::from_array(
+                    &self.env,
+                    [
+                        ::core::borrow::Borrow::<UsedNonPubStruct>::borrow(
+                            &soroban_sdk::IntoArg::<UsedNonPubStruct>::into_arg(_s),
+                        )
+                        .into_val(&self.env),
+                    ],
+                ),
+            );
         res
     }
     /// Call `with_non_pub_error` function on the contract.
@@ -38329,9 +38479,10 @@ impl<'a> ContractClient<'a> {
             &{ soroban_sdk::Symbol::new(&self.env, "with_tuple") },
             ::soroban_sdk::Vec::from_array(
                 &self.env,
-                [soroban_sdk::IntoArg::<(UsedTupleElement, u32)>::into_arg(
-                    _t, &self.env,
-                )],
+                [::core::borrow::Borrow::<(UsedTupleElement, u32)>::borrow(
+                    &soroban_sdk::IntoArg::<(UsedTupleElement, u32)>::into_arg(_t),
+                )
+                .into_val(&self.env)],
             ),
         );
         res
@@ -38352,9 +38503,10 @@ impl<'a> ContractClient<'a> {
             &{ soroban_sdk::Symbol::new(&self.env, "with_tuple") },
             ::soroban_sdk::Vec::from_array(
                 &self.env,
-                [soroban_sdk::IntoArg::<(UsedTupleElement, u32)>::into_arg(
-                    _t, &self.env,
-                )],
+                [::core::borrow::Borrow::<(UsedTupleElement, u32)>::borrow(
+                    &soroban_sdk::IntoArg::<(UsedTupleElement, u32)>::into_arg(_t),
+                )
+                .into_val(&self.env)],
             ),
         );
         res

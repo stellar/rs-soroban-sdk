@@ -408,9 +408,20 @@ impl<'a> ContractClient<'a> {
             ::soroban_sdk::Vec::from_array(
                 &self.env,
                 [
-                    soroban_sdk::IntoArg::<Address>::into_arg(from, &self.env),
-                    soroban_sdk::IntoArg::<MuxedAddress>::into_arg(to, &self.env),
-                    soroban_sdk::IntoArg::<i128>::into_arg(amount, &self.env),
+                    ::core::borrow::Borrow::<Address>::borrow(
+                        &soroban_sdk::IntoArg::<Address>::into_arg(from),
+                    )
+                    .into_val(&self.env),
+                    ::core::borrow::Borrow::<MuxedAddress>::borrow(&soroban_sdk::IntoArg::<
+                        MuxedAddress,
+                    >::into_arg(
+                        to
+                    ))
+                    .into_val(&self.env),
+                    ::core::borrow::Borrow::<i128>::borrow(
+                        &soroban_sdk::IntoArg::<i128>::into_arg(amount),
+                    )
+                    .into_val(&self.env),
                 ],
             ),
         );
@@ -439,9 +450,20 @@ impl<'a> ContractClient<'a> {
             ::soroban_sdk::Vec::from_array(
                 &self.env,
                 [
-                    soroban_sdk::IntoArg::<Address>::into_arg(from, &self.env),
-                    soroban_sdk::IntoArg::<MuxedAddress>::into_arg(to, &self.env),
-                    soroban_sdk::IntoArg::<i128>::into_arg(amount, &self.env),
+                    ::core::borrow::Borrow::<Address>::borrow(
+                        &soroban_sdk::IntoArg::<Address>::into_arg(from),
+                    )
+                    .into_val(&self.env),
+                    ::core::borrow::Borrow::<MuxedAddress>::borrow(&soroban_sdk::IntoArg::<
+                        MuxedAddress,
+                    >::into_arg(
+                        to
+                    ))
+                    .into_val(&self.env),
+                    ::core::borrow::Borrow::<i128>::borrow(
+                        &soroban_sdk::IntoArg::<i128>::into_arg(amount),
+                    )
+                    .into_val(&self.env),
                 ],
             ),
         );
@@ -468,9 +490,18 @@ impl<'a> ContractClient<'a> {
             ::soroban_sdk::Vec::from_array(
                 &self.env,
                 [
-                    soroban_sdk::IntoArg::<Address>::into_arg(from, &self.env),
-                    soroban_sdk::IntoArg::<Address>::into_arg(to, &self.env),
-                    soroban_sdk::IntoArg::<i128>::into_arg(amount, &self.env),
+                    ::core::borrow::Borrow::<Address>::borrow(
+                        &soroban_sdk::IntoArg::<Address>::into_arg(from),
+                    )
+                    .into_val(&self.env),
+                    ::core::borrow::Borrow::<Address>::borrow(
+                        &soroban_sdk::IntoArg::<Address>::into_arg(to),
+                    )
+                    .into_val(&self.env),
+                    ::core::borrow::Borrow::<i128>::borrow(
+                        &soroban_sdk::IntoArg::<i128>::into_arg(amount),
+                    )
+                    .into_val(&self.env),
                 ],
             ),
         );
@@ -495,9 +526,18 @@ impl<'a> ContractClient<'a> {
             ::soroban_sdk::Vec::from_array(
                 &self.env,
                 [
-                    soroban_sdk::IntoArg::<Address>::into_arg(from, &self.env),
-                    soroban_sdk::IntoArg::<Address>::into_arg(to, &self.env),
-                    soroban_sdk::IntoArg::<i128>::into_arg(amount, &self.env),
+                    ::core::borrow::Borrow::<Address>::borrow(
+                        &soroban_sdk::IntoArg::<Address>::into_arg(from),
+                    )
+                    .into_val(&self.env),
+                    ::core::borrow::Borrow::<Address>::borrow(
+                        &soroban_sdk::IntoArg::<Address>::into_arg(to),
+                    )
+                    .into_val(&self.env),
+                    ::core::borrow::Borrow::<i128>::borrow(
+                        &soroban_sdk::IntoArg::<i128>::into_arg(amount),
+                    )
+                    .into_val(&self.env),
                 ],
             ),
         );

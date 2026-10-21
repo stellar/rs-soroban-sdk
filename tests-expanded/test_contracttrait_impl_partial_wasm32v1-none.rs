@@ -238,18 +238,22 @@ impl<'a> ContractClient<'a> {
     pub fn test_u32(&self, v: impl soroban_sdk::IntoArg<u32>) -> soroban_sdk::client::Ret<u32> {
         use core::ops::Not;
         use soroban_sdk::{FromVal, IntoVal};
-        let res = self.env.invoke_contract(
-            &self.address,
-            &{
-                #[allow(deprecated)]
-                const SYMBOL: soroban_sdk::Symbol = soroban_sdk::Symbol::short("test_u32");
-                SYMBOL
-            },
-            ::soroban_sdk::Vec::from_array(
-                &self.env,
-                [soroban_sdk::IntoArg::<u32>::into_arg(v, &self.env)],
-            ),
-        );
+        let res =
+            self.env.invoke_contract(
+                &self.address,
+                &{
+                    #[allow(deprecated)]
+                    const SYMBOL: soroban_sdk::Symbol = soroban_sdk::Symbol::short("test_u32");
+                    SYMBOL
+                },
+                ::soroban_sdk::Vec::from_array(
+                    &self.env,
+                    [::core::borrow::Borrow::<u32>::borrow(
+                        &soroban_sdk::IntoArg::<u32>::into_arg(v),
+                    )
+                    .into_val(&self.env)],
+                ),
+            );
         res
     }
     /// Call `test_u32` function on the contract.
@@ -262,18 +266,22 @@ impl<'a> ContractClient<'a> {
         v: impl soroban_sdk::IntoArg<u32>,
     ) -> soroban_sdk::client::TryRet<u32> {
         use soroban_sdk::{FromVal, IntoVal};
-        let res = self.env.try_invoke_contract(
-            &self.address,
-            &{
-                #[allow(deprecated)]
-                const SYMBOL: soroban_sdk::Symbol = soroban_sdk::Symbol::short("test_u32");
-                SYMBOL
-            },
-            ::soroban_sdk::Vec::from_array(
-                &self.env,
-                [soroban_sdk::IntoArg::<u32>::into_arg(v, &self.env)],
-            ),
-        );
+        let res =
+            self.env.try_invoke_contract(
+                &self.address,
+                &{
+                    #[allow(deprecated)]
+                    const SYMBOL: soroban_sdk::Symbol = soroban_sdk::Symbol::short("test_u32");
+                    SYMBOL
+                },
+                ::soroban_sdk::Vec::from_array(
+                    &self.env,
+                    [::core::borrow::Borrow::<u32>::borrow(
+                        &soroban_sdk::IntoArg::<u32>::into_arg(v),
+                    )
+                    .into_val(&self.env)],
+                ),
+            );
         res
     }
     /// Call `test_string` function on the contract.
@@ -294,7 +302,10 @@ impl<'a> ContractClient<'a> {
             &{ soroban_sdk::Symbol::new(&self.env, "test_string") },
             ::soroban_sdk::Vec::from_array(
                 &self.env,
-                [soroban_sdk::IntoArg::<String>::into_arg(v, &self.env)],
+                [::core::borrow::Borrow::<String>::borrow(
+                    &soroban_sdk::IntoArg::<String>::into_arg(v),
+                )
+                .into_val(&self.env)],
             ),
         );
         res
@@ -314,7 +325,10 @@ impl<'a> ContractClient<'a> {
             &{ soroban_sdk::Symbol::new(&self.env, "test_string") },
             ::soroban_sdk::Vec::from_array(
                 &self.env,
-                [soroban_sdk::IntoArg::<String>::into_arg(v, &self.env)],
+                [::core::borrow::Borrow::<String>::borrow(
+                    &soroban_sdk::IntoArg::<String>::into_arg(v),
+                )
+                .into_val(&self.env)],
             ),
         );
         res
@@ -368,7 +382,10 @@ impl<'a> ContractClient<'a> {
             &{ soroban_sdk::Symbol::new(&self.env, "test_struct") },
             ::soroban_sdk::Vec::from_array(
                 &self.env,
-                [soroban_sdk::IntoArg::<MyStruct>::into_arg(v, &self.env)],
+                [::core::borrow::Borrow::<MyStruct>::borrow(
+                    &soroban_sdk::IntoArg::<MyStruct>::into_arg(v),
+                )
+                .into_val(&self.env)],
             ),
         );
         res
@@ -388,7 +405,10 @@ impl<'a> ContractClient<'a> {
             &{ soroban_sdk::Symbol::new(&self.env, "test_struct") },
             ::soroban_sdk::Vec::from_array(
                 &self.env,
-                [soroban_sdk::IntoArg::<MyStruct>::into_arg(v, &self.env)],
+                [::core::borrow::Borrow::<MyStruct>::borrow(
+                    &soroban_sdk::IntoArg::<MyStruct>::into_arg(v),
+                )
+                .into_val(&self.env)],
             ),
         );
         res
@@ -2149,7 +2169,12 @@ impl<'a> ContractClient<'a> {
             },
             ::soroban_sdk::Vec::from_array(
                 &self.env,
-                [soroban_sdk::IntoArg::<__Contract_AllTypes_types::i32>::into_arg(v, &self.env)],
+                [
+                    ::core::borrow::Borrow::<__Contract_AllTypes_types::i32>::borrow(
+                        &soroban_sdk::IntoArg::<__Contract_AllTypes_types::i32>::into_arg(v),
+                    )
+                    .into_val(&self.env),
+                ],
             ),
         );
         res
@@ -2175,7 +2200,12 @@ impl<'a> ContractClient<'a> {
             },
             ::soroban_sdk::Vec::from_array(
                 &self.env,
-                [soroban_sdk::IntoArg::<__Contract_AllTypes_types::i32>::into_arg(v, &self.env)],
+                [
+                    ::core::borrow::Borrow::<__Contract_AllTypes_types::i32>::borrow(
+                        &soroban_sdk::IntoArg::<__Contract_AllTypes_types::i32>::into_arg(v),
+                    )
+                    .into_val(&self.env),
+                ],
             ),
         );
         res
@@ -2202,7 +2232,12 @@ impl<'a> ContractClient<'a> {
             },
             ::soroban_sdk::Vec::from_array(
                 &self.env,
-                [soroban_sdk::IntoArg::<__Contract_AllTypes_types::u64>::into_arg(v, &self.env)],
+                [
+                    ::core::borrow::Borrow::<__Contract_AllTypes_types::u64>::borrow(
+                        &soroban_sdk::IntoArg::<__Contract_AllTypes_types::u64>::into_arg(v),
+                    )
+                    .into_val(&self.env),
+                ],
             ),
         );
         res
@@ -2226,7 +2261,12 @@ impl<'a> ContractClient<'a> {
             },
             ::soroban_sdk::Vec::from_array(
                 &self.env,
-                [soroban_sdk::IntoArg::<__Contract_AllTypes_types::u64>::into_arg(v, &self.env)],
+                [
+                    ::core::borrow::Borrow::<__Contract_AllTypes_types::u64>::borrow(
+                        &soroban_sdk::IntoArg::<__Contract_AllTypes_types::u64>::into_arg(v),
+                    )
+                    .into_val(&self.env),
+                ],
             ),
         );
         res
@@ -2253,7 +2293,12 @@ impl<'a> ContractClient<'a> {
             },
             ::soroban_sdk::Vec::from_array(
                 &self.env,
-                [soroban_sdk::IntoArg::<__Contract_AllTypes_types::i64>::into_arg(v, &self.env)],
+                [
+                    ::core::borrow::Borrow::<__Contract_AllTypes_types::i64>::borrow(
+                        &soroban_sdk::IntoArg::<__Contract_AllTypes_types::i64>::into_arg(v),
+                    )
+                    .into_val(&self.env),
+                ],
             ),
         );
         res
@@ -2277,7 +2322,12 @@ impl<'a> ContractClient<'a> {
             },
             ::soroban_sdk::Vec::from_array(
                 &self.env,
-                [soroban_sdk::IntoArg::<__Contract_AllTypes_types::i64>::into_arg(v, &self.env)],
+                [
+                    ::core::borrow::Borrow::<__Contract_AllTypes_types::i64>::borrow(
+                        &soroban_sdk::IntoArg::<__Contract_AllTypes_types::i64>::into_arg(v),
+                    )
+                    .into_val(&self.env),
+                ],
             ),
         );
         res
@@ -2304,7 +2354,12 @@ impl<'a> ContractClient<'a> {
             },
             ::soroban_sdk::Vec::from_array(
                 &self.env,
-                [soroban_sdk::IntoArg::<__Contract_AllTypes_types::u128>::into_arg(v, &self.env)],
+                [
+                    ::core::borrow::Borrow::<__Contract_AllTypes_types::u128>::borrow(
+                        &soroban_sdk::IntoArg::<__Contract_AllTypes_types::u128>::into_arg(v),
+                    )
+                    .into_val(&self.env),
+                ],
             ),
         );
         res
@@ -2328,7 +2383,12 @@ impl<'a> ContractClient<'a> {
             },
             ::soroban_sdk::Vec::from_array(
                 &self.env,
-                [soroban_sdk::IntoArg::<__Contract_AllTypes_types::u128>::into_arg(v, &self.env)],
+                [
+                    ::core::borrow::Borrow::<__Contract_AllTypes_types::u128>::borrow(
+                        &soroban_sdk::IntoArg::<__Contract_AllTypes_types::u128>::into_arg(v),
+                    )
+                    .into_val(&self.env),
+                ],
             ),
         );
         res
@@ -2355,7 +2415,12 @@ impl<'a> ContractClient<'a> {
             },
             ::soroban_sdk::Vec::from_array(
                 &self.env,
-                [soroban_sdk::IntoArg::<__Contract_AllTypes_types::i128>::into_arg(v, &self.env)],
+                [
+                    ::core::borrow::Borrow::<__Contract_AllTypes_types::i128>::borrow(
+                        &soroban_sdk::IntoArg::<__Contract_AllTypes_types::i128>::into_arg(v),
+                    )
+                    .into_val(&self.env),
+                ],
             ),
         );
         res
@@ -2379,7 +2444,12 @@ impl<'a> ContractClient<'a> {
             },
             ::soroban_sdk::Vec::from_array(
                 &self.env,
-                [soroban_sdk::IntoArg::<__Contract_AllTypes_types::i128>::into_arg(v, &self.env)],
+                [
+                    ::core::borrow::Borrow::<__Contract_AllTypes_types::i128>::borrow(
+                        &soroban_sdk::IntoArg::<__Contract_AllTypes_types::i128>::into_arg(v),
+                    )
+                    .into_val(&self.env),
+                ],
             ),
         );
         res
@@ -2406,7 +2476,12 @@ impl<'a> ContractClient<'a> {
             },
             ::soroban_sdk::Vec::from_array(
                 &self.env,
-                [soroban_sdk::IntoArg::<__Contract_AllTypes_types::bool>::into_arg(v, &self.env)],
+                [
+                    ::core::borrow::Borrow::<__Contract_AllTypes_types::bool>::borrow(
+                        &soroban_sdk::IntoArg::<__Contract_AllTypes_types::bool>::into_arg(v),
+                    )
+                    .into_val(&self.env),
+                ],
             ),
         );
         res
@@ -2430,7 +2505,12 @@ impl<'a> ContractClient<'a> {
             },
             ::soroban_sdk::Vec::from_array(
                 &self.env,
-                [soroban_sdk::IntoArg::<__Contract_AllTypes_types::bool>::into_arg(v, &self.env)],
+                [
+                    ::core::borrow::Borrow::<__Contract_AllTypes_types::bool>::borrow(
+                        &soroban_sdk::IntoArg::<__Contract_AllTypes_types::bool>::into_arg(v),
+                    )
+                    .into_val(&self.env),
+                ],
             ),
         );
         res
@@ -2454,9 +2534,10 @@ impl<'a> ContractClient<'a> {
             ::soroban_sdk::Vec::from_array(
                 &self.env,
                 [
-                    soroban_sdk::IntoArg::<__Contract_AllTypes_types::Address>::into_arg(
-                        v, &self.env,
-                    ),
+                    ::core::borrow::Borrow::<__Contract_AllTypes_types::Address>::borrow(
+                        &soroban_sdk::IntoArg::<__Contract_AllTypes_types::Address>::into_arg(v),
+                    )
+                    .into_val(&self.env),
                 ],
             ),
         );
@@ -2478,9 +2559,10 @@ impl<'a> ContractClient<'a> {
             ::soroban_sdk::Vec::from_array(
                 &self.env,
                 [
-                    soroban_sdk::IntoArg::<__Contract_AllTypes_types::Address>::into_arg(
-                        v, &self.env,
-                    ),
+                    ::core::borrow::Borrow::<__Contract_AllTypes_types::Address>::borrow(
+                        &soroban_sdk::IntoArg::<__Contract_AllTypes_types::Address>::into_arg(v),
+                    )
+                    .into_val(&self.env),
                 ],
             ),
         );
@@ -2505,9 +2587,10 @@ impl<'a> ContractClient<'a> {
             ::soroban_sdk::Vec::from_array(
                 &self.env,
                 [
-                    soroban_sdk::IntoArg::<__Contract_AllTypes_types::Bytes>::into_arg(
-                        v, &self.env,
-                    ),
+                    ::core::borrow::Borrow::<__Contract_AllTypes_types::Bytes>::borrow(
+                        &soroban_sdk::IntoArg::<__Contract_AllTypes_types::Bytes>::into_arg(v),
+                    )
+                    .into_val(&self.env),
                 ],
             ),
         );
@@ -2529,9 +2612,10 @@ impl<'a> ContractClient<'a> {
             ::soroban_sdk::Vec::from_array(
                 &self.env,
                 [
-                    soroban_sdk::IntoArg::<__Contract_AllTypes_types::Bytes>::into_arg(
-                        v, &self.env,
-                    ),
+                    ::core::borrow::Borrow::<__Contract_AllTypes_types::Bytes>::borrow(
+                        &soroban_sdk::IntoArg::<__Contract_AllTypes_types::Bytes>::into_arg(v),
+                    )
+                    .into_val(&self.env),
                 ],
             ),
         );
@@ -2556,9 +2640,10 @@ impl<'a> ContractClient<'a> {
             ::soroban_sdk::Vec::from_array(
                 &self.env,
                 [
-                    soroban_sdk::IntoArg::<__Contract_AllTypes_types::BytesN<32>>::into_arg(
-                        v, &self.env,
-                    ),
+                    ::core::borrow::Borrow::<__Contract_AllTypes_types::BytesN<32>>::borrow(
+                        &soroban_sdk::IntoArg::<__Contract_AllTypes_types::BytesN<32>>::into_arg(v),
+                    )
+                    .into_val(&self.env),
                 ],
             ),
         );
@@ -2580,9 +2665,10 @@ impl<'a> ContractClient<'a> {
             ::soroban_sdk::Vec::from_array(
                 &self.env,
                 [
-                    soroban_sdk::IntoArg::<__Contract_AllTypes_types::BytesN<32>>::into_arg(
-                        v, &self.env,
-                    ),
+                    ::core::borrow::Borrow::<__Contract_AllTypes_types::BytesN<32>>::borrow(
+                        &soroban_sdk::IntoArg::<__Contract_AllTypes_types::BytesN<32>>::into_arg(v),
+                    )
+                    .into_val(&self.env),
                 ],
             ),
         );
@@ -2607,9 +2693,10 @@ impl<'a> ContractClient<'a> {
             ::soroban_sdk::Vec::from_array(
                 &self.env,
                 [
-                    soroban_sdk::IntoArg::<__Contract_AllTypes_types::Symbol>::into_arg(
-                        v, &self.env,
-                    ),
+                    ::core::borrow::Borrow::<__Contract_AllTypes_types::Symbol>::borrow(
+                        &soroban_sdk::IntoArg::<__Contract_AllTypes_types::Symbol>::into_arg(v),
+                    )
+                    .into_val(&self.env),
                 ],
             ),
         );
@@ -2631,9 +2718,10 @@ impl<'a> ContractClient<'a> {
             ::soroban_sdk::Vec::from_array(
                 &self.env,
                 [
-                    soroban_sdk::IntoArg::<__Contract_AllTypes_types::Symbol>::into_arg(
-                        v, &self.env,
-                    ),
+                    ::core::borrow::Borrow::<__Contract_AllTypes_types::Symbol>::borrow(
+                        &soroban_sdk::IntoArg::<__Contract_AllTypes_types::Symbol>::into_arg(v),
+                    )
+                    .into_val(&self.env),
                 ],
             ),
         );
@@ -2662,9 +2750,12 @@ impl<'a> ContractClient<'a> {
             },
             ::soroban_sdk::Vec::from_array(
                 &self.env,
-                [soroban_sdk::IntoArg::<
+                [::core::borrow::Borrow::<
                     __Contract_AllTypes_types::Vec<__Contract_AllTypes_types::u32>,
-                >::into_arg(v, &self.env)],
+                >::borrow(&soroban_sdk::IntoArg::<
+                    __Contract_AllTypes_types::Vec<__Contract_AllTypes_types::u32>,
+                >::into_arg(v))
+                .into_val(&self.env)],
             ),
         );
         res
@@ -2689,9 +2780,12 @@ impl<'a> ContractClient<'a> {
             },
             ::soroban_sdk::Vec::from_array(
                 &self.env,
-                [soroban_sdk::IntoArg::<
+                [::core::borrow::Borrow::<
                     __Contract_AllTypes_types::Vec<__Contract_AllTypes_types::u32>,
-                >::into_arg(v, &self.env)],
+                >::borrow(&soroban_sdk::IntoArg::<
+                    __Contract_AllTypes_types::Vec<__Contract_AllTypes_types::u32>,
+                >::into_arg(v))
+                .into_val(&self.env)],
             ),
         );
         res
@@ -2728,12 +2822,18 @@ impl<'a> ContractClient<'a> {
             },
             ::soroban_sdk::Vec::from_array(
                 &self.env,
-                [soroban_sdk::IntoArg::<
+                [::core::borrow::Borrow::<
                     __Contract_AllTypes_types::Map<
                         __Contract_AllTypes_types::u32,
                         __Contract_AllTypes_types::u32,
                     >,
-                >::into_arg(v, &self.env)],
+                >::borrow(&soroban_sdk::IntoArg::<
+                    __Contract_AllTypes_types::Map<
+                        __Contract_AllTypes_types::u32,
+                        __Contract_AllTypes_types::u32,
+                    >,
+                >::into_arg(v))
+                .into_val(&self.env)],
             ),
         );
         res
@@ -2767,12 +2867,18 @@ impl<'a> ContractClient<'a> {
             },
             ::soroban_sdk::Vec::from_array(
                 &self.env,
-                [soroban_sdk::IntoArg::<
+                [::core::borrow::Borrow::<
                     __Contract_AllTypes_types::Map<
                         __Contract_AllTypes_types::u32,
                         __Contract_AllTypes_types::u32,
                     >,
-                >::into_arg(v, &self.env)],
+                >::borrow(&soroban_sdk::IntoArg::<
+                    __Contract_AllTypes_types::Map<
+                        __Contract_AllTypes_types::u32,
+                        __Contract_AllTypes_types::u32,
+                    >,
+                >::into_arg(v))
+                .into_val(&self.env)],
             ),
         );
         res
@@ -2796,9 +2902,10 @@ impl<'a> ContractClient<'a> {
             ::soroban_sdk::Vec::from_array(
                 &self.env,
                 [
-                    soroban_sdk::IntoArg::<__Contract_AllTypes_types::Duration>::into_arg(
-                        v, &self.env,
-                    ),
+                    ::core::borrow::Borrow::<__Contract_AllTypes_types::Duration>::borrow(
+                        &soroban_sdk::IntoArg::<__Contract_AllTypes_types::Duration>::into_arg(v),
+                    )
+                    .into_val(&self.env),
                 ],
             ),
         );
@@ -2820,9 +2927,10 @@ impl<'a> ContractClient<'a> {
             ::soroban_sdk::Vec::from_array(
                 &self.env,
                 [
-                    soroban_sdk::IntoArg::<__Contract_AllTypes_types::Duration>::into_arg(
-                        v, &self.env,
-                    ),
+                    ::core::borrow::Borrow::<__Contract_AllTypes_types::Duration>::borrow(
+                        &soroban_sdk::IntoArg::<__Contract_AllTypes_types::Duration>::into_arg(v),
+                    )
+                    .into_val(&self.env),
                 ],
             ),
         );
@@ -2847,9 +2955,10 @@ impl<'a> ContractClient<'a> {
             ::soroban_sdk::Vec::from_array(
                 &self.env,
                 [
-                    soroban_sdk::IntoArg::<__Contract_AllTypes_types::Timepoint>::into_arg(
-                        v, &self.env,
-                    ),
+                    ::core::borrow::Borrow::<__Contract_AllTypes_types::Timepoint>::borrow(
+                        &soroban_sdk::IntoArg::<__Contract_AllTypes_types::Timepoint>::into_arg(v),
+                    )
+                    .into_val(&self.env),
                 ],
             ),
         );
@@ -2871,9 +2980,10 @@ impl<'a> ContractClient<'a> {
             ::soroban_sdk::Vec::from_array(
                 &self.env,
                 [
-                    soroban_sdk::IntoArg::<__Contract_AllTypes_types::Timepoint>::into_arg(
-                        v, &self.env,
-                    ),
+                    ::core::borrow::Borrow::<__Contract_AllTypes_types::Timepoint>::borrow(
+                        &soroban_sdk::IntoArg::<__Contract_AllTypes_types::Timepoint>::into_arg(v),
+                    )
+                    .into_val(&self.env),
                 ],
             ),
         );
@@ -2901,7 +3011,12 @@ impl<'a> ContractClient<'a> {
             },
             ::soroban_sdk::Vec::from_array(
                 &self.env,
-                [soroban_sdk::IntoArg::<__Contract_AllTypes_types::I256>::into_arg(v, &self.env)],
+                [
+                    ::core::borrow::Borrow::<__Contract_AllTypes_types::I256>::borrow(
+                        &soroban_sdk::IntoArg::<__Contract_AllTypes_types::I256>::into_arg(v),
+                    )
+                    .into_val(&self.env),
+                ],
             ),
         );
         res
@@ -2925,7 +3040,12 @@ impl<'a> ContractClient<'a> {
             },
             ::soroban_sdk::Vec::from_array(
                 &self.env,
-                [soroban_sdk::IntoArg::<__Contract_AllTypes_types::I256>::into_arg(v, &self.env)],
+                [
+                    ::core::borrow::Borrow::<__Contract_AllTypes_types::I256>::borrow(
+                        &soroban_sdk::IntoArg::<__Contract_AllTypes_types::I256>::into_arg(v),
+                    )
+                    .into_val(&self.env),
+                ],
             ),
         );
         res
@@ -2952,7 +3072,12 @@ impl<'a> ContractClient<'a> {
             },
             ::soroban_sdk::Vec::from_array(
                 &self.env,
-                [soroban_sdk::IntoArg::<__Contract_AllTypes_types::U256>::into_arg(v, &self.env)],
+                [
+                    ::core::borrow::Borrow::<__Contract_AllTypes_types::U256>::borrow(
+                        &soroban_sdk::IntoArg::<__Contract_AllTypes_types::U256>::into_arg(v),
+                    )
+                    .into_val(&self.env),
+                ],
             ),
         );
         res
@@ -2976,7 +3101,12 @@ impl<'a> ContractClient<'a> {
             },
             ::soroban_sdk::Vec::from_array(
                 &self.env,
-                [soroban_sdk::IntoArg::<__Contract_AllTypes_types::U256>::into_arg(v, &self.env)],
+                [
+                    ::core::borrow::Borrow::<__Contract_AllTypes_types::U256>::borrow(
+                        &soroban_sdk::IntoArg::<__Contract_AllTypes_types::U256>::into_arg(v),
+                    )
+                    .into_val(&self.env),
+                ],
             ),
         );
         res
@@ -3000,9 +3130,10 @@ impl<'a> ContractClient<'a> {
             ::soroban_sdk::Vec::from_array(
                 &self.env,
                 [
-                    soroban_sdk::IntoArg::<__Contract_AllTypes_types::MyEnumUnit>::into_arg(
-                        v, &self.env,
-                    ),
+                    ::core::borrow::Borrow::<__Contract_AllTypes_types::MyEnumUnit>::borrow(
+                        &soroban_sdk::IntoArg::<__Contract_AllTypes_types::MyEnumUnit>::into_arg(v),
+                    )
+                    .into_val(&self.env),
                 ],
             ),
         );
@@ -3024,9 +3155,10 @@ impl<'a> ContractClient<'a> {
             ::soroban_sdk::Vec::from_array(
                 &self.env,
                 [
-                    soroban_sdk::IntoArg::<__Contract_AllTypes_types::MyEnumUnit>::into_arg(
-                        v, &self.env,
-                    ),
+                    ::core::borrow::Borrow::<__Contract_AllTypes_types::MyEnumUnit>::borrow(
+                        &soroban_sdk::IntoArg::<__Contract_AllTypes_types::MyEnumUnit>::into_arg(v),
+                    )
+                    .into_val(&self.env),
                 ],
             ),
         );
@@ -3045,16 +3177,25 @@ impl<'a> ContractClient<'a> {
     ) -> soroban_sdk::client::Ret<__Contract_AllTypes_types::MyEnumVariants> {
         use core::ops::Not;
         use soroban_sdk::{FromVal, IntoVal};
-        let res = self.env.invoke_contract(
-            &self.address,
-            &{ soroban_sdk::Symbol::new(&self.env, "test_enum_variants") },
-            ::soroban_sdk::Vec::from_array(
-                &self.env,
-                [soroban_sdk::IntoArg::<
-                    __Contract_AllTypes_types::MyEnumVariants,
-                >::into_arg(v, &self.env)],
-            ),
-        );
+        let res = self
+            .env
+            .invoke_contract(
+                &self.address,
+                &{ soroban_sdk::Symbol::new(&self.env, "test_enum_variants") },
+                ::soroban_sdk::Vec::from_array(
+                    &self.env,
+                    [
+                        ::core::borrow::Borrow::<
+                            __Contract_AllTypes_types::MyEnumVariants,
+                        >::borrow(
+                                &soroban_sdk::IntoArg::<
+                                    __Contract_AllTypes_types::MyEnumVariants,
+                                >::into_arg(v),
+                            )
+                            .into_val(&self.env),
+                    ],
+                ),
+            );
         res
     }
     /// Call `test_enum_variants` function on the contract.
@@ -3067,16 +3208,25 @@ impl<'a> ContractClient<'a> {
         v: impl soroban_sdk::IntoArg<__Contract_AllTypes_types::MyEnumVariants>,
     ) -> soroban_sdk::client::TryRet<__Contract_AllTypes_types::MyEnumVariants> {
         use soroban_sdk::{FromVal, IntoVal};
-        let res = self.env.try_invoke_contract(
-            &self.address,
-            &{ soroban_sdk::Symbol::new(&self.env, "test_enum_variants") },
-            ::soroban_sdk::Vec::from_array(
-                &self.env,
-                [soroban_sdk::IntoArg::<
-                    __Contract_AllTypes_types::MyEnumVariants,
-                >::into_arg(v, &self.env)],
-            ),
-        );
+        let res = self
+            .env
+            .try_invoke_contract(
+                &self.address,
+                &{ soroban_sdk::Symbol::new(&self.env, "test_enum_variants") },
+                ::soroban_sdk::Vec::from_array(
+                    &self.env,
+                    [
+                        ::core::borrow::Borrow::<
+                            __Contract_AllTypes_types::MyEnumVariants,
+                        >::borrow(
+                                &soroban_sdk::IntoArg::<
+                                    __Contract_AllTypes_types::MyEnumVariants,
+                                >::into_arg(v),
+                            )
+                            .into_val(&self.env),
+                    ],
+                ),
+            );
         res
     }
 }

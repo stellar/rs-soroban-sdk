@@ -3,7 +3,7 @@
 
 use core::borrow::Borrow;
 
-use crate::{client::Type, Address, Env, IntoVal, MuxedAddress, Val};
+use crate::{client::Type, Address, MuxedAddress};
 
 /// Trait for the values a client function accepts for an argument of type `T`.
 ///
@@ -11,28 +11,31 @@ use crate::{client::Type, Address, Env, IntoVal, MuxedAddress, Val};
 /// by value or by reference. Types that other types convert into accept those
 /// types too, such as a [`MuxedAddress`] argument accepting an [`Address`].
 pub trait IntoArg<T> {
-    fn into_arg(self, env: &Env) -> Val;
+    type Arg: Borrow<T>;
+    fn into_arg(self) -> Self::Arg;
 }
 
 impl<T, R> IntoArg<T> for R
 where
-    T: Type + IntoVal<Env, Val>,
+    T: Type,
     R: Borrow<T>,
 {
-    fn into_arg(self, env: &Env) -> Val {
-        let t: &T = self.borrow();
-        t.into_val(env)
+    type Arg = R;
+    fn into_arg(self) -> R {
+        self
     }
 }
 
 impl IntoArg<MuxedAddress> for Address {
-    fn into_arg(self, env: &Env) -> Val {
-        MuxedAddress::from(self).into_val(env)
+    type Arg = MuxedAddress;
+    fn into_arg(self) -> MuxedAddress {
+        self.into()
     }
 }
 
 impl IntoArg<MuxedAddress> for &Address {
-    fn into_arg(self, env: &Env) -> Val {
-        MuxedAddress::from(self).into_val(env)
+    type Arg = MuxedAddress;
+    fn into_arg(self) -> MuxedAddress {
+        self.into()
     }
 }

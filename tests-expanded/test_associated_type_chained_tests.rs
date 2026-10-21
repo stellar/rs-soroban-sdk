@@ -552,18 +552,22 @@ impl<'a> ContractClient<'a> {
     pub fn set_val(&self, input: impl soroban_sdk::IntoArg<u64>) -> soroban_sdk::client::Ret<()> {
         let _call_scope = soroban_sdk::testutils::ClientCallScope::enter(&self.env, self.config);
         use soroban_sdk::{FromVal, IntoVal};
-        let res = self.env.invoke_contract(
-            &self.address,
-            &{
-                #[allow(deprecated)]
-                const SYMBOL: soroban_sdk::Symbol = soroban_sdk::Symbol::short("set_val");
-                SYMBOL
-            },
-            ::soroban_sdk::Vec::from_array(
-                &self.env,
-                [soroban_sdk::IntoArg::<u64>::into_arg(input, &self.env)],
-            ),
-        );
+        let res =
+            self.env.invoke_contract(
+                &self.address,
+                &{
+                    #[allow(deprecated)]
+                    const SYMBOL: soroban_sdk::Symbol = soroban_sdk::Symbol::short("set_val");
+                    SYMBOL
+                },
+                ::soroban_sdk::Vec::from_array(
+                    &self.env,
+                    [::core::borrow::Borrow::<u64>::borrow(
+                        &soroban_sdk::IntoArg::<u64>::into_arg(input),
+                    )
+                    .into_val(&self.env)],
+                ),
+            );
         res
     }
     /// Call `set_val` function on the contract.
@@ -577,18 +581,22 @@ impl<'a> ContractClient<'a> {
     ) -> soroban_sdk::client::TryRet<()> {
         let _call_scope = soroban_sdk::testutils::ClientCallScope::enter(&self.env, self.config);
         use soroban_sdk::{FromVal, IntoVal};
-        let res = self.env.try_invoke_contract(
-            &self.address,
-            &{
-                #[allow(deprecated)]
-                const SYMBOL: soroban_sdk::Symbol = soroban_sdk::Symbol::short("set_val");
-                SYMBOL
-            },
-            ::soroban_sdk::Vec::from_array(
-                &self.env,
-                [soroban_sdk::IntoArg::<u64>::into_arg(input, &self.env)],
-            ),
-        );
+        let res =
+            self.env.try_invoke_contract(
+                &self.address,
+                &{
+                    #[allow(deprecated)]
+                    const SYMBOL: soroban_sdk::Symbol = soroban_sdk::Symbol::short("set_val");
+                    SYMBOL
+                },
+                ::soroban_sdk::Vec::from_array(
+                    &self.env,
+                    [::core::borrow::Borrow::<u64>::borrow(
+                        &soroban_sdk::IntoArg::<u64>::into_arg(input),
+                    )
+                    .into_val(&self.env)],
+                ),
+            );
         res
     }
     /// Call `get_val` function on the contract.
@@ -641,18 +649,22 @@ impl<'a> ContractClient<'a> {
     pub fn both(&self, input: impl soroban_sdk::IntoArg<u64>) -> soroban_sdk::client::Ret<u64> {
         let _call_scope = soroban_sdk::testutils::ClientCallScope::enter(&self.env, self.config);
         use soroban_sdk::{FromVal, IntoVal};
-        let res = self.env.invoke_contract(
-            &self.address,
-            &{
-                #[allow(deprecated)]
-                const SYMBOL: soroban_sdk::Symbol = soroban_sdk::Symbol::short("both");
-                SYMBOL
-            },
-            ::soroban_sdk::Vec::from_array(
-                &self.env,
-                [soroban_sdk::IntoArg::<u64>::into_arg(input, &self.env)],
-            ),
-        );
+        let res =
+            self.env.invoke_contract(
+                &self.address,
+                &{
+                    #[allow(deprecated)]
+                    const SYMBOL: soroban_sdk::Symbol = soroban_sdk::Symbol::short("both");
+                    SYMBOL
+                },
+                ::soroban_sdk::Vec::from_array(
+                    &self.env,
+                    [::core::borrow::Borrow::<u64>::borrow(
+                        &soroban_sdk::IntoArg::<u64>::into_arg(input),
+                    )
+                    .into_val(&self.env)],
+                ),
+            );
         res
     }
     /// Call `both` function on the contract.
@@ -666,18 +678,22 @@ impl<'a> ContractClient<'a> {
     ) -> soroban_sdk::client::TryRet<u64> {
         let _call_scope = soroban_sdk::testutils::ClientCallScope::enter(&self.env, self.config);
         use soroban_sdk::{FromVal, IntoVal};
-        let res = self.env.try_invoke_contract(
-            &self.address,
-            &{
-                #[allow(deprecated)]
-                const SYMBOL: soroban_sdk::Symbol = soroban_sdk::Symbol::short("both");
-                SYMBOL
-            },
-            ::soroban_sdk::Vec::from_array(
-                &self.env,
-                [soroban_sdk::IntoArg::<u64>::into_arg(input, &self.env)],
-            ),
-        );
+        let res =
+            self.env.try_invoke_contract(
+                &self.address,
+                &{
+                    #[allow(deprecated)]
+                    const SYMBOL: soroban_sdk::Symbol = soroban_sdk::Symbol::short("both");
+                    SYMBOL
+                },
+                ::soroban_sdk::Vec::from_array(
+                    &self.env,
+                    [::core::borrow::Borrow::<u64>::borrow(
+                        &soroban_sdk::IntoArg::<u64>::into_arg(input),
+                    )
+                    .into_val(&self.env)],
+                ),
+            );
         res
     }
     /// Call `wrapped` function on the contract.
@@ -702,7 +718,10 @@ impl<'a> ContractClient<'a> {
             },
             ::soroban_sdk::Vec::from_array(
                 &self.env,
-                [soroban_sdk::IntoArg::<Vec<u64>>::into_arg(input, &self.env)],
+                [::core::borrow::Borrow::<Vec<u64>>::borrow(
+                    &soroban_sdk::IntoArg::<Vec<u64>>::into_arg(input),
+                )
+                .into_val(&self.env)],
             ),
         );
         res
@@ -727,7 +746,10 @@ impl<'a> ContractClient<'a> {
             },
             ::soroban_sdk::Vec::from_array(
                 &self.env,
-                [soroban_sdk::IntoArg::<Vec<u64>>::into_arg(input, &self.env)],
+                [::core::borrow::Borrow::<Vec<u64>>::borrow(
+                    &soroban_sdk::IntoArg::<Vec<u64>>::into_arg(input),
+                )
+                .into_val(&self.env)],
             ),
         );
         res
@@ -745,16 +767,20 @@ impl<'a> ContractClient<'a> {
     ) -> soroban_sdk::client::Ret<Result<Vec<u64>, Error>> {
         let _call_scope = soroban_sdk::testutils::ClientCallScope::enter(&self.env, self.config);
         use soroban_sdk::{FromVal, IntoVal};
-        let res = self.env.invoke_contract(
-            &self.address,
-            &{ soroban_sdk::Symbol::new(&self.env, "double_wrapped") },
-            ::soroban_sdk::Vec::from_array(
-                &self.env,
-                [soroban_sdk::IntoArg::<Option<Vec<u64>>>::into_arg(
-                    input, &self.env,
-                )],
-            ),
-        );
+        let res =
+            self.env.invoke_contract(
+                &self.address,
+                &{ soroban_sdk::Symbol::new(&self.env, "double_wrapped") },
+                ::soroban_sdk::Vec::from_array(
+                    &self.env,
+                    [
+                        ::core::borrow::Borrow::<Option<Vec<u64>>>::borrow(
+                            &soroban_sdk::IntoArg::<Option<Vec<u64>>>::into_arg(input),
+                        )
+                        .into_val(&self.env),
+                    ],
+                ),
+            );
         res
     }
     /// Call `double_wrapped` function on the contract.
@@ -768,16 +794,20 @@ impl<'a> ContractClient<'a> {
     ) -> soroban_sdk::client::TryRet<Result<Vec<u64>, Error>> {
         let _call_scope = soroban_sdk::testutils::ClientCallScope::enter(&self.env, self.config);
         use soroban_sdk::{FromVal, IntoVal};
-        let res = self.env.try_invoke_contract(
-            &self.address,
-            &{ soroban_sdk::Symbol::new(&self.env, "double_wrapped") },
-            ::soroban_sdk::Vec::from_array(
-                &self.env,
-                [soroban_sdk::IntoArg::<Option<Vec<u64>>>::into_arg(
-                    input, &self.env,
-                )],
-            ),
-        );
+        let res =
+            self.env.try_invoke_contract(
+                &self.address,
+                &{ soroban_sdk::Symbol::new(&self.env, "double_wrapped") },
+                ::soroban_sdk::Vec::from_array(
+                    &self.env,
+                    [
+                        ::core::borrow::Borrow::<Option<Vec<u64>>>::borrow(
+                            &soroban_sdk::IntoArg::<Option<Vec<u64>>>::into_arg(input),
+                        )
+                        .into_val(&self.env),
+                    ],
+                ),
+            );
         res
     }
     /// Call `valval` function on the contract.
@@ -793,18 +823,22 @@ impl<'a> ContractClient<'a> {
     ) -> soroban_sdk::client::Ret<Option<u64>> {
         let _call_scope = soroban_sdk::testutils::ClientCallScope::enter(&self.env, self.config);
         use soroban_sdk::{FromVal, IntoVal};
-        let res = self.env.invoke_contract(
-            &self.address,
-            &{
-                #[allow(deprecated)]
-                const SYMBOL: soroban_sdk::Symbol = soroban_sdk::Symbol::short("valval");
-                SYMBOL
-            },
-            ::soroban_sdk::Vec::from_array(
-                &self.env,
-                [soroban_sdk::IntoArg::<u64>::into_arg(input, &self.env)],
-            ),
-        );
+        let res =
+            self.env.invoke_contract(
+                &self.address,
+                &{
+                    #[allow(deprecated)]
+                    const SYMBOL: soroban_sdk::Symbol = soroban_sdk::Symbol::short("valval");
+                    SYMBOL
+                },
+                ::soroban_sdk::Vec::from_array(
+                    &self.env,
+                    [::core::borrow::Borrow::<u64>::borrow(
+                        &soroban_sdk::IntoArg::<u64>::into_arg(input),
+                    )
+                    .into_val(&self.env)],
+                ),
+            );
         res
     }
     /// Call `valval` function on the contract.
@@ -818,18 +852,22 @@ impl<'a> ContractClient<'a> {
     ) -> soroban_sdk::client::TryRet<Option<u64>> {
         let _call_scope = soroban_sdk::testutils::ClientCallScope::enter(&self.env, self.config);
         use soroban_sdk::{FromVal, IntoVal};
-        let res = self.env.try_invoke_contract(
-            &self.address,
-            &{
-                #[allow(deprecated)]
-                const SYMBOL: soroban_sdk::Symbol = soroban_sdk::Symbol::short("valval");
-                SYMBOL
-            },
-            ::soroban_sdk::Vec::from_array(
-                &self.env,
-                [soroban_sdk::IntoArg::<u64>::into_arg(input, &self.env)],
-            ),
-        );
+        let res =
+            self.env.try_invoke_contract(
+                &self.address,
+                &{
+                    #[allow(deprecated)]
+                    const SYMBOL: soroban_sdk::Symbol = soroban_sdk::Symbol::short("valval");
+                    SYMBOL
+                },
+                ::soroban_sdk::Vec::from_array(
+                    &self.env,
+                    [::core::borrow::Borrow::<u64>::borrow(
+                        &soroban_sdk::IntoArg::<u64>::into_arg(input),
+                    )
+                    .into_val(&self.env)],
+                ),
+            );
         res
     }
     /// Call `tuple` function on the contract.
@@ -845,18 +883,22 @@ impl<'a> ContractClient<'a> {
     ) -> soroban_sdk::client::Ret<(u64, u64)> {
         let _call_scope = soroban_sdk::testutils::ClientCallScope::enter(&self.env, self.config);
         use soroban_sdk::{FromVal, IntoVal};
-        let res = self.env.invoke_contract(
-            &self.address,
-            &{
-                #[allow(deprecated)]
-                const SYMBOL: soroban_sdk::Symbol = soroban_sdk::Symbol::short("tuple");
-                SYMBOL
-            },
-            ::soroban_sdk::Vec::from_array(
-                &self.env,
-                [soroban_sdk::IntoArg::<u64>::into_arg(input, &self.env)],
-            ),
-        );
+        let res =
+            self.env.invoke_contract(
+                &self.address,
+                &{
+                    #[allow(deprecated)]
+                    const SYMBOL: soroban_sdk::Symbol = soroban_sdk::Symbol::short("tuple");
+                    SYMBOL
+                },
+                ::soroban_sdk::Vec::from_array(
+                    &self.env,
+                    [::core::borrow::Borrow::<u64>::borrow(
+                        &soroban_sdk::IntoArg::<u64>::into_arg(input),
+                    )
+                    .into_val(&self.env)],
+                ),
+            );
         res
     }
     /// Call `tuple` function on the contract.
@@ -870,18 +912,22 @@ impl<'a> ContractClient<'a> {
     ) -> soroban_sdk::client::TryRet<(u64, u64)> {
         let _call_scope = soroban_sdk::testutils::ClientCallScope::enter(&self.env, self.config);
         use soroban_sdk::{FromVal, IntoVal};
-        let res = self.env.try_invoke_contract(
-            &self.address,
-            &{
-                #[allow(deprecated)]
-                const SYMBOL: soroban_sdk::Symbol = soroban_sdk::Symbol::short("tuple");
-                SYMBOL
-            },
-            ::soroban_sdk::Vec::from_array(
-                &self.env,
-                [soroban_sdk::IntoArg::<u64>::into_arg(input, &self.env)],
-            ),
-        );
+        let res =
+            self.env.try_invoke_contract(
+                &self.address,
+                &{
+                    #[allow(deprecated)]
+                    const SYMBOL: soroban_sdk::Symbol = soroban_sdk::Symbol::short("tuple");
+                    SYMBOL
+                },
+                ::soroban_sdk::Vec::from_array(
+                    &self.env,
+                    [::core::borrow::Borrow::<u64>::borrow(
+                        &soroban_sdk::IntoArg::<u64>::into_arg(input),
+                    )
+                    .into_val(&self.env)],
+                ),
+            );
         res
     }
     /// Call `valref` function on the contract.
@@ -894,18 +940,22 @@ impl<'a> ContractClient<'a> {
     pub fn valref(&self, input: impl soroban_sdk::IntoArg<u64>) -> soroban_sdk::client::Ret<u64> {
         let _call_scope = soroban_sdk::testutils::ClientCallScope::enter(&self.env, self.config);
         use soroban_sdk::{FromVal, IntoVal};
-        let res = self.env.invoke_contract(
-            &self.address,
-            &{
-                #[allow(deprecated)]
-                const SYMBOL: soroban_sdk::Symbol = soroban_sdk::Symbol::short("valref");
-                SYMBOL
-            },
-            ::soroban_sdk::Vec::from_array(
-                &self.env,
-                [soroban_sdk::IntoArg::<u64>::into_arg(input, &self.env)],
-            ),
-        );
+        let res =
+            self.env.invoke_contract(
+                &self.address,
+                &{
+                    #[allow(deprecated)]
+                    const SYMBOL: soroban_sdk::Symbol = soroban_sdk::Symbol::short("valref");
+                    SYMBOL
+                },
+                ::soroban_sdk::Vec::from_array(
+                    &self.env,
+                    [::core::borrow::Borrow::<u64>::borrow(
+                        &soroban_sdk::IntoArg::<u64>::into_arg(input),
+                    )
+                    .into_val(&self.env)],
+                ),
+            );
         res
     }
     /// Call `valref` function on the contract.
@@ -919,18 +969,22 @@ impl<'a> ContractClient<'a> {
     ) -> soroban_sdk::client::TryRet<u64> {
         let _call_scope = soroban_sdk::testutils::ClientCallScope::enter(&self.env, self.config);
         use soroban_sdk::{FromVal, IntoVal};
-        let res = self.env.try_invoke_contract(
-            &self.address,
-            &{
-                #[allow(deprecated)]
-                const SYMBOL: soroban_sdk::Symbol = soroban_sdk::Symbol::short("valref");
-                SYMBOL
-            },
-            ::soroban_sdk::Vec::from_array(
-                &self.env,
-                [soroban_sdk::IntoArg::<u64>::into_arg(input, &self.env)],
-            ),
-        );
+        let res =
+            self.env.try_invoke_contract(
+                &self.address,
+                &{
+                    #[allow(deprecated)]
+                    const SYMBOL: soroban_sdk::Symbol = soroban_sdk::Symbol::short("valref");
+                    SYMBOL
+                },
+                ::soroban_sdk::Vec::from_array(
+                    &self.env,
+                    [::core::borrow::Borrow::<u64>::borrow(
+                        &soroban_sdk::IntoArg::<u64>::into_arg(input),
+                    )
+                    .into_val(&self.env)],
+                ),
+            );
         res
     }
 }

@@ -1023,8 +1023,16 @@ impl<'a> ContractClient<'a> {
             ::soroban_sdk::Vec::from_array(
                 &self.env,
                 [
-                    soroban_sdk::IntoArg::<Bls12381G1Affine>::into_arg(p, &self.env),
-                    soroban_sdk::IntoArg::<Bls12381Fr>::into_arg(s, &self.env),
+                    ::core::borrow::Borrow::<Bls12381G1Affine>::borrow(&soroban_sdk::IntoArg::<
+                        Bls12381G1Affine,
+                    >::into_arg(
+                        p
+                    ))
+                    .into_val(&self.env),
+                    ::core::borrow::Borrow::<Bls12381Fr>::borrow(
+                        &soroban_sdk::IntoArg::<Bls12381Fr>::into_arg(s),
+                    )
+                    .into_val(&self.env),
                 ],
             ),
         );
@@ -1052,8 +1060,16 @@ impl<'a> ContractClient<'a> {
             ::soroban_sdk::Vec::from_array(
                 &self.env,
                 [
-                    soroban_sdk::IntoArg::<Bls12381G1Affine>::into_arg(p, &self.env),
-                    soroban_sdk::IntoArg::<Bls12381Fr>::into_arg(s, &self.env),
+                    ::core::borrow::Borrow::<Bls12381G1Affine>::borrow(&soroban_sdk::IntoArg::<
+                        Bls12381G1Affine,
+                    >::into_arg(
+                        p
+                    ))
+                    .into_val(&self.env),
+                    ::core::borrow::Borrow::<Bls12381Fr>::borrow(
+                        &soroban_sdk::IntoArg::<Bls12381Fr>::into_arg(s),
+                    )
+                    .into_val(&self.env),
                 ],
             ),
         );
@@ -1083,8 +1099,16 @@ impl<'a> ContractClient<'a> {
             ::soroban_sdk::Vec::from_array(
                 &self.env,
                 [
-                    soroban_sdk::IntoArg::<Bls12381G2Affine>::into_arg(p, &self.env),
-                    soroban_sdk::IntoArg::<Bls12381Fr>::into_arg(s, &self.env),
+                    ::core::borrow::Borrow::<Bls12381G2Affine>::borrow(&soroban_sdk::IntoArg::<
+                        Bls12381G2Affine,
+                    >::into_arg(
+                        p
+                    ))
+                    .into_val(&self.env),
+                    ::core::borrow::Borrow::<Bls12381Fr>::borrow(
+                        &soroban_sdk::IntoArg::<Bls12381Fr>::into_arg(s),
+                    )
+                    .into_val(&self.env),
                 ],
             ),
         );
@@ -1112,8 +1136,16 @@ impl<'a> ContractClient<'a> {
             ::soroban_sdk::Vec::from_array(
                 &self.env,
                 [
-                    soroban_sdk::IntoArg::<Bls12381G2Affine>::into_arg(p, &self.env),
-                    soroban_sdk::IntoArg::<Bls12381Fr>::into_arg(s, &self.env),
+                    ::core::borrow::Borrow::<Bls12381G2Affine>::borrow(&soroban_sdk::IntoArg::<
+                        Bls12381G2Affine,
+                    >::into_arg(
+                        p
+                    ))
+                    .into_val(&self.env),
+                    ::core::borrow::Borrow::<Bls12381Fr>::borrow(
+                        &soroban_sdk::IntoArg::<Bls12381Fr>::into_arg(s),
+                    )
+                    .into_val(&self.env),
                 ],
             ),
         );
@@ -1137,9 +1169,10 @@ impl<'a> ContractClient<'a> {
             &{ soroban_sdk::Symbol::new(&self.env, "dummy_verify") },
             ::soroban_sdk::Vec::from_array(
                 &self.env,
-                [soroban_sdk::IntoArg::<DummyProof>::into_arg(
-                    proof, &self.env,
-                )],
+                [::core::borrow::Borrow::<DummyProof>::borrow(
+                    &soroban_sdk::IntoArg::<DummyProof>::into_arg(proof),
+                )
+                .into_val(&self.env)],
             ),
         );
         res
@@ -1160,9 +1193,10 @@ impl<'a> ContractClient<'a> {
             &{ soroban_sdk::Symbol::new(&self.env, "dummy_verify") },
             ::soroban_sdk::Vec::from_array(
                 &self.env,
-                [soroban_sdk::IntoArg::<DummyProof>::into_arg(
-                    proof, &self.env,
-                )],
+                [::core::borrow::Borrow::<DummyProof>::borrow(
+                    &soroban_sdk::IntoArg::<DummyProof>::into_arg(proof),
+                )
+                .into_val(&self.env)],
             ),
         );
         res
@@ -1187,8 +1221,16 @@ impl<'a> ContractClient<'a> {
             ::soroban_sdk::Vec::from_array(
                 &self.env,
                 [
-                    soroban_sdk::IntoArg::<Vec<Bls12381Fr>>::into_arg(values, &self.env),
-                    soroban_sdk::IntoArg::<u32>::into_arg(index, &self.env),
+                    ::core::borrow::Borrow::<Vec<Bls12381Fr>>::borrow(&soroban_sdk::IntoArg::<
+                        Vec<Bls12381Fr>,
+                    >::into_arg(
+                        values
+                    ))
+                    .into_val(&self.env),
+                    ::core::borrow::Borrow::<u32>::borrow(&soroban_sdk::IntoArg::<u32>::into_arg(
+                        index,
+                    ))
+                    .into_val(&self.env),
                 ],
             ),
         );
@@ -1212,8 +1254,16 @@ impl<'a> ContractClient<'a> {
             ::soroban_sdk::Vec::from_array(
                 &self.env,
                 [
-                    soroban_sdk::IntoArg::<Vec<Bls12381Fr>>::into_arg(values, &self.env),
-                    soroban_sdk::IntoArg::<u32>::into_arg(index, &self.env),
+                    ::core::borrow::Borrow::<Vec<Bls12381Fr>>::borrow(&soroban_sdk::IntoArg::<
+                        Vec<Bls12381Fr>,
+                    >::into_arg(
+                        values
+                    ))
+                    .into_val(&self.env),
+                    ::core::borrow::Borrow::<u32>::borrow(&soroban_sdk::IntoArg::<u32>::into_arg(
+                        index,
+                    ))
+                    .into_val(&self.env),
                 ],
             ),
         );

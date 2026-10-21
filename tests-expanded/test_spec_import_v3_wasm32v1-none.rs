@@ -404,8 +404,14 @@ impl<'a> ContractClient<'a> {
             ::soroban_sdk::Vec::from_array(
                 &self.env,
                 [
-                    soroban_sdk::IntoArg::<u32>::into_arg(f1, &self.env),
-                    soroban_sdk::IntoArg::<bool>::into_arg(f2, &self.env),
+                    ::core::borrow::Borrow::<u32>::borrow(&soroban_sdk::IntoArg::<u32>::into_arg(
+                        f1,
+                    ))
+                    .into_val(&self.env),
+                    ::core::borrow::Borrow::<bool>::borrow(
+                        &soroban_sdk::IntoArg::<bool>::into_arg(f2),
+                    )
+                    .into_val(&self.env),
                 ],
             ),
         );
@@ -428,8 +434,14 @@ impl<'a> ContractClient<'a> {
             ::soroban_sdk::Vec::from_array(
                 &self.env,
                 [
-                    soroban_sdk::IntoArg::<u32>::into_arg(f1, &self.env),
-                    soroban_sdk::IntoArg::<bool>::into_arg(f2, &self.env),
+                    ::core::borrow::Borrow::<u32>::borrow(&soroban_sdk::IntoArg::<u32>::into_arg(
+                        f1,
+                    ))
+                    .into_val(&self.env),
+                    ::core::borrow::Borrow::<bool>::borrow(
+                        &soroban_sdk::IntoArg::<bool>::into_arg(f2),
+                    )
+                    .into_val(&self.env),
                 ],
             ),
         );
@@ -455,8 +467,14 @@ impl<'a> ContractClient<'a> {
             ::soroban_sdk::Vec::from_array(
                 &self.env,
                 [
-                    soroban_sdk::IntoArg::<i64>::into_arg(f1, &self.env),
-                    soroban_sdk::IntoArg::<i64>::into_arg(f2, &self.env),
+                    ::core::borrow::Borrow::<i64>::borrow(&soroban_sdk::IntoArg::<i64>::into_arg(
+                        f1,
+                    ))
+                    .into_val(&self.env),
+                    ::core::borrow::Borrow::<i64>::borrow(&soroban_sdk::IntoArg::<i64>::into_arg(
+                        f2,
+                    ))
+                    .into_val(&self.env),
                 ],
             ),
         );
@@ -479,8 +497,14 @@ impl<'a> ContractClient<'a> {
             ::soroban_sdk::Vec::from_array(
                 &self.env,
                 [
-                    soroban_sdk::IntoArg::<i64>::into_arg(f1, &self.env),
-                    soroban_sdk::IntoArg::<i64>::into_arg(f2, &self.env),
+                    ::core::borrow::Borrow::<i64>::borrow(&soroban_sdk::IntoArg::<i64>::into_arg(
+                        f1,
+                    ))
+                    .into_val(&self.env),
+                    ::core::borrow::Borrow::<i64>::borrow(&soroban_sdk::IntoArg::<i64>::into_arg(
+                        f2,
+                    ))
+                    .into_val(&self.env),
                 ],
             ),
         );
@@ -569,14 +593,18 @@ impl<'a> ContractClient<'a> {
     ) -> soroban_sdk::client::Ret<Result<u32, ErrorA>> {
         use core::ops::Not;
         use soroban_sdk::{FromVal, IntoVal};
-        let res = self.env.invoke_contract(
-            &self.address,
-            &{ soroban_sdk::Symbol::new(&self.env, "fn_error_a") },
-            ::soroban_sdk::Vec::from_array(
-                &self.env,
-                [soroban_sdk::IntoArg::<u32>::into_arg(input, &self.env)],
-            ),
-        );
+        let res =
+            self.env.invoke_contract(
+                &self.address,
+                &{ soroban_sdk::Symbol::new(&self.env, "fn_error_a") },
+                ::soroban_sdk::Vec::from_array(
+                    &self.env,
+                    [::core::borrow::Borrow::<u32>::borrow(
+                        &soroban_sdk::IntoArg::<u32>::into_arg(input),
+                    )
+                    .into_val(&self.env)],
+                ),
+            );
         res
     }
     /// Call `fn_error_a` function on the contract.
@@ -589,14 +617,18 @@ impl<'a> ContractClient<'a> {
         input: impl soroban_sdk::IntoArg<u32>,
     ) -> soroban_sdk::client::TryRet<Result<u32, ErrorA>> {
         use soroban_sdk::{FromVal, IntoVal};
-        let res = self.env.try_invoke_contract(
-            &self.address,
-            &{ soroban_sdk::Symbol::new(&self.env, "fn_error_a") },
-            ::soroban_sdk::Vec::from_array(
-                &self.env,
-                [soroban_sdk::IntoArg::<u32>::into_arg(input, &self.env)],
-            ),
-        );
+        let res =
+            self.env.try_invoke_contract(
+                &self.address,
+                &{ soroban_sdk::Symbol::new(&self.env, "fn_error_a") },
+                ::soroban_sdk::Vec::from_array(
+                    &self.env,
+                    [::core::borrow::Borrow::<u32>::borrow(
+                        &soroban_sdk::IntoArg::<u32>::into_arg(input),
+                    )
+                    .into_val(&self.env)],
+                ),
+            );
         res
     }
     /// Call `fn_event_a` function on the contract.
@@ -619,8 +651,14 @@ impl<'a> ContractClient<'a> {
             ::soroban_sdk::Vec::from_array(
                 &self.env,
                 [
-                    soroban_sdk::IntoArg::<Address>::into_arg(f1, &self.env),
-                    soroban_sdk::IntoArg::<String>::into_arg(f2, &self.env),
+                    ::core::borrow::Borrow::<Address>::borrow(
+                        &soroban_sdk::IntoArg::<Address>::into_arg(f1),
+                    )
+                    .into_val(&self.env),
+                    ::core::borrow::Borrow::<String>::borrow(
+                        &soroban_sdk::IntoArg::<String>::into_arg(f2),
+                    )
+                    .into_val(&self.env),
                 ],
             ),
         );
@@ -643,8 +681,14 @@ impl<'a> ContractClient<'a> {
             ::soroban_sdk::Vec::from_array(
                 &self.env,
                 [
-                    soroban_sdk::IntoArg::<Address>::into_arg(f1, &self.env),
-                    soroban_sdk::IntoArg::<String>::into_arg(f2, &self.env),
+                    ::core::borrow::Borrow::<Address>::borrow(
+                        &soroban_sdk::IntoArg::<Address>::into_arg(f1),
+                    )
+                    .into_val(&self.env),
+                    ::core::borrow::Borrow::<String>::borrow(
+                        &soroban_sdk::IntoArg::<String>::into_arg(f2),
+                    )
+                    .into_val(&self.env),
                 ],
             ),
         );

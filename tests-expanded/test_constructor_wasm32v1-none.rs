@@ -363,7 +363,10 @@ impl<'a> ContractClient<'a> {
             },
             ::soroban_sdk::Vec::from_array(
                 &self.env,
-                [soroban_sdk::IntoArg::<DataKey>::into_arg(key, &self.env)],
+                [::core::borrow::Borrow::<DataKey>::borrow(
+                    &soroban_sdk::IntoArg::<DataKey>::into_arg(key),
+                )
+                .into_val(&self.env)],
             ),
         );
         res
@@ -387,7 +390,10 @@ impl<'a> ContractClient<'a> {
             },
             ::soroban_sdk::Vec::from_array(
                 &self.env,
-                [soroban_sdk::IntoArg::<DataKey>::into_arg(key, &self.env)],
+                [::core::borrow::Borrow::<DataKey>::borrow(
+                    &soroban_sdk::IntoArg::<DataKey>::into_arg(key),
+                )
+                .into_val(&self.env)],
             ),
         );
         res

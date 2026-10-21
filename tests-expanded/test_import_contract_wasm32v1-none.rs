@@ -53,8 +53,14 @@ mod addcontract {
                 ::soroban_sdk::Vec::from_array(
                     &self.env,
                     [
-                        soroban_sdk::IntoArg::<u64>::into_arg(a, &self.env),
-                        soroban_sdk::IntoArg::<u64>::into_arg(b, &self.env),
+                        ::core::borrow::Borrow::<u64>::borrow(
+                            &soroban_sdk::IntoArg::<u64>::into_arg(a),
+                        )
+                        .into_val(&self.env),
+                        ::core::borrow::Borrow::<u64>::borrow(
+                            &soroban_sdk::IntoArg::<u64>::into_arg(b),
+                        )
+                        .into_val(&self.env),
                     ],
                 ),
             );
@@ -81,8 +87,14 @@ mod addcontract {
                 ::soroban_sdk::Vec::from_array(
                     &self.env,
                     [
-                        soroban_sdk::IntoArg::<u64>::into_arg(a, &self.env),
-                        soroban_sdk::IntoArg::<u64>::into_arg(b, &self.env),
+                        ::core::borrow::Borrow::<u64>::borrow(
+                            &soroban_sdk::IntoArg::<u64>::into_arg(a),
+                        )
+                        .into_val(&self.env),
+                        ::core::borrow::Borrow::<u64>::borrow(
+                            &soroban_sdk::IntoArg::<u64>::into_arg(b),
+                        )
+                        .into_val(&self.env),
                     ],
                 ),
             );
@@ -112,8 +124,14 @@ mod addcontract {
                 ::soroban_sdk::Vec::from_array(
                     &self.env,
                     [
-                        soroban_sdk::IntoArg::<u64>::into_arg(a, &self.env),
-                        soroban_sdk::IntoArg::<u64>::into_arg(b, &self.env),
+                        ::core::borrow::Borrow::<u64>::borrow(
+                            &soroban_sdk::IntoArg::<u64>::into_arg(a),
+                        )
+                        .into_val(&self.env),
+                        ::core::borrow::Borrow::<u64>::borrow(
+                            &soroban_sdk::IntoArg::<u64>::into_arg(b),
+                        )
+                        .into_val(&self.env),
                     ],
                 ),
             );
@@ -140,8 +158,14 @@ mod addcontract {
                 ::soroban_sdk::Vec::from_array(
                     &self.env,
                     [
-                        soroban_sdk::IntoArg::<u64>::into_arg(a, &self.env),
-                        soroban_sdk::IntoArg::<u64>::into_arg(b, &self.env),
+                        ::core::borrow::Borrow::<u64>::borrow(
+                            &soroban_sdk::IntoArg::<u64>::into_arg(a),
+                        )
+                        .into_val(&self.env),
+                        ::core::borrow::Borrow::<u64>::borrow(
+                            &soroban_sdk::IntoArg::<u64>::into_arg(b),
+                        )
+                        .into_val(&self.env),
                     ],
                 ),
             );
@@ -167,8 +191,14 @@ mod addcontract {
                 ::soroban_sdk::Vec::from_array(
                     &self.env,
                     [
-                        soroban_sdk::IntoArg::<u64>::into_arg(a, &self.env),
-                        soroban_sdk::IntoArg::<u64>::into_arg(b, &self.env),
+                        ::core::borrow::Borrow::<u64>::borrow(
+                            &soroban_sdk::IntoArg::<u64>::into_arg(a),
+                        )
+                        .into_val(&self.env),
+                        ::core::borrow::Borrow::<u64>::borrow(
+                            &soroban_sdk::IntoArg::<u64>::into_arg(b),
+                        )
+                        .into_val(&self.env),
                     ],
                 ),
             );
@@ -191,8 +221,14 @@ mod addcontract {
                 ::soroban_sdk::Vec::from_array(
                     &self.env,
                     [
-                        soroban_sdk::IntoArg::<u64>::into_arg(a, &self.env),
-                        soroban_sdk::IntoArg::<u64>::into_arg(b, &self.env),
+                        ::core::borrow::Borrow::<u64>::borrow(
+                            &soroban_sdk::IntoArg::<u64>::into_arg(a),
+                        )
+                        .into_val(&self.env),
+                        ::core::borrow::Borrow::<u64>::borrow(
+                            &soroban_sdk::IntoArg::<u64>::into_arg(b),
+                        )
+                        .into_val(&self.env),
                     ],
                 ),
             );
@@ -3086,9 +3122,18 @@ mod eventscontract {
                 ::soroban_sdk::Vec::from_array(
                     &self.env,
                     [
-                        soroban_sdk::IntoArg::<soroban_sdk::Address>::into_arg(from, &self.env),
-                        soroban_sdk::IntoArg::<soroban_sdk::MuxedAddress>::into_arg(to, &self.env),
-                        soroban_sdk::IntoArg::<i128>::into_arg(amount, &self.env),
+                        ::core::borrow::Borrow::<soroban_sdk::Address>::borrow(
+                            &soroban_sdk::IntoArg::<soroban_sdk::Address>::into_arg(from),
+                        )
+                        .into_val(&self.env),
+                        ::core::borrow::Borrow::<soroban_sdk::MuxedAddress>::borrow(
+                            &soroban_sdk::IntoArg::<soroban_sdk::MuxedAddress>::into_arg(to),
+                        )
+                        .into_val(&self.env),
+                        ::core::borrow::Borrow::<i128>::borrow(
+                            &soroban_sdk::IntoArg::<i128>::into_arg(amount),
+                        )
+                        .into_val(&self.env),
                     ],
                 ),
             );
@@ -3116,9 +3161,18 @@ mod eventscontract {
                 ::soroban_sdk::Vec::from_array(
                     &self.env,
                     [
-                        soroban_sdk::IntoArg::<soroban_sdk::Address>::into_arg(from, &self.env),
-                        soroban_sdk::IntoArg::<soroban_sdk::MuxedAddress>::into_arg(to, &self.env),
-                        soroban_sdk::IntoArg::<i128>::into_arg(amount, &self.env),
+                        ::core::borrow::Borrow::<soroban_sdk::Address>::borrow(
+                            &soroban_sdk::IntoArg::<soroban_sdk::Address>::into_arg(from),
+                        )
+                        .into_val(&self.env),
+                        ::core::borrow::Borrow::<soroban_sdk::MuxedAddress>::borrow(
+                            &soroban_sdk::IntoArg::<soroban_sdk::MuxedAddress>::into_arg(to),
+                        )
+                        .into_val(&self.env),
+                        ::core::borrow::Borrow::<i128>::borrow(
+                            &soroban_sdk::IntoArg::<i128>::into_arg(amount),
+                        )
+                        .into_val(&self.env),
                     ],
                 ),
             );
@@ -3145,9 +3199,18 @@ mod eventscontract {
                 ::soroban_sdk::Vec::from_array(
                     &self.env,
                     [
-                        soroban_sdk::IntoArg::<soroban_sdk::Address>::into_arg(from, &self.env),
-                        soroban_sdk::IntoArg::<u32>::into_arg(a, &self.env),
-                        soroban_sdk::IntoArg::<u32>::into_arg(b, &self.env),
+                        ::core::borrow::Borrow::<soroban_sdk::Address>::borrow(
+                            &soroban_sdk::IntoArg::<soroban_sdk::Address>::into_arg(from),
+                        )
+                        .into_val(&self.env),
+                        ::core::borrow::Borrow::<u32>::borrow(
+                            &soroban_sdk::IntoArg::<u32>::into_arg(a),
+                        )
+                        .into_val(&self.env),
+                        ::core::borrow::Borrow::<u32>::borrow(
+                            &soroban_sdk::IntoArg::<u32>::into_arg(b),
+                        )
+                        .into_val(&self.env),
                     ],
                 ),
             );
@@ -3171,9 +3234,18 @@ mod eventscontract {
                 ::soroban_sdk::Vec::from_array(
                     &self.env,
                     [
-                        soroban_sdk::IntoArg::<soroban_sdk::Address>::into_arg(from, &self.env),
-                        soroban_sdk::IntoArg::<u32>::into_arg(a, &self.env),
-                        soroban_sdk::IntoArg::<u32>::into_arg(b, &self.env),
+                        ::core::borrow::Borrow::<soroban_sdk::Address>::borrow(
+                            &soroban_sdk::IntoArg::<soroban_sdk::Address>::into_arg(from),
+                        )
+                        .into_val(&self.env),
+                        ::core::borrow::Borrow::<u32>::borrow(
+                            &soroban_sdk::IntoArg::<u32>::into_arg(a),
+                        )
+                        .into_val(&self.env),
+                        ::core::borrow::Borrow::<u32>::borrow(
+                            &soroban_sdk::IntoArg::<u32>::into_arg(b),
+                        )
+                        .into_val(&self.env),
                     ],
                 ),
             );
@@ -3200,9 +3272,18 @@ mod eventscontract {
                 ::soroban_sdk::Vec::from_array(
                     &self.env,
                     [
-                        soroban_sdk::IntoArg::<soroban_sdk::Address>::into_arg(from, &self.env),
-                        soroban_sdk::IntoArg::<u32>::into_arg(a, &self.env),
-                        soroban_sdk::IntoArg::<u32>::into_arg(b, &self.env),
+                        ::core::borrow::Borrow::<soroban_sdk::Address>::borrow(
+                            &soroban_sdk::IntoArg::<soroban_sdk::Address>::into_arg(from),
+                        )
+                        .into_val(&self.env),
+                        ::core::borrow::Borrow::<u32>::borrow(
+                            &soroban_sdk::IntoArg::<u32>::into_arg(a),
+                        )
+                        .into_val(&self.env),
+                        ::core::borrow::Borrow::<u32>::borrow(
+                            &soroban_sdk::IntoArg::<u32>::into_arg(b),
+                        )
+                        .into_val(&self.env),
                     ],
                 ),
             );
@@ -3226,9 +3307,18 @@ mod eventscontract {
                 ::soroban_sdk::Vec::from_array(
                     &self.env,
                     [
-                        soroban_sdk::IntoArg::<soroban_sdk::Address>::into_arg(from, &self.env),
-                        soroban_sdk::IntoArg::<u32>::into_arg(a, &self.env),
-                        soroban_sdk::IntoArg::<u32>::into_arg(b, &self.env),
+                        ::core::borrow::Borrow::<soroban_sdk::Address>::borrow(
+                            &soroban_sdk::IntoArg::<soroban_sdk::Address>::into_arg(from),
+                        )
+                        .into_val(&self.env),
+                        ::core::borrow::Borrow::<u32>::borrow(
+                            &soroban_sdk::IntoArg::<u32>::into_arg(a),
+                        )
+                        .into_val(&self.env),
+                        ::core::borrow::Borrow::<u32>::borrow(
+                            &soroban_sdk::IntoArg::<u32>::into_arg(b),
+                        )
+                        .into_val(&self.env),
                     ],
                 ),
             );
@@ -3254,8 +3344,14 @@ mod eventscontract {
                 ::soroban_sdk::Vec::from_array(
                     &self.env,
                     [
-                        soroban_sdk::IntoArg::<soroban_sdk::Address>::into_arg(from, &self.env),
-                        soroban_sdk::IntoArg::<i128>::into_arg(amount, &self.env),
+                        ::core::borrow::Borrow::<soroban_sdk::Address>::borrow(
+                            &soroban_sdk::IntoArg::<soroban_sdk::Address>::into_arg(from),
+                        )
+                        .into_val(&self.env),
+                        ::core::borrow::Borrow::<i128>::borrow(
+                            &soroban_sdk::IntoArg::<i128>::into_arg(amount),
+                        )
+                        .into_val(&self.env),
                     ],
                 ),
             );
@@ -3278,8 +3374,14 @@ mod eventscontract {
                 ::soroban_sdk::Vec::from_array(
                     &self.env,
                     [
-                        soroban_sdk::IntoArg::<soroban_sdk::Address>::into_arg(from, &self.env),
-                        soroban_sdk::IntoArg::<i128>::into_arg(amount, &self.env),
+                        ::core::borrow::Borrow::<soroban_sdk::Address>::borrow(
+                            &soroban_sdk::IntoArg::<soroban_sdk::Address>::into_arg(from),
+                        )
+                        .into_val(&self.env),
+                        ::core::borrow::Borrow::<i128>::borrow(
+                            &soroban_sdk::IntoArg::<i128>::into_arg(amount),
+                        )
+                        .into_val(&self.env),
                     ],
                 ),
             );
@@ -3306,9 +3408,18 @@ mod eventscontract {
                 ::soroban_sdk::Vec::from_array(
                     &self.env,
                     [
-                        soroban_sdk::IntoArg::<soroban_sdk::Address>::into_arg(from, &self.env),
-                        soroban_sdk::IntoArg::<soroban_sdk::Address>::into_arg(to, &self.env),
-                        soroban_sdk::IntoArg::<i128>::into_arg(amount, &self.env),
+                        ::core::borrow::Borrow::<soroban_sdk::Address>::borrow(
+                            &soroban_sdk::IntoArg::<soroban_sdk::Address>::into_arg(from),
+                        )
+                        .into_val(&self.env),
+                        ::core::borrow::Borrow::<soroban_sdk::Address>::borrow(
+                            &soroban_sdk::IntoArg::<soroban_sdk::Address>::into_arg(to),
+                        )
+                        .into_val(&self.env),
+                        ::core::borrow::Borrow::<i128>::borrow(
+                            &soroban_sdk::IntoArg::<i128>::into_arg(amount),
+                        )
+                        .into_val(&self.env),
                     ],
                 ),
             );
@@ -3332,9 +3443,18 @@ mod eventscontract {
                 ::soroban_sdk::Vec::from_array(
                     &self.env,
                     [
-                        soroban_sdk::IntoArg::<soroban_sdk::Address>::into_arg(from, &self.env),
-                        soroban_sdk::IntoArg::<soroban_sdk::Address>::into_arg(to, &self.env),
-                        soroban_sdk::IntoArg::<i128>::into_arg(amount, &self.env),
+                        ::core::borrow::Borrow::<soroban_sdk::Address>::borrow(
+                            &soroban_sdk::IntoArg::<soroban_sdk::Address>::into_arg(from),
+                        )
+                        .into_val(&self.env),
+                        ::core::borrow::Borrow::<soroban_sdk::Address>::borrow(
+                            &soroban_sdk::IntoArg::<soroban_sdk::Address>::into_arg(to),
+                        )
+                        .into_val(&self.env),
+                        ::core::borrow::Borrow::<i128>::borrow(
+                            &soroban_sdk::IntoArg::<i128>::into_arg(amount),
+                        )
+                        .into_val(&self.env),
                     ],
                 ),
             );
@@ -3358,9 +3478,10 @@ mod eventscontract {
                 &{ soroban_sdk::Symbol::new(&self.env, "single_value_void") },
                 ::soroban_sdk::Vec::from_array(
                     &self.env,
-                    [soroban_sdk::IntoArg::<soroban_sdk::Address>::into_arg(
-                        from, &self.env,
-                    )],
+                    [::core::borrow::Borrow::<soroban_sdk::Address>::borrow(
+                        &soroban_sdk::IntoArg::<soroban_sdk::Address>::into_arg(from),
+                    )
+                    .into_val(&self.env)],
                 ),
             );
             res
@@ -3380,9 +3501,10 @@ mod eventscontract {
                 &{ soroban_sdk::Symbol::new(&self.env, "single_value_void") },
                 ::soroban_sdk::Vec::from_array(
                     &self.env,
-                    [soroban_sdk::IntoArg::<soroban_sdk::Address>::into_arg(
-                        from, &self.env,
-                    )],
+                    [::core::borrow::Borrow::<soroban_sdk::Address>::borrow(
+                        &soroban_sdk::IntoArg::<soroban_sdk::Address>::into_arg(from),
+                    )
+                    .into_val(&self.env)],
                 ),
             );
             res
@@ -7270,9 +7392,18 @@ impl<'a> ContractClient<'a> {
             ::soroban_sdk::Vec::from_array(
                 &self.env,
                 [
-                    soroban_sdk::IntoArg::<Address>::into_arg(contract_id, &self.env),
-                    soroban_sdk::IntoArg::<u64>::into_arg(x, &self.env),
-                    soroban_sdk::IntoArg::<u64>::into_arg(y, &self.env),
+                    ::core::borrow::Borrow::<Address>::borrow(
+                        &soroban_sdk::IntoArg::<Address>::into_arg(contract_id),
+                    )
+                    .into_val(&self.env),
+                    ::core::borrow::Borrow::<u64>::borrow(&soroban_sdk::IntoArg::<u64>::into_arg(
+                        x,
+                    ))
+                    .into_val(&self.env),
+                    ::core::borrow::Borrow::<u64>::borrow(&soroban_sdk::IntoArg::<u64>::into_arg(
+                        y,
+                    ))
+                    .into_val(&self.env),
                 ],
             ),
         );
@@ -7300,9 +7431,18 @@ impl<'a> ContractClient<'a> {
             ::soroban_sdk::Vec::from_array(
                 &self.env,
                 [
-                    soroban_sdk::IntoArg::<Address>::into_arg(contract_id, &self.env),
-                    soroban_sdk::IntoArg::<u64>::into_arg(x, &self.env),
-                    soroban_sdk::IntoArg::<u64>::into_arg(y, &self.env),
+                    ::core::borrow::Borrow::<Address>::borrow(
+                        &soroban_sdk::IntoArg::<Address>::into_arg(contract_id),
+                    )
+                    .into_val(&self.env),
+                    ::core::borrow::Borrow::<u64>::borrow(&soroban_sdk::IntoArg::<u64>::into_arg(
+                        x,
+                    ))
+                    .into_val(&self.env),
+                    ::core::borrow::Borrow::<u64>::borrow(&soroban_sdk::IntoArg::<u64>::into_arg(
+                        y,
+                    ))
+                    .into_val(&self.env),
                 ],
             ),
         );
@@ -7329,9 +7469,18 @@ impl<'a> ContractClient<'a> {
             ::soroban_sdk::Vec::from_array(
                 &self.env,
                 [
-                    soroban_sdk::IntoArg::<Address>::into_arg(contract_id, &self.env),
-                    soroban_sdk::IntoArg::<u64>::into_arg(x, &self.env),
-                    soroban_sdk::IntoArg::<u64>::into_arg(y, &self.env),
+                    ::core::borrow::Borrow::<Address>::borrow(
+                        &soroban_sdk::IntoArg::<Address>::into_arg(contract_id),
+                    )
+                    .into_val(&self.env),
+                    ::core::borrow::Borrow::<u64>::borrow(&soroban_sdk::IntoArg::<u64>::into_arg(
+                        x,
+                    ))
+                    .into_val(&self.env),
+                    ::core::borrow::Borrow::<u64>::borrow(&soroban_sdk::IntoArg::<u64>::into_arg(
+                        y,
+                    ))
+                    .into_val(&self.env),
                 ],
             ),
         );
@@ -7355,9 +7504,18 @@ impl<'a> ContractClient<'a> {
             ::soroban_sdk::Vec::from_array(
                 &self.env,
                 [
-                    soroban_sdk::IntoArg::<Address>::into_arg(contract_id, &self.env),
-                    soroban_sdk::IntoArg::<u64>::into_arg(x, &self.env),
-                    soroban_sdk::IntoArg::<u64>::into_arg(y, &self.env),
+                    ::core::borrow::Borrow::<Address>::borrow(
+                        &soroban_sdk::IntoArg::<Address>::into_arg(contract_id),
+                    )
+                    .into_val(&self.env),
+                    ::core::borrow::Borrow::<u64>::borrow(&soroban_sdk::IntoArg::<u64>::into_arg(
+                        x,
+                    ))
+                    .into_val(&self.env),
+                    ::core::borrow::Borrow::<u64>::borrow(&soroban_sdk::IntoArg::<u64>::into_arg(
+                        y,
+                    ))
+                    .into_val(&self.env),
                 ],
             ),
         );
@@ -7384,9 +7542,18 @@ impl<'a> ContractClient<'a> {
             ::soroban_sdk::Vec::from_array(
                 &self.env,
                 [
-                    soroban_sdk::IntoArg::<Address>::into_arg(contract_id, &self.env),
-                    soroban_sdk::IntoArg::<u64>::into_arg(x, &self.env),
-                    soroban_sdk::IntoArg::<u64>::into_arg(y, &self.env),
+                    ::core::borrow::Borrow::<Address>::borrow(
+                        &soroban_sdk::IntoArg::<Address>::into_arg(contract_id),
+                    )
+                    .into_val(&self.env),
+                    ::core::borrow::Borrow::<u64>::borrow(&soroban_sdk::IntoArg::<u64>::into_arg(
+                        x,
+                    ))
+                    .into_val(&self.env),
+                    ::core::borrow::Borrow::<u64>::borrow(&soroban_sdk::IntoArg::<u64>::into_arg(
+                        y,
+                    ))
+                    .into_val(&self.env),
                 ],
             ),
         );
@@ -7410,9 +7577,18 @@ impl<'a> ContractClient<'a> {
             ::soroban_sdk::Vec::from_array(
                 &self.env,
                 [
-                    soroban_sdk::IntoArg::<Address>::into_arg(contract_id, &self.env),
-                    soroban_sdk::IntoArg::<u64>::into_arg(x, &self.env),
-                    soroban_sdk::IntoArg::<u64>::into_arg(y, &self.env),
+                    ::core::borrow::Borrow::<Address>::borrow(
+                        &soroban_sdk::IntoArg::<Address>::into_arg(contract_id),
+                    )
+                    .into_val(&self.env),
+                    ::core::borrow::Borrow::<u64>::borrow(&soroban_sdk::IntoArg::<u64>::into_arg(
+                        x,
+                    ))
+                    .into_val(&self.env),
+                    ::core::borrow::Borrow::<u64>::borrow(&soroban_sdk::IntoArg::<u64>::into_arg(
+                        y,
+                    ))
+                    .into_val(&self.env),
                 ],
             ),
         );

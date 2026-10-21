@@ -998,9 +998,14 @@ impl<'a> ContractClient<'a> {
             },
             ::soroban_sdk::Vec::from_array(
                 &self.env,
-                [soroban_sdk::IntoArg::<AttributeType>::into_arg(
-                    value, &self.env,
-                )],
+                [
+                    ::core::borrow::Borrow::<AttributeType>::borrow(&soroban_sdk::IntoArg::<
+                        AttributeType,
+                    >::into_arg(
+                        value
+                    ))
+                    .into_val(&self.env),
+                ],
             ),
         );
         res
@@ -1024,9 +1029,14 @@ impl<'a> ContractClient<'a> {
             },
             ::soroban_sdk::Vec::from_array(
                 &self.env,
-                [soroban_sdk::IntoArg::<AttributeType>::into_arg(
-                    value, &self.env,
-                )],
+                [
+                    ::core::borrow::Borrow::<AttributeType>::borrow(&soroban_sdk::IntoArg::<
+                        AttributeType,
+                    >::into_arg(
+                        value
+                    ))
+                    .into_val(&self.env),
+                ],
             ),
         );
         res
@@ -1044,14 +1054,18 @@ impl<'a> ContractClient<'a> {
     ) -> soroban_sdk::client::Ret<u32> {
         use core::ops::Not;
         use soroban_sdk::{FromVal, IntoVal};
-        let res = self.env.invoke_contract(
-            &self.address,
-            &{ soroban_sdk::Symbol::new(&self.env, "cfg_included") },
-            ::soroban_sdk::Vec::from_array(
-                &self.env,
-                [soroban_sdk::IntoArg::<u32>::into_arg(value, &self.env)],
-            ),
-        );
+        let res =
+            self.env.invoke_contract(
+                &self.address,
+                &{ soroban_sdk::Symbol::new(&self.env, "cfg_included") },
+                ::soroban_sdk::Vec::from_array(
+                    &self.env,
+                    [::core::borrow::Borrow::<u32>::borrow(
+                        &soroban_sdk::IntoArg::<u32>::into_arg(value),
+                    )
+                    .into_val(&self.env)],
+                ),
+            );
         res
     }
     /// Call `cfg_included` function on the contract.
@@ -1064,14 +1078,18 @@ impl<'a> ContractClient<'a> {
         value: impl soroban_sdk::IntoArg<u32>,
     ) -> soroban_sdk::client::TryRet<u32> {
         use soroban_sdk::{FromVal, IntoVal};
-        let res = self.env.try_invoke_contract(
-            &self.address,
-            &{ soroban_sdk::Symbol::new(&self.env, "cfg_included") },
-            ::soroban_sdk::Vec::from_array(
-                &self.env,
-                [soroban_sdk::IntoArg::<u32>::into_arg(value, &self.env)],
-            ),
-        );
+        let res =
+            self.env.try_invoke_contract(
+                &self.address,
+                &{ soroban_sdk::Symbol::new(&self.env, "cfg_included") },
+                ::soroban_sdk::Vec::from_array(
+                    &self.env,
+                    [::core::borrow::Borrow::<u32>::borrow(
+                        &soroban_sdk::IntoArg::<u32>::into_arg(value),
+                    )
+                    .into_val(&self.env)],
+                ),
+            );
         res
     }
     /// Call `publish` function on the contract.
@@ -1098,8 +1116,14 @@ impl<'a> ContractClient<'a> {
             ::soroban_sdk::Vec::from_array(
                 &self.env,
                 [
-                    soroban_sdk::IntoArg::<u32>::into_arg(topic, &self.env),
-                    soroban_sdk::IntoArg::<u32>::into_arg(value, &self.env),
+                    ::core::borrow::Borrow::<u32>::borrow(&soroban_sdk::IntoArg::<u32>::into_arg(
+                        topic,
+                    ))
+                    .into_val(&self.env),
+                    ::core::borrow::Borrow::<u32>::borrow(&soroban_sdk::IntoArg::<u32>::into_arg(
+                        value,
+                    ))
+                    .into_val(&self.env),
                 ],
             ),
         );
@@ -1126,8 +1150,14 @@ impl<'a> ContractClient<'a> {
             ::soroban_sdk::Vec::from_array(
                 &self.env,
                 [
-                    soroban_sdk::IntoArg::<u32>::into_arg(topic, &self.env),
-                    soroban_sdk::IntoArg::<u32>::into_arg(value, &self.env),
+                    ::core::borrow::Borrow::<u32>::borrow(&soroban_sdk::IntoArg::<u32>::into_arg(
+                        topic,
+                    ))
+                    .into_val(&self.env),
+                    ::core::borrow::Borrow::<u32>::borrow(&soroban_sdk::IntoArg::<u32>::into_arg(
+                        value,
+                    ))
+                    .into_val(&self.env),
                 ],
             ),
         );

@@ -199,7 +199,7 @@ pub fn derive_client_impl(crate_path: &Path, name: &str, fns: &[syn_ext::Fn]) ->
                         #ident: impl #crate_path::IntoArg<#ty>
                     };
                     let conversion = quote! {
-                        #crate_path::IntoArg::<#ty>::into_arg(#ident, &self.env)
+                        ::core::borrow::Borrow::<#ty>::borrow(&#crate_path::IntoArg::<#ty>::into_arg(#ident)).into_val(&self.env)
                     };
                     (input_type, conversion)
                 })
