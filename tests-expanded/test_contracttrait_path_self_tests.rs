@@ -281,8 +281,13 @@ impl<'a> ContractSelfPathClient<'a> {}
 impl ContractSelfPathArgs {}
 const _: () = {
     #[allow(dead_code)]
-    fn check() {
-        let _: fn(_) -> u32 = <ContractSelfPath as self::SelfPathTrait>::self_path_method;
+    fn check_types() {
+        fn check<A0, R>(_: fn(&A0) -> R)
+        where
+            R: soroban_sdk::ContractTraitType<u32>,
+        {
+        }
+        check(<ContractSelfPath as self::SelfPathTrait>::self_path_method);
     }
 };
 #[doc(hidden)]

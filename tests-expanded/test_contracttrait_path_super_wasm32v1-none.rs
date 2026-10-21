@@ -135,8 +135,13 @@ pub mod submodule {
     impl ContractSuperPathArgs {}
     const _: () = {
         #[allow(dead_code)]
-        fn check() {
-            let _: fn(_) -> u32 = <ContractSuperPath as super::SuperPathTrait>::super_path_method;
+        fn check_types() {
+            fn check<A0, R>(_: fn(&A0) -> R)
+            where
+                R: soroban_sdk::ContractTraitType<u32>,
+            {
+            }
+            check(<ContractSuperPath as super::SuperPathTrait>::super_path_method);
         }
     };
     #[doc(hidden)]

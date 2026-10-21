@@ -139,9 +139,13 @@ impl<'a> ContractCratePathClient<'a> {}
 impl ContractCratePathArgs {}
 const _: () = {
     #[allow(dead_code)]
-    fn check() {
-        let _: fn(_) -> u32 =
-            <ContractCratePath as crate::traits::CratePathTrait>::crate_path_method;
+    fn check_types() {
+        fn check<A0, R>(_: fn(&A0) -> R)
+        where
+            R: soroban_sdk::ContractTraitType<u32>,
+        {
+        }
+        check(<ContractCratePath as crate::traits::CratePathTrait>::crate_path_method);
     }
 };
 #[doc(hidden)]

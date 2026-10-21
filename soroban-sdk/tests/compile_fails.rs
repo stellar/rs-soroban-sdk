@@ -8,6 +8,7 @@ fn compile_fails() {
     t.compile_fail("tests/compile_fails/contractevent_topic_length_errors.rs");
     t.compile_fail("tests/compile_fails/contracttrait_cfg_errors.rs");
     t.compile_fail("tests/compile_fails/contracttrait_default_fn_type_errors.rs");
+    t.compile_fail("tests/compile_fails/contracttrait_default_fn_type_missing_errors.rs");
     t.compile_fail("tests/compile_fails/contracttrait_without_trait.rs");
     t.compile_fail("tests/compile_fails/contracttype_lib_removed.rs");
     t.compile_fail("tests/compile_fails/export_arg_errors.rs");

@@ -1,0 +1,11 @@
+error[E0425]: cannot find type `Value` in this scope
+  --> tests/compile_fails/contracttrait_default_fn_type_missing_errors.rs:27:1
+   |
+27 | #[contractimpl(contracttrait)]
+   | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ not found in this scope
+   |
+   = note: this error originates in the macro `soroban_sdk::contractimpl_trait_default_fns_not_overridden` (in Nightly builds, run with -Z macro-backtrace for more info)
+help: consider importing this enum
+   |
+ 1 + use crate::inner::Value;
+   |

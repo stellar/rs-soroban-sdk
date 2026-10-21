@@ -150,8 +150,13 @@ impl<'a> ContractClient<'a> {}
 impl ContractArgs {}
 const _: () = {
     #[allow(dead_code)]
-    fn check() {
-        let _: fn(_) -> String = <Contract as Trait>::exec;
+    fn check_types() {
+        fn check<A0, R>(_: fn(&A0) -> R)
+        where
+            R: soroban_sdk::ContractTraitType<String>,
+        {
+        }
+        check(<Contract as Trait>::exec);
     }
 };
 #[doc(hidden)]

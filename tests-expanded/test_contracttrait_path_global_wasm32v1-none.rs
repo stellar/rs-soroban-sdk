@@ -33,51 +33,265 @@ impl<'a> ContractGlobalPathClient<'a> {}
 impl ContractGlobalPathArgs {}
 const _: () = {
     #[allow(dead_code)]
-    fn check() {
-        let _: fn(u32) -> u32 =
-            <ContractGlobalPath as ::test_contracttrait_trait::AllTypes>::test_u32;
-        let _: fn(i32) -> i32 =
-            <ContractGlobalPath as ::test_contracttrait_trait::AllTypes>::test_i32;
-        let _: fn(u64) -> u64 =
-            <ContractGlobalPath as ::test_contracttrait_trait::AllTypes>::test_u64;
-        let _: fn(i64) -> i64 =
-            <ContractGlobalPath as ::test_contracttrait_trait::AllTypes>::test_i64;
-        let _: fn(u128) -> u128 =
-            <ContractGlobalPath as ::test_contracttrait_trait::AllTypes>::test_u128;
-        let _: fn(i128) -> i128 =
-            <ContractGlobalPath as ::test_contracttrait_trait::AllTypes>::test_i128;
-        let _: fn(bool) -> bool =
-            <ContractGlobalPath as ::test_contracttrait_trait::AllTypes>::test_bool;
-        let _: fn(Address) -> Address =
-            <ContractGlobalPath as ::test_contracttrait_trait::AllTypes>::test_address;
-        let _: fn(Bytes) -> Bytes =
-            <ContractGlobalPath as ::test_contracttrait_trait::AllTypes>::test_bytes;
-        let _: fn(BytesN<32>) -> BytesN<32> =
-            <ContractGlobalPath as ::test_contracttrait_trait::AllTypes>::test_bytes_n;
-        let _: fn(String) -> String =
-            <ContractGlobalPath as ::test_contracttrait_trait::AllTypes>::test_string;
-        let _: fn(Symbol) -> Symbol =
-            <ContractGlobalPath as ::test_contracttrait_trait::AllTypes>::test_symbol;
-        let _: fn(Vec<u32>) -> Vec<u32> =
-            <ContractGlobalPath as ::test_contracttrait_trait::AllTypes>::test_vec;
-        let _: fn(Map<u32, u32>) -> Map<u32, u32> =
-            <ContractGlobalPath as ::test_contracttrait_trait::AllTypes>::test_map;
-        let _: fn(Duration) -> Duration =
-            <ContractGlobalPath as ::test_contracttrait_trait::AllTypes>::test_duration;
-        let _: fn(Timepoint) -> Timepoint =
-            <ContractGlobalPath as ::test_contracttrait_trait::AllTypes>::test_timepoint;
-        let _: fn(I256) -> I256 =
-            <ContractGlobalPath as ::test_contracttrait_trait::AllTypes>::test_i256;
-        let _: fn(U256) -> U256 =
-            <ContractGlobalPath as ::test_contracttrait_trait::AllTypes>::test_u256;
-        let _: fn(_) -> u32 =
-            <ContractGlobalPath as ::test_contracttrait_trait::AllTypes>::test_env_param;
-        let _: fn(MyStruct) -> MyStruct =
-            <ContractGlobalPath as ::test_contracttrait_trait::AllTypes>::test_struct;
-        let _: fn(MyEnumUnit) -> MyEnumUnit =
-            <ContractGlobalPath as ::test_contracttrait_trait::AllTypes>::test_enum_unit;
-        let _: fn(MyEnumVariants) -> MyEnumVariants =
-            <ContractGlobalPath as ::test_contracttrait_trait::AllTypes>::test_enum_variants;
+    fn check_types() {
+        fn check<A0, R>(_: fn(A0) -> R)
+        where
+            A0: soroban_sdk::ContractTraitType<u32>,
+            R: soroban_sdk::ContractTraitType<u32>,
+        {
+        }
+        check(<ContractGlobalPath as ::test_contracttrait_trait::AllTypes>::test_u32);
+    }
+};
+const _: () = {
+    #[allow(dead_code)]
+    fn check_types() {
+        fn check<A0, R>(_: fn(A0) -> R)
+        where
+            A0: soroban_sdk::ContractTraitType<i32>,
+            R: soroban_sdk::ContractTraitType<i32>,
+        {
+        }
+        check(<ContractGlobalPath as ::test_contracttrait_trait::AllTypes>::test_i32);
+    }
+};
+const _: () = {
+    #[allow(dead_code)]
+    fn check_types() {
+        fn check<A0, R>(_: fn(A0) -> R)
+        where
+            A0: soroban_sdk::ContractTraitType<u64>,
+            R: soroban_sdk::ContractTraitType<u64>,
+        {
+        }
+        check(<ContractGlobalPath as ::test_contracttrait_trait::AllTypes>::test_u64);
+    }
+};
+const _: () = {
+    #[allow(dead_code)]
+    fn check_types() {
+        fn check<A0, R>(_: fn(A0) -> R)
+        where
+            A0: soroban_sdk::ContractTraitType<i64>,
+            R: soroban_sdk::ContractTraitType<i64>,
+        {
+        }
+        check(<ContractGlobalPath as ::test_contracttrait_trait::AllTypes>::test_i64);
+    }
+};
+const _: () = {
+    #[allow(dead_code)]
+    fn check_types() {
+        fn check<A0, R>(_: fn(A0) -> R)
+        where
+            A0: soroban_sdk::ContractTraitType<u128>,
+            R: soroban_sdk::ContractTraitType<u128>,
+        {
+        }
+        check(<ContractGlobalPath as ::test_contracttrait_trait::AllTypes>::test_u128);
+    }
+};
+const _: () = {
+    #[allow(dead_code)]
+    fn check_types() {
+        fn check<A0, R>(_: fn(A0) -> R)
+        where
+            A0: soroban_sdk::ContractTraitType<i128>,
+            R: soroban_sdk::ContractTraitType<i128>,
+        {
+        }
+        check(<ContractGlobalPath as ::test_contracttrait_trait::AllTypes>::test_i128);
+    }
+};
+const _: () = {
+    #[allow(dead_code)]
+    fn check_types() {
+        fn check<A0, R>(_: fn(A0) -> R)
+        where
+            A0: soroban_sdk::ContractTraitType<bool>,
+            R: soroban_sdk::ContractTraitType<bool>,
+        {
+        }
+        check(<ContractGlobalPath as ::test_contracttrait_trait::AllTypes>::test_bool);
+    }
+};
+const _: () = {
+    #[allow(dead_code)]
+    fn check_types() {
+        fn check<A0, R>(_: fn(A0) -> R)
+        where
+            A0: soroban_sdk::ContractTraitType<Address>,
+            R: soroban_sdk::ContractTraitType<Address>,
+        {
+        }
+        check(<ContractGlobalPath as ::test_contracttrait_trait::AllTypes>::test_address);
+    }
+};
+const _: () = {
+    #[allow(dead_code)]
+    fn check_types() {
+        fn check<A0, R>(_: fn(A0) -> R)
+        where
+            A0: soroban_sdk::ContractTraitType<Bytes>,
+            R: soroban_sdk::ContractTraitType<Bytes>,
+        {
+        }
+        check(<ContractGlobalPath as ::test_contracttrait_trait::AllTypes>::test_bytes);
+    }
+};
+const _: () = {
+    #[allow(dead_code)]
+    fn check_types() {
+        fn check<A0, R>(_: fn(A0) -> R)
+        where
+            A0: soroban_sdk::ContractTraitType<BytesN<32>>,
+            R: soroban_sdk::ContractTraitType<BytesN<32>>,
+        {
+        }
+        check(<ContractGlobalPath as ::test_contracttrait_trait::AllTypes>::test_bytes_n);
+    }
+};
+const _: () = {
+    #[allow(dead_code)]
+    fn check_types() {
+        fn check<A0, R>(_: fn(A0) -> R)
+        where
+            A0: soroban_sdk::ContractTraitType<String>,
+            R: soroban_sdk::ContractTraitType<String>,
+        {
+        }
+        check(<ContractGlobalPath as ::test_contracttrait_trait::AllTypes>::test_string);
+    }
+};
+const _: () = {
+    #[allow(dead_code)]
+    fn check_types() {
+        fn check<A0, R>(_: fn(A0) -> R)
+        where
+            A0: soroban_sdk::ContractTraitType<Symbol>,
+            R: soroban_sdk::ContractTraitType<Symbol>,
+        {
+        }
+        check(<ContractGlobalPath as ::test_contracttrait_trait::AllTypes>::test_symbol);
+    }
+};
+const _: () = {
+    #[allow(dead_code)]
+    fn check_types() {
+        fn check<A0, R>(_: fn(A0) -> R)
+        where
+            A0: soroban_sdk::ContractTraitType<Vec<u32>>,
+            R: soroban_sdk::ContractTraitType<Vec<u32>>,
+        {
+        }
+        check(<ContractGlobalPath as ::test_contracttrait_trait::AllTypes>::test_vec);
+    }
+};
+const _: () = {
+    #[allow(dead_code)]
+    fn check_types() {
+        fn check<A0, R>(_: fn(A0) -> R)
+        where
+            A0: soroban_sdk::ContractTraitType<Map<u32, u32>>,
+            R: soroban_sdk::ContractTraitType<Map<u32, u32>>,
+        {
+        }
+        check(<ContractGlobalPath as ::test_contracttrait_trait::AllTypes>::test_map);
+    }
+};
+const _: () = {
+    #[allow(dead_code)]
+    fn check_types() {
+        fn check<A0, R>(_: fn(A0) -> R)
+        where
+            A0: soroban_sdk::ContractTraitType<Duration>,
+            R: soroban_sdk::ContractTraitType<Duration>,
+        {
+        }
+        check(<ContractGlobalPath as ::test_contracttrait_trait::AllTypes>::test_duration);
+    }
+};
+const _: () = {
+    #[allow(dead_code)]
+    fn check_types() {
+        fn check<A0, R>(_: fn(A0) -> R)
+        where
+            A0: soroban_sdk::ContractTraitType<Timepoint>,
+            R: soroban_sdk::ContractTraitType<Timepoint>,
+        {
+        }
+        check(<ContractGlobalPath as ::test_contracttrait_trait::AllTypes>::test_timepoint);
+    }
+};
+const _: () = {
+    #[allow(dead_code)]
+    fn check_types() {
+        fn check<A0, R>(_: fn(A0) -> R)
+        where
+            A0: soroban_sdk::ContractTraitType<I256>,
+            R: soroban_sdk::ContractTraitType<I256>,
+        {
+        }
+        check(<ContractGlobalPath as ::test_contracttrait_trait::AllTypes>::test_i256);
+    }
+};
+const _: () = {
+    #[allow(dead_code)]
+    fn check_types() {
+        fn check<A0, R>(_: fn(A0) -> R)
+        where
+            A0: soroban_sdk::ContractTraitType<U256>,
+            R: soroban_sdk::ContractTraitType<U256>,
+        {
+        }
+        check(<ContractGlobalPath as ::test_contracttrait_trait::AllTypes>::test_u256);
+    }
+};
+const _: () = {
+    #[allow(dead_code)]
+    fn check_types() {
+        fn check<A0, R>(_: fn(&A0) -> R)
+        where
+            R: soroban_sdk::ContractTraitType<u32>,
+        {
+        }
+        check(<ContractGlobalPath as ::test_contracttrait_trait::AllTypes>::test_env_param);
+    }
+};
+const _: () = {
+    #[allow(dead_code)]
+    fn check_types() {
+        fn check<A0, R>(_: fn(A0) -> R)
+        where
+            A0: soroban_sdk::ContractTraitType<MyStruct>,
+            R: soroban_sdk::ContractTraitType<MyStruct>,
+        {
+        }
+        check(<ContractGlobalPath as ::test_contracttrait_trait::AllTypes>::test_struct);
+    }
+};
+const _: () = {
+    #[allow(dead_code)]
+    fn check_types() {
+        fn check<A0, R>(_: fn(A0) -> R)
+        where
+            A0: soroban_sdk::ContractTraitType<MyEnumUnit>,
+            R: soroban_sdk::ContractTraitType<MyEnumUnit>,
+        {
+        }
+        check(<ContractGlobalPath as ::test_contracttrait_trait::AllTypes>::test_enum_unit);
+    }
+};
+const _: () = {
+    #[allow(dead_code)]
+    fn check_types() {
+        fn check<A0, R>(_: fn(A0) -> R)
+        where
+            A0: soroban_sdk::ContractTraitType<MyEnumVariants>,
+            R: soroban_sdk::ContractTraitType<MyEnumVariants>,
+        {
+        }
+        check(<ContractGlobalPath as ::test_contracttrait_trait::AllTypes>::test_enum_variants);
     }
 };
 #[doc(hidden)]
