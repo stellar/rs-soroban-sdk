@@ -26,6 +26,7 @@ where
     }
 }
 
+#[diagnostic::do_not_recommend]
 impl IntoArg<MuxedAddress> for Address {
     type Arg = MuxedAddress;
     fn into_arg(self) -> MuxedAddress {
@@ -33,6 +34,7 @@ impl IntoArg<MuxedAddress> for Address {
     }
 }
 
+#[diagnostic::do_not_recommend]
 impl IntoArg<MuxedAddress> for &Address {
     type Arg = MuxedAddress;
     fn into_arg(self) -> MuxedAddress {

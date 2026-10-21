@@ -1,0 +1,37 @@
+error[E0277]: the trait bound `u32: IntoArg<u64>` is not satisfied
+  --> tests/compile_fails/client_arg_errors.rs:19:14
+   |
+19 |     client.f(1u32);
+   |            - ^^^^ the trait `Borrow<u64>` is not implemented for `u32`
+   |            |
+   |            required by a bound introduced by this call
+   |
+   = note: required for `u32` to implement `IntoArg<u64>`
+note: required by a bound in `ContractClient::<'a>::f`
+  --> tests/compile_fails/client_arg_errors.rs:9:1
+   |
+ 9 | #[contractimpl]
+   | ^^^^^^^^^^^^^^^ required by this bound in `ContractClient::<'a>::f`
+10 | impl Contract {
+11 |     pub fn f(_env: Env, a: u64) -> u64 {
+   |            - required by a bound in this associated function
+   = note: this error originates in the attribute macro `contractimpl` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+error[E0277]: the trait bound `&u32: IntoArg<u64>` is not satisfied
+  --> tests/compile_fails/client_arg_errors.rs:20:14
+   |
+20 |     client.f(&1u32);
+   |            - ^^^^^ the trait `Borrow<u64>` is not implemented for `&u32`
+   |            |
+   |            required by a bound introduced by this call
+   |
+   = note: required for `&u32` to implement `IntoArg<u64>`
+note: required by a bound in `ContractClient::<'a>::f`
+  --> tests/compile_fails/client_arg_errors.rs:9:1
+   |
+ 9 | #[contractimpl]
+   | ^^^^^^^^^^^^^^^ required by this bound in `ContractClient::<'a>::f`
+10 | impl Contract {
+11 |     pub fn f(_env: Env, a: u64) -> u64 {
+   |            - required by a bound in this associated function
+   = note: this error originates in the attribute macro `contractimpl` (in Nightly builds, run with -Z macro-backtrace for more info)
