@@ -100,6 +100,7 @@ impl_client_type! {
     String,
     Symbol,
     Address,
+    MuxedAddress,
     Bls12381Fp,
     Bls12381Fp2,
     Bls12381G1Affine,
@@ -109,10 +110,6 @@ impl_client_type! {
     Bn254G1Affine,
     Bn254G2Affine,
     Bn254Fr,
-}
-
-impl Type for MuxedAddress {
-    type Ret = MuxedAddress;
 }
 
 impl<const N: usize> Type for BytesN<N> {
