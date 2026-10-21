@@ -138,6 +138,13 @@ impl<'a> ContractRelativePathClient<'a> {
 impl traits::RelativePathTrait for ContractRelativePath {}
 impl<'a> ContractRelativePathClient<'a> {}
 impl ContractRelativePathArgs {}
+const _: () = {
+    #[allow(dead_code)]
+    fn check() {
+        let _: fn(_) -> u32 =
+            <ContractRelativePath as traits::RelativePathTrait>::relative_path_method;
+    }
+};
 #[doc(hidden)]
 #[allow(non_snake_case)]
 #[deprecated(

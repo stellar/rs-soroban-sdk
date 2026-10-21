@@ -281,6 +281,12 @@ pub mod submodule {
     impl super::SuperPathTrait for ContractSuperPath {}
     impl<'a> ContractSuperPathClient<'a> {}
     impl ContractSuperPathArgs {}
+    const _: () = {
+        #[allow(dead_code)]
+        fn check() {
+            let _: fn(_) -> u32 = <ContractSuperPath as super::SuperPathTrait>::super_path_method;
+        }
+    };
     #[doc(hidden)]
     #[allow(non_snake_case)]
     #[deprecated(

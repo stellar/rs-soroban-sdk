@@ -9,7 +9,7 @@ use crate::{
 use darling::{ast::NestedMeta, Error, FromMeta};
 use proc_macro2::{Ident, TokenStream as TokenStream2};
 use quote::quote;
-use syn::{ext::IdentExt as _, Attribute, LitStr, Path, Type};
+use syn::{ext::IdentExt as _, Attribute, FnArg, LitStr, Path, Type};
 
 // See soroban-sdk/docs/contracttrait.md for documentation on how this works.
 
@@ -88,6 +88,7 @@ fn derive(args: &Args) -> Result<TokenStream2, Error> {
     }
 
     let mut output = quote! {};
+    output.extend(derive_type_checks(&impl_ty, trait_ident, &fns));
     output.extend(derive_pub_fns(
         &args.crate_path,
         &impl_ty,
@@ -115,6 +116,50 @@ fn derive(args: &Args) -> Result<TokenStream2, Error> {
     ));
 
     Ok(output)
+}
+
+// The default fns' signatures are carried here as strings, so the type names in
+// them resolve here, at the impl, rather than where the trait is defined. The
+// spec, client, and args generated for the default fns use the types the names
+// resolve to here, so fail to compile if they are not the types of the trait's
+// fns, which happens if the trait and the impl see different types by the same
+// name.
+fn derive_type_checks(impl_ty: &Type, trait_ident: &Path, fns: &[syn_ext::Fn]) -> TokenStream2 {
+    let checks = fns.iter().map(|f| {
+        let ident = &f.ident;
+        let cfg_attrs = f.attrs.iter().filter(|attr| attr.path().is_ident("cfg"));
+        // The env is left to be inferred, like the exported fn does, because
+        // its name is not checked and need not be in scope here.
+        let input_tys = f.inputs.iter().enumerate().map(|(i, input)| {
+            let ty = match input {
+                FnArg::Typed(pat_ty) => &*pat_ty.ty,
+                FnArg::Receiver(r) => &*r.ty,
+            };
+            let elem = match ty {
+                Type::Reference(r) => &*r.elem,
+                ty => ty,
+            };
+            let is_env = matches!(elem, Type::Path(p) if p.path.segments.last().is_some_and(|s| s.ident == "Env"));
+            if i == 0 && is_env {
+                quote!(_)
+            } else {
+                quote!(#ty)
+            }
+        });
+        let output = &f.output;
+        quote! {
+            #(#cfg_attrs)*
+            let _: fn(#(#input_tys),*) #output = <#impl_ty as #trait_ident>::#ident;
+        }
+    });
+    quote! {
+        const _: () = {
+            #[allow(dead_code)]
+            fn check() {
+                #(#checks)*
+            }
+        };
+    }
 }
 
 fn cfg_condition(attrs: &[Attribute]) -> Result<Option<TokenStream2>, Error> {

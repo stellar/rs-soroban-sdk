@@ -131,6 +131,12 @@ impl<'a> ContractSelfPathClient<'a> {
 impl self::SelfPathTrait for ContractSelfPath {}
 impl<'a> ContractSelfPathClient<'a> {}
 impl ContractSelfPathArgs {}
+const _: () = {
+    #[allow(dead_code)]
+    fn check() {
+        let _: fn(_) -> u32 = <ContractSelfPath as self::SelfPathTrait>::self_path_method;
+    }
+};
 #[doc(hidden)]
 #[allow(non_snake_case)]
 #[deprecated(

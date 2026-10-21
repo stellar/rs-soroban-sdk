@@ -686,6 +686,29 @@ pub extern "C" fn __Contract__test_struct__invoke_raw_extern(
     #[allow(deprecated)]
     __Contract__test_struct__invoke_raw(soroban_sdk::Env::default(), arg_0)
 }
+const _: () = {
+    #[allow(dead_code)]
+    fn check() {
+        let _: fn(i32) -> i32 = <Contract as AllTypes>::test_i32;
+        let _: fn(u64) -> u64 = <Contract as AllTypes>::test_u64;
+        let _: fn(i64) -> i64 = <Contract as AllTypes>::test_i64;
+        let _: fn(u128) -> u128 = <Contract as AllTypes>::test_u128;
+        let _: fn(i128) -> i128 = <Contract as AllTypes>::test_i128;
+        let _: fn(bool) -> bool = <Contract as AllTypes>::test_bool;
+        let _: fn(Address) -> Address = <Contract as AllTypes>::test_address;
+        let _: fn(Bytes) -> Bytes = <Contract as AllTypes>::test_bytes;
+        let _: fn(BytesN<32>) -> BytesN<32> = <Contract as AllTypes>::test_bytes_n;
+        let _: fn(Symbol) -> Symbol = <Contract as AllTypes>::test_symbol;
+        let _: fn(Vec<u32>) -> Vec<u32> = <Contract as AllTypes>::test_vec;
+        let _: fn(Map<u32, u32>) -> Map<u32, u32> = <Contract as AllTypes>::test_map;
+        let _: fn(Duration) -> Duration = <Contract as AllTypes>::test_duration;
+        let _: fn(Timepoint) -> Timepoint = <Contract as AllTypes>::test_timepoint;
+        let _: fn(I256) -> I256 = <Contract as AllTypes>::test_i256;
+        let _: fn(U256) -> U256 = <Contract as AllTypes>::test_u256;
+        let _: fn(MyEnumUnit) -> MyEnumUnit = <Contract as AllTypes>::test_enum_unit;
+        let _: fn(MyEnumVariants) -> MyEnumVariants = <Contract as AllTypes>::test_enum_variants;
+    }
+};
 #[doc(hidden)]
 /// Test i32 values.
 #[allow(non_snake_case)]

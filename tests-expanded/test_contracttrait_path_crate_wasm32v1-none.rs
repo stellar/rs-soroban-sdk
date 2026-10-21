@@ -137,6 +137,13 @@ impl<'a> ContractCratePathClient<'a> {
 impl crate::traits::CratePathTrait for ContractCratePath {}
 impl<'a> ContractCratePathClient<'a> {}
 impl ContractCratePathArgs {}
+const _: () = {
+    #[allow(dead_code)]
+    fn check() {
+        let _: fn(_) -> u32 =
+            <ContractCratePath as crate::traits::CratePathTrait>::crate_path_method;
+    }
+};
 #[doc(hidden)]
 #[allow(non_snake_case)]
 #[deprecated(

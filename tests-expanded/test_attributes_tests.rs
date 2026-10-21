@@ -2295,6 +2295,14 @@ pub extern "C" fn __Contract__trait_override_dual_cfg__invoke_raw_extern() -> so
     #[allow(deprecated)]
     __Contract__trait_override_dual_cfg__invoke_raw(soroban_sdk::Env::default())
 }
+const _: () = {
+    #[allow(dead_code)]
+    fn check() {
+        let _: fn() -> u32 = <Contract as AttributeTrait>::trait_default;
+        let _: fn() -> u32 = <Contract as AttributeTrait>::trait_default_stacked_cfg;
+        let _: fn() -> u32 = <Contract as AttributeTrait>::trait_default_dual_cfg;
+    }
+};
 #[doc(hidden)]
 #[allow(non_snake_case)]
 #[deprecated(note = "use `ContractClient::new(&env, &contract_id).trait_default` instead")]

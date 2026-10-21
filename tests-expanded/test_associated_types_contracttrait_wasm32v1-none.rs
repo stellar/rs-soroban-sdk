@@ -148,6 +148,12 @@ impl Trait for Contract {
 }
 impl<'a> ContractClient<'a> {}
 impl ContractArgs {}
+const _: () = {
+    #[allow(dead_code)]
+    fn check() {
+        let _: fn(_) -> String = <Contract as Trait>::exec;
+    }
+};
 #[doc(hidden)]
 #[allow(non_snake_case)]
 #[deprecated(note = "use `ContractClient::new(&env, &contract_id).exec` instead")]
