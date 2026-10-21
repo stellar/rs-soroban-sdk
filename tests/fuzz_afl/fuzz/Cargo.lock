@@ -1592,7 +1592,8 @@ checksum = "8ed6a63f02c8539c91a8685a86f4099661ba3da017932f6ebbea6de3f0fa7c90"
 [[package]]
 name = "soroban-builtin-sdk-macros"
 version = "30.0.0"
-source = "git+https://github.com/stellar/rs-soroban-env?rev=0c99950e96128beba3319aa96b116646ce974e69#0c99950e96128beba3319aa96b116646ce974e69"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "8a8169a705af029de69847302b4e5487305e62b17d9940cb31dd17f20cbab1ec"
 dependencies = [
  "itertools",
  "proc-macro2",
@@ -1603,7 +1604,8 @@ dependencies = [
 [[package]]
 name = "soroban-env-common"
 version = "30.0.0"
-source = "git+https://github.com/stellar/rs-soroban-env?rev=0c99950e96128beba3319aa96b116646ce974e69#0c99950e96128beba3319aa96b116646ce974e69"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "64b509d5fdbbf7a8061fb42f92ea62798b1e8ae7c6f007f36474578a4ac31938"
 dependencies = [
  "arbitrary",
  "crate-git-revision",
@@ -1621,7 +1623,8 @@ dependencies = [
 [[package]]
 name = "soroban-env-guest"
 version = "30.0.0"
-source = "git+https://github.com/stellar/rs-soroban-env?rev=0c99950e96128beba3319aa96b116646ce974e69#0c99950e96128beba3319aa96b116646ce974e69"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "3e5393af3795dee8e89ea76065b7d924ea8b6b58ea35dd071909aacdd66191ec"
 dependencies = [
  "soroban-env-common",
  "static_assertions",
@@ -1630,7 +1633,8 @@ dependencies = [
 [[package]]
 name = "soroban-env-host"
 version = "30.0.0"
-source = "git+https://github.com/stellar/rs-soroban-env?rev=0c99950e96128beba3319aa96b116646ce974e69#0c99950e96128beba3319aa96b116646ce974e69"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "136f5fa76934f7ad340b57c038ed5da5574a028bedff4ae55bbaf5e3d77fd1dc"
 dependencies = [
  "ark-bls12-381",
  "ark-bn254",
@@ -1667,7 +1671,8 @@ dependencies = [
 [[package]]
 name = "soroban-env-macros"
 version = "30.0.0"
-source = "git+https://github.com/stellar/rs-soroban-env?rev=0c99950e96128beba3319aa96b116646ce974e69#0c99950e96128beba3319aa96b116646ce974e69"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "4d3bd3ac123246c3cf1b28a01003b99684e7eaf00ec569ee5e420fe04715b73c"
 dependencies = [
  "itertools",
  "proc-macro2",
