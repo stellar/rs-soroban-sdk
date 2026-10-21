@@ -281,6 +281,17 @@ pub mod submodule {
     impl super::SuperPathTrait for ContractSuperPath {}
     impl<'a> ContractSuperPathClient<'a> {}
     impl ContractSuperPathArgs {}
+    const _: () = {
+        #[allow(dead_code)]
+        fn check_types() {
+            fn check<A0, R>(_: fn(&A0) -> R)
+            where
+                R: soroban_sdk::ContractTraitType<u32>,
+            {
+            }
+            check(<ContractSuperPath as super::SuperPathTrait>::super_path_method);
+        }
+    };
     #[doc(hidden)]
     #[allow(non_snake_case)]
     #[deprecated(

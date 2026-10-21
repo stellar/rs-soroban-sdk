@@ -138,6 +138,17 @@ impl<'a> ContractRelativePathClient<'a> {
 impl traits::RelativePathTrait for ContractRelativePath {}
 impl<'a> ContractRelativePathClient<'a> {}
 impl ContractRelativePathArgs {}
+const _: () = {
+    #[allow(dead_code)]
+    fn check_types() {
+        fn check<A0, R>(_: fn(&A0) -> R)
+        where
+            R: soroban_sdk::ContractTraitType<u32>,
+        {
+        }
+        check(<ContractRelativePath as traits::RelativePathTrait>::relative_path_method);
+    }
+};
 #[doc(hidden)]
 #[allow(non_snake_case)]
 #[deprecated(
