@@ -1,0 +1,5 @@
+error: `Hash<N>` cannot be used as a contract function return type, use `BytesN<N>` instead
+  --> tests/compile_fails/hash_return_errors.rs:11:19
+   |
+11 |     pub fn f() -> Hash<32> {
+   |                   ^^^^^^^^
