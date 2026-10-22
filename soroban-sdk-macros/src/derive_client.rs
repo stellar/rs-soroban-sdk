@@ -241,6 +241,9 @@ pub fn derive_client_impl(crate_path: &Path, name: &str, fns: &[syn_ext::Fn]) ->
                 quote! {
                     #fn_docs
                     #(#fn_attrs)*
+                    /// # Panics
+                    ///
+                    /// Panics if the invoked contract returns an error or panics.
                     pub fn #fn_ident(&self, #(#fn_input_types),*) -> #fn_output {
                         use core::ops::Not;
                         use #crate_path::{IntoVal,FromVal};
@@ -254,6 +257,9 @@ pub fn derive_client_impl(crate_path: &Path, name: &str, fns: &[syn_ext::Fn]) ->
 
                     #fn_try_docs
                     #(#fn_attrs)*
+                    /// # Errors
+                    ///
+                    /// Returns `Err` if the invoked contract returns an error or panics; the panic will be caught and returned as an error. Returns `Ok(Err(...))` if the return value cannot be converted to the expected type.
                     pub fn #fn_try_ident(&self, #(#fn_input_types),*) -> #fn_try_output {
                         use #crate_path::{IntoVal,FromVal};
                         let res = self.env.try_invoke_contract(
@@ -268,6 +274,9 @@ pub fn derive_client_impl(crate_path: &Path, name: &str, fns: &[syn_ext::Fn]) ->
                 quote! {
                     #fn_docs
                     #(#fn_attrs)*
+                    /// # Panics
+                    ///
+                    /// Panics if the invoked contract returns an error or panics.
                     pub fn #fn_ident(&self, #(#fn_input_types),*) -> #fn_output {
                         // Exists only to be dropped at the end of this fn, restoring the auth
                         // manager even if the call panics. Binding it to `_` would drop it early.
@@ -283,6 +292,9 @@ pub fn derive_client_impl(crate_path: &Path, name: &str, fns: &[syn_ext::Fn]) ->
 
                     #fn_try_docs
                     #(#fn_attrs)*
+                    /// # Errors
+                    ///
+                    /// Returns `Err` if the invoked contract returns an error or panics; the panic will be caught and returned as an error. Returns `Ok(Err(...))` if the return value cannot be converted to the expected type.
                     pub fn #fn_try_ident(&self, #(#fn_input_types),*) -> #fn_try_output {
                         // Exists only to be dropped at the end of this fn, restoring the auth
                         // manager even if the call panics. Binding it to `_` would drop it early.
