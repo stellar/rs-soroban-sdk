@@ -101,18 +101,9 @@ Contracts with no duplicate names keep the same spec. Contracts that have them
 get a new spec after upgrading, and clients generated from it see the new names.
 To keep names stable, give each type, event, and error a unique name.
 
-## Spec shaking by reference
-
-Prior to v30 the build kept a spec entry only if a marker for it survived in
-the Wasm, which meant a marker for every type, event, and error. In v30 the build keeps every entry
-the contract's functions refer to, directly or through other types. Markers
-remain only for events and for errors passed to `panic_with_error!`, which a
-function may never refer to. Contracts carry fewer markers. The SDK's test
-contract went from 49 to 8.
-
-The renaming and shaking happen in `stellar contract build`, so the SDK now
-requires a `stellar-cli` with the same major version or newer. Building for Wasm
-with anything older fails:
+The renaming happens in `stellar contract build`, so the SDK now requires a
+`stellar-cli` with the same major version or newer. Building for Wasm with
+anything older fails:
 
 ```bash
 error: soroban-sdk requires stellar-cli v30.0.0+ to build a contract
@@ -121,8 +112,22 @@ error: soroban-sdk requires stellar-cli v30.0.0+ to build a contract
 The check only fires for Wasm builds. Tests are unaffected and can be run with
 `cargo test`.
 
-Tools that read spec markers or the `spec_xdr` functions directly are affected
-too. The migration guide covers the details.
+## Spec shaking by reference
+
+This change is largely an internal implementation detail. It is primarily of
+interest to tool builders who inspect Wasm or contract spec internals, and needs
+no changes to contracts.
+
+Prior to v30 the build kept a spec entry only if a marker for it survived in the
+Wasm, which meant a marker for every type, event, and error. In v30 the build
+keeps every entry the contract's functions refer to, directly or through other
+types. Markers remain only for events and for errors passed to
+`panic_with_error!`, which a function may never refer to. Contracts carry fewer
+markers. The SDK's test contract went from 49 to 8.
+
+Tools that read spec markers, the `rssdk_spec_shaking` meta entry, or the
+`spec_xdr` functions directly need updating. The migration guide covers the
+details.
 
 ## Upgrading to v30
 
