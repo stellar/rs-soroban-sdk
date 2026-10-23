@@ -103,8 +103,8 @@ To keep names stable, give each type, event, and error a unique name.
 
 ## Spec shaking by reference
 
-v28 kept a spec entry only if a marker for it survived in the Wasm, which meant
-a marker for every type, event, and error. In v30 the build keeps every entry
+Prior to v30 the build kept a spec entry only if a marker for it survived in
+the Wasm, which meant a marker for every type, event, and error. In v30 the build keeps every entry
 the contract's functions refer to, directly or through other types. Markers
 remain only for events and for errors passed to `panic_with_error!`, which a
 function may never refer to. Contracts carry fewer markers. The SDK's test
