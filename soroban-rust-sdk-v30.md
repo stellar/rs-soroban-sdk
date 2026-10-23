@@ -10,7 +10,6 @@ contract must be built with `stellar-cli` v30.0.0 or newer.
 - ML-DSA signature verification
 - Unique names in specs
 - Spec shaking by reference
-- Contract types are unit structs
 
 ## Muxed contract addresses
 
@@ -111,21 +110,6 @@ remain only for events and for errors passed to `panic_with_error!`, which a
 function may never refer to. Contracts carry fewer markers. The SDK's test
 contract went from 49 to 8.
 
-One consequence: `#[contracttype]` integer enums can no longer be passed to
-`panic_with_error!` or `Env::panic_with_error`. That worked by accident. Use
-`#[contracterror]`:
-
-```rust
-#[contracterror]
-#[derive(Copy, Clone)]
-#[repr(u32)]
-pub enum Error {
-    NotFound = 1,
-}
-
-panic_with_error!(&env, Error::NotFound);
-```
-
 The renaming and shaking happen in `stellar contract build`, so the SDK now
 requires a `stellar-cli` with the same major version or newer. Building for Wasm
 with anything older fails:
@@ -140,18 +124,6 @@ The check only fires for Wasm builds. Tests are unaffected and can be run with
 Tools that read spec markers or the `spec_xdr` functions directly are affected
 too. The migration guide covers the details.
 
-## Contract types are unit structs
-
-The SDK never constructs the `#[contract]` type, so fields on it were silently
-ignored. In v30 fields, tuple fields, and generics are compile errors:
-
-```bash
-error: contract struct must not have fields, e.g. `pub struct Contract;`
-```
-
-Use `pub struct Contract;` or `pub struct Contract {}`, and keep state in
-storage.
-
 ## Upgrading to v30
 
 When upgrading to soroban-sdk v30:
@@ -161,9 +133,6 @@ When upgrading to soroban-sdk v30:
   contract.
 - Expect the spec, and generated clients, to change for contracts with duplicate
   type, event, or error names.
-- Replace `#[contracttype]` integer enums passed to `panic_with_error!` with
-  `#[contracterror]` types.
-- Remove fields and generics from the `#[contract]` struct.
 
 Known issue: when building without LTO, spec entries can be missing for some
 `#[contracttype]` types defined in a dependency crate. It is tracked in
