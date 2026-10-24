@@ -102,6 +102,14 @@ macro_rules! bytesn {
     };
 }
 
+/// Equivalent to [`bytesn`]. Provided for consistency with Rust naming conventions.
+#[macro_export]
+macro_rules! bytes_n {
+    ($($tokens:tt)*) => {
+        $crate::bytesn!($($tokens)*)
+    };
+}
+
 /// Internal macro that generates all `BytesN` wrapper methods and trait impls
 /// *except* `from_bytes`. Types using this macro must provide their own
 /// `from_bytes(BytesN<$size>) -> Self` (e.g. to add validation).

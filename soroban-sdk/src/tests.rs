@@ -67,6 +67,7 @@ mod prng_range;
 mod proptest_scval_cmp;
 mod proptest_val_cmp;
 mod register_at_stellar_asset_contract;
+mod snake_case_macros;
 mod snapshot_source_native_wasm_hash;
 mod storage_testutils;
 mod token_client;
