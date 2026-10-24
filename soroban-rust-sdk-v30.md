@@ -13,18 +13,10 @@ contract interfaces are generated. Most contracts upgrade without code changes.
 
 ## Build with stellar-cli v30
 
-Contracts are already built with `stellar contract build`, which shakes the spec
-and, in v30, gives types unique names. What changes is the version: the
-`stellar-cli` must now have the same major version as the SDK or newer. A
-contract using soroban-sdk v30 must be built with `stellar-cli` v30.0.0 or
-newer. Building for Wasm with an older one fails:
-
-```bash
-error: soroban-sdk requires stellar-cli v30.0.0+ to build a contract
-```
-
-The check only fires for Wasm builds. Tests are unaffected and can be run with
-`cargo test`.
+Contracts currently must be built with at least `stellar-cli` v25.2.0. In
+soroban-sdk v30, contracts must be built with the same major version
+`stellar-cli`, v30.0.0 or newer. Building with an older version of the
+`stellar-cli` will result in an error.
 
 ## Muxed contract addresses
 
