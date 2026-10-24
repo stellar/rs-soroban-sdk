@@ -103,9 +103,11 @@ fn derive_event_or_err(metadata: TokenStream2, input: TokenStream2) -> Result<To
     let args = ContractEventArgs::from_list(&args)?;
     let input = parse2::<DeriveInput>(input)?;
     let export_error = export_arg_error(&args.export);
-    let derived = derive_impls(&args, &input)?;
+    let (derived, event_doc) = derive_impls(&args, &input)?;
     let mut input = input;
     remove_attributes_from_item(&mut input.data, &["topic", "data"]);
+    let doc_attr: syn::Attribute = syn::parse_quote!(#[doc = #event_doc]);
+    input.attrs.push(doc_attr);
     Ok(quote! {
         #input
         #export_error
@@ -114,7 +116,10 @@ fn derive_event_or_err(metadata: TokenStream2, input: TokenStream2) -> Result<To
     .into())
 }
 
-fn derive_impls(args: &ContractEventArgs, input: &DeriveInput) -> Result<TokenStream2, Error> {
+fn derive_impls(
+    args: &ContractEventArgs,
+    input: &DeriveInput,
+) -> Result<(TokenStream2, String), Error> {
     // Collect errors as they are encountered and emit them at the end.
     let mut errors = Error::accumulator();
 
@@ -393,6 +398,14 @@ fn derive_impls(args: &ContractEventArgs, input: &DeriveInput) -> Result<TokenSt
         }
     };
 
+    let event_doc = build_event_doc(
+        &prefix_topics,
+        &params_with_idents,
+        &fields,
+        args.data_format,
+    );
+    let publish_doc = format!("Publishes the event to the environment.\n{event_doc}");
+
     // Output.
     let spec_type_def = spec_type_def_gen(
         path,
@@ -418,11 +431,290 @@ fn derive_impls(args: &ContractEventArgs, input: &DeriveInput) -> Result<TokenSt
         }
 
         impl #gen_impl #ident #gen_types #gen_where {
+            #[doc = #publish_doc]
             pub fn publish(&self, env: &#path::Env) {
                 <_ as #path::Event>::publish(self, env);
             }
         }
     };
 
-    errors.finish_with(output)
+    let output = errors.finish_with(output)?;
+    Ok((output, event_doc))
+}
+
+fn format_type(ty: &syn::Type) -> String {
+    let mut s = quote!(#ty).to_string();
+    let replacements = [
+        (" < ", "<"),
+        ("< ", "<"),
+        (" > ", ">"),
+        (" >", ">"),
+        (" :: ", "::"),
+        (" & ", "&"),
+        ("& '", "&'"),
+        (" , ", ", "),
+        (", ", ", "),
+        (" ; ", "; "),
+        (" (", "("),
+        ("( ", "("),
+        (" )", ")"),
+        (" [ ", "["),
+        (" [", "["),
+        ("[ ", "["),
+        (" ]", "]"),
+    ];
+    for _ in 0..3 {
+        for (old, new) in replacements {
+            s = s.replace(old, new);
+        }
+    }
+    s.trim().to_string()
+}
+
+fn build_event_doc(
+    prefix_topics: &[String],
+    params_with_idents: &[(syn::Ident, EventParam)],
+    fields: &[&syn::Field],
+    data_format: DataFormat,
+) -> String {
+    let mut topic_strs: Vec<String> = prefix_topics.iter().map(|t| format!("\"{t}\"")).collect();
+    for (ident, p) in params_with_idents
+        .iter()
+        .filter(|(_, p)| p.location == ScSpecEventParamLocationV0::TopicList)
+    {
+        let field = fields
+            .iter()
+            .find(|f| f.ident.as_ref() == Some(ident))
+            .unwrap();
+        let ty_str = format_type(&field.ty);
+        topic_strs.push(format!("{}: {ty_str}", p.name));
+    }
+
+    let data_params = params_with_idents
+        .iter()
+        .filter(|(_, p)| p.location == ScSpecEventParamLocationV0::Data)
+        .collect::<Vec<_>>();
+
+    let data_doc = match data_format {
+        DataFormat::Map => {
+            let mut data_params_sorted = data_params.clone();
+            data_params_sorted.sort_by_key(|(_, p)| p.name.to_string());
+            let data_strs = data_params_sorted
+                .iter()
+                .map(|(ident, p)| {
+                    let field = fields
+                        .iter()
+                        .find(|f| f.ident.as_ref() == Some(ident))
+                        .unwrap();
+                    let ty_str = format_type(&field.ty);
+                    format!("{}: {ty_str}", p.name)
+                })
+                .collect::<Vec<_>>();
+            if data_strs.is_empty() {
+                "{}: Map".to_string()
+            } else {
+                format!("{{ {} }}: Map", data_strs.join(", "))
+            }
+        }
+        DataFormat::Vec => {
+            let data_strs = data_params
+                .iter()
+                .map(|(ident, p)| {
+                    let field = fields
+                        .iter()
+                        .find(|f| f.ident.as_ref() == Some(ident))
+                        .unwrap();
+                    let ty_str = format_type(&field.ty);
+                    format!("{}: {ty_str}", p.name)
+                })
+                .collect::<Vec<_>>();
+            format!("[{}]", data_strs.join(", "))
+        }
+        DataFormat::SingleValue => {
+            if let Some((ident, p)) = data_params.first() {
+                let field = fields
+                    .iter()
+                    .find(|f| f.ident.as_ref() == Some(ident))
+                    .unwrap();
+                let ty_str = format_type(&field.ty);
+                format!("{}: {ty_str}", p.name)
+            } else {
+                "()".to_string()
+            }
+        }
+    };
+
+    format!(
+        "\n# Event\n\nEmits an event with:\n* topics `[{}]`\n* data `{}`\n",
+        topic_strs.join(", "),
+        data_doc,
+    )
+}
+
+#[cfg(test)]
+mod test {
+    use super::*;
+    use syn::parse_quote;
+
+    #[test]
+    fn test_build_event_doc_map() {
+        let prefix_topics = vec!["transfer".to_string()];
+        let f1: syn::Field = parse_quote!(#[topic] from: Address);
+        let f2: syn::Field = parse_quote!(#[topic] to: Address);
+        let f3: syn::Field = parse_quote!(amount: i128);
+        let fields = vec![&f1, &f2, &f3];
+        let params_with_idents = vec![
+            (
+                format_ident!("from"),
+                EventParam {
+                    location: ScSpecEventParamLocationV0::TopicList,
+                    doc: Default::default(),
+                    name: "from".try_into().unwrap(),
+                },
+            ),
+            (
+                format_ident!("to"),
+                EventParam {
+                    location: ScSpecEventParamLocationV0::TopicList,
+                    doc: Default::default(),
+                    name: "to".try_into().unwrap(),
+                },
+            ),
+            (
+                format_ident!("amount"),
+                EventParam {
+                    location: ScSpecEventParamLocationV0::Data,
+                    doc: Default::default(),
+                    name: "amount".try_into().unwrap(),
+                },
+            ),
+        ];
+
+        let doc = build_event_doc(
+            &prefix_topics,
+            &params_with_idents,
+            &fields,
+            DataFormat::Map,
+        );
+        assert_eq!(
+            doc,
+            "\n# Event\n\nEmits an event with:\n* topics `[\"transfer\", from: Address, to: Address]`\n* data `{ amount: i128 }: Map`\n"
+        );
+    }
+
+    #[test]
+    fn test_build_event_doc_vec() {
+        let prefix_topics = vec!["approve".to_string()];
+        let f1: syn::Field = parse_quote!(#[topic] from: Address);
+        let f2: syn::Field = parse_quote!(amount: i128);
+        let f3: syn::Field = parse_quote!(live_until_ledger: u32);
+        let fields = vec![&f1, &f2, &f3];
+        let params_with_idents = vec![
+            (
+                format_ident!("from"),
+                EventParam {
+                    location: ScSpecEventParamLocationV0::TopicList,
+                    doc: Default::default(),
+                    name: "from".try_into().unwrap(),
+                },
+            ),
+            (
+                format_ident!("amount"),
+                EventParam {
+                    location: ScSpecEventParamLocationV0::Data,
+                    doc: Default::default(),
+                    name: "amount".try_into().unwrap(),
+                },
+            ),
+            (
+                format_ident!("live_until_ledger"),
+                EventParam {
+                    location: ScSpecEventParamLocationV0::Data,
+                    doc: Default::default(),
+                    name: "live_until_ledger".try_into().unwrap(),
+                },
+            ),
+        ];
+
+        let doc = build_event_doc(
+            &prefix_topics,
+            &params_with_idents,
+            &fields,
+            DataFormat::Vec,
+        );
+        assert_eq!(
+            doc,
+            "\n# Event\n\nEmits an event with:\n* topics `[\"approve\", from: Address]`\n* data `[amount: i128, live_until_ledger: u32]`\n"
+        );
+    }
+
+    #[test]
+    fn test_build_event_doc_single_value() {
+        let prefix_topics = vec!["increment".to_string()];
+        let f1: syn::Field = parse_quote!(count: u32);
+        let fields = vec![&f1];
+        let params_with_idents = vec![(
+            format_ident!("count"),
+            EventParam {
+                location: ScSpecEventParamLocationV0::Data,
+                doc: Default::default(),
+                name: "count".try_into().unwrap(),
+            },
+        )];
+
+        let doc = build_event_doc(
+            &prefix_topics,
+            &params_with_idents,
+            &fields,
+            DataFormat::SingleValue,
+        );
+        assert_eq!(
+            doc,
+            "\n# Event\n\nEmits an event with:\n* topics `[\"increment\"]`\n* data `count: u32`\n"
+        );
+    }
+
+    #[test]
+    fn test_build_event_doc_unit_struct() {
+        let prefix_topics = vec!["ping".to_string()];
+        let fields = vec![];
+        let params_with_idents = vec![];
+
+        let doc = build_event_doc(
+            &prefix_topics,
+            &params_with_idents,
+            &fields,
+            DataFormat::Map,
+        );
+        assert_eq!(
+            doc,
+            "\n# Event\n\nEmits an event with:\n* topics `[\"ping\"]`\n* data `{}: Map`\n"
+        );
+    }
+
+    #[test]
+    fn test_build_event_doc_no_topics() {
+        let prefix_topics = vec![];
+        let f1: syn::Field = parse_quote!(data_val: i32);
+        let fields = vec![&f1];
+        let params_with_idents = vec![(
+            format_ident!("data_val"),
+            EventParam {
+                location: ScSpecEventParamLocationV0::Data,
+                doc: Default::default(),
+                name: "data_val".try_into().unwrap(),
+            },
+        )];
+
+        let doc = build_event_doc(
+            &prefix_topics,
+            &params_with_idents,
+            &fields,
+            DataFormat::SingleValue,
+        );
+        assert_eq!(
+            doc,
+            "\n# Event\n\nEmits an event with:\n* topics `[]`\n* data `data_val: i32`\n"
+        );
+    }
 }
