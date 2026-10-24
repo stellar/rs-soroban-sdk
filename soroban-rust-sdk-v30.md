@@ -158,7 +158,9 @@ When upgrading to soroban-sdk v30:
 - Review contracts that read `MuxedAddress::id()`, as the address may now be a
   contract.
 - Expect the spec, and generated clients, to change for contracts with duplicate
-  type, event, or error names.
+  type, event, or error names. Tooling and clients could not interact with
+  those contracts correctly because of the duplicate entries, so this is as much
+  a bug fix as new functionality.
 
 Known issue: when building without LTO, spec entries can be missing for some
 `#[contracttype]` types defined in a dependency crate. It is tracked in
