@@ -112,12 +112,20 @@ use crate::testutils;
 #[cfg(any(test, feature = "testutils"))]
 #[cfg_attr(feature = "docs", doc(cfg(feature = "testutils")))]
 impl testutils::Ledger for Ledger {
-    fn set(&self, li: testutils::LedgerInfo) {
+    fn set(&self, mut li: testutils::LedgerInfo) {
         let env = self.env();
+        if li.protocol_version < internal::meta::INTERFACE_VERSION.protocol {
+            li.protocol_version = internal::meta::INTERFACE_VERSION.protocol;
+        }
         env.host().set_ledger_info(li).unwrap();
     }
 
     fn set_protocol_version(&self, protocol_version: u32) {
+        let protocol_version = if protocol_version < internal::meta::INTERFACE_VERSION.protocol {
+            internal::meta::INTERFACE_VERSION.protocol
+        } else {
+            protocol_version
+        };
         self.with_mut(|ledger_info| {
             ledger_info.protocol_version = protocol_version;
         });
