@@ -8,7 +8,7 @@ contract must be built with `stellar-cli` v30.0.0 or newer.
 
 - Muxed contract addresses
 - ML-DSA signature verification
-- Unique names in specs
+- Unique names in contract interfaces
 - Spec shaking by reference
 
 ## Muxed contract addresses
@@ -64,7 +64,7 @@ string, up to 255 bytes. Pass empty `Bytes` if the signer used none, which is
 the default for most signers. Custom accounts can use these in `__check_auth` to
 accept post-quantum signatures.
 
-## Unique names in specs
+## Unique names in contract interfaces
 
 Before v30 the spec named each type, event, and error by its Rust name alone.
 Two types called `State` in different modules or crates produced two spec
