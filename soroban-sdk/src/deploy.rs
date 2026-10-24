@@ -613,6 +613,7 @@ mod testutils {
 
     impl crate::testutils::Deployer for Deployer {
         fn get_contract_instance_ttl(&self, contract: &Address) -> u32 {
+            self.env.panic_if_in_contract("getting contract ttl is unavailable inside a contract function and must be done only from the test code outside the contract function");
             self.env
                 .host()
                 .get_contract_instance_live_until_ledger(contract.to_object())
@@ -622,6 +623,7 @@ mod testutils {
         }
 
         fn get_contract_code_ttl(&self, contract: &Address) -> u32 {
+            self.env.panic_if_in_contract("getting contract ttl is unavailable inside a contract function and must be done only from the test code outside the contract function");
             self.env
                 .host()
                 .get_contract_code_live_until_ledger(contract.to_object())

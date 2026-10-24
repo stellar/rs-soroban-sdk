@@ -140,6 +140,7 @@ impl Events {
 impl testutils::Events for Events {
     fn all(&self) -> testutils::ContractEvents {
         let env = self.env();
+        env.panic_if_in_contract("the record of events is unavailable inside a contract function and must be accessed only from the test code outside the contract function");
         let vec: std::vec::Vec<xdr::ContractEvent> = self
             .env()
             .host()
