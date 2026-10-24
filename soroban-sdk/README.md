@@ -15,6 +15,8 @@ The two most recent soroban-sdk major releases are supported with critical secur
 Critical security issues may be backported to earlier versions if practical, but not guaranteed.
 General bugs are only fixed on, and new features are only added to, the latest major release.
 
+For details on our deprecation lifecycle and what constitutes a breaking change across Rust APIs, contract specifications, and test utilities, see [DEPRECATION_AND_BREAKING_CHANGES.md](../DEPRECATION_AND_BREAKING_CHANGES.md).
+
 ### Build Target
 
 Contracts must be built for the `wasm32v1-none` target, available with Rust 1.84+. It is the
