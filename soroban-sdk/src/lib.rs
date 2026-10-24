@@ -662,6 +662,19 @@ pub use soroban_sdk_macros::contractmeta;
 /// Includes the type in the contract spec so that clients can generate bindings
 /// for the type.
 ///
+/// ### Conversion Failures: Errors vs Host Traps
+///
+/// When deserializing or converting a [`Val`][crate::Val] into a contract type via [`TryFromVal`],
+/// the vast majority of invalid or mismatched types cleanly return `Err(ConversionError)`.
+///
+/// However, the derived implementation uses low-level host unpack functions that trap (and
+/// panic in test environments) under the following conditions:
+/// - **Structs**: The input is a map, but contains keys that are not [`Symbol`][crate::Symbol]s.
+/// - **Tuple Structs**: The input is a vector, but its length does not equal the number of fields.
+/// - **Enums**: The input is a vector whose first element is a [`Symbol`][crate::Symbol] that is
+///   not one of the variant names. (Note: if the first element is not a symbol at all, or if a
+///   recognized variant has an invalid payload, an `Err(ConversionError)` is returned).
+///
 /// ### Examples
 ///
 /// Defining a contract type that is a struct and use it in a contract.
@@ -1197,6 +1210,43 @@ pub use env::FromVal;
 /// Used to do conversions between values in the Soroban environment.
 pub use env::IntoVal;
 /// Used to do conversions between values in the Soroban environment.
+///
+/// Converts a value of one type into another within the given [`Env`], returning a
+/// `Result<Self, Self::Error>` on failure.
+///
+/// ### Conversion Failures: `ConversionError` vs Host Traps / Panics
+///
+/// The vast majority of type conversions fail gracefully by returning `Err(ConversionError)`
+/// when the provided value is incompatible or cannot be parsed into the target type.
+///
+/// However, in four specific cases involving host-side unpack operations and symbol
+/// lookups, conversions trigger an unrecoverable host trap instead of returning an error.
+/// In unit tests and guest debug runs, these traps surface as a panic:
+///
+/// 1. **Contract Struct from a Map with non-Symbol keys**:
+///    Converting into a `#[contracttype]` struct from a [`Map`][crate::Map] whose keys are not
+///    [`Symbol`][crate::Symbol]s (e.g. integer or [`String`][crate::String] keys) causes the
+///    host function `map_unpack_to_slice` to trap with `UnexpectedType`.
+///
+/// 2. **Tuple from a Vec of mismatched length**:
+///    Converting into a standard tuple (e.g. `(i32, i32)`) from a [`Vec`][crate::Vec] with an
+///    element count different from the tuple's arity causes `vec_unpack_to_slice` to trap with
+///    `UnexpectedSize`.
+///
+/// 3. **Contract Tuple Struct from a Vec of mismatched length**:
+///    Converting into a `#[contracttype]` tuple struct from a [`Vec`][crate::Vec] with a
+///    different number of elements similarly traps with `UnexpectedSize`.
+///
+/// 4. **Contract Enum from a Vec with unknown variant name**:
+///    Converting into a `#[contracttype]` enum from a [`Vec`][crate::Vec] whose first element is
+///    a [`Symbol`][crate::Symbol], but that symbol does not match any declared variant name,
+///    causes `symbol_index_in_strs` to trap with `InvalidInput` ("symbol not found in slice of strs").
+///
+/// #### Design Rationale
+///
+/// These traps originate from low-level host functions designed to fail fast when decoding
+/// malformed internal data structures, avoiding superfluous execution costs when callers
+/// pass structural mismatches that smart contracts cannot reasonably recover from.
 pub use env::TryFromVal;
 /// Used to do conversions between values in the Soroban environment.
 pub use env::TryIntoVal;
