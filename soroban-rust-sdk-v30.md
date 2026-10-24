@@ -3,8 +3,7 @@
 Version 30 of the Soroban Rust SDK supports Protocol 30,
 [Bell](https://stellar.org/blog/developers/introducing-bell-protocol-30-on-stellar).
 It adds the two Protocol 30 features contracts can use, and changes how
-contract interfaces are generated. Most contracts upgrade without code changes,
-but every contract must be built with `stellar-cli` v30.0.0 or newer.
+contract interfaces are generated. Most contracts upgrade without code changes.
 
 - Build with stellar-cli v30
 - Muxed contract addresses
