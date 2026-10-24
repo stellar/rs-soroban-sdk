@@ -128,14 +128,22 @@ to contracts.
 
 Prior to v30 the build kept a spec entry only if a marker for it survived in the
 Wasm, which meant a marker for every type, event, and error was contained in the
-final Wasm. In v30 the build keeps every entry the contract's functions refer
-to, directly or through other types. Markers remain only for events and for errors passed to
+final Wasm. This is spec shaking v2, described in the "Spec shaking v2" section
+of the [v28 post](https://stellar.org/blog/developers/soroban-rust-sdk-v28) and
+in the
+[v28 migration guide](https://docs.rs/soroban-sdk/28.0.0/soroban_sdk/_migrating/v28_spec_shaking/index.html).
+
+In v30 the build keeps every entry the contract's functions refer to, directly
+or through other types. Markers remain only for events and for errors passed to
 `panic_with_error!`, which a function may never refer to. Contracts carry fewer
 markers. The SDK's test contract went from 49 to 8.
 
 Tools that read spec markers, the `rssdk_spec_shaking` meta entry, or the
-`spec_xdr` functions directly need updating. The migration guide covers the
-details.
+`spec_xdr` functions directly need updating. The v30 migration guide covers the
+details in
+[spec markers](https://docs.rs/soroban-sdk/30.0.0-rc.1/soroban_sdk/_migrating/v30_spec_markers/index.html)
+and
+[`spec_xdr` output](https://docs.rs/soroban-sdk/30.0.0-rc.1/soroban_sdk/_migrating/v30_spec_xdr_unprocessed/index.html).
 
 ## Upgrading to v30
 
