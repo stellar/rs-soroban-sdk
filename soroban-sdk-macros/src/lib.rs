@@ -503,6 +503,18 @@ struct ContractTypeArgs {
     export: Option<SpannedValue<bool>>,
 }
 
+/// Generates conversions from the struct/enum from/into a `Val`, along with contract specification entries.
+///
+/// ### Conversion Failures: Errors vs Host Traps
+///
+/// When converting a `Val` into a contract type via `TryFromVal`, the majority of invalid types
+/// cleanly return `Err(ConversionError)`.
+///
+/// However, the derived implementation relies on host unpack functions that trap (causing panics in tests)
+/// in these specific conditions:
+/// - **Structs**: The input is a map with keys that are not symbols (host traps with `UnexpectedType`).
+/// - **Tuple Structs**: The input is a vector with length mismatched to the field count (host traps with `UnexpectedSize`).
+/// - **Enums**: The input is a vector whose first element is a symbol that does not match any declared variant name (host traps with `InvalidInput`).
 #[proc_macro_attribute]
 pub fn contracttype(metadata: TokenStream, input: TokenStream) -> TokenStream {
     let args = match NestedMeta::parse_meta_list(metadata.into()) {
