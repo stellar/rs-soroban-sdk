@@ -43,6 +43,59 @@ fn all() {
 }
 
 #[test]
+fn all_multi_contract_isolation() {
+    let e = Env::default();
+    let contract_a = e.register(Contract, ());
+    let contract_b = e.register(Contract, ());
+
+    // Contract A sets entries across instance, persistent, and temporary storage using key 1
+    e.as_contract(&contract_a, || {
+        e.storage().instance().set(&1, &100);
+        e.storage().persistent().set(&1, &101);
+        e.storage().temporary().set(&1, &102);
+    });
+
+    // Contract B sets entries across all three storage types using the same key 1 but different values
+    e.as_contract(&contract_b, || {
+        e.storage().instance().set(&1, &200);
+        e.storage().persistent().set(&1, &201);
+        e.storage().temporary().set(&1, &202);
+    });
+
+    // Contract A must only see its own entries in instance, persistent, and temporary storage
+    e.as_contract(&contract_a, || {
+        assert_eq!(
+            e.storage().instance().all(),
+            Map::<Val, Val>::from_array(&e, [(1.into(), 100.into())])
+        );
+        assert_eq!(
+            e.storage().persistent().all(),
+            Map::<Val, Val>::from_array(&e, [(1.into(), 101.into())])
+        );
+        assert_eq!(
+            e.storage().temporary().all(),
+            Map::<Val, Val>::from_array(&e, [(1.into(), 102.into())])
+        );
+    });
+
+    // Contract B must only see its own entries in instance, persistent, and temporary storage
+    e.as_contract(&contract_b, || {
+        assert_eq!(
+            e.storage().instance().all(),
+            Map::<Val, Val>::from_array(&e, [(1.into(), 200.into())])
+        );
+        assert_eq!(
+            e.storage().persistent().all(),
+            Map::<Val, Val>::from_array(&e, [(1.into(), 201.into())])
+        );
+        assert_eq!(
+            e.storage().temporary().all(),
+            Map::<Val, Val>::from_array(&e, [(1.into(), 202.into())])
+        );
+    });
+}
+
+#[test]
 fn ttl_getters() {
     let e = Env::default();
     e.ledger().set_sequence_number(1000);

@@ -755,6 +755,7 @@ mod testutils {
 
     fn all(env: &Env, d: xdr::ContractDataDurability) -> Map<Val, Val> {
         let storage = env.host().get_stored_entries().unwrap();
+        let address: xdr::ScAddress = env.current_contract_address().try_into().unwrap();
         let mut map = Map::<Val, Val>::new(env);
         for entry in storage {
             let (_, Some((v, _))) = entry else {
@@ -763,6 +764,7 @@ mod testutils {
             let xdr::LedgerEntry {
                 data:
                     xdr::LedgerEntryData::ContractData(xdr::ContractDataEntry {
+                        ref contract,
                         ref key,
                         ref val,
                         durability,
@@ -773,6 +775,9 @@ mod testutils {
             else {
                 continue;
             };
+            if contract != &address {
+                continue;
+            }
             if d != durability {
                 continue;
             }
