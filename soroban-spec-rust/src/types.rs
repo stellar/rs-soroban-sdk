@@ -1,7 +1,9 @@
+use std::collections::HashSet;
+
 use proc_macro2::{Literal, TokenStream};
 use quote::quote;
 use stellar_xdr::{
-    ScSpecEventDataFormat, ScSpecEventParamLocationV0, ScSpecEventV0, ScSpecTypeDef,
+    ScSpecEntry, ScSpecEventDataFormat, ScSpecEventParamLocationV0, ScSpecEventV0, ScSpecTypeDef,
     ScSpecUdtEnumV0, ScSpecUdtErrorEnumV0, ScSpecUdtStructV0, ScSpecUdtUnionV0,
 };
 
@@ -54,13 +56,159 @@ pub enum GenerateError {
 #[non_exhaustive]
 pub struct GenerateOptions {}
 
-/// Constructs a token stream containing a single struct that mirrors the struct
-/// spec, with configurable options.
+/// Returns true if the spec type implements comparison traits (`Eq`, `PartialEq`, `Ord`, `PartialOrd`).
+/// Types containing [`Val`][soroban_sdk::Val] directly or transitively do not support these comparison traits.
+pub(crate) fn is_type_comparable(
+    spec: &ScSpecTypeDef,
+    non_comparable_udts: &HashSet<String>,
+) -> bool {
+    match spec {
+        ScSpecTypeDef::Val => false,
+        ScSpecTypeDef::Option(o) => is_type_comparable(&o.value_type, non_comparable_udts),
+        ScSpecTypeDef::Result(r) => {
+            is_type_comparable(&r.ok_type, non_comparable_udts)
+                && is_type_comparable(&r.error_type, non_comparable_udts)
+        }
+        ScSpecTypeDef::Vec(v) => is_type_comparable(&v.element_type, non_comparable_udts),
+        ScSpecTypeDef::Map(m) => {
+            is_type_comparable(&m.key_type, non_comparable_udts)
+                && is_type_comparable(&m.value_type, non_comparable_udts)
+        }
+        ScSpecTypeDef::Tuple(t) => t
+            .value_types
+            .iter()
+            .all(|elem| is_type_comparable(elem, non_comparable_udts)),
+        ScSpecTypeDef::Udt(u) => {
+            let name = u.name.to_utf8_string_lossy();
+            !non_comparable_udts.contains(&name)
+        }
+        _ => true,
+    }
+}
+
+/// Identifies user-defined types (UDTs) that directly or transitively contain [`Val`][soroban_sdk::Val].
+/// Types containing `Val` cannot implement comparison traits (`Eq`, `PartialEq`, `Ord`, `PartialOrd`).
+pub(crate) fn find_non_comparable_udts(specs: &[ScSpecEntry]) -> HashSet<String> {
+    use std::collections::HashMap;
+
+    fn contains_val(t: &ScSpecTypeDef) -> bool {
+        match t {
+            ScSpecTypeDef::Val => true,
+            ScSpecTypeDef::Vec(v) => contains_val(&v.element_type),
+            ScSpecTypeDef::Map(m) => contains_val(&m.key_type) || contains_val(&m.value_type),
+            ScSpecTypeDef::Option(o) => contains_val(&o.value_type),
+            ScSpecTypeDef::Result(r) => contains_val(&r.ok_type) || contains_val(&r.error_type),
+            ScSpecTypeDef::Tuple(t) => t.value_types.iter().any(contains_val),
+            _ => false,
+        }
+    }
+
+    fn collect_udt_refs(t: &ScSpecTypeDef, refs: &mut Vec<String>) {
+        match t {
+            ScSpecTypeDef::Vec(v) => collect_udt_refs(&v.element_type, refs),
+            ScSpecTypeDef::Map(m) => {
+                collect_udt_refs(&m.key_type, refs);
+                collect_udt_refs(&m.value_type, refs);
+            }
+            ScSpecTypeDef::Option(o) => collect_udt_refs(&o.value_type, refs),
+            ScSpecTypeDef::Result(r) => {
+                collect_udt_refs(&r.ok_type, refs);
+                collect_udt_refs(&r.error_type, refs);
+            }
+            ScSpecTypeDef::Tuple(t) => {
+                for elem in &t.value_types {
+                    collect_udt_refs(elem, refs);
+                }
+            }
+            ScSpecTypeDef::Udt(u) => {
+                refs.push(u.name.to_utf8_string_lossy());
+            }
+            _ => {}
+        }
+    }
+
+    let mut deps: HashMap<String, (bool, Vec<String>)> = HashMap::new();
+
+    for s in specs {
+        match s {
+            ScSpecEntry::UdtStructV0(st) => {
+                let name = st.name.to_utf8_string_lossy();
+                let mut direct_val = false;
+                let mut refs = Vec::new();
+                for f in &st.fields {
+                    if contains_val(&f.type_) {
+                        direct_val = true;
+                    }
+                    collect_udt_refs(&f.type_, &mut refs);
+                }
+                deps.insert(name, (direct_val, refs));
+            }
+            ScSpecEntry::UdtUnionV0(u) => {
+                let name = u.name.to_utf8_string_lossy();
+                let mut direct_val = false;
+                let mut refs = Vec::new();
+                for c in &u.cases {
+                    if let stellar_xdr::ScSpecUdtUnionCaseV0::TupleV0(t) = c {
+                        for ty in &t.type_ {
+                            if contains_val(ty) {
+                                direct_val = true;
+                            }
+                            collect_udt_refs(ty, &mut refs);
+                        }
+                    }
+                }
+                deps.insert(name, (direct_val, refs));
+            }
+            _ => {}
+        }
+    }
+
+    let mut non_comparable = HashSet::new();
+    for (name, (direct_val, _)) in &deps {
+        if *direct_val {
+            non_comparable.insert(name.clone());
+        }
+    }
+
+    let mut changed = true;
+    while changed {
+        changed = false;
+        for (name, (_, refs)) in &deps {
+            if !non_comparable.contains(name) {
+                if refs.iter().any(|dep| non_comparable.contains(dep)) {
+                    non_comparable.insert(name.clone());
+                    changed = true;
+                }
+            }
+        }
+    }
+
+    non_comparable
+}
+
+#[allow(dead_code)]
 pub(crate) fn generate_struct_with_options(
     spec: &ScSpecUdtStructV0,
+    opts: &GenerateOptions,
+) -> Result<TokenStream, GenerateError> {
+    generate_struct_with_options_and_udts(spec, opts, &HashSet::new())
+}
+
+pub(crate) fn generate_struct_with_options_and_udts(
+    spec: &ScSpecUdtStructV0,
     _opts: &GenerateOptions,
+    non_comparable_udts: &HashSet<String>,
 ) -> Result<TokenStream, GenerateError> {
     let ident = str_to_ident(&spec.name)?;
+    let is_comparable = spec
+        .fields
+        .iter()
+        .all(|f| is_type_comparable(&f.type_, non_comparable_udts));
+    let derive = if is_comparable {
+        quote! { #[derive(Debug, Clone, Eq, PartialEq, Ord, PartialOrd)] }
+    } else {
+        quote! { #[derive(Debug, Clone)] }
+    };
 
     if spec
         .fields
@@ -85,7 +233,7 @@ pub(crate) fn generate_struct_with_options(
             .collect::<Result<Vec<_>, GenerateError>>()?;
         Ok(quote! {
             #[soroban_sdk::contracttype]
-            #[derive(Debug, Clone, Eq, PartialEq, Ord, PartialOrd)]
+            #derive
             pub struct #ident ( #(#fields),* );
         })
     } else {
@@ -100,7 +248,7 @@ pub(crate) fn generate_struct_with_options(
             .collect::<Result<Vec<_>, GenerateError>>()?;
         Ok(quote! {
             #[soroban_sdk::contracttype]
-            #[derive(Debug, Clone, Eq, PartialEq, Ord, PartialOrd)]
+            #derive
             pub struct #ident { #(#fields,)* }
         })
     }
@@ -108,9 +256,18 @@ pub(crate) fn generate_struct_with_options(
 
 /// Constructs a token stream containing a single enum that mirrors the union
 /// spec, with configurable options.
+#[allow(dead_code)]
 pub(crate) fn generate_union_with_options(
     spec: &ScSpecUdtUnionV0,
+    opts: &GenerateOptions,
+) -> Result<TokenStream, GenerateError> {
+    generate_union_with_options_and_udts(spec, opts, &HashSet::new())
+}
+
+pub(crate) fn generate_union_with_options_and_udts(
+    spec: &ScSpecUdtUnionV0,
     _opts: &GenerateOptions,
+    non_comparable_udts: &HashSet<String>,
 ) -> Result<TokenStream, GenerateError> {
     let ident = str_to_ident(&spec.name)?;
     let variants = spec
@@ -135,9 +292,21 @@ pub(crate) fn generate_union_with_options(
             }
         })
         .collect::<Result<Vec<_>, GenerateError>>()?;
+    let is_comparable = spec.cases.iter().all(|c| match c {
+        stellar_xdr::ScSpecUdtUnionCaseV0::VoidV0(_) => true,
+        stellar_xdr::ScSpecUdtUnionCaseV0::TupleV0(t) => t
+            .type_
+            .iter()
+            .all(|ty| is_type_comparable(ty, non_comparable_udts)),
+    });
+    let derive = if is_comparable {
+        quote! { #[derive(Debug, Clone, Eq, PartialEq, Ord, PartialOrd)] }
+    } else {
+        quote! { #[derive(Debug, Clone)] }
+    };
     Ok(quote! {
         #[soroban_sdk::contracttype]
-        #[derive(Debug, Clone, Eq, PartialEq, Ord, PartialOrd)]
+        #derive
         pub enum #ident { #(#variants,)* }
     })
 }
@@ -218,9 +387,18 @@ pub(crate) fn generate_event_with_options(
             })
         })
         .collect::<Result<Vec<_>, GenerateError>>()?;
+    let is_comparable = spec
+        .params
+        .iter()
+        .all(|p| is_type_comparable(&p.type_, &HashSet::new()));
+    let derive = if is_comparable {
+        quote! { #[derive(Debug, Clone, Eq, PartialEq, Ord, PartialOrd)] }
+    } else {
+        quote! { #[derive(Debug, Clone)] }
+    };
     Ok(quote! {
         #[soroban_sdk::contractevent(topics = [#(#topics,)*], data_format = #data_format)]
-        #[derive(Debug, Clone, Eq, PartialEq, Ord, PartialOrd)]
+        #derive
         pub struct #ident { #(#fields,)* }
     })
 }
@@ -296,8 +474,8 @@ mod test {
     use stellar_xdr::{
         ScSpecEventDataFormat, ScSpecEventParamLocationV0, ScSpecEventParamV0, ScSpecEventV0,
         ScSpecTypeDef, ScSpecUdtEnumCaseV0, ScSpecUdtEnumV0, ScSpecUdtErrorEnumCaseV0,
-        ScSpecUdtErrorEnumV0, ScSpecUdtStructFieldV0, ScSpecUdtStructV0, ScSpecUdtUnionCaseV0,
-        ScSpecUdtUnionCaseVoidV0, ScSpecUdtUnionV0, ScSymbol, VecM,
+        ScSpecUdtErrorEnumV0, ScSpecUdtStructFieldV0, ScSpecUdtStructV0, ScSpecUdtUnionCaseTupleV0,
+        ScSpecUdtUnionCaseV0, ScSpecUdtUnionCaseVoidV0, ScSpecUdtUnionV0, ScSymbol, VecM,
     };
 
     #[test]
@@ -634,6 +812,198 @@ mod test {
         assert_eq!(
             tokens.to_formatted_string().unwrap(),
             expect.to_formatted_string().unwrap()
+        );
+    }
+
+    #[test]
+    fn test_generate_struct_with_val_omits_unsupported_derives() {
+        let tokens = generate_struct_with_options(
+            &ScSpecUdtStructV0 {
+                doc: "".try_into().unwrap(),
+                lib: "".try_into().unwrap(),
+                name: "HasVal".try_into().unwrap(),
+                fields: [
+                    ScSpecUdtStructFieldV0 {
+                        doc: "".try_into().unwrap(),
+                        name: "id".try_into().unwrap(),
+                        type_: ScSpecTypeDef::U32,
+                    },
+                    ScSpecUdtStructFieldV0 {
+                        doc: "".try_into().unwrap(),
+                        name: "val".try_into().unwrap(),
+                        type_: ScSpecTypeDef::Val,
+                    },
+                ]
+                .try_into()
+                .unwrap(),
+            },
+            &GenerateOptions::default(),
+        )
+        .unwrap();
+        let expect = quote! {
+            #[soroban_sdk::contracttype]
+            #[derive(Debug, Clone)]
+            pub struct HasVal {
+                pub id: u32,
+                pub val: soroban_sdk::Val,
+            }
+        };
+        assert_eq!(
+            tokens.to_formatted_string().unwrap(),
+            expect.to_formatted_string().unwrap()
+        );
+    }
+
+    #[test]
+    fn test_generate_tuple_struct_with_val_omits_unsupported_derives() {
+        let tokens = generate_struct_with_options(
+            &ScSpecUdtStructV0 {
+                doc: "".try_into().unwrap(),
+                lib: "".try_into().unwrap(),
+                name: "HasValTuple".try_into().unwrap(),
+                fields: [ScSpecUdtStructFieldV0 {
+                    doc: "".try_into().unwrap(),
+                    name: "0".try_into().unwrap(),
+                    type_: ScSpecTypeDef::Val,
+                }]
+                .try_into()
+                .unwrap(),
+            },
+            &GenerateOptions::default(),
+        )
+        .unwrap();
+        let expect = quote! {
+            #[soroban_sdk::contracttype]
+            #[derive(Debug, Clone)]
+            pub struct HasValTuple(pub soroban_sdk::Val);
+        };
+        assert_eq!(
+            tokens.to_formatted_string().unwrap(),
+            expect.to_formatted_string().unwrap()
+        );
+    }
+
+    #[test]
+    fn test_generate_union_with_val_omits_unsupported_derives() {
+        let tokens = generate_union_with_options(
+            &ScSpecUdtUnionV0 {
+                doc: "".try_into().unwrap(),
+                lib: "".try_into().unwrap(),
+                name: "UnionVal".try_into().unwrap(),
+                cases: [ScSpecUdtUnionCaseV0::TupleV0(ScSpecUdtUnionCaseTupleV0 {
+                    doc: "".try_into().unwrap(),
+                    name: "V0".try_into().unwrap(),
+                    type_: [ScSpecTypeDef::Val].try_into().unwrap(),
+                })]
+                .try_into()
+                .unwrap(),
+            },
+            &GenerateOptions::default(),
+        )
+        .unwrap();
+        let expect = quote! {
+            #[soroban_sdk::contracttype]
+            #[derive(Debug, Clone)]
+            pub enum UnionVal {
+                V0(soroban_sdk::Val),
+            }
+        };
+        assert_eq!(
+            tokens.to_formatted_string().unwrap(),
+            expect.to_formatted_string().unwrap()
+        );
+    }
+
+    #[test]
+    fn test_transitively_non_comparable_udts() {
+        use stellar_xdr::{ScSpecEntry, ScSpecTypeUdt};
+
+        let struct_a = ScSpecUdtStructV0 {
+            doc: "".try_into().unwrap(),
+            lib: "".try_into().unwrap(),
+            name: "StructA".try_into().unwrap(),
+            fields: [ScSpecUdtStructFieldV0 {
+                doc: "".try_into().unwrap(),
+                name: "val".try_into().unwrap(),
+                type_: ScSpecTypeDef::Val,
+            }]
+            .try_into()
+            .unwrap(),
+        };
+
+        let struct_b = ScSpecUdtStructV0 {
+            doc: "".try_into().unwrap(),
+            lib: "".try_into().unwrap(),
+            name: "StructB".try_into().unwrap(),
+            fields: [ScSpecUdtStructFieldV0 {
+                doc: "".try_into().unwrap(),
+                name: "a".try_into().unwrap(),
+                type_: ScSpecTypeDef::Udt(ScSpecTypeUdt {
+                    name: "StructA".try_into().unwrap(),
+                }),
+            }]
+            .try_into()
+            .unwrap(),
+        };
+
+        let struct_c = ScSpecUdtStructV0 {
+            doc: "".try_into().unwrap(),
+            lib: "".try_into().unwrap(),
+            name: "StructC".try_into().unwrap(),
+            fields: [ScSpecUdtStructFieldV0 {
+                doc: "".try_into().unwrap(),
+                name: "x".try_into().unwrap(),
+                type_: ScSpecTypeDef::U32,
+            }]
+            .try_into()
+            .unwrap(),
+        };
+
+        let entries = vec![
+            ScSpecEntry::UdtStructV0(struct_a),
+            ScSpecEntry::UdtStructV0(struct_b.clone()),
+            ScSpecEntry::UdtStructV0(struct_c.clone()),
+        ];
+
+        let non_comparable = super::find_non_comparable_udts(&entries);
+        assert!(non_comparable.contains("StructA"));
+        assert!(non_comparable.contains("StructB"));
+        assert!(!non_comparable.contains("StructC"));
+
+        let tokens_b = super::generate_struct_with_options_and_udts(
+            &struct_b,
+            &GenerateOptions::default(),
+            &non_comparable,
+        )
+        .unwrap();
+        let expect_b = quote! {
+            #[soroban_sdk::contracttype]
+            #[derive(Debug, Clone)]
+            pub struct StructB {
+                pub a: StructA,
+            }
+        };
+        assert_eq!(
+            tokens_b.to_formatted_string().unwrap(),
+            expect_b.to_formatted_string().unwrap()
+        );
+
+        let tokens_c = super::generate_struct_with_options_and_udts(
+            &struct_c,
+            &GenerateOptions::default(),
+            &non_comparable,
+        )
+        .unwrap();
+        let expect_c = quote! {
+            #[soroban_sdk::contracttype]
+            #[derive(Debug, Clone, Eq, PartialEq, Ord, PartialOrd)]
+            pub struct StructC {
+                pub x: u32,
+            }
+        };
+        assert_eq!(
+            tokens_c.to_formatted_string().unwrap(),
+            expect_c.to_formatted_string().unwrap()
         );
     }
 }

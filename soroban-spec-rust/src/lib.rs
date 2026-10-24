@@ -14,8 +14,9 @@ use syn::Error;
 use soroban_spec::read::{from_wasm, FromWasmError};
 
 use types::{
-    generate_enum_with_options, generate_error_enum_with_options, generate_event_with_options,
-    generate_struct_with_options, generate_union_with_options,
+    find_non_comparable_udts, generate_enum_with_options, generate_error_enum_with_options,
+    generate_event_with_options, generate_struct_with_options_and_udts,
+    generate_union_with_options_and_udts,
 };
 pub use types::{GenerateError, GenerateOptions};
 
@@ -216,13 +217,14 @@ pub fn generate_without_file_with_options(
     let trait_name = "Contract";
 
     let trait_ = r#trait::generate_trait(trait_name, &spec_fns)?;
+    let non_comparable_udts = find_non_comparable_udts(specs);
     let structs = spec_structs
         .iter()
-        .map(|s| generate_struct_with_options(s, opts))
+        .map(|s| generate_struct_with_options_and_udts(s, opts, &non_comparable_udts))
         .collect::<Result<Vec<_>, _>>()?;
     let unions = spec_unions
         .iter()
-        .map(|s| generate_union_with_options(s, opts))
+        .map(|s| generate_union_with_options_and_udts(s, opts, &non_comparable_udts))
         .collect::<Result<Vec<_>, _>>()?;
     let enums = spec_enums
         .iter()
@@ -456,14 +458,14 @@ pub struct ContractExecutableRef {
     pub tag: soroban_sdk::String,
 }
 #[soroban_sdk::contracttype]
-#[derive(Debug, Clone, Eq, PartialEq, Ord, PartialOrd)]
+#[derive(Debug, Clone)]
 pub struct ContractContext {
     pub args: soroban_sdk::Vec<soroban_sdk::Val>,
     pub contract: soroban_sdk::Address,
     pub fn_name: soroban_sdk::Symbol,
 }
 #[soroban_sdk::contracttype]
-#[derive(Debug, Clone, Eq, PartialEq, Ord, PartialOrd)]
+#[derive(Debug, Clone)]
 pub struct SubContractInvocation {
     pub context: ContractContext,
     pub sub_invocations: soroban_sdk::Vec<InvokerContractAuthEntry>,
@@ -475,7 +477,7 @@ pub struct CreateContractHostFnContext {
     pub salt: soroban_sdk::BytesN<32>,
 }
 #[soroban_sdk::contracttype]
-#[derive(Debug, Clone, Eq, PartialEq, Ord, PartialOrd)]
+#[derive(Debug, Clone)]
 pub struct CreateContractWithConstructorHostFnContext {
     pub constructor_args: soroban_sdk::Vec<soroban_sdk::Val>,
     pub executable: ContractExecutable,
@@ -502,14 +504,14 @@ pub enum ContractExecutable {
     ExternalRef(ContractExecutableRef),
 }
 #[soroban_sdk::contracttype]
-#[derive(Debug, Clone, Eq, PartialEq, Ord, PartialOrd)]
+#[derive(Debug, Clone)]
 pub enum Context {
     Contract(ContractContext),
     CreateContractHostFn(CreateContractHostFnContext),
     CreateContractWithCtorHostFn(CreateContractWithConstructorHostFnContext),
 }
 #[soroban_sdk::contracttype]
-#[derive(Debug, Clone, Eq, PartialEq, Ord, PartialOrd)]
+#[derive(Debug, Clone)]
 pub enum InvokerContractAuthEntry {
     Contract(SubContractInvocation),
     CreateContractHostFn(CreateContractHostFnContext),
@@ -563,14 +565,14 @@ pub struct ContractExecutableRef {
     pub tag: soroban_sdk::String,
 }
 #[soroban_sdk::contracttype]
-#[derive(Debug, Clone, Eq, PartialEq, Ord, PartialOrd)]
+#[derive(Debug, Clone)]
 pub struct ContractContext {
     pub args: soroban_sdk::Vec<soroban_sdk::Val>,
     pub contract: soroban_sdk::Address,
     pub fn_name: soroban_sdk::Symbol,
 }
 #[soroban_sdk::contracttype]
-#[derive(Debug, Clone, Eq, PartialEq, Ord, PartialOrd)]
+#[derive(Debug, Clone)]
 pub struct SubContractInvocation {
     pub context: ContractContext,
     pub sub_invocations: soroban_sdk::Vec<InvokerContractAuthEntry>,
@@ -582,7 +584,7 @@ pub struct CreateContractHostFnContext {
     pub salt: soroban_sdk::BytesN<32>,
 }
 #[soroban_sdk::contracttype]
-#[derive(Debug, Clone, Eq, PartialEq, Ord, PartialOrd)]
+#[derive(Debug, Clone)]
 pub struct CreateContractWithConstructorHostFnContext {
     pub constructor_args: soroban_sdk::Vec<soroban_sdk::Val>,
     pub executable: ContractExecutable,
@@ -595,14 +597,14 @@ pub enum ContractExecutable {
     ExternalRef(ContractExecutableRef),
 }
 #[soroban_sdk::contracttype]
-#[derive(Debug, Clone, Eq, PartialEq, Ord, PartialOrd)]
+#[derive(Debug, Clone)]
 pub enum Context {
     Contract(ContractContext),
     CreateContractHostFn(CreateContractHostFnContext),
     CreateContractWithCtorHostFn(CreateContractWithConstructorHostFnContext),
 }
 #[soroban_sdk::contracttype]
-#[derive(Debug, Clone, Eq, PartialEq, Ord, PartialOrd)]
+#[derive(Debug, Clone)]
 pub enum InvokerContractAuthEntry {
     Contract(SubContractInvocation),
     CreateContractHostFn(CreateContractHostFnContext),
