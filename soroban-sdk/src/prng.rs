@@ -2,7 +2,7 @@
 //!
 //! ## Warning
 //!
-//! Do not use the PRNG in this module without a clear understanding of two
+//! Do not use the PRNG in this module without a clear understanding of three
 //! major limitations in the way it is deployed in the Stellar network:
 //!
 //!   1. The PRNG is seeded with data that is public as soon as each ledger is
@@ -11,6 +11,56 @@
 //!   2. The PRNG is seeded with data that is under the control of validators.
 //!      Therefore it **should only be used in applications where the risk of
 //!      validator influence is acceptable**.
+//!
+//!   3. The PRNG is vulnerable to **blind-rerun attacks** (via selective aborts
+//!      in nested recoverable calls such as `try_call`) if a contract resolves
+//!      an economically valuable random outcome in a single transaction.
+//!      Applications handling valuable random decisions must **use a commit/reveal
+//!      scheme** across multiple transactions rather than single-step on-chain draws.
+//!
+//! ### Blind-Rerun Risk and the Design of `try_call`
+//!
+//! If a contract performs a single economically valuable pseudorandom choice
+//! within a single transaction, an attacker contract can exploit recoverable
+//! contract calls (`try_call`):
+//!
+//!   - The attacker contract A invokes a helper contract B via `try_call`.
+//!   - Contract B calls the target contract C, which draws a pseudorandom number.
+//!   - Contract B inspects the outcome. If unfavorable to A, B returns an
+//!     error or panics, aborting the nested sub-call.
+//!   - Contract A catches the failure and loops, invoking B again in the
+//!     same transaction until a favorable outcome is obtained or transaction
+//!     budget limits are reached.
+//!
+//! Crucially, **the host's PRNG state is intentionally NOT rolled back when a
+//! `try_call` fails**. Each failed attempt advances the host's base PRNG and
+//! produces a fresh, independent seed for subsequent invocations.
+//!
+//! This non-rollback behavior is a deliberate security tradeoff: if the host
+//! instead rolled back PRNG state on a failed `try_call`, an attacker could
+//! peek at an outcome and selectively guide transaction execution with perfect
+//! foreknowledge of the exact upcoming draw, enabling even more severe deterministic
+//! exploits.
+//!
+//! ### Recommended Mitigation: Commit / Reveal Schemes
+//!
+//! To prevent blind-rerun attacks, contracts handling valuable random outcomes
+//! should decouple the commitment to act from the random execution using a
+//! multi-transaction state machine:
+//!
+//!   - **Transaction 1 (Commit)**: Finalize and persist all user inputs, record
+//!     the current ledger sequence number `N`, and generate a locked random seed
+//!     commitment `S = prng_bytes_new(32)` (or off-chain committed entropy).
+//!     Because the outcome is not resolved in this transaction, the caller cannot
+//!     know whether aborting is advantageous.
+//!   - **Transaction 2 (Reveal / Execute)**: In a subsequent ledger (ledger > `N`),
+//!     load the committed inputs, re-seed the local PRNG with `env.prng().seed(S)`,
+//!     and execute the random decision. Because the seed was locked into persistent
+//!     storage in a previous ledger, it can no longer be influenced or retried by
+//!     a caller in transaction 2.
+//!
+//! For further discussion of the host design rationale, see the
+//! [host PRNG documentation](https://github.com/stellar/rs-soroban-env/blob/main/soroban-env-host/src/host/prng.rs).
 //!
 //! The PRNG in this module is a strong CSPRNG (ChaCha20) and can be manually
 //! re-seeded by contracts, in order to support commit/reveal schemes, oracles,
@@ -51,6 +101,9 @@
 //!     the invocation.
 //!   - That state is advanced by each call from the invocation to a PRNG
 //!     function in this module.
+//!   - When a nested contract call invoked via `try_call` fails and rolls back
+//!     contract storage changes, the PRNG state does not roll back; subsequent
+//!     calls continue to advance from the updated PRNG state.
 //!   - A contract invocation's local PRNG is destroyed after the invocation.
 //!   - Any re-entry of a contract counts as a separate invocation.
 //!
