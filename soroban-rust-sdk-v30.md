@@ -76,7 +76,9 @@ accept post-quantum signatures.
 Before v30 the contract interface named each type, event, and error by its Rust
 name alone. Two types called `State` in different modules or crates produced
 two spec entries called `State`, and client generators could not tell which one
-a function used.
+a function used. Tooling and clients could not interact with those contracts
+correctly because of the duplicate entries, so this is as much a bug fix as new
+functionality.
 
 In v30 duplicate names are given unique names, and every reference in the spec
 points at the right one.
@@ -148,10 +150,8 @@ When upgrading to soroban-sdk v30:
 - Build with `stellar contract build` from `stellar-cli` v30.0.0 or newer.
 - Review contracts that read `MuxedAddress::id()`, as the address may now be a
   contract.
-- Expect the spec, and generated clients, to change for contracts with duplicate
-  type, event, or error names. Tooling and clients could not interact with
-  those contracts correctly because of the duplicate entries, so this is as much
-  a bug fix as new functionality.
+- Expect generated clients to change for contracts with duplicate types,
+  events, or errors.
 
 This post provides a technical overview only. Developers should review the
 complete migration documentation and test their contracts and integrations
