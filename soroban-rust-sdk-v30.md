@@ -107,9 +107,10 @@ Contracts with no duplicate names will see no change. Contracts that have them
 get a new spec after upgrading, and clients generated from it see the new names.
 To keep names stable, give each type, event, and error a unique name.
 
-The renaming happens in `stellar contract build`, so the SDK now requires a
-`stellar-cli` with the same major version or newer. Building for Wasm with
-anything older fails:
+The renaming happens in `stellar contract build`, which contracts are already
+built with. What changes is the version: the `stellar-cli` must now have the
+same major version as the SDK or newer. Building for Wasm with an older one
+fails:
 
 ```bash
 error: soroban-sdk requires stellar-cli v30.0.0+ to build a contract
