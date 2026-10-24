@@ -6,10 +6,26 @@ It adds the two Protocol 30 features contracts can use, and changes how
 contract specs are built. Most contracts upgrade without code changes, but every
 contract must be built with `stellar-cli` v30.0.0 or newer.
 
+- Build with stellar-cli v30
 - Muxed contract addresses
 - ML-DSA signature verification
 - Unique names in contract interfaces
 - Spec shaking by reference
+
+## Build with stellar-cli v30
+
+Contracts are already built with `stellar contract build`, which shakes the spec
+and, in v30, gives types unique names. What changes is the version: the
+`stellar-cli` must now have the same major version as the SDK or newer. A
+contract using soroban-sdk v30 must be built with `stellar-cli` v30.0.0 or
+newer. Building for Wasm with an older one fails:
+
+```bash
+error: soroban-sdk requires stellar-cli v30.0.0+ to build a contract
+```
+
+The check only fires for Wasm builds. Tests are unaffected and can be run with
+`cargo test`.
 
 ## Muxed contract addresses
 
@@ -106,18 +122,6 @@ and generated bindings handle imported specs the same way.
 Contracts with no duplicate names will see no change. Contracts that have them
 get a new spec after upgrading, and clients generated from it see the new names.
 To keep names stable, give each type, event, and error a unique name.
-
-The renaming happens in `stellar contract build`, which contracts are already
-built with. What changes is the version: the `stellar-cli` must now have the
-same major version as the SDK or newer. Building for Wasm with an older one
-fails:
-
-```bash
-error: soroban-sdk requires stellar-cli v30.0.0+ to build a contract
-```
-
-The check only fires for Wasm builds. Tests are unaffected and can be run with
-`cargo test`.
 
 ## Spec shaking by reference
 
