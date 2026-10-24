@@ -29,6 +29,7 @@ pub enum Error {
 #[serde_as]
 #[derive(Debug, Clone, PartialEq, Eq, serde::Serialize, serde::Deserialize)]
 #[serde(rename_all = "snake_case")]
+#[serde(default)]
 pub struct LedgerSnapshot {
     pub protocol_version: u32,
     pub sequence_number: u32,
@@ -140,8 +141,14 @@ impl LedgerSnapshot {
 
     /// Get the ledger info in the snapshot.
     pub fn ledger_info(&self) -> LedgerInfo {
+        let protocol_version =
+            if self.protocol_version < soroban_env_host::meta::INTERFACE_VERSION.protocol {
+                soroban_env_host::meta::INTERFACE_VERSION.protocol
+            } else {
+                self.protocol_version
+            };
         LedgerInfo {
-            protocol_version: self.protocol_version,
+            protocol_version,
             sequence_number: self.sequence_number,
             timestamp: self.timestamp,
             network_id: self.network_id,
@@ -260,7 +267,7 @@ impl LedgerSnapshot {
 impl Default for LedgerSnapshot {
     fn default() -> Self {
         Self {
-            protocol_version: 26,
+            protocol_version: soroban_env_host::meta::INTERFACE_VERSION.protocol,
             sequence_number: Default::default(),
             timestamp: Default::default(),
             network_id: Default::default(),

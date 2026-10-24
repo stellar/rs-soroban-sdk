@@ -55,3 +55,49 @@ fn test_snapshot_roundtrip() {
     let written_normalized = written_str.replace("\r\n", "\n");
     assert_eq!(written_normalized, expected_normalized);
 }
+
+#[test]
+fn test_snapshot_older_cli_zero_protocol_version() {
+    let old_snapshot_json = r#"{
+      "protocol_version": 0,
+      "sequence_number": 54463359,
+      "timestamp": 0,
+      "network_id": "7ac33997544e3175d266bd022439b22cdb16508c01163f26e5cb2a3e1045a979",
+      "base_reserve": 1,
+      "min_persistent_entry_ttl": 0,
+      "min_temp_entry_ttl": 0,
+      "max_entry_ttl": 0,
+      "ledger_entries": []
+    }"#;
+
+    let snapshot = LedgerSnapshot::read(old_snapshot_json.as_bytes()).unwrap();
+    assert_eq!(snapshot.protocol_version, 0);
+
+    let info = snapshot.ledger_info();
+    assert_eq!(
+        info.protocol_version,
+        soroban_env_host::meta::INTERFACE_VERSION.protocol
+    );
+    assert_eq!(info.sequence_number, 54463359);
+}
+
+#[test]
+fn test_snapshot_missing_fields_default_compatibility() {
+    let minimal_json = r#"{
+      "sequence_number": 12345,
+      "ledger_entries": []
+    }"#;
+
+    let snapshot = LedgerSnapshot::read(minimal_json.as_bytes()).unwrap();
+    assert_eq!(
+        snapshot.protocol_version,
+        soroban_env_host::meta::INTERFACE_VERSION.protocol
+    );
+    assert_eq!(snapshot.sequence_number, 12345);
+
+    let info = snapshot.ledger_info();
+    assert_eq!(
+        info.protocol_version,
+        soroban_env_host::meta::INTERFACE_VERSION.protocol
+    );
+}

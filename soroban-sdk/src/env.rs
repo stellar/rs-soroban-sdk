@@ -792,7 +792,10 @@ impl Env {
             },
         };
 
-        let ledger_info = ledger_info.unwrap_or_else(default_ledger_info);
+        let mut ledger_info = ledger_info.unwrap_or_else(default_ledger_info);
+        if ledger_info.protocol_version < internal::meta::INTERFACE_VERSION.protocol {
+            ledger_info.protocol_version = internal::meta::INTERFACE_VERSION.protocol;
+        }
         env.ledger().set(ledger_info);
 
         env
