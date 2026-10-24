@@ -103,7 +103,7 @@ The built spec contains `State` for `a::State` and `State2` for `b::State`:
 The type whose full Rust path sorts first keeps the short name. `contractimport!`
 and generated bindings handle imported specs the same way.
 
-Contracts with no duplicate names keep the same spec. Contracts that have them
+Contracts with no duplicate names will see no change. Contracts that have them
 get a new spec after upgrading, and clients generated from it see the new names.
 To keep names stable, give each type, event, and error a unique name.
 
