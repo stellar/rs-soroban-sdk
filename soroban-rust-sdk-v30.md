@@ -162,10 +162,6 @@ When upgrading to soroban-sdk v30:
   those contracts correctly because of the duplicate entries, so this is as much
   a bug fix as new functionality.
 
-Known issue: when building without LTO, spec entries can be missing for some
-`#[contracttype]` types defined in a dependency crate. It is tracked in
-[#2125](https://github.com/stellar/rs-soroban-sdk/issues/2125).
-
 This post provides a technical overview only. Developers should review the
 complete migration documentation and test their contracts and integrations
 before deploying with Soroban Rust SDK v30.
