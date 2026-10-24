@@ -163,3 +163,29 @@ fn useful_error_message_for_storage_access() {
     let e = Env::default();
     let _ = e.storage().persistent();
 }
+
+#[test]
+#[should_panic]
+fn test_persistent_extend_ttl_non_existent_key_panics() {
+    let env = Env::default();
+    let contract_id = env.register(Contract, ());
+    env.as_contract(&contract_id, || {
+        let non_existent_key = 99999u32;
+        env.storage()
+            .persistent()
+            .extend_ttl(&non_existent_key, 10, 100);
+    });
+}
+
+#[test]
+#[should_panic]
+fn test_temporary_extend_ttl_non_existent_key_panics() {
+    let env = Env::default();
+    let contract_id = env.register(Contract, ());
+    env.as_contract(&contract_id, || {
+        let non_existent_key = 99999u32;
+        env.storage()
+            .temporary()
+            .extend_ttl(&non_existent_key, 10, 100);
+    });
+}
