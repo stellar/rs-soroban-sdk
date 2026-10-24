@@ -139,8 +139,9 @@ or through other types. Markers remain only for events and for errors passed to
 markers which is a small optimisation.
 
 Tools that read spec markers, the `rssdk_spec_shaking` meta entry, or the
-`spec_xdr` functions directly need updating. The v30 migration guide covers the
-details in
+`spec_xdr` functions directly need updating. See the
+[v30 migration guide](https://docs.rs/soroban-sdk/30.0.0-rc.1/soroban_sdk/_migrating/index.html),
+in particular
 [spec markers](https://docs.rs/soroban-sdk/30.0.0-rc.1/soroban_sdk/_migrating/v30_spec_markers/index.html)
 and
 [`spec_xdr` output](https://docs.rs/soroban-sdk/30.0.0-rc.1/soroban_sdk/_migrating/v30_spec_xdr_unprocessed/index.html).
