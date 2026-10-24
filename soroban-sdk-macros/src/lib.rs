@@ -256,6 +256,8 @@ struct ContractImplArgs {
     crate_path: Path,
     #[darling(default)]
     contracttrait: bool,
+    #[darling(default)]
+    contract_trait: bool,
 }
 
 #[proc_macro_attribute]
@@ -276,10 +278,12 @@ pub fn contractimpl(metadata: TokenStream, input: TokenStream) -> TokenStream {
     let imp = parse_macro_input!(input as ItemImpl);
     let trait_ident = imp.trait_.as_ref().map(|x| &x.1);
 
+    let is_contract_trait = args.contracttrait || args.contract_trait;
+
     // The `contracttrait` argument only has meaning on a trait impl, where it
     // hands off to the trait's generated macro. Emitting the impl alongside the
     // error keeps downstream diagnostics quiet.
-    if args.contracttrait && trait_ident.is_none() {
+    if is_contract_trait && trait_ident.is_none() {
         let e = Error::new(
             Span::call_site(),
             "`contracttrait` is only supported on an impl block implementing a trait annotated with `#[contracttrait]`",
@@ -359,7 +363,7 @@ pub fn contractimpl(metadata: TokenStream, input: TokenStream) -> TokenStream {
             // contractimpl interacts with contracttrait.
             let contractimpl_for_trait =
                 trait_ident
-                    .filter(|_| args.contracttrait)
+                    .filter(|_| is_contract_trait)
                     .map(|trait_ident| {
                         generate_call_to_contractimpl_for_trait(
                             crate_path,
@@ -783,3 +787,73 @@ pub fn contractimport(metadata: TokenStream) -> TokenStream {
     }
     .into()
 }
+
+// region: snake_case macro aliases (issue #1508)
+
+/// Equivalent to [`contractspecfn`]. Provided for consistency with Rust naming conventions.
+#[proc_macro_attribute]
+pub fn contract_spec_fn(metadata: TokenStream, input: TokenStream) -> TokenStream {
+    contractspecfn(metadata, input)
+}
+
+/// Equivalent to [`contractimpl`]. Provided for consistency with Rust naming conventions.
+#[proc_macro_attribute]
+pub fn contract_impl(metadata: TokenStream, input: TokenStream) -> TokenStream {
+    contractimpl(metadata, input)
+}
+
+/// Equivalent to [`contracttrait`]. Provided for consistency with Rust naming conventions.
+#[proc_macro_attribute]
+pub fn contract_trait(metadata: TokenStream, input: TokenStream) -> TokenStream {
+    contracttrait(metadata, input)
+}
+
+/// Equivalent to [`contractmeta`]. Provided for consistency with Rust naming conventions.
+#[proc_macro]
+pub fn contract_meta(metadata: TokenStream) -> TokenStream {
+    contractmeta(metadata)
+}
+
+/// Equivalent to [`contractevent`]. Provided for consistency with Rust naming conventions.
+#[proc_macro_attribute]
+pub fn contract_event(metadata: TokenStream, input: TokenStream) -> TokenStream {
+    contractevent(metadata, input)
+}
+
+/// Equivalent to [`contracttype`]. Provided for consistency with Rust naming conventions.
+#[proc_macro_attribute]
+pub fn contract_type(metadata: TokenStream, input: TokenStream) -> TokenStream {
+    contracttype(metadata, input)
+}
+
+/// Equivalent to [`contracterror`]. Provided for consistency with Rust naming conventions.
+#[proc_macro_attribute]
+pub fn contract_error(metadata: TokenStream, input: TokenStream) -> TokenStream {
+    contracterror(metadata, input)
+}
+
+/// Equivalent to [`contractfile`]. Provided for consistency with Rust naming conventions.
+#[proc_macro]
+pub fn contract_file(metadata: TokenStream) -> TokenStream {
+    contractfile(metadata)
+}
+
+/// Equivalent to [`contractargs`]. Provided for consistency with Rust naming conventions.
+#[proc_macro_attribute]
+pub fn contract_args(metadata: TokenStream, input: TokenStream) -> TokenStream {
+    contractargs(metadata, input)
+}
+
+/// Equivalent to [`contractclient`]. Provided for consistency with Rust naming conventions.
+#[proc_macro_attribute]
+pub fn contract_client(metadata: TokenStream, input: TokenStream) -> TokenStream {
+    contractclient(metadata, input)
+}
+
+/// Equivalent to [`contractimport`]. Provided for consistency with Rust naming conventions.
+#[proc_macro]
+pub fn contract_import(metadata: TokenStream) -> TokenStream {
+    contractimport(metadata)
+}
+
+// endregion: snake_case macro aliases

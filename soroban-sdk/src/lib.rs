@@ -246,6 +246,8 @@ macro_rules! assert_in_contract {
 /// ```
 pub use soroban_sdk_macros::symbol_short;
 
+/// Equivalent to [`contracterror`]. Provided for consistency with Rust naming conventions.
+pub use soroban_sdk_macros::contract_error;
 /// Generates conversions from the repr(u32) enum from/into an `Error`.
 ///
 /// There are some constraints on the types that are supported:
@@ -349,6 +351,8 @@ pub use soroban_sdk_macros::symbol_short;
 /// ```
 pub use soroban_sdk_macros::contracterror;
 
+/// Equivalent to [`contractimport`]. Provided for consistency with Rust naming conventions.
+pub use soroban_sdk_macros::contract_import;
 /// Import a contract from its WASM file, generating a client, types, and
 /// constant holding the contract file.
 ///
@@ -466,6 +470,8 @@ pub use soroban_sdk_macros::contractimport;
 /// ```
 pub use soroban_sdk_macros::contract;
 
+/// Equivalent to [`contractimpl`]. Provided for consistency with Rust naming conventions.
+pub use soroban_sdk_macros::contract_impl;
 /// Exports the publicly accessible functions to the Soroban environment.
 ///
 /// Functions that are publicly accessible in the implementation are invocable
@@ -523,6 +529,8 @@ pub use soroban_sdk_macros::contract;
 /// ```
 pub use soroban_sdk_macros::contractimpl;
 
+/// Equivalent to [`contracttrait`]. Provided for consistency with Rust naming conventions.
+pub use soroban_sdk_macros::contract_trait;
 /// Defines a contract trait with default function implementations that can be
 /// used by contracts.
 ///
@@ -604,6 +612,8 @@ pub use soroban_sdk_macros::contractimpl_trait_macro;
 #[doc(hidden)]
 pub use soroban_sdk_macros::contractimpl_trait_default_fns_not_overridden;
 
+/// Equivalent to [`contractmeta`]. Provided for consistency with Rust naming conventions.
+pub use soroban_sdk_macros::contract_meta;
 /// Adds a serialized SCMetaEntry::SCMetaV0 to the WASM contracts custom section
 /// under the section name 'contractmetav0'. Contract developers can use this to
 /// append metadata to their contract.
@@ -644,6 +654,8 @@ pub use soroban_sdk_macros::contractimpl_trait_default_fns_not_overridden;
 /// ```
 pub use soroban_sdk_macros::contractmeta;
 
+/// Equivalent to [`contracttype`]. Provided for consistency with Rust naming conventions.
+pub use soroban_sdk_macros::contract_type;
 /// Generates conversions from the struct/enum from/into a `Val`.
 ///
 /// There are some constraints on the types that are supported:
@@ -802,6 +814,8 @@ pub use soroban_sdk_macros::contractmeta;
 /// ```
 pub use soroban_sdk_macros::contracttype;
 
+/// Equivalent to [`contractevent`]. Provided for consistency with Rust naming conventions.
+pub use soroban_sdk_macros::contract_event;
 /// Generates conversions from the struct into a published event.
 ///
 /// Fields of the struct become topics and data parameters in the published event.
@@ -1019,9 +1033,13 @@ pub use soroban_sdk_macros::contracttype;
 /// ```
 pub use soroban_sdk_macros::contractevent;
 
+/// Equivalent to [`contractargs`]. Provided for consistency with Rust naming conventions.
+pub use soroban_sdk_macros::contract_args;
 /// Generates a type that helps build function args for a contract trait.
 pub use soroban_sdk_macros::contractargs;
 
+/// Equivalent to [`contractclient`]. Provided for consistency with Rust naming conventions.
+pub use soroban_sdk_macros::contract_client;
 /// Generates a client for a contract trait.
 ///
 /// Can be used to create clients for contracts that live outside the current
@@ -1080,6 +1098,8 @@ pub use soroban_sdk_macros::contractargs;
 /// # fn main() { }
 pub use soroban_sdk_macros::contractclient;
 
+#[doc(hidden)]
+pub use soroban_sdk_macros::contract_spec_fn;
 /// Generates a contract spec for a trait or impl.
 ///
 /// Note that [`contractimpl`] also generates a contract spec and it is in most
@@ -1087,6 +1107,8 @@ pub use soroban_sdk_macros::contractclient;
 #[doc(hidden)]
 pub use soroban_sdk_macros::contractspecfn;
 
+/// Equivalent to [`contractfile`]. Provided for consistency with Rust naming conventions.
+pub use soroban_sdk_macros::contract_file;
 /// Import a contract from its WASM file, generating a constant holding the
 /// contract file.
 ///
