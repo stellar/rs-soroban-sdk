@@ -100,7 +100,7 @@ impl Contract {
 }
 ```
 
-The built spec contains `State` for `a::State` and `State2` for `b::State`:
+The contract interface contains:
 
 | Rust type  | Name before v30 | Name in v30 |
 | ---------- | --------------- | ----------- |
