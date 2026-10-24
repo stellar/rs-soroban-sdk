@@ -176,7 +176,7 @@ For a full set of release notes, see the SDK's release page:
 
 - https://github.com/stellar/rs-soroban-sdk/releases/tag/v30.0.0
 
-For network upgrade dates, see the
+For more information about the Bell upgrade, see the
 [Bell upgrade guide](https://stellar.org/blog/developers/bell-protocol-30-upgrade-guide).
 
 This version is not yet audited. For a list of audited versions of the Soroban
