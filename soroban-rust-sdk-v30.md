@@ -66,10 +66,10 @@ accept post-quantum signatures.
 
 ## Unique names in contract interfaces
 
-Before v30 the spec named each type, event, and error by its Rust name alone.
-Two types called `State` in different modules or crates produced two spec
-entries called `State`, and client generators could not tell which one a
-function used.
+Before v30 the contract interface named each type, event, and error by its Rust
+name alone. Two types called `State` in different modules or crates produced
+two spec entries called `State`, and client generators could not tell which one
+a function used.
 
 In v30 duplicate names are given unique names, and every reference in the spec
 points at the right one.
