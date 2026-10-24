@@ -1085,6 +1085,168 @@ pub struct Client2 {
         );
     }
 
+    /// Regression test for #1460: verifies that when two UDT structs defined across
+    /// different modules share the same simple name (e.g. `StorageKey`), the code
+    /// generation pass distinguishes and numbers them in alphabetical order of their
+    /// qualified names (`StorageKey` and `StorageKey2`) without duplicate declarations,
+    /// and appropriately wires function parameter references to their corresponding types.
+    #[test]
+    fn test_two_udt_structs_sharing_a_simple_name() {
+        use stellar_xdr::{
+            ScSpecEntry, ScSpecFunctionInputV0, ScSpecFunctionV0, ScSpecTypeDef, ScSpecTypeUdt,
+            ScSpecUdtStructFieldV0, ScSpecUdtStructV0,
+        };
+
+        let struct_entry = |name: &str, field_name: &str| {
+            ScSpecEntry::UdtStructV0(ScSpecUdtStructV0 {
+                doc: "".try_into().unwrap(),
+                lib: "".try_into().unwrap(),
+                name: name.try_into().unwrap(),
+                fields: [ScSpecUdtStructFieldV0 {
+                    doc: "".try_into().unwrap(),
+                    name: field_name.try_into().unwrap(),
+                    type_: ScSpecTypeDef::U32,
+                }]
+                .try_into()
+                .unwrap(),
+            })
+        };
+
+        let func = |name: &str, udt_name: &str| {
+            ScSpecEntry::FunctionV0(ScSpecFunctionV0 {
+                doc: "".try_into().unwrap(),
+                name: name.try_into().unwrap(),
+                inputs: [ScSpecFunctionInputV0 {
+                    doc: "".try_into().unwrap(),
+                    name: "k".try_into().unwrap(),
+                    type_: ScSpecTypeDef::Udt(ScSpecTypeUdt {
+                        name: udt_name.try_into().unwrap(),
+                    }),
+                }]
+                .try_into()
+                .unwrap(),
+                outputs: [].try_into().unwrap(),
+            })
+        };
+
+        let entries = [
+            struct_entry("mycrate::tokens::StorageKey", "token_id"),
+            struct_entry("mycrate::extensions::StorageKey", "consecutive_id"),
+            func("get_token", "mycrate::tokens::StorageKey"),
+            func("get_consecutive", "mycrate::extensions::StorageKey"),
+        ];
+
+        let code = super::generate_without_file(&entries, None)
+            .unwrap()
+            .to_formatted_string()
+            .unwrap();
+
+        assert!(
+            code.contains(
+                "pub struct StorageKey {
+    pub consecutive_id: u32,
+}"
+            ),
+            "{code}"
+        );
+        assert!(
+            code.contains(
+                "pub struct StorageKey2 {
+    pub token_id: u32,
+}"
+            ),
+            "{code}"
+        );
+        assert!(
+            code.contains("fn get_token(env: soroban_sdk::Env, k: StorageKey2);"),
+            "{code}"
+        );
+        assert!(
+            code.contains("fn get_consecutive(env: soroban_sdk::Env, k: StorageKey);"),
+            "{code}"
+        );
+    }
+
+    /// Regression test for #1460: verifies that when two UDT unions / enums defined across
+    /// different modules share the same simple name (e.g. `StorageKey`), the code
+    /// generation pass disambiguates and numbers them (`StorageKey` and `StorageKey2`)
+    /// without duplicate declarations, and resolves function references accordingly.
+    #[test]
+    fn test_two_udt_unions_sharing_a_simple_name() {
+        use stellar_xdr::{
+            ScSpecEntry, ScSpecFunctionInputV0, ScSpecFunctionV0, ScSpecTypeDef, ScSpecTypeUdt,
+            ScSpecUdtUnionCaseV0, ScSpecUdtUnionCaseVoidV0, ScSpecUdtUnionV0,
+        };
+
+        let union_entry = |name: &str, case_name: &str| {
+            ScSpecEntry::UdtUnionV0(ScSpecUdtUnionV0 {
+                doc: "".try_into().unwrap(),
+                lib: "".try_into().unwrap(),
+                name: name.try_into().unwrap(),
+                cases: [ScSpecUdtUnionCaseV0::VoidV0(ScSpecUdtUnionCaseVoidV0 {
+                    doc: "".try_into().unwrap(),
+                    name: case_name.try_into().unwrap(),
+                })]
+                .try_into()
+                .unwrap(),
+            })
+        };
+
+        let func = |name: &str, udt_name: &str| {
+            ScSpecEntry::FunctionV0(ScSpecFunctionV0 {
+                doc: "".try_into().unwrap(),
+                name: name.try_into().unwrap(),
+                inputs: [ScSpecFunctionInputV0 {
+                    doc: "".try_into().unwrap(),
+                    name: "key".try_into().unwrap(),
+                    type_: ScSpecTypeDef::Udt(ScSpecTypeUdt {
+                        name: udt_name.try_into().unwrap(),
+                    }),
+                }]
+                .try_into()
+                .unwrap(),
+                outputs: [].try_into().unwrap(),
+            })
+        };
+
+        let entries = [
+            union_entry("mycrate::tokens::StorageKey", "Approval"),
+            union_entry("mycrate::extensions::StorageKey", "Consecutive"),
+            func("op_tokens", "mycrate::tokens::StorageKey"),
+            func("op_ext", "mycrate::extensions::StorageKey"),
+        ];
+
+        let code = super::generate_without_file(&entries, None)
+            .unwrap()
+            .to_formatted_string()
+            .unwrap();
+
+        assert!(
+            code.contains(
+                "pub enum StorageKey {
+    Consecutive,
+}"
+            ),
+            "{code}"
+        );
+        assert!(
+            code.contains(
+                "pub enum StorageKey2 {
+    Approval,
+}"
+            ),
+            "{code}"
+        );
+        assert!(
+            code.contains("fn op_tokens(env: soroban_sdk::Env, key: StorageKey2);"),
+            "{code}"
+        );
+        assert!(
+            code.contains("fn op_ext(env: soroban_sdk::Env, key: StorageKey);"),
+            "{code}"
+        );
+    }
+
     // How the generated code refers to error types, for each kind of spec:
     // from an old SDK (prior to 30, before fully qualified names), from a new
     // SDK (30 or later) with its names unreduced, and from a new SDK with its
