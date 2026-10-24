@@ -114,6 +114,7 @@ use crate::testutils;
 impl testutils::Ledger for Ledger {
     fn set(&self, li: testutils::LedgerInfo) {
         let env = self.env();
+        env.panic_if_in_contract("modifying ledger info is unavailable inside a contract function and must be done only from the test code outside the contract function");
         env.host().set_ledger_info(li).unwrap();
     }
 
@@ -171,6 +172,7 @@ impl testutils::Ledger for Ledger {
 
     fn get(&self) -> testutils::LedgerInfo {
         let env = self.env();
+        env.panic_if_in_contract("getting ledger info is unavailable inside a contract function and must be done only from the test code outside the contract function");
         env.host().with_ledger_info(|li| Ok(li.clone())).unwrap()
     }
 
@@ -179,6 +181,7 @@ impl testutils::Ledger for Ledger {
         F: FnMut(&mut internal::LedgerInfo),
     {
         let env = self.env();
+        env.panic_if_in_contract("modifying ledger info is unavailable inside a contract function and must be done only from the test code outside the contract function");
         env.host().with_mut_ledger_info(f).unwrap();
     }
 }

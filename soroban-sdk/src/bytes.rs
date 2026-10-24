@@ -1304,6 +1304,7 @@ impl<const N: usize> BytesN<N> {
 #[cfg_attr(feature = "docs", doc(cfg(feature = "testutils")))]
 impl<const N: usize> crate::testutils::BytesN<N> for BytesN<N> {
     fn random(env: &Env) -> BytesN<N> {
+        env.panic_if_in_contract("generating random bytes is unavailable inside a contract function and must be done only from the test code outside the contract function");
         BytesN::from_array(env, &crate::testutils::random())
     }
 }

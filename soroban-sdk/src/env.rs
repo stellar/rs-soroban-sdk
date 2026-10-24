@@ -317,6 +317,12 @@ impl EnvTestState {
             }
         }
     }
+
+    fn panic_if_in_contract(&self, msg: &str) {
+        if matches!(self, Self::Contract) {
+            panic!("{msg}");
+        }
+    }
 }
 
 /// Config for changing the default behavior of the Env when used in tests.
@@ -675,6 +681,11 @@ impl Env {
     }
 
     #[doc(hidden)]
+    pub(crate) fn panic_if_in_contract(&self, msg: &str) {
+        self.test_state.panic_if_in_contract(msg);
+    }
+
+    #[doc(hidden)]
     pub(crate) fn with_generator<T>(&self, f: impl FnOnce(RefMut<'_, Generators>) -> T) -> T {
         f((*self.test_state.generators()).borrow_mut())
     }
@@ -820,6 +831,7 @@ impl Env {
     /// simulation with RPC in order to get the exact resources for submitting
     /// the transactions to the network.    
     pub fn cost_estimate(&self) -> CostEstimate {
+        self.panic_if_in_contract("cost estimation is unavailable inside a contract function and must be accessed only from the test code outside the contract function");
         CostEstimate::new(self.clone())
     }
 
@@ -1068,6 +1080,7 @@ impl Env {
     where
         C: ContractFunctionSet + 'static,
     {
+        self.panic_if_in_contract("uploading contract code is unavailable inside a contract function and must be done only from the test code outside the contract function");
         let wasm_hash = wasm_hash.into_val(self);
         self.env_impl
             .register_native_contract_as_wasm(
@@ -1158,6 +1171,7 @@ impl Env {
         contract: T,
         constructor_args: A,
     ) -> Address {
+        self.panic_if_in_contract("registering contracts is unavailable inside a contract function and must be done only from the test code outside the contract function");
         let contract_id = if let Some(contract_id) = contract_id.into() {
             contract_id.clone()
         } else {
@@ -1251,6 +1265,7 @@ impl Env {
         contract_wasm: impl IntoVal<Env, Bytes>,
         constructor_args: impl ConstructorArgs,
     ) -> Address {
+        self.panic_if_in_contract("registering contracts is unavailable inside a contract function and must be done only from the test code outside the contract function");
         let wasm_hash: BytesN<32> = self.deployer().upload_contract_wasm(contract_wasm);
         self.register_contract_with_optional_contract_id_and_executable(
             contract_id,
@@ -1406,6 +1421,7 @@ impl Env {
     /// [`mock_auths`][Self::mock_auths]. If mocking of auths is enabled,
     /// calling [`set_auths`][Self::set_auths] disables any mocking.
     pub fn set_auths(&self, auths: &[SorobanAuthorizationEntry]) {
+        self.panic_if_in_contract("setting authorizations is unavailable inside a contract function and must be done only from the test code outside the contract function");
         self.env_impl
             .set_authorization_entries(auths.to_vec())
             .unwrap();
@@ -1459,6 +1475,7 @@ impl Env {
     /// }
     /// ```
     pub fn mock_auths(&self, auths: &[MockAuth]) {
+        self.panic_if_in_contract("mocking authorizations is unavailable inside a contract function and must be done only from the test code outside the contract function");
         for a in auths {
             self.register_at(a.address, MockAuthContract, ());
         }
@@ -1542,6 +1559,7 @@ impl Env {
     /// }
     /// ```
     pub fn mock_all_auths(&self) {
+        self.panic_if_in_contract("mocking authorizations is unavailable inside a contract function and must be done only from the test code outside the contract function");
         self.env_impl.switch_to_recording_auth(true).unwrap();
     }
 
@@ -1597,6 +1615,7 @@ impl Env {
     /// }
     /// ```
     pub fn mock_all_auths_allowing_non_root_auth(&self) {
+        self.panic_if_in_contract("mocking authorizations is unavailable inside a contract function and must be done only from the test code outside the contract function");
         self.env_impl.switch_to_recording_auth(false).unwrap();
     }
 
@@ -1786,6 +1805,7 @@ impl Env {
         E: TryFrom<Error>,
         E::Error: Into<InvokeError>,
     {
+        self.panic_if_in_contract("invoking contract check auth is unavailable inside a contract function and must be done only from the test code outside the contract function");
         let args = Vec::from_array(
             self,
             [signature_payload.to_val(), signature, auth_context.to_val()],
@@ -1889,6 +1909,7 @@ impl Env {
     /// }
     /// ```
     pub fn as_contract<T>(&self, id: &Address, f: impl FnOnce() -> T) -> T {
+        self.panic_if_in_contract("running code as another contract is unavailable inside a contract function and must be done only from the test code outside the contract function");
         let id = id.contract_id();
         let func = Symbol::from_small_str("");
         let mut t: Option<T> = None;
@@ -1967,6 +1988,7 @@ impl Env {
         E: TryFrom<Error>,
         E::Error: Into<InvokeError>,
     {
+        self.panic_if_in_contract("running code as another contract is unavailable inside a contract function and must be done only from the test code outside the contract function");
         let id = id.contract_id();
         let func = Symbol::from_small_str("");
         let mut t: Option<T> = None;
@@ -2076,6 +2098,7 @@ impl Env {
 
     /// Create an events snapshot from the Env's current state.
     pub(crate) fn to_events_snapshot(&self) -> EventsSnapshot {
+        self.panic_if_in_contract("the record of events is unavailable inside a contract function and must be accessed only from the test code outside the contract function");
         EventsSnapshot(
             self.host()
                 .get_events()
@@ -2101,6 +2124,7 @@ impl Env {
     /// Get the budget that tracks the resources consumed for the environment.
     #[deprecated(note = "use cost_estimate().budget()")]
     pub fn budget(&self) -> Budget {
+        self.panic_if_in_contract("the budget is unavailable inside a contract function and must be accessed only from the test code outside the contract function");
         Budget::new(self.env_impl.budget_cloned())
     }
 }

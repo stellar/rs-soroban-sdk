@@ -670,6 +670,7 @@ mod testutils {
     impl testutils::storage::Instance for Instance {
         fn all(&self) -> Map<Val, Val> {
             let env = &self.storage.env;
+            env.panic_if_in_contract("inspecting contract storage is unavailable inside a contract function and must be done only from the test code outside the contract function");
             let storage = env.host().get_stored_entries().unwrap();
             let address: xdr::ScAddress = env.current_contract_address().try_into().unwrap();
             for entry in storage {
@@ -715,6 +716,7 @@ mod testutils {
 
         fn get_ttl(&self) -> u32 {
             let env = &self.storage.env;
+            env.panic_if_in_contract("getting storage ttl is unavailable inside a contract function and must be done only from the test code outside the contract function");
             env.host()
                 .get_contract_instance_live_until_ledger(env.current_contract_address().to_object())
                 .unwrap()
@@ -725,11 +727,13 @@ mod testutils {
 
     impl testutils::storage::Persistent for Persistent {
         fn all(&self) -> Map<Val, Val> {
+            self.storage.env.panic_if_in_contract("inspecting contract storage is unavailable inside a contract function and must be done only from the test code outside the contract function");
             all(&self.storage.env, xdr::ContractDataDurability::Persistent)
         }
 
         fn get_ttl<K: IntoVal<Env, Val>>(&self, key: &K) -> u32 {
             let env = &self.storage.env;
+            env.panic_if_in_contract("getting storage ttl is unavailable inside a contract function and must be done only from the test code outside the contract function");
             env.host()
                 .get_contract_data_live_until_ledger(key.into_val(env), StorageType::Persistent)
                 .unwrap()
@@ -740,11 +744,13 @@ mod testutils {
 
     impl testutils::storage::Temporary for Temporary {
         fn all(&self) -> Map<Val, Val> {
+            self.storage.env.panic_if_in_contract("inspecting contract storage is unavailable inside a contract function and must be done only from the test code outside the contract function");
             all(&self.storage.env, xdr::ContractDataDurability::Temporary)
         }
 
         fn get_ttl<K: IntoVal<Env, Val>>(&self, key: &K) -> u32 {
             let env = &self.storage.env;
+            env.panic_if_in_contract("getting storage ttl is unavailable inside a contract function and must be done only from the test code outside the contract function");
             env.host()
                 .get_contract_data_live_until_ledger(key.into_val(env), StorageType::Temporary)
                 .unwrap()
