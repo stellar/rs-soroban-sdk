@@ -68,6 +68,7 @@ mod proptest_scval_cmp;
 mod proptest_val_cmp;
 mod register_at_stellar_asset_contract;
 mod snapshot_source_native_wasm_hash;
+mod stellar_asset_contract;
 mod storage_testutils;
 mod token_client;
 mod try_from_val_type_mismatch;

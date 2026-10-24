@@ -745,6 +745,249 @@ impl StellarAssetContract {
     pub fn asset(&self) -> xdr::Asset {
         self.asset.clone()
     }
+
+    /// Sets the balance for the given address directly in the ledger.
+    ///
+    /// Works for both contract (C...) and account (G...) addresses.
+    pub fn set_balance(&self, addr: &crate::Address, amount: i128) {
+        set_sac_balance(&self.issuer.env, &self.address, &self.asset, addr, amount);
+    }
+}
+
+pub struct NativeAssetContract {
+    address: crate::Address,
+    env: Env,
+}
+
+impl NativeAssetContract {
+    pub(crate) fn new(address: crate::Address, env: Env) -> Self {
+        Self { address, env }
+    }
+
+    pub fn address(&self) -> crate::Address {
+        self.address.clone()
+    }
+
+    /// Sets the balance for the given address directly in the ledger.
+    ///
+    /// Works for both contract (C...) and account (G...) addresses.
+    pub fn set_balance(&self, addr: &crate::Address, amount: i128) {
+        set_sac_balance(&self.env, &self.address, &xdr::Asset::Native, addr, amount);
+    }
+}
+
+fn set_sac_balance(
+    env: &Env,
+    sac_address: &crate::Address,
+    asset: &xdr::Asset,
+    addr: &crate::Address,
+    amount: i128,
+) {
+    assert!(amount >= 0, "balance must be non-negative");
+    let sc_address: xdr::ScAddress = addr.into();
+    match sc_address {
+        xdr::ScAddress::Contract(contract_id) => {
+            let key_scval = xdr::ScVal::Vec(Some(xdr::ScVec(
+                std::vec![
+                    xdr::ScVal::Symbol(xdr::ScSymbol("Balance".try_into().unwrap())),
+                    xdr::ScVal::Address(xdr::ScAddress::Contract(contract_id)),
+                ]
+                .try_into()
+                .unwrap(),
+            )));
+            let key = Rc::new(xdr::LedgerKey::ContractData(xdr::LedgerKeyContractData {
+                contract: xdr::ScAddress::Contract(sac_address.contract_id()),
+                key: key_scval.clone(),
+                durability: xdr::ContractDataDurability::Persistent,
+            }));
+
+            let (mut authorized, mut clawback) = (true, false);
+            if let Some((existing_entry, _)) = env.host().get_ledger_entry(&key).unwrap() {
+                if let xdr::LedgerEntryData::ContractData(cde) = &existing_entry.data {
+                    if let xdr::ScVal::Map(Some(m)) = &cde.val {
+                        for entry in m.0.iter() {
+                            if let xdr::ScVal::Symbol(s) = &entry.key {
+                                if s.0.as_slice() == b"authorized" {
+                                    if let xdr::ScVal::Bool(b) = entry.val {
+                                        authorized = b;
+                                    }
+                                } else if s.0.as_slice() == b"clawback" {
+                                    if let xdr::ScVal::Bool(b) = entry.val {
+                                        clawback = b;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+
+            let hi = (amount >> 64) as i64;
+            let lo = amount as u64;
+            let val_scval = xdr::ScVal::Map(Some(xdr::ScMap(
+                std::vec![
+                    xdr::ScMapEntry {
+                        key: xdr::ScVal::Symbol(xdr::ScSymbol("amount".try_into().unwrap())),
+                        val: xdr::ScVal::I128(xdr::Int128Parts { hi, lo }),
+                    },
+                    xdr::ScMapEntry {
+                        key: xdr::ScVal::Symbol(xdr::ScSymbol("authorized".try_into().unwrap())),
+                        val: xdr::ScVal::Bool(authorized),
+                    },
+                    xdr::ScMapEntry {
+                        key: xdr::ScVal::Symbol(xdr::ScSymbol("clawback".try_into().unwrap())),
+                        val: xdr::ScVal::Bool(clawback),
+                    },
+                ]
+                .try_into()
+                .unwrap(),
+            )));
+
+            let entry = Rc::new(xdr::LedgerEntry {
+                ext: xdr::LedgerEntryExt::V0,
+                last_modified_ledger_seq: 0,
+                data: xdr::LedgerEntryData::ContractData(xdr::ContractDataEntry {
+                    contract: xdr::ScAddress::Contract(sac_address.contract_id()),
+                    key: key_scval,
+                    val: val_scval,
+                    durability: xdr::ContractDataDurability::Persistent,
+                    ext: xdr::ExtensionPoint::V0,
+                }),
+            });
+            let live_until_ledger = env.ledger().sequence().saturating_add(30 * 17280);
+            env.host()
+                .add_ledger_entry(&key, &entry, Some(live_until_ledger))
+                .unwrap();
+        }
+        xdr::ScAddress::Account(account_id) => {
+            let balance: i64 = amount
+                .try_into()
+                .expect("amount exceeds maximum balance for account (i64::MAX)");
+            match asset {
+                xdr::Asset::Native => {
+                    let key = Rc::new(xdr::LedgerKey::Account(xdr::LedgerKeyAccount {
+                        account_id: account_id.clone(),
+                    }));
+                    if let Some((entry, _)) = env.host().get_ledger_entry(&key).unwrap() {
+                        let mut entry = entry.as_ref().clone();
+                        match entry.data {
+                            xdr::LedgerEntryData::Account(ref mut e) => e.balance = balance,
+                            _ => panic!("expected account entry"),
+                        }
+                        env.host()
+                            .add_ledger_entry(&key, &Rc::new(entry), None)
+                            .unwrap();
+                    } else {
+                        let entry = Rc::new(xdr::LedgerEntry {
+                            data: xdr::LedgerEntryData::Account(xdr::AccountEntry {
+                                account_id,
+                                balance,
+                                flags: 0,
+                                home_domain: Default::default(),
+                                inflation_dest: None,
+                                num_sub_entries: 0,
+                                seq_num: xdr::SequenceNumber(0),
+                                thresholds: xdr::Thresholds([1; 4]),
+                                signers: xdr::VecM::default(),
+                                ext: xdr::AccountEntryExt::V0,
+                            }),
+                            last_modified_ledger_seq: 0,
+                            ext: xdr::LedgerEntryExt::V0,
+                        });
+                        env.host().add_ledger_entry(&key, &entry, None).unwrap();
+                    }
+                }
+                xdr::Asset::CreditAlphanum4(a) => {
+                    set_trustline_balance(
+                        env,
+                        account_id,
+                        xdr::TrustLineAsset::CreditAlphanum4(a.clone()),
+                        balance,
+                    );
+                }
+                xdr::Asset::CreditAlphanum12(a) => {
+                    set_trustline_balance(
+                        env,
+                        account_id,
+                        xdr::TrustLineAsset::CreditAlphanum12(a.clone()),
+                        balance,
+                    );
+                }
+            }
+        }
+        _ => panic!("unsupported address type for set_balance: {:?}", sc_address),
+    }
+}
+
+fn set_trustline_balance(
+    env: &Env,
+    account_id: xdr::AccountId,
+    tl_asset: xdr::TrustLineAsset,
+    balance: i64,
+) {
+    let tl_key = Rc::new(xdr::LedgerKey::Trustline(xdr::LedgerKeyTrustLine {
+        account_id: account_id.clone(),
+        asset: tl_asset.clone(),
+    }));
+    if let Some((entry, _)) = env.host().get_ledger_entry(&tl_key).unwrap() {
+        let mut entry = entry.as_ref().clone();
+        match entry.data {
+            xdr::LedgerEntryData::Trustline(ref mut tl) => tl.balance = balance,
+            _ => panic!("expected trustline entry"),
+        }
+        env.host()
+            .add_ledger_entry(&tl_key, &Rc::new(entry), None)
+            .unwrap();
+    } else {
+        let acc_key = Rc::new(xdr::LedgerKey::Account(xdr::LedgerKeyAccount {
+            account_id: account_id.clone(),
+        }));
+        if let Some((acc_entry, _)) = env.host().get_ledger_entry(&acc_key).unwrap() {
+            let mut acc_entry = acc_entry.as_ref().clone();
+            if let xdr::LedgerEntryData::Account(ref mut ae) = acc_entry.data {
+                ae.num_sub_entries += 1;
+            }
+            env.host()
+                .add_ledger_entry(&acc_key, &Rc::new(acc_entry), None)
+                .unwrap();
+        } else {
+            let acc_entry = Rc::new(xdr::LedgerEntry {
+                data: xdr::LedgerEntryData::Account(xdr::AccountEntry {
+                    account_id: account_id.clone(),
+                    balance: 100_000_000,
+                    flags: 0,
+                    home_domain: Default::default(),
+                    inflation_dest: None,
+                    num_sub_entries: 1,
+                    seq_num: xdr::SequenceNumber(0),
+                    thresholds: xdr::Thresholds([1; 4]),
+                    signers: xdr::VecM::default(),
+                    ext: xdr::AccountEntryExt::V0,
+                }),
+                last_modified_ledger_seq: 0,
+                ext: xdr::LedgerEntryExt::V0,
+            });
+            env.host()
+                .add_ledger_entry(&acc_key, &acc_entry, None)
+                .unwrap();
+        }
+
+        let tl_entry = Rc::new(xdr::LedgerEntry {
+            data: xdr::LedgerEntryData::Trustline(xdr::TrustLineEntry {
+                account_id,
+                asset: tl_asset,
+                balance,
+                limit: i64::MAX,
+                flags: xdr::TrustLineFlags::AuthorizedFlag as u32,
+                ext: xdr::TrustLineEntryExt::V0,
+            }),
+            last_modified_ledger_seq: 0,
+            ext: xdr::LedgerEntryExt::V0,
+        });
+        env.host()
+            .add_ledger_entry(&tl_key, &tl_entry, None)
+            .unwrap();
+    }
 }
 
 /// Input for creating an [`Env`] from a custom snapshot source.

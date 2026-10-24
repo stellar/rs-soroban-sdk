@@ -645,8 +645,8 @@ use crate::{
     testutils::{
         budget::Budget, cost_estimate::NetworkInvocationResourceLimits, default_ledger_info,
         Address as _, AuthSnapshot, AuthorizedInvocation, ContractFunctionSet, EventsSnapshot,
-        Generators, Ledger as _, MockAuth, MockAuthContract, Register, Snapshot,
-        SnapshotSourceInput, StellarAssetContract, StellarAssetIssuer,
+        Generators, Ledger as _, MockAuth, MockAuthContract, NativeAssetContract, Register,
+        Snapshot, SnapshotSourceInput, StellarAssetContract, StellarAssetIssuer,
     },
     Bytes, BytesN, ConstructorArgs,
 };
@@ -1327,6 +1327,45 @@ impl Env {
 
         let issuer = StellarAssetIssuer::new(self.clone(), issuer_id);
         StellarAssetContract::new(token_id, issuer, asset)
+    }
+
+    /// Register the built-in Native Stellar Asset Contract (XLM).
+    ///
+    /// Returns a utility struct containing the contract ID of the registered
+    /// native token contract and helper methods such as `set_balance`.
+    ///
+    /// This function is idempotent: calling it multiple times will return
+    /// the same contract instance.
+    pub fn register_stellar_asset_contract_native(&self) -> NativeAssetContract {
+        let asset = xdr::Asset::Native;
+        let asset_bytes = Bytes::from_slice(self, &[0, 0, 0, 0]);
+        let address = self
+            .deployer()
+            .with_stellar_asset(asset_bytes)
+            .deployed_address();
+
+        let contract_id = address.contract_id();
+        let key = Rc::new(xdr::LedgerKey::ContractData(xdr::LedgerKeyContractData {
+            contract: xdr::ScAddress::Contract(contract_id),
+            key: xdr::ScVal::LedgerKeyContractInstance,
+            durability: xdr::ContractDataDurability::Persistent,
+        }));
+
+        if self.host().get_ledger_entry(&key).unwrap().is_none() {
+            let create = xdr::HostFunction::CreateContract(xdr::CreateContractArgs {
+                contract_id_preimage: xdr::ContractIdPreimage::Asset(asset),
+                executable: xdr::ContractExecutable::StellarAsset,
+            });
+            let token_id: Address = self
+                .env_impl
+                .invoke_function(create)
+                .unwrap()
+                .try_into_val(self)
+                .unwrap();
+            assert_eq!(address, token_id);
+        }
+
+        NativeAssetContract::new(address, self.clone())
     }
 
     /// Register the built-in Stellar Asset Contract with provided admin address.
