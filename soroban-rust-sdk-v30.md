@@ -94,7 +94,7 @@ mod b {
 
 #[contractimpl]
 impl Contract {
-    pub fn get(_env: Env, a: a::State, b: b::State) -> (a::State, b::State) {
+    pub fn get(a: a::State, b: b::State) -> (a::State, b::State) {
         (a, b)
     }
 }
