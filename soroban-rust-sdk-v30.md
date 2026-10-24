@@ -136,7 +136,7 @@ in the
 In v30 the build keeps every entry the contract's functions refer to, directly
 or through other types. Markers remain only for events and for errors passed to
 `panic_with_error!`, which a function may never refer to. Contracts carry fewer
-markers. The SDK's test contract went from 49 to 8.
+markers which is a small optimisation.
 
 Tools that read spec markers, the `rssdk_spec_shaking` meta entry, or the
 `spec_xdr` functions directly need updating. The v30 migration guide covers the
