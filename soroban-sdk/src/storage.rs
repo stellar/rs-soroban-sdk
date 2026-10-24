@@ -407,6 +407,12 @@ impl Persistent {
     /// - Prior to protocol 29, the call fails with an internal error.
     /// - From protocol 29, the TTL is extended to the max TTL, the same as for any other
     ///   `extend_to` greater than the max TTL.
+    ///
+    /// ### Panics
+    ///
+    /// Panics if the `key` does not exist in persistent storage (e.g. it was never written or
+    /// has already expired and been archived). If it is not known whether the key exists, call
+    /// [`has`][Persistent::has] beforehand to check for existence.
     pub fn extend_ttl<K>(&self, key: &K, threshold: u32, extend_to: u32)
     where
         K: IntoVal<Env, Val>,
@@ -423,6 +429,11 @@ impl Persistent {
     ///
     /// The TTL is the number of ledgers between the current ledger and the final
     /// ledger the data can still be accessed.
+    ///
+    /// ### Panics
+    ///
+    /// Panics if the `key` does not exist in persistent storage. Call [`has`][Persistent::has]
+    /// beforehand if existence is uncertain.
     pub fn extend_ttl_with_limits<K>(
         &self,
         key: &K,
@@ -522,6 +533,11 @@ impl Temporary {
     /// The TTL will then become `extend_to`.
     ///
     /// The TTL is the number of ledgers between the current ledger and the final ledger the data can still be accessed.
+    ///
+    /// ### Panics
+    ///
+    /// Panics if the `key` does not exist in temporary storage (e.g. it was never written or
+    /// has already expired). Call [`has`][Temporary::has] beforehand if existence is uncertain.
     pub fn extend_ttl<K>(&self, key: &K, threshold: u32, extend_to: u32)
     where
         K: IntoVal<Env, Val>,
@@ -628,6 +644,10 @@ impl Instance {
     /// - Prior to protocol 29, the call fails with an internal error.
     /// - From protocol 29, the TTL is extended to the max TTL, the same as for any other
     ///   `extend_to` greater than the max TTL.
+    ///
+    /// ### Panics
+    ///
+    /// Panics if the current contract instance or code entry does not exist on the ledger.
     pub fn extend_ttl(&self, threshold: u32, extend_to: u32) {
         internal::Env::extend_current_contract_instance_and_code_ttl(
             &self.storage.env,
@@ -648,6 +668,10 @@ impl Instance {
     ///
     /// The TTL is the number of ledgers between the current ledger and the final ledger
     /// the data can still be accessed.
+    ///
+    /// ### Panics
+    ///
+    /// Panics if the current contract instance or code entry does not exist on the ledger.
     pub fn extend_ttl_with_limits(&self, extend_to: u32, min_extension: u32, max_extension: u32) {
         internal::Env::extend_contract_instance_and_code_ttl_v2(
             &self.storage.env,
