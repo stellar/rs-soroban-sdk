@@ -144,11 +144,11 @@ markers which is a small optimisation.
 
 Tools that read spec markers, the `rssdk_spec_shaking` meta entry, or the
 `spec_xdr` functions directly need updating. See the
-[v30 migration guide](https://docs.rs/soroban-sdk/30.0.0-rc.1/soroban_sdk/_migrating/index.html),
+[v30 migration guide](https://docs.rs/soroban-sdk/30.0.0/soroban_sdk/_migrating/index.html),
 in particular
-[spec markers](https://docs.rs/soroban-sdk/30.0.0-rc.1/soroban_sdk/_migrating/v30_spec_markers/index.html)
+[spec markers](https://docs.rs/soroban-sdk/30.0.0/soroban_sdk/_migrating/v30_spec_markers/index.html)
 and
-[`spec_xdr` output](https://docs.rs/soroban-sdk/30.0.0-rc.1/soroban_sdk/_migrating/v30_spec_xdr_unprocessed/index.html).
+[`spec_xdr` output](https://docs.rs/soroban-sdk/30.0.0/soroban_sdk/_migrating/v30_spec_xdr_unprocessed/index.html).
 
 ## Upgrading to v30
 
@@ -169,12 +169,12 @@ before deploying with Soroban Rust SDK v30.
 The full set of migration instructions, with runnable examples, is in the SDK's
 Rust docs:
 
-- https://docs.rs/soroban-sdk/30.0.0-rc.1/soroban_sdk/_migrating
-- https://docs.rs/soroban-sdk/30.0.0-rc.1
+- https://docs.rs/soroban-sdk/30.0.0/soroban_sdk/_migrating
+- https://docs.rs/soroban-sdk/30.0.0
 
 For a full set of release notes, see the SDK's release page:
 
-- https://github.com/stellar/rs-soroban-sdk/releases/tag/v30.0.0-rc.1
+- https://github.com/stellar/rs-soroban-sdk/releases/tag/v30.0.0
 
 For network upgrade dates, see the
 [Bell upgrade guide](https://stellar.org/blog/developers/bell-protocol-30-upgrade-guide).
