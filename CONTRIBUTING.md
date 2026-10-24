@@ -102,3 +102,7 @@ Run tests with MIRI for memory safety checking (requires nightly):
 ```
 make miri
 ```
+
+## Deprecations and Breaking Changes
+
+Please review [DEPRECATION_AND_BREAKING_CHANGES.md](DEPRECATION_AND_BREAKING_CHANGES.md) before proposing changes that modify public APIs, smart contract code-generation outputs (UDTs, client bindings, spec XDR), or test utilities.
