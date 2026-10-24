@@ -120,9 +120,10 @@ The check only fires for Wasm builds. Tests are unaffected and can be run with
 
 ## Spec shaking by reference
 
-This change is largely an internal implementation detail. It is primarily of
-interest to tool builders who inspect Wasm or contract spec internals, and needs
-no changes to contracts.
+This change is largely an implementation detail between the soroban-sdk and the
+stellar-cli's `stellar contract build` command. It is primarily of interest to
+tool builders who inspect Wasm or contract spec internals, and needs no changes
+to contracts.
 
 Prior to v30 the build kept a spec entry only if a marker for it survived in the
 Wasm, which meant a marker for every type, event, and error. In v30 the build
