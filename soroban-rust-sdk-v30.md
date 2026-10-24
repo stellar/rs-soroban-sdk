@@ -127,9 +127,9 @@ tool builders who inspect Wasm or contract spec internals, and needs no changes
 to contracts.
 
 Prior to v30 the build kept a spec entry only if a marker for it survived in the
-Wasm, which meant a marker for every type, event, and error. In v30 the build
-keeps every entry the contract's functions refer to, directly or through other
-types. Markers remain only for events and for errors passed to
+Wasm, which meant a marker for every type, event, and error was contained in the
+final Wasm. In v30 the build keeps every entry the contract's functions refer
+to, directly or through other types. Markers remain only for events and for errors passed to
 `panic_with_error!`, which a function may never refer to. Contracts carry fewer
 markers. The SDK's test contract went from 49 to 8.
 
