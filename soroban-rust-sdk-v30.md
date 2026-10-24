@@ -93,8 +93,14 @@ impl Contract {
 }
 ```
 
-The built spec contains `State` for `a::State` and `State2` for `b::State`. The
-type whose full Rust path sorts first keeps the short name. `contractimport!`
+The built spec contains `State` for `a::State` and `State2` for `b::State`:
+
+| Rust type  | Name before v30 | Name in v30 |
+| ---------- | --------------- | ----------- |
+| `a::State` | `State`         | `State`     |
+| `b::State` | `State`         | `State2`    |
+
+The type whose full Rust path sorts first keeps the short name. `contractimport!`
 and generated bindings handle imported specs the same way.
 
 Contracts with no duplicate names keep the same spec. Contracts that have them
