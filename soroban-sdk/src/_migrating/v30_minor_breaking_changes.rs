@@ -1,4 +1,4 @@
-//! Minor breaking changes.
+//! Minor breaking changes in v30.
 //!
 //! These changes are unlikely to affect most contracts, but may require changes to some contracts,
 //! tests, or tools.
