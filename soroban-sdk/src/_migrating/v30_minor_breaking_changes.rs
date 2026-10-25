@@ -109,38 +109,6 @@
 //! # fn main() {}
 //! ```
 //!
-//! ## Events and errors can't be named after soroban-sdk types
-//!
-//! Events and errors can't be named after a soroban-sdk type, such as `Address`.
-//!
-//! [`contractevent`] and [`contracterror`] types are now checked where they are defined, the same
-//! as [`contracttype`] types, so a name that collides with a soroban-sdk type, such as `Address`,
-//! `Symbol`, `Duration`, or `Hash`, is a compile error.
-//!
-//! Before:
-//!
-//! ```compile_fail
-//! use soroban_sdk::contractevent;
-//!
-//! #[contractevent]
-//! pub struct Hash { // ❌ conflicts with soroban_sdk::crypto::Hash
-//!     pub value: u32,
-//! }
-//! # fn main() {}
-//! ```
-//!
-//! After:
-//!
-//! ```
-//! use soroban_sdk::contractevent;
-//!
-//! #[contractevent]
-//! pub struct HashUpdated { // 👈 👀
-//!     pub value: u32,
-//! }
-//! # fn main() {}
-//! ```
-//!
 //! ## Hand-written `Event` impls can't be published
 //!
 //! Hand-written [`Event`] impls can't `publish()`. Use [`#[contractevent]`][contractevent].
@@ -439,7 +407,6 @@
 //! [ScAddress::MuxedContract]: crate::xdr::ScAddress::MuxedContract
 //! [`contractimport!`]: crate::contractimport
 //! [contracttype]: crate::contracttype
-//! [`contracttype`]: crate::contracttype
 //! [contracterror]: crate::contracterror
 //! [`contracterror`]: crate::contracterror
 //! [contractevent]: crate::contractevent
