@@ -1,5 +1,5 @@
 use crate::{self as soroban_sdk};
-use soroban_sdk::xdr::ScVec;
+use soroban_sdk::xdr::{ScSymbol, ScVal, ScVec};
 use soroban_sdk::{
     contract, contractimpl, contracttype, symbol_short, vec, ConversionError, Env, IntoVal,
     TryFromVal, TryIntoVal, Val, Vec,
@@ -100,6 +100,31 @@ fn round_trips() {
     assert_eq!(before, after);
     let scvec: ScVec = before.try_into().unwrap();
     let after: Udt = scvec.try_into_val(&env).unwrap();
+    assert_eq!(before, after);
+}
+
+#[test]
+fn test_unit_variant_round_trips_as_vec_of_symbol() {
+    let env = Env::default();
+
+    let before = Udt::Aaa;
+
+    let val: Val = before.try_into_val(&env).unwrap();
+    let vec: Vec<Val> = val.try_into_val(&env).unwrap();
+    assert_eq!(vec, vec![&env, symbol_short!("Aaa").into_val(&env)]);
+    let after: Udt = val.try_into_val(&env).unwrap();
+    assert_eq!(before, after);
+
+    let scval: ScVal = (&before).try_into().unwrap();
+    assert_eq!(
+        scval,
+        ScVal::Vec(Some(ScVec(
+            [ScVal::Symbol(ScSymbol("Aaa".try_into().unwrap()))]
+                .try_into()
+                .unwrap()
+        )))
+    );
+    let after = Udt::try_from_val(&env, &scval).unwrap();
     assert_eq!(before, after);
 }
 
