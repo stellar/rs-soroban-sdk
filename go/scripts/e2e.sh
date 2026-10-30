@@ -56,8 +56,17 @@ deploy() {
   local c="$1"
   shift
   build "$c"
-  "$STELLAR" contract deploy --wasm "$OUT/$c.wasm" --source e2e --network "$NETWORK" "$@" 2>"$OUT/$c.deploy.log" ||
-    { cat "$OUT/$c.deploy.log" >&2; return 1; }
+  local i
+  for i in 1 2 3 4; do
+    if "$STELLAR" contract deploy --wasm "$OUT/$c.wasm" --source e2e --network "$NETWORK" "$@" 2>"$OUT/$c.deploy.log"; then
+      return 0
+    fi
+    # Retry when an RPC node lags behind the upload, or other transient failures.
+    grep -qE "Wasm does not exist|Request rejected .5[0-9][0-9].|timed out|connection" "$OUT/$c.deploy.log" || break
+    sleep 5
+  done
+  cat "$OUT/$c.deploy.log" >&2
+  return 1
 }
 
 # invoke <id> <send:yes|no> <fn> [args...]: prints the result; stderr (logs,
