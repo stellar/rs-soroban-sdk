@@ -1,0 +1,3 @@
+*.wasm
+scripts/js/node_modules/
+scripts/js/package-lock.json

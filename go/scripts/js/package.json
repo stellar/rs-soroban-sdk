@@ -1,0 +1,8 @@
+{
+  "name": "soroban-go-e2e",
+  "private": true,
+  "type": "module",
+  "dependencies": {
+    "@stellar/stellar-sdk": "14.2.0"
+  }
+}
