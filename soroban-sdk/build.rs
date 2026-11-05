@@ -44,5 +44,9 @@ pub fn main() {
         }
     }
 
-    crate_git_revision::init();
+    // GIT_REVISION is only read when building for wasm. Calling init() makes the build script
+    // rerun whenever .git/index changes, which happens on most test runs, so skip it otherwise.
+    if std::env::var("CARGO_CFG_TARGET_FAMILY").as_deref() == Ok("wasm") {
+        crate_git_revision::init();
+    }
 }
