@@ -44,5 +44,10 @@ pub fn main() {
         }
     }
 
-    crate_git_revision::init();
+    // GIT_REVISION is only used in wasm builds. Only set it there, because crate_git_revision makes
+    // cargo rerun this build script whenever .git/index changes, which happens on most test runs
+    // and would rebuild soroban-sdk and all its dependents every time.
+    if std::env::var("CARGO_CFG_TARGET_FAMILY").unwrap_or_default() == "wasm" {
+        crate_git_revision::init();
+    }
 }
