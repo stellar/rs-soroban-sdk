@@ -1,7 +1,7 @@
 use crate::{self as soroban_sdk};
-use soroban_sdk::xdr::ScVec;
+use soroban_sdk::xdr::{ScMap, ScMapEntry, ScSymbol, ScVal, ScVec};
 use soroban_sdk::{
-    contract, contractimpl, contracttype, symbol_short, vec, ConversionError, Env, IntoVal,
+    contract, contractimpl, contracttype, symbol_short, vec, ConversionError, Env, IntoVal, Symbol,
     TryFromVal, TryIntoVal, Val, Vec,
 };
 
@@ -100,6 +100,170 @@ fn round_trips() {
     assert_eq!(before, after);
     let scvec: ScVec = before.try_into().unwrap();
     let after: Udt = scvec.try_into_val(&env).unwrap();
+    assert_eq!(before, after);
+}
+
+#[test]
+fn test_unit_variant_round_trips_as_vec_of_symbol() {
+    let env = Env::default();
+
+    let before = Udt::Aaa;
+
+    let val: Val = before.try_into_val(&env).unwrap();
+    let vec: Vec<Val> = val.try_into_val(&env).unwrap();
+    assert_eq!(vec, vec![&env, symbol_short!("Aaa").into_val(&env)]);
+    let after: Udt = val.try_into_val(&env).unwrap();
+    assert_eq!(before, after);
+
+    let scval: ScVal = (&before).try_into().unwrap();
+    assert_eq!(
+        scval,
+        ScVal::Vec(Some(ScVec(
+            [ScVal::Symbol(ScSymbol("Aaa".try_into().unwrap()))]
+                .try_into()
+                .unwrap()
+        )))
+    );
+    let after = Udt::try_from_val(&env, &scval).unwrap();
+    assert_eq!(before, after);
+}
+
+#[test]
+fn test_unit_variant_with_long_name_round_trips_as_vec_of_symbol() {
+    let env = Env::default();
+
+    let before = Udt::ThisIsAVeryLongName1234567890;
+
+    let val: Val = before.try_into_val(&env).unwrap();
+    let vec: Vec<Val> = val.try_into_val(&env).unwrap();
+    assert_eq!(
+        vec,
+        vec![
+            &env,
+            Symbol::new(&env, "ThisIsAVeryLongName1234567890").into_val(&env)
+        ]
+    );
+    let after: Udt = val.try_into_val(&env).unwrap();
+    assert_eq!(before, after);
+
+    let scval: ScVal = (&before).try_into().unwrap();
+    assert_eq!(
+        scval,
+        ScVal::Vec(Some(ScVec(
+            [ScVal::Symbol(ScSymbol(
+                "ThisIsAVeryLongName1234567890".try_into().unwrap()
+            ))]
+            .try_into()
+            .unwrap()
+        )))
+    );
+    let after = Udt::try_from_val(&env, &scval).unwrap();
+    assert_eq!(before, after);
+}
+
+#[test]
+fn test_tuple_variant_round_trips_as_vec_of_symbol_and_field() {
+    let env = Env::default();
+
+    let before = Udt::Bbb(3);
+
+    let val: Val = before.try_into_val(&env).unwrap();
+    let vec: Vec<Val> = val.try_into_val(&env).unwrap();
+    assert_eq!(
+        vec,
+        vec![
+            &env,
+            symbol_short!("Bbb").into_val(&env),
+            3i32.into_val(&env)
+        ]
+    );
+    let after: Udt = val.try_into_val(&env).unwrap();
+    assert_eq!(before, after);
+
+    let scval: ScVal = (&before).try_into().unwrap();
+    assert_eq!(
+        scval,
+        ScVal::Vec(Some(ScVec(
+            [
+                ScVal::Symbol(ScSymbol("Bbb".try_into().unwrap())),
+                ScVal::I32(3),
+            ]
+            .try_into()
+            .unwrap()
+        )))
+    );
+    let after = Udt::try_from_val(&env, &scval).unwrap();
+    assert_eq!(before, after);
+}
+
+#[test]
+fn test_tuple_variant_with_many_fields_round_trips_as_vec_of_symbol_and_fields() {
+    let env = Env::default();
+
+    let before = Udt::MaxFields(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12);
+
+    let val: Val = before.try_into_val(&env).unwrap();
+    let vec: Vec<Val> = val.try_into_val(&env).unwrap();
+    let mut expected: Vec<Val> = vec![&env, symbol_short!("MaxFields").into_val(&env)];
+    for i in 1u32..=12 {
+        expected.push_back(i.into_val(&env));
+    }
+    assert_eq!(vec, expected);
+    let after: Udt = val.try_into_val(&env).unwrap();
+    assert_eq!(before, after);
+
+    let scval: ScVal = (&before).try_into().unwrap();
+    let mut expected = std::vec![ScVal::Symbol(ScSymbol("MaxFields".try_into().unwrap()))];
+    expected.extend((1u32..=12).map(ScVal::U32));
+    assert_eq!(scval, ScVal::Vec(Some(ScVec(expected.try_into().unwrap()))));
+    let after = Udt::try_from_val(&env, &scval).unwrap();
+    assert_eq!(before, after);
+}
+
+#[test]
+fn test_tuple_variant_with_udt_fields_round_trips_as_vec_of_symbol_and_fields() {
+    let env = Env::default();
+
+    let before = Udt::Nested(Udt2 { a: 1 }, Udt2 { a: 2 });
+
+    let val: Val = before.try_into_val(&env).unwrap();
+    let vec: Vec<Val> = val.try_into_val(&env).unwrap();
+    assert_eq!(
+        vec,
+        vec![
+            &env,
+            symbol_short!("Nested").into_val(&env),
+            Udt2 { a: 1 }.into_val(&env),
+            Udt2 { a: 2 }.into_val(&env),
+        ]
+    );
+    let after: Udt = val.try_into_val(&env).unwrap();
+    assert_eq!(before, after);
+
+    let udt2 = |a: u32| {
+        ScVal::Map(Some(ScMap(
+            [ScMapEntry {
+                key: ScVal::Symbol(ScSymbol("a".try_into().unwrap())),
+                val: ScVal::U32(a),
+            }]
+            .try_into()
+            .unwrap(),
+        )))
+    };
+    let scval: ScVal = (&before).try_into().unwrap();
+    assert_eq!(
+        scval,
+        ScVal::Vec(Some(ScVec(
+            [
+                ScVal::Symbol(ScSymbol("Nested".try_into().unwrap())),
+                udt2(1),
+                udt2(2),
+            ]
+            .try_into()
+            .unwrap()
+        )))
+    );
+    let after = Udt::try_from_val(&env, &scval).unwrap();
     assert_eq!(before, after);
 }
 
