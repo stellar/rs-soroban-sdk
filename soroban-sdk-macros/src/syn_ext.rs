@@ -283,7 +283,7 @@ pub fn strs_to_fns(fn_strs: &[LitStr]) -> Result<Vec<Fn>, Error> {
         .collect()
 }
 
-fn unpack_result(typ: &Type) -> Option<(Type, Type)> {
+pub fn unpack_result(typ: &Type) -> Option<(Type, Type)> {
     match &typ {
         Type::Path(TypePath { path, .. }) => {
             if let Some(PathSegment {
@@ -696,3 +696,37 @@ pub fn is_type_named(ty: &Type, name: &str) -> bool {
         _ => false,
     }
 }
+
+/// Whether the type itself or any of its generic arguments/nested types
+/// is named `name` (e.g. `Hash` in `Hash<32>`, `Vec<Hash<32>>`, `(Hash<32>, u32)`).
+pub fn type_contains_named(ty: &Type, name: &str) -> bool {
+    match ty {
+        Type::Reference(TypeReference { elem, .. })
+        | Type::Group(syn::TypeGroup { elem, .. })
+        | Type::Paren(syn::TypeParen { elem, .. })
+        | Type::Slice(syn::TypeSlice { elem, .. })
+        | Type::Array(syn::TypeArray { elem, .. }) => type_contains_named(elem, name),
+        Type::Tuple(syn::TypeTuple { elems, .. }) => {
+            elems.iter().any(|elem| type_contains_named(elem, name))
+        }
+        Type::Path(TypePath { qself: None, path }) => {
+            if let Some(s) = path.segments.last() {
+                if s.ident.unraw() == name {
+                    return true;
+                }
+            }
+            path.segments.iter().any(|s| match &s.arguments {
+                syn::PathArguments::AngleBracketed(syn::AngleBracketedGenericArguments {
+                    args,
+                    ..
+                }) => args.iter().any(|arg| match arg {
+                    syn::GenericArgument::Type(inner_ty) => type_contains_named(inner_ty, name),
+                    _ => false,
+                }),
+                _ => false,
+            })
+        }
+        _ => false,
+    }
+}
+
