@@ -14,11 +14,10 @@
 //!   SDK on an existing contract that has duplicate names, you can expect to see the contract spec
 //!   change.
 //!
-//! - Integer enums defined with [`contracttype`] can no longer be passed to [`panic_with_error!`]
-//!   or [`Env::panic_with_error`]. Their support was accidental. Only [`contracterror`] types are
-//!   intended to be used with [`panic_with_error!`].
-//!
 //! - [A `MuxedAddress` may now be a contract address with an id (CAP-84)][v30_muxed_contracts].
+//!
+//! - [Minor breaking changes][v30_minor_breaking_changes] that are unlikely to affect most
+//!   contracts, but may require changes to some contracts, tests, or tools.
 //!
 //! The following changes are largely internal details, but are included here for visibility for
 //! tool builders who may be inspecting Wasm and contract spec internal data.
@@ -36,11 +35,10 @@
 //!
 //! [v30_cli_version]: v30_cli_version
 //! [v30_duplicate_names]: v30_duplicate_names
+//! [v30_minor_breaking_changes]: v30_minor_breaking_changes
 //! [v30_muxed_contracts]: v30_muxed_contracts
 //! [v30_spec_markers]: v30_spec_markers
 //! [v30_spec_xdr_unprocessed]: v30_spec_xdr_unprocessed
-//! [`panic_with_error!`]: crate::panic_with_error
-//! [`Env::panic_with_error`]: crate::Env::panic_with_error
 //!
 //! # Migrating from v28 to v29
 //!
@@ -495,6 +493,7 @@ pub mod v28_native_contract_code;
 pub mod v28_spec_shaking;
 pub mod v30_cli_version;
 pub mod v30_duplicate_names;
+pub mod v30_minor_breaking_changes;
 pub mod v30_muxed_contracts;
 pub mod v30_spec_markers;
 pub mod v30_spec_xdr_unprocessed;
