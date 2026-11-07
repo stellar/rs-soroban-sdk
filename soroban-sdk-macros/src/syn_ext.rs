@@ -283,7 +283,7 @@ pub fn strs_to_fns(fn_strs: &[LitStr]) -> Result<Vec<Fn>, Error> {
         .collect()
 }
 
-fn unpack_result(typ: &Type) -> Option<(Type, Type)> {
+pub fn unpack_result(typ: &Type) -> Option<(Type, Type)> {
     match &typ {
         Type::Path(TypePath { path, .. }) => {
             if let Some(PathSegment {

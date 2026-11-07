@@ -1218,6 +1218,10 @@ mod try_from_val_for_contract_fn;
 #[allow(deprecated)]
 pub use try_from_val_for_contract_fn::{TryFromValForCheckAuthPayload, TryFromValForContractFn};
 
+mod contracttrait_type;
+#[doc(hidden)]
+pub use contracttrait_type::ContractTraitType;
+
 mod into_val_for_contract_fn;
 #[doc(hidden)]
 #[allow(deprecated)]

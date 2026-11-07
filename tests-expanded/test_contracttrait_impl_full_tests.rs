@@ -122,6 +122,269 @@ impl soroban_sdk::testutils::ContractFunctionSet for Contract {
 impl AllTypes for Contract {}
 impl<'a> ContractClient<'a> {}
 impl ContractArgs {}
+const _: () = {
+    #[allow(dead_code)]
+    fn check_types() {
+        fn check<A0, R>(_: fn(A0) -> R)
+        where
+            A0: soroban_sdk::ContractTraitType<u32>,
+            R: soroban_sdk::ContractTraitType<u32>,
+        {
+        }
+        check(<Contract as AllTypes>::test_u32);
+    }
+};
+const _: () = {
+    #[allow(dead_code)]
+    fn check_types() {
+        fn check<A0, R>(_: fn(A0) -> R)
+        where
+            A0: soroban_sdk::ContractTraitType<i32>,
+            R: soroban_sdk::ContractTraitType<i32>,
+        {
+        }
+        check(<Contract as AllTypes>::test_i32);
+    }
+};
+const _: () = {
+    #[allow(dead_code)]
+    fn check_types() {
+        fn check<A0, R>(_: fn(A0) -> R)
+        where
+            A0: soroban_sdk::ContractTraitType<u64>,
+            R: soroban_sdk::ContractTraitType<u64>,
+        {
+        }
+        check(<Contract as AllTypes>::test_u64);
+    }
+};
+const _: () = {
+    #[allow(dead_code)]
+    fn check_types() {
+        fn check<A0, R>(_: fn(A0) -> R)
+        where
+            A0: soroban_sdk::ContractTraitType<i64>,
+            R: soroban_sdk::ContractTraitType<i64>,
+        {
+        }
+        check(<Contract as AllTypes>::test_i64);
+    }
+};
+const _: () = {
+    #[allow(dead_code)]
+    fn check_types() {
+        fn check<A0, R>(_: fn(A0) -> R)
+        where
+            A0: soroban_sdk::ContractTraitType<u128>,
+            R: soroban_sdk::ContractTraitType<u128>,
+        {
+        }
+        check(<Contract as AllTypes>::test_u128);
+    }
+};
+const _: () = {
+    #[allow(dead_code)]
+    fn check_types() {
+        fn check<A0, R>(_: fn(A0) -> R)
+        where
+            A0: soroban_sdk::ContractTraitType<i128>,
+            R: soroban_sdk::ContractTraitType<i128>,
+        {
+        }
+        check(<Contract as AllTypes>::test_i128);
+    }
+};
+const _: () = {
+    #[allow(dead_code)]
+    fn check_types() {
+        fn check<A0, R>(_: fn(A0) -> R)
+        where
+            A0: soroban_sdk::ContractTraitType<bool>,
+            R: soroban_sdk::ContractTraitType<bool>,
+        {
+        }
+        check(<Contract as AllTypes>::test_bool);
+    }
+};
+const _: () = {
+    #[allow(dead_code)]
+    fn check_types() {
+        fn check<A0, R>(_: fn(A0) -> R)
+        where
+            A0: soroban_sdk::ContractTraitType<Address>,
+            R: soroban_sdk::ContractTraitType<Address>,
+        {
+        }
+        check(<Contract as AllTypes>::test_address);
+    }
+};
+const _: () = {
+    #[allow(dead_code)]
+    fn check_types() {
+        fn check<A0, R>(_: fn(A0) -> R)
+        where
+            A0: soroban_sdk::ContractTraitType<Bytes>,
+            R: soroban_sdk::ContractTraitType<Bytes>,
+        {
+        }
+        check(<Contract as AllTypes>::test_bytes);
+    }
+};
+const _: () = {
+    #[allow(dead_code)]
+    fn check_types() {
+        fn check<A0, R>(_: fn(A0) -> R)
+        where
+            A0: soroban_sdk::ContractTraitType<BytesN<32>>,
+            R: soroban_sdk::ContractTraitType<BytesN<32>>,
+        {
+        }
+        check(<Contract as AllTypes>::test_bytes_n);
+    }
+};
+const _: () = {
+    #[allow(dead_code)]
+    fn check_types() {
+        fn check<A0, R>(_: fn(A0) -> R)
+        where
+            A0: soroban_sdk::ContractTraitType<String>,
+            R: soroban_sdk::ContractTraitType<String>,
+        {
+        }
+        check(<Contract as AllTypes>::test_string);
+    }
+};
+const _: () = {
+    #[allow(dead_code)]
+    fn check_types() {
+        fn check<A0, R>(_: fn(A0) -> R)
+        where
+            A0: soroban_sdk::ContractTraitType<Symbol>,
+            R: soroban_sdk::ContractTraitType<Symbol>,
+        {
+        }
+        check(<Contract as AllTypes>::test_symbol);
+    }
+};
+const _: () = {
+    #[allow(dead_code)]
+    fn check_types() {
+        fn check<A0, R>(_: fn(A0) -> R)
+        where
+            A0: soroban_sdk::ContractTraitType<Vec<u32>>,
+            R: soroban_sdk::ContractTraitType<Vec<u32>>,
+        {
+        }
+        check(<Contract as AllTypes>::test_vec);
+    }
+};
+const _: () = {
+    #[allow(dead_code)]
+    fn check_types() {
+        fn check<A0, R>(_: fn(A0) -> R)
+        where
+            A0: soroban_sdk::ContractTraitType<Map<u32, u32>>,
+            R: soroban_sdk::ContractTraitType<Map<u32, u32>>,
+        {
+        }
+        check(<Contract as AllTypes>::test_map);
+    }
+};
+const _: () = {
+    #[allow(dead_code)]
+    fn check_types() {
+        fn check<A0, R>(_: fn(A0) -> R)
+        where
+            A0: soroban_sdk::ContractTraitType<Duration>,
+            R: soroban_sdk::ContractTraitType<Duration>,
+        {
+        }
+        check(<Contract as AllTypes>::test_duration);
+    }
+};
+const _: () = {
+    #[allow(dead_code)]
+    fn check_types() {
+        fn check<A0, R>(_: fn(A0) -> R)
+        where
+            A0: soroban_sdk::ContractTraitType<Timepoint>,
+            R: soroban_sdk::ContractTraitType<Timepoint>,
+        {
+        }
+        check(<Contract as AllTypes>::test_timepoint);
+    }
+};
+const _: () = {
+    #[allow(dead_code)]
+    fn check_types() {
+        fn check<A0, R>(_: fn(A0) -> R)
+        where
+            A0: soroban_sdk::ContractTraitType<I256>,
+            R: soroban_sdk::ContractTraitType<I256>,
+        {
+        }
+        check(<Contract as AllTypes>::test_i256);
+    }
+};
+const _: () = {
+    #[allow(dead_code)]
+    fn check_types() {
+        fn check<A0, R>(_: fn(A0) -> R)
+        where
+            A0: soroban_sdk::ContractTraitType<U256>,
+            R: soroban_sdk::ContractTraitType<U256>,
+        {
+        }
+        check(<Contract as AllTypes>::test_u256);
+    }
+};
+const _: () = {
+    #[allow(dead_code)]
+    fn check_types() {
+        fn check<A0, R>(_: fn(&A0) -> R)
+        where
+            R: soroban_sdk::ContractTraitType<u32>,
+        {
+        }
+        check(<Contract as AllTypes>::test_env_param);
+    }
+};
+const _: () = {
+    #[allow(dead_code)]
+    fn check_types() {
+        fn check<A0, R>(_: fn(A0) -> R)
+        where
+            A0: soroban_sdk::ContractTraitType<MyStruct>,
+            R: soroban_sdk::ContractTraitType<MyStruct>,
+        {
+        }
+        check(<Contract as AllTypes>::test_struct);
+    }
+};
+const _: () = {
+    #[allow(dead_code)]
+    fn check_types() {
+        fn check<A0, R>(_: fn(A0) -> R)
+        where
+            A0: soroban_sdk::ContractTraitType<MyEnumUnit>,
+            R: soroban_sdk::ContractTraitType<MyEnumUnit>,
+        {
+        }
+        check(<Contract as AllTypes>::test_enum_unit);
+    }
+};
+const _: () = {
+    #[allow(dead_code)]
+    fn check_types() {
+        fn check<A0, R>(_: fn(A0) -> R)
+        where
+            A0: soroban_sdk::ContractTraitType<MyEnumVariants>,
+            R: soroban_sdk::ContractTraitType<MyEnumVariants>,
+        {
+        }
+        check(<Contract as AllTypes>::test_enum_variants);
+    }
+};
 #[doc(hidden)]
 /// Test u32 values.
 /// Returns the input unchanged.
