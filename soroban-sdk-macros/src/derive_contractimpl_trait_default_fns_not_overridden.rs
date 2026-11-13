@@ -9,7 +9,11 @@ use crate::{
 use darling::{ast::NestedMeta, Error, FromMeta};
 use proc_macro2::{Ident, TokenStream as TokenStream2};
 use quote::quote;
-use syn::{ext::IdentExt as _, Attribute, LitStr, Path, Type};
+use std::{collections::HashMap, iter};
+use syn::{
+    ext::IdentExt as _, Attribute, GenericArgument, GenericParam, Generics, LitStr, Path,
+    PathArguments, Type,
+};
 
 // See soroban-sdk/docs/contracttrait.md for documentation on how this works.
 
@@ -19,6 +23,7 @@ struct Args {
     crate_path: Path,
     trait_ident: Path,
     trait_default_fns: Vec<LitStr>,
+    trait_generics: Option<LitStr>,
     impl_ident: Ident,
     impl_fns: Vec<LitStr>,
     client_name: String,
@@ -51,7 +56,13 @@ fn derive(args: &Args) -> Result<TokenStream2, Error> {
     let trait_ident = &args.trait_ident;
     let spec_export = args.spec_export.unwrap_or(true);
 
-    let trait_default_fns = syn_ext::strs_to_fns(&args.trait_default_fns)?;
+    let mut trait_default_fns = syn_ext::strs_to_fns(&args.trait_default_fns)?;
+    if let Some(trait_generics) = &args.trait_generics {
+        let type_params = trait_type_params(&trait_generics.parse()?, trait_ident);
+        for f in &mut trait_default_fns {
+            syn_ext::fn_substitute_type_params(f, &type_params);
+        }
+    }
     let impl_fns = syn_ext::strs_to_fns(&args.impl_fns)?;
 
     // Filter the list of default fns down to only default fns that have not been redefined /
@@ -115,6 +126,39 @@ fn derive(args: &Args) -> Result<TokenStream2, Error> {
     ));
 
     Ok(output)
+}
+
+/// Maps the trait's generic type params to the args the impl gives them, or to
+/// their defaults where the impl leaves them out, such as `T` to `u32` for
+/// `Echo<u32>`.
+fn trait_type_params(generics: &Generics, trait_ident: &Path) -> HashMap<Ident, Type> {
+    let args = trait_ident
+        .segments
+        .last()
+        .into_iter()
+        .flat_map(|s| match &s.arguments {
+            PathArguments::AngleBracketed(args) => args.args.iter().collect(),
+            _ => vec![],
+        })
+        .filter(|a| !matches!(a, GenericArgument::Lifetime(_)))
+        .map(Some)
+        .chain(iter::repeat(None));
+    generics
+        .params
+        .iter()
+        .filter(|p| !matches!(p, GenericParam::Lifetime(_)))
+        .zip(args)
+        .filter_map(|(param, arg)| match (param, arg) {
+            (GenericParam::Type(param), Some(GenericArgument::Type(ty))) => {
+                Some((param.ident.clone(), ty.clone()))
+            }
+            (GenericParam::Type(param), None) => param
+                .default
+                .as_ref()
+                .map(|ty| (param.ident.clone(), ty.clone())),
+            _ => None,
+        })
+        .collect()
 }
 
 fn cfg_condition(attrs: &[Attribute]) -> Result<Option<TokenStream2>, Error> {
