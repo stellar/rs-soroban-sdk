@@ -148,6 +148,17 @@ impl Trait for Contract {
 }
 impl<'a> ContractClient<'a> {}
 impl ContractArgs {}
+const _: () = {
+    #[allow(dead_code)]
+    fn check_types() {
+        fn check<A0, R>(_: fn(&A0) -> R)
+        where
+            R: soroban_sdk::ContractTraitType<String>,
+        {
+        }
+        check(<Contract as Trait>::exec);
+    }
+};
 #[doc(hidden)]
 #[allow(non_snake_case)]
 #[deprecated(note = "use `ContractClient::new(&env, &contract_id).exec` instead")]

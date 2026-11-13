@@ -142,6 +142,7 @@ This proc macro:
    - **Client methods:** Methods on the client struct via `derive_client_impl`
    - **Args variants:** Enum variants for function arguments via `derive_args_impl`
    - **Test hooks:** Function registration for test environment via `derive_contract_function_registration_ctor`
+3. Checks at compile time that the types named in the default functions' signatures are the types of the trait's functions. The signatures are carried as strings, so their type names resolve in the implementing scope, not the trait's. The exported functions call the trait's functions and so use the trait's types regardless, but the specs, client methods, and args variants use the types the names resolve to in the implementing scope. The trait's function is passed to a function generic over its types, so each type is inferred from the trait's function and required to be the type its name resolves to in the implementing scope. If the implementing scope has a different type by the same name, the impl fails to compile with an error naming the trait's type to import, instead of silently generating a spec, client, and args with the other type.
 
 ## Why the `macro_rules!` Generated Helper Macro?
 
