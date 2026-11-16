@@ -5,3 +5,5 @@ This directory contains documentation about the internal workings of the Soroban
 ## Contents
 
 - [contracttrait.md](contracttrait.md) - How the `#[contracttrait]` macro works internally
+- [spec.md](spec.md) - How the contract spec is built at compile time with const evaluation
+- [test-fn-registration.md](test-fn-registration.md) - How contract functions are registered for native tests with module init functions
