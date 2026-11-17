@@ -8,8 +8,10 @@ use crate::{
 };
 use darling::{ast::NestedMeta, Error, FromMeta};
 use proc_macro2::{Ident, TokenStream as TokenStream2};
-use quote::quote;
-use syn::{ext::IdentExt as _, Attribute, LitStr, Path, Type};
+use quote::{format_ident, quote, quote_spanned};
+use syn::{
+    ext::IdentExt as _, spanned::Spanned as _, Attribute, FnArg, LitStr, Path, ReturnType, Type,
+};
 
 // See soroban-sdk/docs/contracttrait.md for documentation on how this works.
 
@@ -88,6 +90,12 @@ fn derive(args: &Args) -> Result<TokenStream2, Error> {
     }
 
     let mut output = quote! {};
+    output.extend(derive_type_checks(
+        &args.crate_path,
+        &impl_ty,
+        trait_ident,
+        &fns,
+    ));
     output.extend(derive_pub_fns(
         &args.crate_path,
         &impl_ty,
@@ -115,6 +123,86 @@ fn derive(args: &Args) -> Result<TokenStream2, Error> {
     ));
 
     Ok(output)
+}
+
+// The default fns' signatures are carried here as strings, so the type names in
+// them resolve here, at the impl, rather than where the trait is defined. The
+// spec, client, and args generated for the default fns use the types the names
+// resolve to here, so fail to compile if they are not the types of the trait's
+// fns, which happens if the trait and the impl see different types by the same
+// name. The trait's fn is passed to a fn generic over its types, so that each
+// type is inferred from the trait's fn and compared to the type its name
+// resolves to here, and an error names the type of the trait's that differs.
+fn derive_type_checks(
+    crate_path: &Path,
+    impl_ty: &Type,
+    trait_ident: &Path,
+    fns: &[syn_ext::Fn],
+) -> TokenStream2 {
+    let checks = fns.iter().map(|f| {
+        let ident = &f.ident;
+        let cfg_attrs = f.attrs.iter().filter(|attr| attr.path().is_ident("cfg"));
+        let mut params = Vec::new();
+        let mut ptr_inputs = Vec::new();
+        let mut bounds = Vec::new();
+        let bound = |param: &Ident, named: &Type| quote!(#param: #crate_path::ContractTraitType<#named>);
+        for (i, input) in f.inputs.iter().enumerate() {
+            let ty = match input {
+                FnArg::Typed(pat_ty) => &*pat_ty.ty,
+                FnArg::Receiver(r) => &*r.ty,
+            };
+            let param = format_ident!("A{i}");
+            let elem = match ty {
+                Type::Reference(r) => {
+                    ptr_inputs.push(quote!(&#param));
+                    &*r.elem
+                }
+                ty => {
+                    ptr_inputs.push(quote!(#param));
+                    ty
+                }
+            };
+            // The env is left unchecked, like the exported fn leaves it to be
+            // inferred, because its name is not used and need not be in scope.
+            let is_env = matches!(elem, Type::Path(p) if p.path.segments.last().is_some_and(|s| s.ident == "Env"));
+            if !(i == 0 && is_env) {
+                bounds.push(bound(&param, elem));
+            }
+            params.push(param);
+        }
+        let ptr_output = match &f.output {
+            ReturnType::Default => quote!(),
+            ReturnType::Type(_, ty) => match syn_ext::unpack_result(ty) {
+                Some((t, e)) => {
+                    let (t_param, e_param) = (format_ident!("T"), format_ident!("E"));
+                    bounds.push(bound(&t_param, &t));
+                    bounds.push(bound(&e_param, &e));
+                    params.extend([t_param, e_param]);
+                    quote!(-> ::core::result::Result<T, E>)
+                }
+                None => {
+                    let r_param = format_ident!("R");
+                    bounds.push(bound(&r_param, ty));
+                    params.push(r_param);
+                    quote!(-> R)
+                }
+            },
+        };
+        let call = quote_spanned! {trait_ident.span()=>
+            check(<#impl_ty as #trait_ident>::#ident)
+        };
+        quote! {
+            #(#cfg_attrs)*
+            const _: () = {
+                #[allow(dead_code)]
+                fn check_types() {
+                    fn check<#(#params),*>(_: fn(#(#ptr_inputs),*) #ptr_output) where #(#bounds),* {}
+                    #call;
+                }
+            };
+        }
+    });
+    quote! { #(#checks)* }
 }
 
 fn cfg_condition(attrs: &[Attribute]) -> Result<Option<TokenStream2>, Error> {

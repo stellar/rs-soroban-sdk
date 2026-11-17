@@ -287,6 +287,17 @@ impl soroban_sdk::testutils::ContractFunctionSet for ContractCratePath {
 impl crate::traits::CratePathTrait for ContractCratePath {}
 impl<'a> ContractCratePathClient<'a> {}
 impl ContractCratePathArgs {}
+const _: () = {
+    #[allow(dead_code)]
+    fn check_types() {
+        fn check<A0, R>(_: fn(&A0) -> R)
+        where
+            R: soroban_sdk::ContractTraitType<u32>,
+        {
+        }
+        check(<ContractCratePath as crate::traits::CratePathTrait>::crate_path_method);
+    }
+};
 #[doc(hidden)]
 #[allow(non_snake_case)]
 #[deprecated(

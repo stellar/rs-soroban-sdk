@@ -279,6 +279,17 @@ impl soroban_sdk::testutils::ContractFunctionSet for ContractSelfPath {
 impl self::SelfPathTrait for ContractSelfPath {}
 impl<'a> ContractSelfPathClient<'a> {}
 impl ContractSelfPathArgs {}
+const _: () = {
+    #[allow(dead_code)]
+    fn check_types() {
+        fn check<A0, R>(_: fn(&A0) -> R)
+        where
+            R: soroban_sdk::ContractTraitType<u32>,
+        {
+        }
+        check(<ContractSelfPath as self::SelfPathTrait>::self_path_method);
+    }
+};
 #[doc(hidden)]
 #[allow(non_snake_case)]
 #[deprecated(
