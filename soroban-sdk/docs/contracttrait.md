@@ -143,6 +143,27 @@ This proc macro:
    - **Args variants:** Enum variants for function arguments via `derive_args_impl`
    - **Test hooks:** Function registration for test environment via `derive_contract_function_registration_ctor`
 
+## Generic Traits
+
+A trait's generic type params can be used in its function signatures:
+
+```rust
+#[contracttrait]
+pub trait Echo<T> {
+    fn echo(env: Env, t: T) -> T { t }
+}
+
+#[contractimpl(contracttrait)]
+impl Echo<u32> for Contract {}
+```
+
+The params are only in scope inside the trait, so:
+
+- The trait's spec, args and client (Stage 1) leave out functions whose signatures mention the params, since a spec entry can't express `T`.
+- The trait macro (Stage 2) passes the trait's generics as `trait_generics = "<T>"`, only when the trait has generics, so that traits without them generate the same call as before.
+- `#[contractimpl]` (Stage 3) calls the trait macro by the trait's path without generic args (`Echo!`), and passes the trait's path in turbofish form (`Echo::<u32>`) so that it parses as an expression where the macro passes it on.
+- `contractimpl_trait_default_fns_not_overridden` (Stage 5) substitutes the impl's args, or the params' defaults where the impl leaves them out, for the params in the default functions' signatures, so `echo` is exported as `fn echo(env: Env, t: u32) -> u32`.
+
 ## Why the `macro_rules!` Generated Helper Macro?
 
 The two-stage approach with a declarative generated helper macro is necessary because:
