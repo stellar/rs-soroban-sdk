@@ -174,8 +174,8 @@ fn test_cost_estimate_budget() {
         ValSer                             61             Some(1248)     13690          18506          221                 26                  242                 384                 
         ValDeser                           0              Some(0)        0              0              331                 4369                0                   384                 
         ComputeSha256Hash                  0              Some(0)        0              0              3636                7013                0                   0                   
-        ComputeEd25519PubKey               0              None           0              0              40256               0                   0                   0                   
-        VerifyEd25519Sig                   0              Some(0)        0              0              377551              4059                0                   0                   
+        ComputeEd25519PubKey               0              None           0              0              44420               0                   0                   0                   
+        VerifyEd25519Sig                   0              Some(0)        0              0              706689              4229                0                   0                   
         VmInstantiation                    0              Some(0)        0              0              417482              45712               132773              4903                
         VmCachedInstantiation              0              Some(0)        0              0              41142               634                 69472               1217                
         InvokeVmFunction                   1              None           1945           14             1945                0                   14                  0                   
@@ -183,10 +183,10 @@ fn test_cost_estimate_budget() {
         DecodeEcdsaCurve256Sig             0              None           0              0              711                 0                   0                   0                   
         RecoverEcdsaSecp256k1Key           0              None           0              0              2314804             0                   181                 0                   
         Int256AddSub                       0              None           0              0              4176                0                   99                  0                   
-        Int256Mul                          0              None           0              0              4716                0                   99                  0                   
+        Int256Mul                          0              None           0              0              5771                0                   99                  0                   
         Int256Div                          0              None           0              0              4680                0                   99                  0                   
-        Int256Pow                          0              None           0              0              4256                0                   99                  0                   
-        Int256Shift                        0              None           0              0              884                 0                   99                  0                   
+        Int256Pow                          0              None           0              0              10293               0                   99                  0                   
+        Int256Shift                        0              None           0              0              2100                0                   99                  0                   
         ChaCha20DrawBytes                  0              Some(0)        0              0              1059                502                 0                   0                   
         ParseWasmInstructions              0              Some(0)        0              0              73077               25410               17564               6457                
         ParseWasmFunctions                 0              Some(0)        0              0              0                   540752              0                   47464               
@@ -219,12 +219,12 @@ fn test_cost_estimate_budget() {
         Bls12381G1ProjectiveToAffine       0              None           0              0              92642               0                   0                   0                   
         Bls12381G2ProjectiveToAffine       0              None           0              0              100742              0                   0                   0                   
         Bls12381G1Add                      0              None           0              0              7689                0                   0                   0                   
-        Bls12381G1Mul                      0              None           0              0              2458985             0                   0                   0                   
+        Bls12381G1Mul                      0              None           0              0              3110211             0                   0                   0                   
         Bls12381G1Msm                      0              Some(0)        0              0              2347584             94135478            109494              266603              
         Bls12381MapFpToG1                  0              None           0              0              1020885             0                   2776                0                   
         Bls12381HashToG1                   0              Some(0)        0              0              2638451             6803                5896                0                   
         Bls12381G2Add                      0              None           0              0              25207               0                   0                   0                   
-        Bls12381G2Mul                      0              None           0              0              7873219             0                   0                   0                   
+        Bls12381G2Mul                      0              None           0              0              9836091             0                   0                   0                   
         Bls12381G2Msm                      0              Some(0)        0              0              7663880             298580871           219654              266603              
         Bls12381MapFp2ToG2                 0              None           0              0              1856539             0                   1672                0                   
         Bls12381HashToG2                   0              Some(0)        0              0              6315452             7232                3960                0                   
@@ -240,9 +240,9 @@ fn test_cost_estimate_budget() {
         Bn254G1CheckPointOnCurve           0              None           0              0              904                 0                   0                   0                   
         Bn254G2CheckPointOnCurve           0              None           0              0              2811                0                   0                   0                   
         Bn254G2CheckPointInSubgroup        0              None           0              0              1706052             0                   0                   0                   
-        Bn254G1ProjectiveToAffine          0              None           0              0              61                  0                   0                   0                   
+        Bn254G1ProjectiveToAffine          0              None           0              0              34237               0                   0                   0                   
         Bn254G1Add                         0              None           0              0              3623                0                   0                   0                   
-        Bn254G1Mul                         0              None           0              0              1150435             0                   0                   0                   
+        Bn254G1Mul                         0              None           0              0              1467330             0                   0                   0                   
         Bn254Pairing                       0              Some(0)        0              0              5263916             392472814           1821                6232546             
         Bn254FrFromU256                    0              None           0              0              2052                0                   0                   0                   
         Bn254FrToU256                      0              None           0              0              1133                0                   312                 0                   
