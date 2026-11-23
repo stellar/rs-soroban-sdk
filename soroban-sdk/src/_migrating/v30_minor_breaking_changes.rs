@@ -173,15 +173,15 @@
 //!
 //! ## `spec_xdr` fns return names before they are processed
 //!
-//! `spec_xdr` functions return entries with full-path names. For example, the 
-//! spec entry for a `#[contracttype]` struct `State` will now be named 
+//! `spec_xdr` functions return entries with full-path names. For example, the
+//! spec entry for a `#[contracttype]` struct `State` will now be named
 //! `::my_contract::State`, not `State`.
 //!
-//! Tools that assemble a spec from the `spec_xdr` fns need to reduce the names 
-//! with `soroban_spec::reduce::reduce`, as `stellar contract build` does. See 
+//! Tools that assemble a spec from the `spec_xdr` fns need to reduce the names
+//! with `soroban_spec::reduce::reduce`, as `stellar contract build` does. See
 //! [v30_spec_xdr_unprocessed] for details.
 //!
-//! When building with the Stellar CLI's `stellar contract build`, the resulting 
+//! When building with the Stellar CLI's `stellar contract build`, the resulting
 //! spec will already be reduced, so no action is needed.
 //!
 //! Tools that assemble a spec from the `spec_xdr` fns need to reduce the names with
