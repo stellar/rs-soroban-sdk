@@ -1,6 +1,5 @@
-use soroban_env_host::{
-    fees::FeeConfiguration, FeeEstimate, InvocationResourceLimits, InvocationResources,
-};
+use soroban_env_host::fees::FeeConfiguration;
+pub use soroban_env_host::{FeeEstimate, InvocationResourceLimits, InvocationResources};
 
 use crate::{testutils::budget::Budget, Env};
 
@@ -111,6 +110,40 @@ impl CostEstimate {
     /// `disable_resource_limits()`.
     ///
     /// By default, `InvocationResourceLimits::mainnet()` limits are enforced.
+    ///
+    /// ### Examples
+    ///
+    /// Enforce limits that are stricter than mainnet:
+    ///
+    /// ```
+    /// use soroban_sdk::{contract, contractimpl, Env};
+    /// use soroban_sdk::testutils::cost_estimate::{
+    ///     InvocationResourceLimits, NetworkInvocationResourceLimits,
+    /// };
+    ///
+    /// #[contract]
+    /// pub struct Contract;
+    ///
+    /// #[contractimpl]
+    /// impl Contract {
+    ///     pub fn execute() {}
+    /// }
+    ///
+    /// # #[cfg(feature = "testutils")]
+    /// # fn main() {
+    /// let env = Env::default();
+    ///
+    /// let mut limits = InvocationResourceLimits::mainnet();
+    /// limits.instructions = 100_000_000;
+    /// env.cost_estimate().enforce_resource_limits(limits);
+    ///
+    /// let contract_id = env.register(Contract, ());
+    /// let client = ContractClient::new(&env, &contract_id);
+    /// client.execute(); // Panics if any of the limits are exceeded.
+    /// # }
+    /// # #[cfg(not(feature = "testutils"))]
+    /// # fn main() { }
+    /// ```
     pub fn enforce_resource_limits(&self, limits: InvocationResourceLimits) {
         self.env
             .host()
