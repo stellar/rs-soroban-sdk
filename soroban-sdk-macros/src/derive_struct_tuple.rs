@@ -97,6 +97,7 @@ pub fn derive_type_struct_tuple(
 
         #spec_gen
 
+        #[automatically_derived]
         impl #path::TryFromVal<#path::Env, #path::Val> for #ident {
             type Error = #path::ConversionError;
             #[inline(always)]
@@ -111,6 +112,7 @@ pub fn derive_type_struct_tuple(
             }
         }
 
+        #[automatically_derived]
         impl #path::TryFromVal<#path::Env, #ident> for #path::Val {
             type Error = #path::ConversionError;
             #[inline(always)]
@@ -123,6 +125,7 @@ pub fn derive_type_struct_tuple(
             }
         }
 
+        #[automatically_derived]
         impl #path::TryFromVal<#path::Env, &#ident> for #path::Val {
             type Error = #path::ConversionError;
             #[inline(always)]
@@ -137,6 +140,7 @@ pub fn derive_type_struct_tuple(
         let arbitrary_tokens =
             crate::arbitrary::derive_arbitrary_struct_tuple(path, vis, ident, data);
         output.extend(quote! {
+            #[automatically_derived]
             impl #path::TryFromVal<#path::Env, #path::xdr::ScVec> for #ident {
                 type Error = #path::xdr::Error;
                 #[inline(always)]
@@ -153,6 +157,7 @@ pub fn derive_type_struct_tuple(
                 }
             }
 
+            #[automatically_derived]
             impl #path::TryFromVal<#path::Env, #path::xdr::ScVal> for #ident {
                 type Error = #path::xdr::Error;
                 #[inline(always)]
@@ -165,6 +170,7 @@ pub fn derive_type_struct_tuple(
                 }
             }
 
+            #[automatically_derived]
             impl TryFrom<&#ident> for #path::xdr::ScVec {
                 type Error = #path::xdr::Error;
                 #[inline(always)]
@@ -177,6 +183,7 @@ pub fn derive_type_struct_tuple(
                 }
             }
 
+            #[automatically_derived]
             impl TryFrom<#ident> for #path::xdr::ScVec {
                 type Error = #path::xdr::Error;
                 #[inline(always)]
@@ -185,6 +192,7 @@ pub fn derive_type_struct_tuple(
                 }
             }
 
+            #[automatically_derived]
             impl TryFrom<&#ident> for #path::xdr::ScVal {
                 type Error = #path::xdr::Error;
                 #[inline(always)]
@@ -193,6 +201,7 @@ pub fn derive_type_struct_tuple(
                 }
             }
 
+            #[automatically_derived]
             impl TryFrom<#ident> for #path::xdr::ScVal {
                 type Error = #path::xdr::Error;
                 #[inline(always)]

@@ -121,6 +121,7 @@ pub fn derive_type_struct(
 
         #spec_gen
 
+        #[automatically_derived]
         impl #path::TryFromVal<#path::Env, #path::Val> for #ident {
             type Error = #path::ConversionError;
             fn try_from_val(env: &#path::Env, val: &#path::Val) -> Result<Self, #path::ConversionError> {
@@ -135,6 +136,7 @@ pub fn derive_type_struct(
             }
         }
 
+        #[automatically_derived]
         impl #path::TryFromVal<#path::Env, #ident> for #path::Val {
             type Error = #path::ConversionError;
             fn try_from_val(env: &#path::Env, val: &#ident) -> Result<Self, #path::ConversionError> {
@@ -147,6 +149,7 @@ pub fn derive_type_struct(
             }
         }
 
+        #[automatically_derived]
         impl #path::TryFromVal<#path::Env, &#ident> for #path::Val {
             type Error = #path::ConversionError;
             #[inline(always)]
@@ -160,6 +163,7 @@ pub fn derive_type_struct(
     if cfg!(feature = "testutils") {
         let arbitrary_tokens = crate::arbitrary::derive_arbitrary_struct(path, vis, ident, data);
         output.extend(quote!{
+            #[automatically_derived]
             impl #path::TryFromVal<#path::Env, #path::xdr::ScMap> for #ident {
                 type Error = #path::xdr::Error;
                 #[inline(always)]
@@ -179,6 +183,7 @@ pub fn derive_type_struct(
                 }
             }
 
+            #[automatically_derived]
             impl #path::TryFromVal<#path::Env, #path::xdr::ScVal> for #ident {
                 type Error = #path::xdr::Error;
                 #[inline(always)]
@@ -191,6 +196,7 @@ pub fn derive_type_struct(
                 }
             }
 
+            #[automatically_derived]
             impl TryFrom<&#ident> for #path::xdr::ScMap  {
                 type Error = #path::xdr::Error;
                 #[inline(always)]
@@ -203,6 +209,7 @@ pub fn derive_type_struct(
                 }
             }
 
+            #[automatically_derived]
             impl TryFrom<#ident> for #path::xdr::ScMap {
                 type Error = #path::xdr::Error;
                 #[inline(always)]
@@ -211,6 +218,7 @@ pub fn derive_type_struct(
                 }
             }
 
+            #[automatically_derived]
             impl TryFrom<&#ident> for #path::xdr::ScVal  {
                 type Error = #path::xdr::Error;
                 #[inline(always)]
@@ -219,6 +227,7 @@ pub fn derive_type_struct(
                 }
             }
 
+            #[automatically_derived]
             impl TryFrom<#ident> for #path::xdr::ScVal {
                 type Error = #path::xdr::Error;
                 #[inline(always)]

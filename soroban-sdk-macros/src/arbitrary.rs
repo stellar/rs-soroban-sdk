@@ -326,10 +326,12 @@ fn quote_arbitrary(
             #[derive(Debug, Clone, Eq, PartialEq, Ord, PartialOrd)]
             #vis #arbitrary_type_decl
 
+            #[automatically_derived]
             impl #path::testutils::arbitrary::SorobanArbitrary for #ident {
                 type Prototype = #arbitrary_type_ident;
             }
 
+            #[automatically_derived]
             impl #path::TryFromVal<#path::Env, #arbitrary_type_ident> for #ident {
                 type Error = #path::ConversionError;
                 fn try_from_val(env: &#path::Env, v: &#arbitrary_type_ident) -> std::result::Result<Self, Self::Error> {
