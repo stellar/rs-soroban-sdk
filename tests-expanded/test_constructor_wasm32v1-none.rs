@@ -118,6 +118,7 @@ impl DataKey {
         const { DataKey::__SPEC_XDR_ENTRY.const_to_xdr() }
     }
 }
+#[automatically_derived]
 impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for DataKey {
     type Error = soroban_sdk::ConversionError;
     #[inline(always)]
@@ -172,6 +173,7 @@ impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for DataKey {
         )
     }
 }
+#[automatically_derived]
 impl soroban_sdk::TryFromVal<soroban_sdk::Env, DataKey> for soroban_sdk::Val {
     type Error = soroban_sdk::ConversionError;
     #[inline(always)]
@@ -205,6 +207,7 @@ impl soroban_sdk::TryFromVal<soroban_sdk::Env, DataKey> for soroban_sdk::Val {
         }
     }
 }
+#[automatically_derived]
 impl soroban_sdk::TryFromVal<soroban_sdk::Env, &DataKey> for soroban_sdk::Val {
     type Error = soroban_sdk::ConversionError;
     #[inline(always)]

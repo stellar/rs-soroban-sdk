@@ -108,6 +108,7 @@ impl AttributeType {
         const { AttributeType::__SPEC_XDR_ENTRY.const_to_xdr() }
     }
 }
+#[automatically_derived]
 impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for AttributeType {
     type Error = soroban_sdk::ConversionError;
     fn try_from_val(
@@ -127,6 +128,7 @@ impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for AttributeTy
         })
     }
 }
+#[automatically_derived]
 impl soroban_sdk::TryFromVal<soroban_sdk::Env, AttributeType> for soroban_sdk::Val {
     type Error = soroban_sdk::ConversionError;
     fn try_from_val(
@@ -144,6 +146,7 @@ impl soroban_sdk::TryFromVal<soroban_sdk::Env, AttributeType> for soroban_sdk::V
             .into())
     }
 }
+#[automatically_derived]
 impl soroban_sdk::TryFromVal<soroban_sdk::Env, &AttributeType> for soroban_sdk::Val {
     type Error = soroban_sdk::ConversionError;
     #[inline(always)]
@@ -154,6 +157,7 @@ impl soroban_sdk::TryFromVal<soroban_sdk::Env, &AttributeType> for soroban_sdk::
         <_ as soroban_sdk::TryFromVal<soroban_sdk::Env, AttributeType>>::try_from_val(env, *val)
     }
 }
+#[automatically_derived]
 impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::xdr::ScMap> for AttributeType {
     type Error = soroban_sdk::xdr::Error;
     #[inline(always)]
@@ -196,6 +200,7 @@ impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::xdr::ScMap> for Attr
         })
     }
 }
+#[automatically_derived]
 impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::xdr::ScVal> for AttributeType {
     type Error = soroban_sdk::xdr::Error;
     #[inline(always)]
@@ -210,6 +215,7 @@ impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::xdr::ScVal> for Attr
         }
     }
 }
+#[automatically_derived]
 impl TryFrom<&AttributeType> for soroban_sdk::xdr::ScMap {
     type Error = soroban_sdk::xdr::Error;
     #[inline(always)]
@@ -231,6 +237,7 @@ impl TryFrom<&AttributeType> for soroban_sdk::xdr::ScMap {
         ])))
     }
 }
+#[automatically_derived]
 impl TryFrom<AttributeType> for soroban_sdk::xdr::ScMap {
     type Error = soroban_sdk::xdr::Error;
     #[inline(always)]
@@ -238,6 +245,7 @@ impl TryFrom<AttributeType> for soroban_sdk::xdr::ScMap {
         (&val).try_into()
     }
 }
+#[automatically_derived]
 impl TryFrom<&AttributeType> for soroban_sdk::xdr::ScVal {
     type Error = soroban_sdk::xdr::Error;
     #[inline(always)]
@@ -245,6 +253,7 @@ impl TryFrom<&AttributeType> for soroban_sdk::xdr::ScVal {
         Ok(soroban_sdk::xdr::ScVal::Map(Some(val.try_into()?)))
     }
 }
+#[automatically_derived]
 impl TryFrom<AttributeType> for soroban_sdk::xdr::ScVal {
     type Error = soroban_sdk::xdr::Error;
     #[inline(always)]
@@ -415,9 +424,11 @@ const _: () = {
             }
         }
     };
+    #[automatically_derived]
     impl soroban_sdk::testutils::arbitrary::SorobanArbitrary for AttributeType {
         type Prototype = ArbitraryAttributeType;
     }
+    #[automatically_derived]
     impl soroban_sdk::TryFromVal<soroban_sdk::Env, ArbitraryAttributeType> for AttributeType {
         type Error = soroban_sdk::ConversionError;
         fn try_from_val(
