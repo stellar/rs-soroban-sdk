@@ -94,6 +94,7 @@ impl Value {
         const { Value::__SPEC_XDR_ENTRY.const_to_xdr() }
     }
 }
+#[automatically_derived]
 impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for Value {
     type Error = soroban_sdk::ConversionError;
     fn try_from_val(
@@ -113,6 +114,7 @@ impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for Value {
         })
     }
 }
+#[automatically_derived]
 impl soroban_sdk::TryFromVal<soroban_sdk::Env, Value> for soroban_sdk::Val {
     type Error = soroban_sdk::ConversionError;
     fn try_from_val(
@@ -130,6 +132,7 @@ impl soroban_sdk::TryFromVal<soroban_sdk::Env, Value> for soroban_sdk::Val {
             .into())
     }
 }
+#[automatically_derived]
 impl soroban_sdk::TryFromVal<soroban_sdk::Env, &Value> for soroban_sdk::Val {
     type Error = soroban_sdk::ConversionError;
     #[inline(always)]

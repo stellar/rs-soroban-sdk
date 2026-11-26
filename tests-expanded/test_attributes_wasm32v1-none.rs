@@ -109,6 +109,7 @@ impl AttributeType {
         const { AttributeType::__SPEC_XDR_ENTRY.const_to_xdr() }
     }
 }
+#[automatically_derived]
 impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for AttributeType {
     type Error = soroban_sdk::ConversionError;
     fn try_from_val(
@@ -128,6 +129,7 @@ impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for AttributeTy
         })
     }
 }
+#[automatically_derived]
 impl soroban_sdk::TryFromVal<soroban_sdk::Env, AttributeType> for soroban_sdk::Val {
     type Error = soroban_sdk::ConversionError;
     fn try_from_val(
@@ -145,6 +147,7 @@ impl soroban_sdk::TryFromVal<soroban_sdk::Env, AttributeType> for soroban_sdk::V
             .into())
     }
 }
+#[automatically_derived]
 impl soroban_sdk::TryFromVal<soroban_sdk::Env, &AttributeType> for soroban_sdk::Val {
     type Error = soroban_sdk::ConversionError;
     #[inline(always)]

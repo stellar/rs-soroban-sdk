@@ -1182,6 +1182,7 @@ mod test_a {
             #[inline(always)]
             fn spec_shaking_marker() {}
         }
+        #[automatically_derived]
         impl TryFrom<soroban_sdk::Error> for Error {
             type Error = soroban_sdk::Error;
             #[inline(always)]
@@ -1197,6 +1198,7 @@ mod test_a {
                 }
             }
         }
+        #[automatically_derived]
         impl TryFrom<&soroban_sdk::Error> for Error {
             type Error = soroban_sdk::Error;
             #[inline(always)]
@@ -1204,12 +1206,14 @@ mod test_a {
                 <_ as TryFrom<soroban_sdk::Error>>::try_from(*error)
             }
         }
+        #[automatically_derived]
         impl From<Error> for soroban_sdk::Error {
             #[inline(always)]
             fn from(val: Error) -> soroban_sdk::Error {
                 <_ as From<&Error>>::from(&val)
             }
         }
+        #[automatically_derived]
         impl From<&Error> for soroban_sdk::Error {
             #[inline(always)]
             fn from(val: &Error) -> soroban_sdk::Error {
@@ -1218,6 +1222,7 @@ mod test_a {
                 }
             }
         }
+        #[automatically_derived]
         impl TryFrom<soroban_sdk::InvokeError> for Error {
             type Error = soroban_sdk::InvokeError;
             #[inline(always)]
@@ -1231,6 +1236,7 @@ mod test_a {
                 }
             }
         }
+        #[automatically_derived]
         impl TryFrom<&soroban_sdk::InvokeError> for Error {
             type Error = soroban_sdk::InvokeError;
             #[inline(always)]
@@ -1240,12 +1246,14 @@ mod test_a {
                 <_ as TryFrom<soroban_sdk::InvokeError>>::try_from(*error)
             }
         }
+        #[automatically_derived]
         impl From<Error> for soroban_sdk::InvokeError {
             #[inline(always)]
             fn from(val: Error) -> soroban_sdk::InvokeError {
                 <_ as From<&Error>>::from(&val)
             }
         }
+        #[automatically_derived]
         impl From<&Error> for soroban_sdk::InvokeError {
             #[inline(always)]
             fn from(val: &Error) -> soroban_sdk::InvokeError {
@@ -1254,6 +1262,7 @@ mod test_a {
                 }
             }
         }
+        #[automatically_derived]
         impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for Error {
             type Error = soroban_sdk::ConversionError;
             #[inline(always)]
@@ -1266,6 +1275,7 @@ mod test_a {
                 error.try_into().map_err(|_| soroban_sdk::ConversionError)
             }
         }
+        #[automatically_derived]
         impl soroban_sdk::TryFromVal<soroban_sdk::Env, Error> for soroban_sdk::Val {
             type Error = soroban_sdk::ConversionError;
             #[inline(always)]
@@ -1277,6 +1287,7 @@ mod test_a {
                 Ok(error.into())
             }
         }
+        #[automatically_derived]
         impl soroban_sdk::TryFromVal<soroban_sdk::Env, &Error> for soroban_sdk::Val {
             type Error = soroban_sdk::ConversionError;
             #[inline(always)]
@@ -2782,6 +2793,7 @@ mod test_b {
             #[inline(always)]
             fn spec_shaking_marker() {}
         }
+        #[automatically_derived]
         impl TryFrom<soroban_sdk::Error> for Error {
             type Error = soroban_sdk::Error;
             #[inline(always)]
@@ -2797,6 +2809,7 @@ mod test_b {
                 }
             }
         }
+        #[automatically_derived]
         impl TryFrom<&soroban_sdk::Error> for Error {
             type Error = soroban_sdk::Error;
             #[inline(always)]
@@ -2804,12 +2817,14 @@ mod test_b {
                 <_ as TryFrom<soroban_sdk::Error>>::try_from(*error)
             }
         }
+        #[automatically_derived]
         impl From<Error> for soroban_sdk::Error {
             #[inline(always)]
             fn from(val: Error) -> soroban_sdk::Error {
                 <_ as From<&Error>>::from(&val)
             }
         }
+        #[automatically_derived]
         impl From<&Error> for soroban_sdk::Error {
             #[inline(always)]
             fn from(val: &Error) -> soroban_sdk::Error {
@@ -2818,6 +2833,7 @@ mod test_b {
                 }
             }
         }
+        #[automatically_derived]
         impl TryFrom<soroban_sdk::InvokeError> for Error {
             type Error = soroban_sdk::InvokeError;
             #[inline(always)]
@@ -2831,6 +2847,7 @@ mod test_b {
                 }
             }
         }
+        #[automatically_derived]
         impl TryFrom<&soroban_sdk::InvokeError> for Error {
             type Error = soroban_sdk::InvokeError;
             #[inline(always)]
@@ -2840,12 +2857,14 @@ mod test_b {
                 <_ as TryFrom<soroban_sdk::InvokeError>>::try_from(*error)
             }
         }
+        #[automatically_derived]
         impl From<Error> for soroban_sdk::InvokeError {
             #[inline(always)]
             fn from(val: Error) -> soroban_sdk::InvokeError {
                 <_ as From<&Error>>::from(&val)
             }
         }
+        #[automatically_derived]
         impl From<&Error> for soroban_sdk::InvokeError {
             #[inline(always)]
             fn from(val: &Error) -> soroban_sdk::InvokeError {
@@ -2854,6 +2873,7 @@ mod test_b {
                 }
             }
         }
+        #[automatically_derived]
         impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for Error {
             type Error = soroban_sdk::ConversionError;
             #[inline(always)]
@@ -2866,6 +2886,7 @@ mod test_b {
                 error.try_into().map_err(|_| soroban_sdk::ConversionError)
             }
         }
+        #[automatically_derived]
         impl soroban_sdk::TryFromVal<soroban_sdk::Env, Error> for soroban_sdk::Val {
             type Error = soroban_sdk::ConversionError;
             #[inline(always)]
@@ -2877,6 +2898,7 @@ mod test_b {
                 Ok(error.into())
             }
         }
+        #[automatically_derived]
         impl soroban_sdk::TryFromVal<soroban_sdk::Env, &Error> for soroban_sdk::Val {
             type Error = soroban_sdk::ConversionError;
             #[inline(always)]

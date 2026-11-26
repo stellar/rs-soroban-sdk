@@ -113,6 +113,7 @@ impl StructA {
         const { StructA::__SPEC_XDR_ENTRY.const_to_xdr() }
     }
 }
+#[automatically_derived]
 impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for StructA {
     type Error = soroban_sdk::ConversionError;
     fn try_from_val(
@@ -135,6 +136,7 @@ impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for StructA {
         })
     }
 }
+#[automatically_derived]
 impl soroban_sdk::TryFromVal<soroban_sdk::Env, StructA> for soroban_sdk::Val {
     type Error = soroban_sdk::ConversionError;
     fn try_from_val(
@@ -153,6 +155,7 @@ impl soroban_sdk::TryFromVal<soroban_sdk::Env, StructA> for soroban_sdk::Val {
             .into())
     }
 }
+#[automatically_derived]
 impl soroban_sdk::TryFromVal<soroban_sdk::Env, &StructA> for soroban_sdk::Val {
     type Error = soroban_sdk::ConversionError;
     #[inline(always)]
@@ -271,6 +274,7 @@ impl StructB {
         const { StructB::__SPEC_XDR_ENTRY.const_to_xdr() }
     }
 }
+#[automatically_derived]
 impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for StructB {
     type Error = soroban_sdk::ConversionError;
     fn try_from_val(
@@ -293,6 +297,7 @@ impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for StructB {
         })
     }
 }
+#[automatically_derived]
 impl soroban_sdk::TryFromVal<soroban_sdk::Env, StructB> for soroban_sdk::Val {
     type Error = soroban_sdk::ConversionError;
     fn try_from_val(
@@ -311,6 +316,7 @@ impl soroban_sdk::TryFromVal<soroban_sdk::Env, StructB> for soroban_sdk::Val {
             .into())
     }
 }
+#[automatically_derived]
 impl soroban_sdk::TryFromVal<soroban_sdk::Env, &StructB> for soroban_sdk::Val {
     type Error = soroban_sdk::ConversionError;
     #[inline(always)]
@@ -429,6 +435,7 @@ impl StructC {
         const { StructC::__SPEC_XDR_ENTRY.const_to_xdr() }
     }
 }
+#[automatically_derived]
 impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for StructC {
     type Error = soroban_sdk::ConversionError;
     fn try_from_val(
@@ -451,6 +458,7 @@ impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for StructC {
         })
     }
 }
+#[automatically_derived]
 impl soroban_sdk::TryFromVal<soroban_sdk::Env, StructC> for soroban_sdk::Val {
     type Error = soroban_sdk::ConversionError;
     fn try_from_val(
@@ -469,6 +477,7 @@ impl soroban_sdk::TryFromVal<soroban_sdk::Env, StructC> for soroban_sdk::Val {
             .into())
     }
 }
+#[automatically_derived]
 impl soroban_sdk::TryFromVal<soroban_sdk::Env, &StructC> for soroban_sdk::Val {
     type Error = soroban_sdk::ConversionError;
     #[inline(always)]
@@ -582,6 +591,7 @@ impl StructTupleA {
         const { StructTupleA::__SPEC_XDR_ENTRY.const_to_xdr() }
     }
 }
+#[automatically_derived]
 impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for StructTupleA {
     type Error = soroban_sdk::ConversionError;
     #[inline(always)]
@@ -600,6 +610,7 @@ impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for StructTuple
         })
     }
 }
+#[automatically_derived]
 impl soroban_sdk::TryFromVal<soroban_sdk::Env, StructTupleA> for soroban_sdk::Val {
     type Error = soroban_sdk::ConversionError;
     #[inline(always)]
@@ -618,6 +629,7 @@ impl soroban_sdk::TryFromVal<soroban_sdk::Env, StructTupleA> for soroban_sdk::Va
             .into())
     }
 }
+#[automatically_derived]
 impl soroban_sdk::TryFromVal<soroban_sdk::Env, &StructTupleA> for soroban_sdk::Val {
     type Error = soroban_sdk::ConversionError;
     #[inline(always)]
@@ -731,6 +743,7 @@ impl StructTupleB {
         const { StructTupleB::__SPEC_XDR_ENTRY.const_to_xdr() }
     }
 }
+#[automatically_derived]
 impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for StructTupleB {
     type Error = soroban_sdk::ConversionError;
     #[inline(always)]
@@ -749,6 +762,7 @@ impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for StructTuple
         })
     }
 }
+#[automatically_derived]
 impl soroban_sdk::TryFromVal<soroban_sdk::Env, StructTupleB> for soroban_sdk::Val {
     type Error = soroban_sdk::ConversionError;
     #[inline(always)]
@@ -767,6 +781,7 @@ impl soroban_sdk::TryFromVal<soroban_sdk::Env, StructTupleB> for soroban_sdk::Va
             .into())
     }
 }
+#[automatically_derived]
 impl soroban_sdk::TryFromVal<soroban_sdk::Env, &StructTupleB> for soroban_sdk::Val {
     type Error = soroban_sdk::ConversionError;
     #[inline(always)]
@@ -881,6 +896,7 @@ impl StructTupleC {
         const { StructTupleC::__SPEC_XDR_ENTRY.const_to_xdr() }
     }
 }
+#[automatically_derived]
 impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for StructTupleC {
     type Error = soroban_sdk::ConversionError;
     #[inline(always)]
@@ -899,6 +915,7 @@ impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for StructTuple
         })
     }
 }
+#[automatically_derived]
 impl soroban_sdk::TryFromVal<soroban_sdk::Env, StructTupleC> for soroban_sdk::Val {
     type Error = soroban_sdk::ConversionError;
     #[inline(always)]
@@ -917,6 +934,7 @@ impl soroban_sdk::TryFromVal<soroban_sdk::Env, StructTupleC> for soroban_sdk::Va
             .into())
     }
 }
+#[automatically_derived]
 impl soroban_sdk::TryFromVal<soroban_sdk::Env, &StructTupleC> for soroban_sdk::Val {
     type Error = soroban_sdk::ConversionError;
     #[inline(always)]
@@ -1055,6 +1073,7 @@ impl EnumA {
         const { EnumA::__SPEC_XDR_ENTRY.const_to_xdr() }
     }
 }
+#[automatically_derived]
 impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for EnumA {
     type Error = soroban_sdk::ConversionError;
     #[inline(always)]
@@ -1097,6 +1116,7 @@ impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for EnumA {
         )
     }
 }
+#[automatically_derived]
 impl soroban_sdk::TryFromVal<soroban_sdk::Env, EnumA> for soroban_sdk::Val {
     type Error = soroban_sdk::ConversionError;
     #[inline(always)]
@@ -1124,6 +1144,7 @@ impl soroban_sdk::TryFromVal<soroban_sdk::Env, EnumA> for soroban_sdk::Val {
         }
     }
 }
+#[automatically_derived]
 impl soroban_sdk::TryFromVal<soroban_sdk::Env, &EnumA> for soroban_sdk::Val {
     type Error = soroban_sdk::ConversionError;
     #[inline(always)]
@@ -1282,6 +1303,7 @@ impl EnumB {
         const { EnumB::__SPEC_XDR_ENTRY.const_to_xdr() }
     }
 }
+#[automatically_derived]
 impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for EnumB {
     type Error = soroban_sdk::ConversionError;
     #[inline(always)]
@@ -1335,6 +1357,7 @@ impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for EnumB {
         )
     }
 }
+#[automatically_derived]
 impl soroban_sdk::TryFromVal<soroban_sdk::Env, EnumB> for soroban_sdk::Val {
     type Error = soroban_sdk::ConversionError;
     #[inline(always)]
@@ -1367,6 +1390,7 @@ impl soroban_sdk::TryFromVal<soroban_sdk::Env, EnumB> for soroban_sdk::Val {
         }
     }
 }
+#[automatically_derived]
 impl soroban_sdk::TryFromVal<soroban_sdk::Env, &EnumB> for soroban_sdk::Val {
     type Error = soroban_sdk::ConversionError;
     #[inline(always)]
@@ -1520,6 +1544,7 @@ impl EnumC {
         const { EnumC::__SPEC_XDR_ENTRY.const_to_xdr() }
     }
 }
+#[automatically_derived]
 impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for EnumC {
     type Error = soroban_sdk::ConversionError;
     #[inline(always)]
@@ -1570,6 +1595,7 @@ impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for EnumC {
         )
     }
 }
+#[automatically_derived]
 impl soroban_sdk::TryFromVal<soroban_sdk::Env, EnumC> for soroban_sdk::Val {
     type Error = soroban_sdk::ConversionError;
     #[inline(always)]
@@ -1601,6 +1627,7 @@ impl soroban_sdk::TryFromVal<soroban_sdk::Env, EnumC> for soroban_sdk::Val {
         }
     }
 }
+#[automatically_derived]
 impl soroban_sdk::TryFromVal<soroban_sdk::Env, &EnumC> for soroban_sdk::Val {
     type Error = soroban_sdk::ConversionError;
     #[inline(always)]
@@ -1728,6 +1755,7 @@ impl EnumIntA {
         const { EnumIntA::__SPEC_XDR_ENTRY.const_to_xdr() }
     }
 }
+#[automatically_derived]
 impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for EnumIntA {
     type Error = soroban_sdk::ConversionError;
     #[inline(always)]
@@ -1745,6 +1773,7 @@ impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for EnumIntA {
         })
     }
 }
+#[automatically_derived]
 impl soroban_sdk::TryFromVal<soroban_sdk::Env, EnumIntA> for soroban_sdk::Val {
     type Error = soroban_sdk::ConversionError;
     #[inline(always)]
@@ -1759,6 +1788,7 @@ impl soroban_sdk::TryFromVal<soroban_sdk::Env, EnumIntA> for soroban_sdk::Val {
         })
     }
 }
+#[automatically_derived]
 impl soroban_sdk::TryFromVal<soroban_sdk::Env, &EnumIntA> for soroban_sdk::Val {
     type Error = soroban_sdk::ConversionError;
     #[inline(always)]
@@ -1886,6 +1916,7 @@ impl EnumIntB {
         const { EnumIntB::__SPEC_XDR_ENTRY.const_to_xdr() }
     }
 }
+#[automatically_derived]
 impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for EnumIntB {
     type Error = soroban_sdk::ConversionError;
     #[inline(always)]
@@ -1903,6 +1934,7 @@ impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for EnumIntB {
         })
     }
 }
+#[automatically_derived]
 impl soroban_sdk::TryFromVal<soroban_sdk::Env, EnumIntB> for soroban_sdk::Val {
     type Error = soroban_sdk::ConversionError;
     #[inline(always)]
@@ -1917,6 +1949,7 @@ impl soroban_sdk::TryFromVal<soroban_sdk::Env, EnumIntB> for soroban_sdk::Val {
         })
     }
 }
+#[automatically_derived]
 impl soroban_sdk::TryFromVal<soroban_sdk::Env, &EnumIntB> for soroban_sdk::Val {
     type Error = soroban_sdk::ConversionError;
     #[inline(always)]
@@ -2044,6 +2077,7 @@ impl EnumIntC {
         const { EnumIntC::__SPEC_XDR_ENTRY.const_to_xdr() }
     }
 }
+#[automatically_derived]
 impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for EnumIntC {
     type Error = soroban_sdk::ConversionError;
     #[inline(always)]
@@ -2061,6 +2095,7 @@ impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for EnumIntC {
         })
     }
 }
+#[automatically_derived]
 impl soroban_sdk::TryFromVal<soroban_sdk::Env, EnumIntC> for soroban_sdk::Val {
     type Error = soroban_sdk::ConversionError;
     #[inline(always)]
@@ -2075,6 +2110,7 @@ impl soroban_sdk::TryFromVal<soroban_sdk::Env, EnumIntC> for soroban_sdk::Val {
         })
     }
 }
+#[automatically_derived]
 impl soroban_sdk::TryFromVal<soroban_sdk::Env, &EnumIntC> for soroban_sdk::Val {
     type Error = soroban_sdk::ConversionError;
     #[inline(always)]
@@ -2215,6 +2251,7 @@ impl soroban_sdk::SpecShakingMarker for ErrorA {
         }
     }
 }
+#[automatically_derived]
 impl TryFrom<soroban_sdk::Error> for ErrorA {
     type Error = soroban_sdk::Error;
     #[inline(always)]
@@ -2232,6 +2269,7 @@ impl TryFrom<soroban_sdk::Error> for ErrorA {
         }
     }
 }
+#[automatically_derived]
 impl TryFrom<&soroban_sdk::Error> for ErrorA {
     type Error = soroban_sdk::Error;
     #[inline(always)]
@@ -2239,12 +2277,14 @@ impl TryFrom<&soroban_sdk::Error> for ErrorA {
         <_ as TryFrom<soroban_sdk::Error>>::try_from(*error)
     }
 }
+#[automatically_derived]
 impl From<ErrorA> for soroban_sdk::Error {
     #[inline(always)]
     fn from(val: ErrorA) -> soroban_sdk::Error {
         <_ as From<&ErrorA>>::from(&val)
     }
 }
+#[automatically_derived]
 impl From<&ErrorA> for soroban_sdk::Error {
     #[inline(always)]
     fn from(val: &ErrorA) -> soroban_sdk::Error {
@@ -2255,6 +2295,7 @@ impl From<&ErrorA> for soroban_sdk::Error {
         }
     }
 }
+#[automatically_derived]
 impl TryFrom<soroban_sdk::InvokeError> for ErrorA {
     type Error = soroban_sdk::InvokeError;
     #[inline(always)]
@@ -2270,6 +2311,7 @@ impl TryFrom<soroban_sdk::InvokeError> for ErrorA {
         }
     }
 }
+#[automatically_derived]
 impl TryFrom<&soroban_sdk::InvokeError> for ErrorA {
     type Error = soroban_sdk::InvokeError;
     #[inline(always)]
@@ -2277,12 +2319,14 @@ impl TryFrom<&soroban_sdk::InvokeError> for ErrorA {
         <_ as TryFrom<soroban_sdk::InvokeError>>::try_from(*error)
     }
 }
+#[automatically_derived]
 impl From<ErrorA> for soroban_sdk::InvokeError {
     #[inline(always)]
     fn from(val: ErrorA) -> soroban_sdk::InvokeError {
         <_ as From<&ErrorA>>::from(&val)
     }
 }
+#[automatically_derived]
 impl From<&ErrorA> for soroban_sdk::InvokeError {
     #[inline(always)]
     fn from(val: &ErrorA) -> soroban_sdk::InvokeError {
@@ -2293,6 +2337,7 @@ impl From<&ErrorA> for soroban_sdk::InvokeError {
         }
     }
 }
+#[automatically_derived]
 impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for ErrorA {
     type Error = soroban_sdk::ConversionError;
     #[inline(always)]
@@ -2305,6 +2350,7 @@ impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for ErrorA {
         error.try_into().map_err(|_| soroban_sdk::ConversionError)
     }
 }
+#[automatically_derived]
 impl soroban_sdk::TryFromVal<soroban_sdk::Env, ErrorA> for soroban_sdk::Val {
     type Error = soroban_sdk::ConversionError;
     #[inline(always)]
@@ -2316,6 +2362,7 @@ impl soroban_sdk::TryFromVal<soroban_sdk::Env, ErrorA> for soroban_sdk::Val {
         Ok(error.into())
     }
 }
+#[automatically_derived]
 impl soroban_sdk::TryFromVal<soroban_sdk::Env, &ErrorA> for soroban_sdk::Val {
     type Error = soroban_sdk::ConversionError;
     #[inline(always)]
@@ -2456,6 +2503,7 @@ impl soroban_sdk::SpecShakingMarker for ErrorB {
         }
     }
 }
+#[automatically_derived]
 impl TryFrom<soroban_sdk::Error> for ErrorB {
     type Error = soroban_sdk::Error;
     #[inline(always)]
@@ -2473,6 +2521,7 @@ impl TryFrom<soroban_sdk::Error> for ErrorB {
         }
     }
 }
+#[automatically_derived]
 impl TryFrom<&soroban_sdk::Error> for ErrorB {
     type Error = soroban_sdk::Error;
     #[inline(always)]
@@ -2480,12 +2529,14 @@ impl TryFrom<&soroban_sdk::Error> for ErrorB {
         <_ as TryFrom<soroban_sdk::Error>>::try_from(*error)
     }
 }
+#[automatically_derived]
 impl From<ErrorB> for soroban_sdk::Error {
     #[inline(always)]
     fn from(val: ErrorB) -> soroban_sdk::Error {
         <_ as From<&ErrorB>>::from(&val)
     }
 }
+#[automatically_derived]
 impl From<&ErrorB> for soroban_sdk::Error {
     #[inline(always)]
     fn from(val: &ErrorB) -> soroban_sdk::Error {
@@ -2496,6 +2547,7 @@ impl From<&ErrorB> for soroban_sdk::Error {
         }
     }
 }
+#[automatically_derived]
 impl TryFrom<soroban_sdk::InvokeError> for ErrorB {
     type Error = soroban_sdk::InvokeError;
     #[inline(always)]
@@ -2511,6 +2563,7 @@ impl TryFrom<soroban_sdk::InvokeError> for ErrorB {
         }
     }
 }
+#[automatically_derived]
 impl TryFrom<&soroban_sdk::InvokeError> for ErrorB {
     type Error = soroban_sdk::InvokeError;
     #[inline(always)]
@@ -2518,12 +2571,14 @@ impl TryFrom<&soroban_sdk::InvokeError> for ErrorB {
         <_ as TryFrom<soroban_sdk::InvokeError>>::try_from(*error)
     }
 }
+#[automatically_derived]
 impl From<ErrorB> for soroban_sdk::InvokeError {
     #[inline(always)]
     fn from(val: ErrorB) -> soroban_sdk::InvokeError {
         <_ as From<&ErrorB>>::from(&val)
     }
 }
+#[automatically_derived]
 impl From<&ErrorB> for soroban_sdk::InvokeError {
     #[inline(always)]
     fn from(val: &ErrorB) -> soroban_sdk::InvokeError {
@@ -2534,6 +2589,7 @@ impl From<&ErrorB> for soroban_sdk::InvokeError {
         }
     }
 }
+#[automatically_derived]
 impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for ErrorB {
     type Error = soroban_sdk::ConversionError;
     #[inline(always)]
@@ -2546,6 +2602,7 @@ impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for ErrorB {
         error.try_into().map_err(|_| soroban_sdk::ConversionError)
     }
 }
+#[automatically_derived]
 impl soroban_sdk::TryFromVal<soroban_sdk::Env, ErrorB> for soroban_sdk::Val {
     type Error = soroban_sdk::ConversionError;
     #[inline(always)]
@@ -2557,6 +2614,7 @@ impl soroban_sdk::TryFromVal<soroban_sdk::Env, ErrorB> for soroban_sdk::Val {
         Ok(error.into())
     }
 }
+#[automatically_derived]
 impl soroban_sdk::TryFromVal<soroban_sdk::Env, &ErrorB> for soroban_sdk::Val {
     type Error = soroban_sdk::ConversionError;
     #[inline(always)]
@@ -2697,6 +2755,7 @@ impl soroban_sdk::SpecShakingMarker for ErrorC {
         }
     }
 }
+#[automatically_derived]
 impl TryFrom<soroban_sdk::Error> for ErrorC {
     type Error = soroban_sdk::Error;
     #[inline(always)]
@@ -2714,6 +2773,7 @@ impl TryFrom<soroban_sdk::Error> for ErrorC {
         }
     }
 }
+#[automatically_derived]
 impl TryFrom<&soroban_sdk::Error> for ErrorC {
     type Error = soroban_sdk::Error;
     #[inline(always)]
@@ -2721,12 +2781,14 @@ impl TryFrom<&soroban_sdk::Error> for ErrorC {
         <_ as TryFrom<soroban_sdk::Error>>::try_from(*error)
     }
 }
+#[automatically_derived]
 impl From<ErrorC> for soroban_sdk::Error {
     #[inline(always)]
     fn from(val: ErrorC) -> soroban_sdk::Error {
         <_ as From<&ErrorC>>::from(&val)
     }
 }
+#[automatically_derived]
 impl From<&ErrorC> for soroban_sdk::Error {
     #[inline(always)]
     fn from(val: &ErrorC) -> soroban_sdk::Error {
@@ -2737,6 +2799,7 @@ impl From<&ErrorC> for soroban_sdk::Error {
         }
     }
 }
+#[automatically_derived]
 impl TryFrom<soroban_sdk::InvokeError> for ErrorC {
     type Error = soroban_sdk::InvokeError;
     #[inline(always)]
@@ -2752,6 +2815,7 @@ impl TryFrom<soroban_sdk::InvokeError> for ErrorC {
         }
     }
 }
+#[automatically_derived]
 impl TryFrom<&soroban_sdk::InvokeError> for ErrorC {
     type Error = soroban_sdk::InvokeError;
     #[inline(always)]
@@ -2759,12 +2823,14 @@ impl TryFrom<&soroban_sdk::InvokeError> for ErrorC {
         <_ as TryFrom<soroban_sdk::InvokeError>>::try_from(*error)
     }
 }
+#[automatically_derived]
 impl From<ErrorC> for soroban_sdk::InvokeError {
     #[inline(always)]
     fn from(val: ErrorC) -> soroban_sdk::InvokeError {
         <_ as From<&ErrorC>>::from(&val)
     }
 }
+#[automatically_derived]
 impl From<&ErrorC> for soroban_sdk::InvokeError {
     #[inline(always)]
     fn from(val: &ErrorC) -> soroban_sdk::InvokeError {
@@ -2775,6 +2841,7 @@ impl From<&ErrorC> for soroban_sdk::InvokeError {
         }
     }
 }
+#[automatically_derived]
 impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for ErrorC {
     type Error = soroban_sdk::ConversionError;
     #[inline(always)]
@@ -2787,6 +2854,7 @@ impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for ErrorC {
         error.try_into().map_err(|_| soroban_sdk::ConversionError)
     }
 }
+#[automatically_derived]
 impl soroban_sdk::TryFromVal<soroban_sdk::Env, ErrorC> for soroban_sdk::Val {
     type Error = soroban_sdk::ConversionError;
     #[inline(always)]
@@ -2798,6 +2866,7 @@ impl soroban_sdk::TryFromVal<soroban_sdk::Env, ErrorC> for soroban_sdk::Val {
         Ok(error.into())
     }
 }
+#[automatically_derived]
 impl soroban_sdk::TryFromVal<soroban_sdk::Env, &ErrorC> for soroban_sdk::Val {
     type Error = soroban_sdk::ConversionError;
     #[inline(always)]

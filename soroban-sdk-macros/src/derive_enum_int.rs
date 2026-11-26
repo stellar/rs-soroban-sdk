@@ -126,6 +126,7 @@ pub fn derive_type_enum_int(
 
         #spec_gen
 
+        #[automatically_derived]
         impl #path::TryFromVal<#path::Env, #path::Val> for #enum_ident {
             type Error = #path::ConversionError;
             #[inline(always)]
@@ -139,6 +140,7 @@ pub fn derive_type_enum_int(
             }
         }
 
+        #[automatically_derived]
         impl #path::TryFromVal<#path::Env, #enum_ident> for #path::Val {
             type Error = #path::ConversionError;
             #[inline(always)]
@@ -149,6 +151,7 @@ pub fn derive_type_enum_int(
             }
         }
 
+        #[automatically_derived]
         impl #path::TryFromVal<#path::Env, &#enum_ident> for #path::Val {
             type Error = #path::ConversionError;
             #[inline(always)]
@@ -163,6 +166,7 @@ pub fn derive_type_enum_int(
         let arbitrary_tokens =
             crate::arbitrary::derive_arbitrary_enum_int(path, vis, enum_ident, data);
         output.extend(quote! {
+            #[automatically_derived]
             impl #path::TryFromVal<#path::Env, #path::xdr::ScVal> for #enum_ident {
                 type Error = #path::xdr::Error;
                 #[inline(always)]
@@ -178,6 +182,7 @@ pub fn derive_type_enum_int(
                 }
             }
 
+            #[automatically_derived]
             impl TryInto<#path::xdr::ScVal> for &#enum_ident {
                 type Error = #path::xdr::Error;
                 #[inline(always)]
@@ -188,6 +193,7 @@ pub fn derive_type_enum_int(
                 }
             }
 
+            #[automatically_derived]
             impl TryInto<#path::xdr::ScVal> for #enum_ident {
                 type Error = #path::xdr::Error;
                 #[inline(always)]

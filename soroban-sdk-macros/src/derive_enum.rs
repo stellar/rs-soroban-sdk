@@ -209,6 +209,7 @@ pub fn derive_type_enum(
 
         #spec_gen
 
+        #[automatically_derived]
         impl #path::TryFromVal<#path::Env, #path::Val> for #enum_ident {
             type Error = #path::ConversionError;
             #[inline(always)]
@@ -225,6 +226,7 @@ pub fn derive_type_enum(
             }
         }
 
+        #[automatically_derived]
         impl #path::TryFromVal<#path::Env, #enum_ident> for #path::Val {
             type Error = #path::ConversionError;
             #[inline(always)]
@@ -236,6 +238,7 @@ pub fn derive_type_enum(
             }
         }
 
+        #[automatically_derived]
         impl #path::TryFromVal<#path::Env, &#enum_ident> for #path::Val {
             type Error = #path::ConversionError;
             #[inline(always)]
@@ -249,6 +252,7 @@ pub fn derive_type_enum(
     if cfg!(feature = "testutils") {
         let arbitrary_tokens = crate::arbitrary::derive_arbitrary_enum(path, vis, enum_ident, data);
         output.extend(quote! {
+            #[automatically_derived]
             impl #path::TryFromVal<#path::Env, #path::xdr::ScVec> for #enum_ident {
                 type Error = #path::xdr::Error;
                 #[inline(always)]
@@ -268,6 +272,7 @@ pub fn derive_type_enum(
                 }
             }
 
+            #[automatically_derived]
             impl #path::TryFromVal<#path::Env, #path::xdr::ScVal> for #enum_ident {
                 type Error = #path::xdr::Error;
                 #[inline(always)]
@@ -280,6 +285,7 @@ pub fn derive_type_enum(
                 }
             }
 
+            #[automatically_derived]
             impl TryFrom<&#enum_ident> for #path::xdr::ScVec {
                 type Error = #path::xdr::Error;
                 #[inline(always)]
@@ -291,6 +297,7 @@ pub fn derive_type_enum(
                 }
             }
 
+            #[automatically_derived]
             impl TryFrom<#enum_ident> for #path::xdr::ScVec  {
                 type Error = #path::xdr::Error;
                 #[inline(always)]
@@ -299,6 +306,7 @@ pub fn derive_type_enum(
                 }
             }
 
+            #[automatically_derived]
             impl TryFrom<&#enum_ident> for #path::xdr::ScVal  {
                 type Error = #path::xdr::Error;
                 #[inline(always)]
@@ -307,6 +315,7 @@ pub fn derive_type_enum(
                 }
             }
 
+            #[automatically_derived]
             impl TryFrom<#enum_ident> for #path::xdr::ScVal  {
                 type Error = #path::xdr::Error;
                 #[inline(always)]
