@@ -1,59 +1,59 @@
-/// Spec shaking: removing unused spec entries from contract WASMs.
-///
-/// ## Models
-///
-/// How a WASM's spec is shaken depends on the SDK that built it, which the
-/// `contractmetav0` section records. The [`Model`] is chosen in order:
-///
-/// - [`Model::References`] — built by soroban-sdk v30 or later, as its
-///   [`SDK_VERSION_META_KEY`] (`rssdkver`) entry says. The type names are
-///   reduced, and the spec is shaken by following the references to each type
-///   by name, with markers only for events and errors.
-/// - [`Model::Markers`] — the [`META_KEY`] (`rssdk_spec_shaking`) entry is
-///   [`META_VALUE_V2`] (`"2"`). Every used entry has a marker in the data
-///   section, so the spec is shaken by markers alone.
-/// - [`Model::None`] — otherwise. Nothing records how the spec could be
-///   shaken, so it is left alone.
-///
-/// The model selects the rules, so a tool reads it before shaking and each
-/// wasm is shaken the way it was built. A soroban-sdk v30 or later WASM does
-/// not carry the [`META_KEY`] entry, so a tool that predates
-/// [`Model::References`] finds nothing it recognises and leaves the WASM
-/// alone, rather than shaking every type out of it by markers it no longer
-/// carries.
-///
-/// Use [`model_for_meta`] to determine the model from the contract's meta
-/// entries.
-///
-/// ## Markers
-///
-/// The marker is a byte array in the data section with a distinctive pattern:
-/// - 6 bytes: "SpEcV1" prefix
-/// - 8 bytes: first 64 bits of SHA256 hash of the spec entry XDR
-///
-/// Markers are embedded in usage functions with a volatile read. When the
-/// entry is used, the function is called and the marker is included. When it
-/// is unused, the function is DCE'd along with its marker.
-///
-/// Under [`Model::References`], only the entries a spec never references by
-/// name carry a marker: events, which nothing in a spec names, and error
-/// enums, which a contract may use solely by handing them to
-/// `panic_with_error!`. Every other user-defined type is named by whatever
-/// references it, so [`filter`] settles it by reachability and the wasm
-/// carries no marker for it. Under [`Model::Markers`], a wasm carries a marker
-/// per type and [`filter`] shakes on those markers alone.
-///
-/// Post-processing tools (e.g. stellar-cli) can:
-/// 1. Scan the WASM data section for "SpEcV1" patterns
-/// 2. Extract the hash from each marker
-/// 3. Match against specs in contractspecv0 section (by hashing each spec)
-/// 4. Strip the specs the model's rules do not keep from contractspecv0
-///
-/// Today markers are only used in contracts written in Rust, leveraging how Rust can eliminate
-/// dead code to make the markers a good signal for if a type gets used. It's not known if the
-/// same pattern could be used in other languages, and so it is not a general part of the SEP-48
-/// Contract Interface Specification. Markers are just a mechanism used by the Rust soroban-sdk and
-/// the stellar-cli to achieve accurately scoped contract specs.
+//! Spec shaking: removing unused spec entries from contract WASMs.
+//!
+//! ## Models
+//!
+//! How a WASM's spec is shaken depends on the SDK that built it, which the
+//! `contractmetav0` section records. The [`Model`] is chosen in order:
+//!
+//! - [`Model::References`] — built by soroban-sdk v30 or later, as its
+//!   [`SDK_VERSION_META_KEY`] (`rssdkver`) entry says. The type names are
+//!   reduced, and the spec is shaken by following the references to each type
+//!   by name, with markers only for events and errors.
+//! - [`Model::Markers`] — the [`META_KEY`] (`rssdk_spec_shaking`) entry is
+//!   [`META_VALUE_V2`] (`"2"`). Every used entry has a marker in the data
+//!   section, so the spec is shaken by markers alone.
+//! - [`Model::None`] — otherwise. Nothing records how the spec could be
+//!   shaken, so it is left alone.
+//!
+//! The model selects the rules, so a tool reads it before shaking and each
+//! wasm is shaken the way it was built. A soroban-sdk v30 or later WASM does
+//! not carry the [`META_KEY`] entry, so a tool that predates
+//! [`Model::References`] finds nothing it recognises and leaves the WASM
+//! alone, rather than shaking every type out of it by markers it no longer
+//! carries.
+//!
+//! Use [`model_for_meta`] to determine the model from the contract's meta
+//! entries.
+//!
+//! ## Markers
+//!
+//! The marker is a byte array in the data section with a distinctive pattern:
+//! - 6 bytes: "SpEcV1" prefix
+//! - 8 bytes: first 64 bits of SHA256 hash of the spec entry XDR
+//!
+//! Markers are embedded in usage functions with a volatile read. When the
+//! entry is used, the function is called and the marker is included. When it
+//! is unused, the function is DCE'd along with its marker.
+//!
+//! Under [`Model::References`], only the entries a spec never references by
+//! name carry a marker: events, which nothing in a spec names, and error
+//! enums, which a contract may use solely by handing them to
+//! `panic_with_error!`. Every other user-defined type is named by whatever
+//! references it, so [`filter`] settles it by reachability and the wasm
+//! carries no marker for it. Under [`Model::Markers`], a wasm carries a marker
+//! per type and [`filter`] shakes on those markers alone.
+//!
+//! Post-processing tools (e.g. stellar-cli) can:
+//! 1. Scan the WASM data section for "SpEcV1" patterns
+//! 2. Extract the hash from each marker
+//! 3. Match against specs in contractspecv0 section (by hashing each spec)
+//! 4. Strip the specs the model's rules do not keep from contractspecv0
+//!
+//! Today markers are only used in contracts written in Rust, leveraging how Rust can eliminate
+//! dead code to make the markers a good signal for if a type gets used. It's not known if the
+//! same pattern could be used in other languages, and so it is not a general part of the SEP-48
+//! Contract Interface Specification. Markers are just a mechanism used by the Rust soroban-sdk and
+//! the stellar-cli to achieve accurately scoped contract specs.
 
 #[cfg(feature = "std")]
 use std::collections::{HashMap, HashSet};
