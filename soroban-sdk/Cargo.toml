@@ -1,6 +1,7 @@
 [package]
 name = "soroban-sdk"
 description = "Soroban SDK."
+homepage = "https://developers.stellar.org/"
 repository = "https://github.com/stellar/rs-soroban-sdk"
 authors = ["Stellar Development Foundation <info@stellar.org>"]
 readme = "README.md"
