@@ -130,6 +130,7 @@ pub fn derive_type_error_enum_int(
 
         #spec_shaking_impl
 
+        #[automatically_derived]
         impl TryFrom<#path::Error> for #enum_ident {
             type Error = #path::Error;
             #[inline(always)]
@@ -146,6 +147,7 @@ pub fn derive_type_error_enum_int(
             }
         }
 
+        #[automatically_derived]
         impl TryFrom<&#path::Error> for #enum_ident {
             type Error = #path::Error;
             #[inline(always)]
@@ -154,6 +156,7 @@ pub fn derive_type_error_enum_int(
             }
         }
 
+        #[automatically_derived]
         impl From<#enum_ident> for #path::Error {
             #[inline(always)]
             fn from(val: #enum_ident) -> #path::Error {
@@ -161,6 +164,7 @@ pub fn derive_type_error_enum_int(
             }
         }
 
+        #[automatically_derived]
         impl From<&#enum_ident> for #path::Error {
             #[inline(always)]
             fn from(val: &#enum_ident) -> #path::Error {
@@ -170,6 +174,7 @@ pub fn derive_type_error_enum_int(
             }
         }
 
+        #[automatically_derived]
         impl TryFrom<#path::InvokeError> for #enum_ident {
             type Error = #path::InvokeError;
             #[inline(always)]
@@ -184,6 +189,7 @@ pub fn derive_type_error_enum_int(
             }
         }
 
+        #[automatically_derived]
         impl TryFrom<&#path::InvokeError> for #enum_ident {
             type Error = #path::InvokeError;
             #[inline(always)]
@@ -192,6 +198,7 @@ pub fn derive_type_error_enum_int(
             }
         }
 
+        #[automatically_derived]
         impl From<#enum_ident> for #path::InvokeError {
             #[inline(always)]
             fn from(val: #enum_ident) -> #path::InvokeError {
@@ -199,6 +206,7 @@ pub fn derive_type_error_enum_int(
             }
         }
 
+        #[automatically_derived]
         impl From<&#enum_ident> for #path::InvokeError {
             #[inline(always)]
             fn from(val: &#enum_ident) -> #path::InvokeError {
@@ -208,6 +216,7 @@ pub fn derive_type_error_enum_int(
             }
         }
 
+        #[automatically_derived]
         impl #path::TryFromVal<#path::Env, #path::Val> for #enum_ident {
             type Error = #path::ConversionError;
             #[inline(always)]
@@ -217,6 +226,7 @@ pub fn derive_type_error_enum_int(
                 error.try_into().map_err(|_| #path::ConversionError)
             }
         }
+        #[automatically_derived]
         impl #path::TryFromVal<#path::Env, #enum_ident> for #path::Val {
             type Error = #path::ConversionError;
             #[inline(always)]
@@ -226,6 +236,7 @@ pub fn derive_type_error_enum_int(
             }
         }
 
+        #[automatically_derived]
         impl #path::TryFromVal<#path::Env, &#enum_ident> for #path::Val {
             type Error = #path::ConversionError;
             #[inline(always)]

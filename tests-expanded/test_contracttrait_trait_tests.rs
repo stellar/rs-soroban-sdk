@@ -114,6 +114,7 @@ impl MyStruct {
         const { MyStruct::__SPEC_XDR_ENTRY.const_to_xdr() }
     }
 }
+#[automatically_derived]
 impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for MyStruct {
     type Error = soroban_sdk::ConversionError;
     fn try_from_val(
@@ -136,6 +137,7 @@ impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for MyStruct {
         })
     }
 }
+#[automatically_derived]
 impl soroban_sdk::TryFromVal<soroban_sdk::Env, MyStruct> for soroban_sdk::Val {
     type Error = soroban_sdk::ConversionError;
     fn try_from_val(
@@ -154,6 +156,7 @@ impl soroban_sdk::TryFromVal<soroban_sdk::Env, MyStruct> for soroban_sdk::Val {
             .into())
     }
 }
+#[automatically_derived]
 impl soroban_sdk::TryFromVal<soroban_sdk::Env, &MyStruct> for soroban_sdk::Val {
     type Error = soroban_sdk::ConversionError;
     #[inline(always)]
@@ -164,6 +167,7 @@ impl soroban_sdk::TryFromVal<soroban_sdk::Env, &MyStruct> for soroban_sdk::Val {
         <_ as soroban_sdk::TryFromVal<soroban_sdk::Env, MyStruct>>::try_from_val(env, *val)
     }
 }
+#[automatically_derived]
 impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::xdr::ScMap> for MyStruct {
     type Error = soroban_sdk::xdr::Error;
     #[inline(always)]
@@ -221,6 +225,7 @@ impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::xdr::ScMap> for MySt
         })
     }
 }
+#[automatically_derived]
 impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::xdr::ScVal> for MyStruct {
     type Error = soroban_sdk::xdr::Error;
     #[inline(always)]
@@ -235,6 +240,7 @@ impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::xdr::ScVal> for MySt
         }
     }
 }
+#[automatically_derived]
 impl TryFrom<&MyStruct> for soroban_sdk::xdr::ScMap {
     type Error = soroban_sdk::xdr::Error;
     #[inline(always)]
@@ -265,6 +271,7 @@ impl TryFrom<&MyStruct> for soroban_sdk::xdr::ScMap {
         ])))
     }
 }
+#[automatically_derived]
 impl TryFrom<MyStruct> for soroban_sdk::xdr::ScMap {
     type Error = soroban_sdk::xdr::Error;
     #[inline(always)]
@@ -272,6 +279,7 @@ impl TryFrom<MyStruct> for soroban_sdk::xdr::ScMap {
         (&val).try_into()
     }
 }
+#[automatically_derived]
 impl TryFrom<&MyStruct> for soroban_sdk::xdr::ScVal {
     type Error = soroban_sdk::xdr::Error;
     #[inline(always)]
@@ -279,6 +287,7 @@ impl TryFrom<&MyStruct> for soroban_sdk::xdr::ScVal {
         Ok(soroban_sdk::xdr::ScVal::Map(Some(val.try_into()?)))
     }
 }
+#[automatically_derived]
 impl TryFrom<MyStruct> for soroban_sdk::xdr::ScVal {
     type Error = soroban_sdk::xdr::Error;
     #[inline(always)]
@@ -467,9 +476,11 @@ const _: () = {
             }
         }
     };
+    #[automatically_derived]
     impl soroban_sdk::testutils::arbitrary::SorobanArbitrary for MyStruct {
         type Prototype = ArbitraryMyStruct;
     }
+    #[automatically_derived]
     impl soroban_sdk::TryFromVal<soroban_sdk::Env, ArbitraryMyStruct> for MyStruct {
         type Error = soroban_sdk::ConversionError;
         fn try_from_val(
@@ -592,6 +603,7 @@ impl MyEnumUnit {
         const { MyEnumUnit::__SPEC_XDR_ENTRY.const_to_xdr() }
     }
 }
+#[automatically_derived]
 impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for MyEnumUnit {
     type Error = soroban_sdk::ConversionError;
     #[inline(always)]
@@ -608,6 +620,7 @@ impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for MyEnumUnit 
         })
     }
 }
+#[automatically_derived]
 impl soroban_sdk::TryFromVal<soroban_sdk::Env, MyEnumUnit> for soroban_sdk::Val {
     type Error = soroban_sdk::ConversionError;
     #[inline(always)]
@@ -621,6 +634,7 @@ impl soroban_sdk::TryFromVal<soroban_sdk::Env, MyEnumUnit> for soroban_sdk::Val 
         })
     }
 }
+#[automatically_derived]
 impl soroban_sdk::TryFromVal<soroban_sdk::Env, &MyEnumUnit> for soroban_sdk::Val {
     type Error = soroban_sdk::ConversionError;
     #[inline(always)]
@@ -631,6 +645,7 @@ impl soroban_sdk::TryFromVal<soroban_sdk::Env, &MyEnumUnit> for soroban_sdk::Val
         <_ as soroban_sdk::TryFromVal<soroban_sdk::Env, MyEnumUnit>>::try_from_val(env, *val)
     }
 }
+#[automatically_derived]
 impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::xdr::ScVal> for MyEnumUnit {
     type Error = soroban_sdk::xdr::Error;
     #[inline(always)]
@@ -649,6 +664,7 @@ impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::xdr::ScVal> for MyEn
         }
     }
 }
+#[automatically_derived]
 impl TryInto<soroban_sdk::xdr::ScVal> for &MyEnumUnit {
     type Error = soroban_sdk::xdr::Error;
     #[inline(always)]
@@ -659,6 +675,7 @@ impl TryInto<soroban_sdk::xdr::ScVal> for &MyEnumUnit {
         })
     }
 }
+#[automatically_derived]
 impl TryInto<soroban_sdk::xdr::ScVal> for MyEnumUnit {
     type Error = soroban_sdk::xdr::Error;
     #[inline(always)]
@@ -850,9 +867,11 @@ const _: () = {
             }
         }
     };
+    #[automatically_derived]
     impl soroban_sdk::testutils::arbitrary::SorobanArbitrary for MyEnumUnit {
         type Prototype = ArbitraryMyEnumUnit;
     }
+    #[automatically_derived]
     impl soroban_sdk::TryFromVal<soroban_sdk::Env, ArbitraryMyEnumUnit> for MyEnumUnit {
         type Error = soroban_sdk::ConversionError;
         fn try_from_val(
@@ -1017,6 +1036,7 @@ impl MyEnumVariants {
         const { MyEnumVariants::__SPEC_XDR_ENTRY.const_to_xdr() }
     }
 }
+#[automatically_derived]
 impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for MyEnumVariants {
     type Error = soroban_sdk::ConversionError;
     #[inline(always)]
@@ -1067,6 +1087,7 @@ impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for MyEnumVaria
         )
     }
 }
+#[automatically_derived]
 impl soroban_sdk::TryFromVal<soroban_sdk::Env, MyEnumVariants> for soroban_sdk::Val {
     type Error = soroban_sdk::ConversionError;
     #[inline(always)]
@@ -1098,6 +1119,7 @@ impl soroban_sdk::TryFromVal<soroban_sdk::Env, MyEnumVariants> for soroban_sdk::
         }
     }
 }
+#[automatically_derived]
 impl soroban_sdk::TryFromVal<soroban_sdk::Env, &MyEnumVariants> for soroban_sdk::Val {
     type Error = soroban_sdk::ConversionError;
     #[inline(always)]
@@ -1108,6 +1130,7 @@ impl soroban_sdk::TryFromVal<soroban_sdk::Env, &MyEnumVariants> for soroban_sdk:
         <_ as soroban_sdk::TryFromVal<soroban_sdk::Env, MyEnumVariants>>::try_from_val(env, *val)
     }
 }
+#[automatically_derived]
 impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::xdr::ScVec> for MyEnumVariants {
     type Error = soroban_sdk::xdr::Error;
     #[inline(always)]
@@ -1165,6 +1188,7 @@ impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::xdr::ScVec> for MyEn
         })
     }
 }
+#[automatically_derived]
 impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::xdr::ScVal> for MyEnumVariants {
     type Error = soroban_sdk::xdr::Error;
     #[inline(always)]
@@ -1179,6 +1203,7 @@ impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::xdr::ScVal> for MyEn
         }
     }
 }
+#[automatically_derived]
 impl TryFrom<&MyEnumVariants> for soroban_sdk::xdr::ScVec {
     type Error = soroban_sdk::xdr::Error;
     #[inline(always)]
@@ -1219,6 +1244,7 @@ impl TryFrom<&MyEnumVariants> for soroban_sdk::xdr::ScVec {
         })
     }
 }
+#[automatically_derived]
 impl TryFrom<MyEnumVariants> for soroban_sdk::xdr::ScVec {
     type Error = soroban_sdk::xdr::Error;
     #[inline(always)]
@@ -1226,6 +1252,7 @@ impl TryFrom<MyEnumVariants> for soroban_sdk::xdr::ScVec {
         (&val).try_into()
     }
 }
+#[automatically_derived]
 impl TryFrom<&MyEnumVariants> for soroban_sdk::xdr::ScVal {
     type Error = soroban_sdk::xdr::Error;
     #[inline(always)]
@@ -1233,6 +1260,7 @@ impl TryFrom<&MyEnumVariants> for soroban_sdk::xdr::ScVal {
         Ok(soroban_sdk::xdr::ScVal::Vec(Some(val.try_into()?)))
     }
 }
+#[automatically_derived]
 impl TryFrom<MyEnumVariants> for soroban_sdk::xdr::ScVal {
     type Error = soroban_sdk::xdr::Error;
     #[inline(always)]
@@ -1497,9 +1525,11 @@ const _: () = {
             }
         }
     };
+    #[automatically_derived]
     impl soroban_sdk::testutils::arbitrary::SorobanArbitrary for MyEnumVariants {
         type Prototype = ArbitraryMyEnumVariants;
     }
+    #[automatically_derived]
     impl soroban_sdk::TryFromVal<soroban_sdk::Env, ArbitraryMyEnumVariants> for MyEnumVariants {
         type Error = soroban_sdk::ConversionError;
         fn try_from_val(

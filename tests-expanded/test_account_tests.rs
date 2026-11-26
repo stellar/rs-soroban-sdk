@@ -115,6 +115,7 @@ impl soroban_sdk::SpecShakingMarker for Error {
     #[inline(always)]
     fn spec_shaking_marker() {}
 }
+#[automatically_derived]
 impl TryFrom<soroban_sdk::Error> for Error {
     type Error = soroban_sdk::Error;
     #[inline(always)]
@@ -130,6 +131,7 @@ impl TryFrom<soroban_sdk::Error> for Error {
         }
     }
 }
+#[automatically_derived]
 impl TryFrom<&soroban_sdk::Error> for Error {
     type Error = soroban_sdk::Error;
     #[inline(always)]
@@ -137,12 +139,14 @@ impl TryFrom<&soroban_sdk::Error> for Error {
         <_ as TryFrom<soroban_sdk::Error>>::try_from(*error)
     }
 }
+#[automatically_derived]
 impl From<Error> for soroban_sdk::Error {
     #[inline(always)]
     fn from(val: Error) -> soroban_sdk::Error {
         <_ as From<&Error>>::from(&val)
     }
 }
+#[automatically_derived]
 impl From<&Error> for soroban_sdk::Error {
     #[inline(always)]
     fn from(val: &Error) -> soroban_sdk::Error {
@@ -151,6 +155,7 @@ impl From<&Error> for soroban_sdk::Error {
         }
     }
 }
+#[automatically_derived]
 impl TryFrom<soroban_sdk::InvokeError> for Error {
     type Error = soroban_sdk::InvokeError;
     #[inline(always)]
@@ -164,6 +169,7 @@ impl TryFrom<soroban_sdk::InvokeError> for Error {
         }
     }
 }
+#[automatically_derived]
 impl TryFrom<&soroban_sdk::InvokeError> for Error {
     type Error = soroban_sdk::InvokeError;
     #[inline(always)]
@@ -171,12 +177,14 @@ impl TryFrom<&soroban_sdk::InvokeError> for Error {
         <_ as TryFrom<soroban_sdk::InvokeError>>::try_from(*error)
     }
 }
+#[automatically_derived]
 impl From<Error> for soroban_sdk::InvokeError {
     #[inline(always)]
     fn from(val: Error) -> soroban_sdk::InvokeError {
         <_ as From<&Error>>::from(&val)
     }
 }
+#[automatically_derived]
 impl From<&Error> for soroban_sdk::InvokeError {
     #[inline(always)]
     fn from(val: &Error) -> soroban_sdk::InvokeError {
@@ -185,6 +193,7 @@ impl From<&Error> for soroban_sdk::InvokeError {
         }
     }
 }
+#[automatically_derived]
 impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for Error {
     type Error = soroban_sdk::ConversionError;
     #[inline(always)]
@@ -197,6 +206,7 @@ impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for Error {
         error.try_into().map_err(|_| soroban_sdk::ConversionError)
     }
 }
+#[automatically_derived]
 impl soroban_sdk::TryFromVal<soroban_sdk::Env, Error> for soroban_sdk::Val {
     type Error = soroban_sdk::ConversionError;
     #[inline(always)]
@@ -208,6 +218,7 @@ impl soroban_sdk::TryFromVal<soroban_sdk::Env, Error> for soroban_sdk::Val {
         Ok(error.into())
     }
 }
+#[automatically_derived]
 impl soroban_sdk::TryFromVal<soroban_sdk::Env, &Error> for soroban_sdk::Val {
     type Error = soroban_sdk::ConversionError;
     #[inline(always)]
