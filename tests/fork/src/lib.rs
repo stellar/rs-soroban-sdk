@@ -4,11 +4,22 @@ use soroban_sdk::contract;
 #[contract]
 pub struct Contract;
 
+/// Mainnet, with the RPC read from `TEST_FORK_MAINNET_RPC_URL`. The entries the
+/// mainnet tests read are committed in `tests-snapshot-source`, so the RPC is
+/// only needed to regenerate them.
+#[cfg(test)]
+fn mainnet() -> soroban_ledger_snapshot_source_tx::Network {
+    extern crate std;
+    soroban_ledger_snapshot_source_tx::Network::mainnet(
+        std::env::var("TEST_FORK_MAINNET_RPC_URL").unwrap_or_default(),
+    )
+}
+
 #[cfg(test)]
 mod example {
     extern crate std;
+    use super::mainnet;
     use bytes_lit::bytes;
-    use soroban_ledger_snapshot_source_tx::Network;
     use soroban_ledger_snapshot_source_tx::TxSnapshotSource;
     use soroban_sdk::{token::TokenClient, Address, Env};
 
@@ -16,7 +27,7 @@ mod example {
     fn test() {
         const NATIVE_ADDRESS: &str = "CAS3J7GYLGXMF6TDJBBYYSE3HQ6BBSMLNUQ34T6TZMYMW2EVH34XOWMA";
         let source = TxSnapshotSource::new(
-            Network::mainnet(None),
+            mainnet(),
             // Ledger.
             61340000,
             // Tx to look at state just before.
@@ -41,7 +52,6 @@ mod example {
 #[cfg(test)]
 mod mainnet {
     extern crate std;
-    use soroban_ledger_snapshot_source_tx::Network;
     use soroban_ledger_snapshot_source_tx::TxSnapshotSource;
     use soroban_sdk::{token::TokenClient, Address, Env};
 
@@ -125,7 +135,7 @@ mod mainnet {
     fn test_internal(ledger: u32, tx: Option<[u8; 32]>) -> i128 {
       use std::time::Instant;
       let t0 = Instant::now();
-      let s = TxSnapshotSource::new(Network::mainnet(None), ledger, tx);
+      let s = TxSnapshotSource::new(super::mainnet(), ledger, tx);
       let e = Env::from_ledger_snapshot(s);
       let contract = Address::from_str(&e, "CAS3J7GYLGXMF6TDJBBYYSE3HQ6BBSMLNUQ34T6TZMYMW2EVH34XOWMA");
       let client = TokenClient::new(&e, &contract);
@@ -144,7 +154,7 @@ mod mainnet {
 }
 
 /// Forks a local stellar/quickstart network, reading state from the ledger
-/// meta store and the history archive it runs.
+/// meta store and the RPC it runs.
 ///
 /// The transactions forked from are submitted by `quickstart-setup.sh`, which
 /// writes a fixture describing them that this test reads the path of from
@@ -156,21 +166,10 @@ mod quickstart {
     use soroban_sdk::{testutils::EnvTestConfig, token::TokenClient, Address, Env};
     use std::{env, fs};
 
-    /// The quickstart network, with the RPC disabled so that entries are only
-    /// ever found in the ledger meta store or the history archive. A working
-    /// RPC would otherwise be able to answer lookups that a broken meta store
-    /// or history archive should fail.
-    fn network() -> Network {
-        Network {
-            rpc_url: None,
-            ..Network::local()
-        }
-    }
-
     /// The balance of the fixture's target address, as of `ledger`, and just
     /// before `tx` if given.
     fn balance_at(sac: &str, target: &str, ledger: u32, tx: Option<[u8; 32]>) -> i128 {
-        let source = TxSnapshotSource::new(network(), ledger, tx);
+        let source = TxSnapshotSource::new(Network::local(), ledger, tx);
         let mut env = Env::from_ledger_snapshot(source);
         // The snapshot is of a network that only exists while the test runs,
         // so there's nothing to be gained by writing it out at drop.
@@ -216,13 +215,14 @@ mod quickstart {
             assert_eq!(balance_at(sac, target, ledger, None), expected);
 
             // Far enough past the transfer that the balance is no longer in
-            // the ledgers of meta searched, and is instead read out of the
-            // buckets of a history archive checkpoint. The transfers are far
-            // enough apart that each of these is a different checkpoint, so
-            // only the last is the archive's most recent.
-            let archive_ledger = transfer["archive_ledger"].as_u64().unwrap() as u32;
-            std::println!("balance at ledger {archive_ledger}, from the history archive");
-            assert_eq!(balance_at(sac, target, archive_ledger, None), expected);
+            // the ledgers of meta searched, and is instead read from the RPC
+            // as of a checkpoint. The transfers are far enough apart that each
+            // of these is a different checkpoint, and all but the last are
+            // before a later transfer changed the balance again, so the RPC
+            // has to read the balance as it was rather than as it is now.
+            let checkpoint_ledger = transfer["checkpoint_ledger"].as_u64().unwrap() as u32;
+            std::println!("balance at ledger {checkpoint_ledger}, from the rpc at a checkpoint");
+            assert_eq!(balance_at(sac, target, checkpoint_ledger, None), expected);
         }
     }
 }

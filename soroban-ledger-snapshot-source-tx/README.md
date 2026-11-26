@@ -35,7 +35,8 @@ let tx: [u8; 32] = hex::decode("201a1e9cd0d48ed5e7facc7642785a0621f75a50c2c8fc06
     .unwrap()
     .try_into()
     .unwrap();
-let source = TxSnapshotSource::new(Network::mainnet(None), 61340000, Some(tx));
+let rpc_url = "https://rpc.example.com".to_string();
+let source = TxSnapshotSource::new(Network::mainnet(rpc_url), 61340000, Some(tx));
 let env = Env::from_ledger_snapshot(source);
 
 // Read that state through any contract, here the native asset contract.
@@ -62,12 +63,16 @@ test sees exactly what that transaction saw.
 `Network` carries the URLs the entries are fetched from. There are
 constructors for the public networks:
 
-- `Network::mainnet` takes an optional RPC URL.
+- `Network::mainnet` takes the URL of an RPC, since there is no default.
 - `Network::testnet` takes the start date of the testnet epoch to read,
   because testnet is reset periodically and its meta is partitioned by
   epoch, so there is no stable default.
 - `Network::local` reads from a local [stellar/quickstart] network run
   with `--enable rpc,galexie`.
+
+The RPC must support the `ledger` parameter of `getLedgerEntries`, which
+reads entries as they were at a past ledger, and must hold the ledgers
+being forked.
 
 [stellar/quickstart]: https://github.com/stellar/quickstart
 
@@ -77,31 +82,23 @@ other infrastructure:
 ```rust
 use soroban_ledger_snapshot_source_tx::Network;
 
-// Mainnet, but reading meta from somewhere else and never asking an RPC.
+// Mainnet, but reading meta from somewhere else.
 let network = Network {
     meta_url: "https://meta.example.com/pubnet".to_string(),
-    rpc_url: None,
-    ..Network::mainnet(None)
+    ..Network::mainnet("https://rpc.example.com".to_string())
 };
 ```
 
 ### Where entries come from
 
-For each entry a test reads, the sources are tried in the order below, and
-the first that answers wins. Each is slower than the one before it, so the
-ordering is what keeps a fork fast:
+With a transaction hash, each entry a test reads is looked for first in the
+meta of the transactions before it in the ledger, since only the meta has
+the granularity to see state part way through a ledger. An entry those
+transactions did not change is as it was at the end of the previous ledger,
+and is read from the RPC at that ledger.
 
-1. The meta of the transactions already looked at in the queried ledger.
-2. The meta of the transactions before it in the same ledger.
-3. The RPC, if `rpc_url` is set, and only when what it returns is known to
-   be correct for the queried ledger.
-4. The meta of preceding ledgers, back as far as the last checkpoint.
-5. The history archive checkpoint covering the ledger.
-
-An RPC is an optimisation rather than a requirement: it answers in one
-request what would otherwise be a walk back through meta and archives. With
-`rpc_url` set to `None` every entry is resolved from meta and archives
-alone.
+Without a transaction hash, each entry is read from the RPC as it was at the
+end of the ledger.
 
 ### Caching
 

@@ -35,7 +35,8 @@
 //!     .unwrap()
 //!     .try_into()
 //!     .unwrap();
-//! let source = TxSnapshotSource::new(Network::mainnet(None), 61340000, Some(tx));
+//! let rpc_url = "https://rpc.example.com".to_string();
+//! let source = TxSnapshotSource::new(Network::mainnet(rpc_url), 61340000, Some(tx));
 //! let env = Env::from_ledger_snapshot(source);
 //!
 //! // Read that state through any contract, here the native asset contract.
@@ -62,12 +63,16 @@
 //! `Network` carries the URLs the entries are fetched from. There are
 //! constructors for the public networks:
 //!
-//! - `Network::mainnet` takes an optional RPC URL.
+//! - `Network::mainnet` takes the URL of an RPC, since there is no default.
 //! - `Network::testnet` takes the start date of the testnet epoch to read,
 //!   because testnet is reset periodically and its meta is partitioned by
 //!   epoch, so there is no stable default.
 //! - `Network::local` reads from a local [stellar/quickstart] network run
 //!   with `--enable rpc,galexie`.
+//!
+//! The RPC must support the `ledger` parameter of `getLedgerEntries`, which
+//! reads entries as they were at a past ledger, and must hold the checkpoint
+//! ledgers of the ledgers being forked.
 //!
 //! [stellar/quickstart]: https://github.com/stellar/quickstart
 //!
@@ -77,11 +82,10 @@
 //! ```rust
 //! use soroban_ledger_snapshot_source_tx::Network;
 //!
-//! // Mainnet, but reading meta from somewhere else and never asking an RPC.
+//! // Mainnet, but reading meta from somewhere else.
 //! let network = Network {
 //!     meta_url: "https://meta.example.com/pubnet".to_string(),
-//!     rpc_url: None,
-//!     ..Network::mainnet(None)
+//!     ..Network::mainnet("https://rpc.example.com".to_string())
 //! };
 //! ```
 //!
@@ -93,15 +97,9 @@
 //!
 //! 1. The meta of the transactions already looked at in the queried ledger.
 //! 2. The meta of the transactions before it in the same ledger.
-//! 3. The RPC, if `rpc_url` is set, and only when what it returns is known to
-//!    be correct for the queried ledger.
-//! 4. The meta of preceding ledgers, back as far as the last checkpoint.
-//! 5. The history archive checkpoint covering the ledger.
-//!
-//! An RPC is an optimisation rather than a requirement: it answers in one
-//! request what would otherwise be a walk back through meta and archives. With
-//! `rpc_url` set to `None` every entry is resolved from meta and archives
-//! alone.
+//! 3. The meta of preceding ledgers, back as far as the last checkpoint.
+//! 4. The RPC, for the entry as it was at that checkpoint, using the `ledger`
+//!    parameter of `getLedgerEntries`.
 //!
 //! ### Caching
 //!
@@ -222,7 +220,7 @@ impl TxSnapshotSource {
     /// using cargo metadata to find the workspace root.
     ///
     /// # Arguments
-    /// * `network` - Network configuration with URLs for meta storage, RPC, and history archive
+    /// * `network` - Network configuration with URLs for meta storage and RPC
     /// * `ledger` - Ledger sequence number
     /// * `tx_hash` - Optional transaction hash
     ///
@@ -372,7 +370,7 @@ mod test_ttl {
     fn cache_paths_are_namespaced_by_network_name() {
         let workspace = std::path::Path::new("/workspace");
         let system_cache = std::path::Path::new("/cache");
-        let mainnet = Network::mainnet(None);
+        let mainnet = Network::mainnet("".to_string());
         let testnet = Network::testnet("2025-12-17".to_string());
 
         let mainnet_paths = cache_paths(workspace, system_cache, &mainnet);
@@ -399,7 +397,7 @@ mod test_ttl {
 
     #[test]
     fn cache_paths_use_safe_network_name() {
-        let mut network = Network::mainnet(None);
+        let mut network = Network::mainnet("".to_string());
         network.name = "../my mainnet!".to_string();
         let paths = cache_paths(
             std::path::Path::new("/workspace"),

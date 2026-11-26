@@ -19,9 +19,12 @@ pub enum Error {
     Rpc(String),
 }
 
+/// Request `key` as it was at the end of `ledger`, using the `ledger`
+/// parameter of `getLedgerEntries`.
 pub fn get_ledger_entry<W: Write + ?Sized>(
     rpc_url: &str,
     key: &LedgerKey,
+    ledger: u32,
     write: &mut W,
 ) -> Result<(), Error> {
     let key_xdr = key.to_xdr_base64(Limits::none()).map_err(Error::Xdr)?;
@@ -31,7 +34,8 @@ pub fn get_ledger_entry<W: Write + ?Sized>(
         id: 1,
         method: "getLedgerEntries".to_string(),
         params: json!({
-            "keys": [key_xdr]
+            "keys": [key_xdr],
+            "ledger": ledger,
         }),
     };
 
@@ -50,21 +54,16 @@ pub fn get_ledger_entry<W: Write + ?Sized>(
 
 /// Parse a `getLedgerEntries` response.
 ///
-/// Returns the entry (when present), its optional live-until ledger, and the
-/// `latestLedger` the RPC node reports having observed. The caller needs
-/// `latest_ledger` to decide whether the node is current enough for the answer
-/// to be trusted (see `LedgerEntryFetcher::fetch_from_rpc`).
+/// Returns the entry (when present) and its optional live-until ledger.
 pub fn parse_ledger_entry<R: std::io::Read>(
     reader: R,
-) -> Result<Option<(LedgerEntry, Option<u32>, u32)>, Error> {
+) -> Result<Option<(LedgerEntry, Option<u32>)>, Error> {
     let response: RpcResponse<GetLedgerEntriesResponse> = serde_json::from_reader(reader)?;
 
     let result = match response {
         RpcResponse::Result { result } => result,
         RpcResponse::Error { error } => return Err(Error::Rpc(error.message)),
     };
-
-    let latest_ledger = result.latest_ledger;
 
     let Some(entry) = result.entries.first() else {
         return Ok(None);
@@ -80,11 +79,7 @@ pub fn parse_ledger_entry<R: std::io::Read>(
         ext: LedgerEntryExt::V0,
     };
 
-    Ok(Some((
-        ledger_entry,
-        entry.live_until_ledger_seq,
-        latest_ledger,
-    )))
+    Ok(Some((ledger_entry, entry.live_until_ledger_seq)))
 }
 
 #[derive(serde::Serialize)]
@@ -112,11 +107,6 @@ struct RpcError {
 #[serde(rename_all = "camelCase")]
 struct GetLedgerEntriesResponse {
     entries: Vec<GetLedgerEntriesResponseEntry>,
-    // The latest ledger the node has observed. Defaults to 0 when absent (e.g.
-    // an older cached response), which conservatively makes any entry look like
-    // it came from a lagging node and is therefore treated as not usable.
-    #[serde(default)]
-    latest_ledger: u32,
 }
 
 #[derive(serde::Serialize, serde::Deserialize)]
@@ -150,10 +140,9 @@ mod test {
         let body = format!(
             r#"{{"jsonrpc":"2.0","id":1,"result":{{"latestLedger":1000,"entries":[{{"xdr":"{xdr}","lastModifiedLedgerSeq":42,"liveUntilLedgerSeq":99}}]}}}}"#,
         );
-        let (entry, ttl, latest_ledger) = parse_ledger_entry(Cursor::new(body)).unwrap().unwrap();
+        let (entry, ttl) = parse_ledger_entry(Cursor::new(body)).unwrap().unwrap();
         assert_eq!(entry.last_modified_ledger_seq, 42);
         assert_eq!(ttl, Some(99));
-        assert_eq!(latest_ledger, 1000);
         // The RPC does not expose extension info, so it is always V0.
         assert!(matches!(entry.ext, LedgerEntryExt::V0));
         assert!(matches!(entry.data, LedgerEntryData::Ttl(_)));
@@ -165,21 +154,8 @@ mod test {
         let body = format!(
             r#"{{"result":{{"latestLedger":50,"entries":[{{"xdr":"{xdr}","lastModifiedLedgerSeq":7}}]}}}}"#,
         );
-        let (_, ttl, latest_ledger) = parse_ledger_entry(Cursor::new(body)).unwrap().unwrap();
+        let (_, ttl) = parse_ledger_entry(Cursor::new(body)).unwrap().unwrap();
         assert_eq!(ttl, None);
-        assert_eq!(latest_ledger, 50);
-    }
-
-    #[test]
-    fn missing_latest_ledger_defaults_to_zero() {
-        // An older cached response may omit latestLedger; it must default to 0
-        // so the usability gate treats it as a lagging node rather than failing
-        // to parse.
-        let xdr = sample_entry_xdr();
-        let body =
-            format!(r#"{{"result":{{"entries":[{{"xdr":"{xdr}","lastModifiedLedgerSeq":7}}]}}}}"#,);
-        let (_, _, latest_ledger) = parse_ledger_entry(Cursor::new(body)).unwrap().unwrap();
-        assert_eq!(latest_ledger, 0);
     }
 
     #[test]

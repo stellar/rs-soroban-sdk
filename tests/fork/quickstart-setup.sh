@@ -4,8 +4,8 @@
 # describing them, for the fork test in src/lib.rs (module `quickstart`) to fork
 # from.
 #
-# Start quickstart with the ledger meta store and the history archive both
-# running, then run this script:
+# Start quickstart with the ledger meta store and an rpc that supports the
+# ledger parameter of getLedgerEntries both running, then run this script:
 #
 #   docker run --rm -p 8000:8000 stellar/quickstart:testing --local --enable rpc,galexie
 #   tests/fork/quickstart-setup.sh /tmp/quickstart-fixture.json
@@ -36,8 +36,8 @@ AMOUNTS=(10 20 30)
 # Ledgers to wait between transfers. Spreads the transfers over more than 64
 # ledgers and several checkpoints, so that the transfers are not all reachable
 # from the same place: the most recent is still in the ledger meta store, while
-# the earlier ones have to be read out of the history archive, and out of
-# different checkpoints of it rather than only the most recent one.
+# the earlier ones have to be read from the rpc as of different checkpoints,
+# before later transfers changed the balance again.
 LEDGERS_BETWEEN_TRANSFERS=40
 
 rpc() {
@@ -108,34 +108,27 @@ for i in "${!AMOUNTS[@]}"; do
   ledger=$(jq -r '.result.ledger' <<<"$result")
 
   # A ledger far enough past this transfer that a search for the balance entry
-  # falls out of the ledger meta store, back past a checkpoint, and into the
-  # history archive. One per transfer, so that each lands in a different
-  # checkpoint: the test reads the earlier ones out of checkpoints that are no
-  # longer the archive's most recent.
-  archive_ledger=$(( (ledger / CHECKPOINT_FREQUENCY + 2) * CHECKPOINT_FREQUENCY ))
+  # falls out of the ledger meta store, back past a checkpoint, and to the rpc
+  # as of that checkpoint. One per transfer, so that each lands in a different
+  # checkpoint, and the earlier ones are of state that later transfers changed.
+  checkpoint_ledger=$(( (ledger / CHECKPOINT_FREQUENCY + 2) * CHECKPOINT_FREQUENCY ))
 
   echo "Transferred $amount in ledger $ledger, transaction $hash"
   transfers+=(
-    "{\"ledger\":$ledger,\"tx\":\"$hash\",\"amount\":$amount,\"archive_ledger\":$archive_ledger}"
+    "{\"ledger\":$ledger,\"tx\":\"$hash\",\"amount\":$amount,\"checkpoint_ledger\":$checkpoint_ledger}"
   )
 done
 
-# The last transfer's archive ledger is the furthest ahead, so waiting for it
-# waits for everything the test reads.
-archive_checkpoint=$(( archive_ledger - 1 ))
+# The last transfer's checkpoint ledger is the furthest ahead, so waiting for
+# it waits for everything the test reads.
+echo "Waiting for ledger $checkpoint_ledger to close ..."
+until [ "$(rpc getLatestLedger | jq -r '.result.sequence')" -ge "$checkpoint_ledger" ]; do sleep 1; done
 
-echo "Waiting for ledger $archive_ledger to close ..."
-until [ "$(rpc getLatestLedger | jq -r '.result.sequence')" -ge "$archive_ledger" ]; do sleep 1; done
-
-echo "Waiting for ledger $archive_ledger in the ledger meta store ..."
+echo "Waiting for ledger $checkpoint_ledger in the ledger meta store ..."
 # Galexie writes one ledger per file, 64000 files per partition, so on a fresh
 # local network every ledger is in the first partition.
-batch=$(printf '%08X--%d.xdr.zst' "$((0xFFFFFFFF - archive_ledger))" "$archive_ledger")
+batch=$(printf '%08X--%d.xdr.zst' "$((0xFFFFFFFF - checkpoint_ledger))" "$checkpoint_ledger")
 until curl -sf -o /dev/null "$HOST/ledger-meta/FFFFFFFF--0-63999/$batch"; do sleep 1; done
-
-echo "Waiting for checkpoint $archive_checkpoint in the history archive ..."
-until [ "$(curl -sf "$HOST/archive/.well-known/stellar-history.json" | jq -r '.currentLedger')" \
-  -ge "$archive_checkpoint" ]; do sleep 1; done
 
 jq -n \
   --arg sac "$SAC" \

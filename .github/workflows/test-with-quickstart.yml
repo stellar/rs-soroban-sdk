@@ -19,15 +19,15 @@ defaults:
     shell: bash
 
 jobs:
-  # Fork a local network, reading the ledger meta store and history archive
-  # that quickstart runs alongside its core and rpc.
+  # Fork a local network, reading the ledger meta store and rpc that
+  # quickstart runs alongside its core.
   test:
     runs-on: ubuntu-latest
     timeout-minutes: 30
     env:
       # Log which of the data sources every ledger entry is found in, so a run
-      # shows what was read from the ledger meta store and what from the
-      # history archive, rather than only that the balances came out right.
+      # shows what was read from the ledger meta store and what from the rpc,
+      # rather than only that the balances came out right.
       RUST_LOG: soroban_ledger_snapshot_source_tx=debug
     steps:
     - uses: actions/checkout@v5
