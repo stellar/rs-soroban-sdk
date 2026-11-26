@@ -1,7 +1,6 @@
 [package]
 name = "soroban-sdk-macros"
 description = "Soroban SDK macros."
-homepage = "https://github.com/stellar/rs-soroban-sdk"
 repository = "https://github.com/stellar/rs-soroban-sdk"
 authors = ["Stellar Development Foundation <info@stellar.org>"]
 readme = "../README.md"

@@ -1,7 +1,6 @@
 [package]
 name = "soroban-ledger-snapshot"
 description = "Soroban ledger.json file type and functionality."
-homepage = "https://github.com/stellar/rs-soroban-sdk"
 repository = "https://github.com/stellar/rs-soroban-sdk"
 authors = ["Stellar Development Foundation <info@stellar.org>"]
 readme = "../README.md"

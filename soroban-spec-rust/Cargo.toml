@@ -1,7 +1,6 @@
 [package]
 name = "soroban-spec-rust"
 description = "Soroban contract spec utilities for generating Rust."
-homepage = "https://github.com/stellar/rs-soroban-sdk"
 repository = "https://github.com/stellar/rs-soroban-sdk"
 authors = ["Stellar Development Foundation <info@stellar.org>"]
 readme = "../README.md"
