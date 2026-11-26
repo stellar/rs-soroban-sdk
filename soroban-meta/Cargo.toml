@@ -1,7 +1,6 @@
 [package]
 name = "soroban-meta"
 description = "Soroban contract meta utilities."
-homepage = "https://github.com/stellar/rs-soroban-sdk"
 repository = "https://github.com/stellar/rs-soroban-sdk"
 authors = ["Stellar Development Foundation <info@stellar.org>"]
 readme = "../README.md"
