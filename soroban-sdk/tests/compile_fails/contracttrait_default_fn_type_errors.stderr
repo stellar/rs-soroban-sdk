@@ -1,0 +1,41 @@
+error[E0277]: the trait's default functions require `inner::Value` to be in scope where the trait is implemented
+  --> tests/compile_fails/contracttrait_default_fn_type_errors.rs:52:1
+   |
+52 | #[contractimpl(contracttrait)]
+   | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ `Value` here is not `inner::Value`
+53 | impl Trait for Contract {}
+   |      ----- required by a bound introduced by this call
+   |
+help: the trait `soroban_sdk::ContractTraitType<Value>` is not implemented for `inner::Value`
+  --> tests/compile_fails/contracttrait_default_fn_type_errors.rs:12:5
+   |
+12 |     pub enum Value {
+   |     ^^^^^^^^^^^^^^
+   = note: import it where the trait is implemented with `use inner::Value;`, in place of the `Value` there
+note: required by a bound in `_::check_types::check`
+  --> tests/compile_fails/contracttrait_default_fn_type_errors.rs:52:1
+   |
+52 | #[contractimpl(contracttrait)]
+   | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ required by this bound in `check`
+   = note: this error originates in the attribute macro `contractimpl` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+error[E0277]: the trait's default functions require `inner::Error` to be in scope where the trait is implemented
+  --> tests/compile_fails/contracttrait_default_fn_type_errors.rs:52:1
+   |
+52 | #[contractimpl(contracttrait)]
+   | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ `Error` here is not `inner::Error`
+53 | impl Trait for Contract {}
+   |      ----- required by a bound introduced by this call
+   |
+help: the trait `soroban_sdk::ContractTraitType<Error>` is not implemented for `inner::Error`
+  --> tests/compile_fails/contracttrait_default_fn_type_errors.rs:18:5
+   |
+18 |     pub enum Error {
+   |     ^^^^^^^^^^^^^^
+   = note: import it where the trait is implemented with `use inner::Error;`, in place of the `Error` there
+note: required by a bound in `_::check_types::check`
+  --> tests/compile_fails/contracttrait_default_fn_type_errors.rs:52:1
+   |
+52 | #[contractimpl(contracttrait)]
+   | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ required by this bound in `check`
+   = note: this error originates in the attribute macro `contractimpl` (in Nightly builds, run with -Z macro-backtrace for more info)
