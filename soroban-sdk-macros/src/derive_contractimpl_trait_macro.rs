@@ -7,7 +7,10 @@ use heck::ToSnakeCase;
 use proc_macro2::{Ident, TokenStream as TokenStream2};
 use quote::ToTokens;
 use quote::{format_ident, quote};
-use syn::{ext::IdentExt as _, parse2, ImplItemFn, ItemTrait, Path, TraitItem, TraitItemFn, Type};
+use syn::{
+    ext::IdentExt as _, parse2, ImplItemFn, ItemTrait, Path, PathArguments, TraitItem, TraitItemFn,
+    Type,
+};
 
 // See soroban-sdk/docs/contracttrait.md for documentation on how this works.
 
@@ -75,6 +78,15 @@ fn derive(input: &ItemTrait) -> TokenStream2 {
 
     let macro_ident = macro_ident(&input.ident);
 
+    // The trait's generics are passed only when it has any, so that traits
+    // without them generate the same call as before, which an implementing
+    // crate's older SDK may not support otherwise.
+    let generics = &input.generics;
+    let trait_generics = (!generics.params.is_empty()).then(|| {
+        let generics = quote!(#generics).to_string();
+        quote!(trait_generics = #generics,)
+    });
+
     let output = quote! {
         #[doc(hidden)]
         #[allow(unused_macros)]
@@ -93,6 +105,7 @@ fn derive(input: &ItemTrait) -> TokenStream2 {
                     crate_path = $($crate_path)+,
                     trait_ident = $trait_ident,
                     trait_default_fns = [#(#fns),*],
+                    #trait_generics
                     impl_ident = $impl_ident,
                     impl_fns = $impl_fns,
                     client_name = $client_name,
@@ -138,10 +151,26 @@ pub fn generate_call_to_contractimpl_for_trait(
             .to_token_stream()
             .to_string()
     });
+    // The trait's macro is named by the trait's path without generic args, such
+    // as `Echo` for `Echo<u32>`. The trait's path is passed to it in turbofish
+    // form, such as `Echo::<u32>`, so that it parses as an expression where the
+    // macro passes it on as an arg.
+    let mut trait_macro = trait_ident.clone();
+    let mut trait_path = trait_ident.clone();
+    for (macro_segment, path_segment) in trait_macro
+        .segments
+        .iter_mut()
+        .zip(trait_path.segments.iter_mut())
+    {
+        macro_segment.arguments = PathArguments::None;
+        if let PathArguments::AngleBracketed(args) = &mut path_segment.arguments {
+            args.colon2_token.get_or_insert_with(Default::default);
+        }
+    }
     Ok(quote! {
-        #trait_ident!(
+        #trait_macro!(
             [#crate_path],
-            #trait_ident,
+            #trait_path,
             #impl_ident,
             [#(#impl_fns),*],
             #client_ident,
