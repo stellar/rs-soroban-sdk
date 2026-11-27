@@ -8,6 +8,7 @@ use std::{
 };
 
 use soroban_env_host::{
+    meta,
     storage::SnapshotSource,
     xdr::{LedgerEntry, LedgerKey},
     HostError, LedgerInfo,
@@ -260,15 +261,15 @@ impl LedgerSnapshot {
 impl Default for LedgerSnapshot {
     fn default() -> Self {
         Self {
-            protocol_version: 26,
+            protocol_version: meta::INTERFACE_VERSION.protocol,
             sequence_number: Default::default(),
             timestamp: Default::default(),
             network_id: Default::default(),
             base_reserve: Default::default(),
             ledger_entries: Vec::default(),
-            min_persistent_entry_ttl: Default::default(),
-            min_temp_entry_ttl: Default::default(),
-            max_entry_ttl: Default::default(),
+            min_persistent_entry_ttl: 4096,
+            min_temp_entry_ttl: 16,
+            max_entry_ttl: 6_312_000,
         }
     }
 }

@@ -369,3 +369,17 @@ fn test_register_restores_auth_before_panics() {
     assert!(post_register.is_err());
     assert_eq!(pre_register, post_register);
 }
+
+#[test]
+fn default_ledger_snapshot_matches_env_default() {
+    use crate::testutils::{Ledger as _, Snapshot};
+    use soroban_ledger_snapshot::LedgerSnapshot;
+
+    let default_info = Env::default().ledger().get();
+
+    let env = Env::from_ledger_snapshot(LedgerSnapshot::default());
+    assert_eq!(env.ledger().get(), default_info);
+
+    let env = Env::from_snapshot(Snapshot::default());
+    assert_eq!(env.ledger().get(), default_info);
+}

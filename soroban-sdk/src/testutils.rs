@@ -298,16 +298,7 @@ pub use crate::env::internal::LedgerInfo;
 
 /// Returns a default `LedgerInfo` suitable for testing.
 pub(crate) fn default_ledger_info() -> LedgerInfo {
-    LedgerInfo {
-        protocol_version: 30,
-        sequence_number: 0,
-        timestamp: 0,
-        network_id: [0; 32],
-        base_reserve: 0,
-        min_persistent_entry_ttl: 4096,
-        min_temp_entry_ttl: 16,
-        max_entry_ttl: 6_312_000,
-    }
+    LedgerSnapshot::default().ledger_info()
 }
 
 /// Test utilities for [`Ledger`][crate::ledger::Ledger].
