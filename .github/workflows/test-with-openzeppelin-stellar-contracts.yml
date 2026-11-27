@@ -152,6 +152,27 @@ jobs:
           exit 1
         fi
 
+    - name: Align soroban-env-host with the local soroban-sdk
+      working-directory: stellar-contracts
+      run: |
+        # A destination that names soroban-env-host types directly (such as
+        # InvocationResourceLimits) needs the same soroban-env-host the local
+        # soroban-sdk uses, or SDK traits implemented on those types don't apply
+        # (E0599). Rewrite each direct soroban-env-host version requirement to the
+        # local soroban-sdk's.
+        env_req=$(
+          (cd ../rs-soroban-sdk && cargo metadata --format-version 1 --no-deps) \
+            | jq -r '.packages[] | select(.name == "soroban-sdk") | .dependencies[] | select(.name == "soroban-env-host") | .req' \
+            | sort -u
+        )
+        grep -rlE --include=Cargo.toml '^soroban-env-host *= *("|\{.*version)' . | while read -r manifest; do
+          sed -i -E \
+            -e "s#^(soroban-env-host *= *)\"[^\"]*\"#\1\"$env_req\"#" \
+            -e "s#^(soroban-env-host *= *\{.*version *= *)\"[^\"]*\"#\1\"$env_req\"#" \
+            "$manifest"
+          echo "Aligned soroban-env-host in $manifest to $env_req"
+        done
+
     - name: Diff
       run: (! git diff --exit-code) || (echo 'A diff is expected'; exit 1)
 
