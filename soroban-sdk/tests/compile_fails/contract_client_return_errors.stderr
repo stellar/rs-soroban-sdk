@@ -1,0 +1,24 @@
+error[E0277]: `NotAReturnType` cannot be used in a contract client
+  --> tests/compile_fails/contract_client_return_errors.rs:27:1
+   |
+27 | #[contractimpl]
+   | ^^^^^^^^^^^^^^^ not a contract type
+   |
+help: the trait `soroban_sdk::client::Type` is not implemented for `NotAReturnType`
+  --> tests/compile_fails/contract_client_return_errors.rs:11:1
+   |
+11 | pub struct NotAReturnType;
+   | ^^^^^^^^^^^^^^^^^^^^^^^^^
+   = note: types used in contract functions must be supported by contract clients, such as types marked `#[contracttype]`
+   = help: the following other types implement trait `soroban_sdk::client::Type`:
+             ()
+             (T0,)
+             (T0, T1)
+             (T0, T1, T2)
+             (T0, T1, T2, T3)
+             (T0, T1, T2, T3, T4)
+             (T0, T1, T2, T3, T4, T5)
+             (T0, T1, T2, T3, T4, T5, T6)
+           and $N others
+   = note: required for `NotAReturnType` to implement `soroban_sdk::client::Output`
+   = note: this error originates in the attribute macro `contractimpl` (in Nightly builds, run with -Z macro-backtrace for more info)

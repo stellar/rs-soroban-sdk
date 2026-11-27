@@ -76,6 +76,9 @@ impl soroban_sdk::SpecTypeDef for Error {
             ),
         });
 }
+impl soroban_sdk::client::Type for Error {
+    type Ret = Self;
+}
 #[doc(hidden)]
 #[allow(dead_code)]
 #[link_section = "contractspecv0"]

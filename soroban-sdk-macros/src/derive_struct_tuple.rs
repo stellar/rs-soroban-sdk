@@ -1,3 +1,4 @@
+use crate::derive_client::client_type_gen;
 use itertools::{izip, MultiUnzip};
 use proc_macro2::{Literal, TokenStream as TokenStream2};
 use quote::{format_ident, quote};
@@ -49,6 +50,7 @@ pub fn derive_type_struct_tuple(
     // Generated code spec. The spec entry is rendered as the equivalent
     // const::ScSpecEntry, which the contract crate encodes to XDR at compile time.
     let spec_type_def = spec_type_def_gen(path, ident, None, None, None);
+    let client_type = client_type_gen(path, ident);
     let spec_gen = {
         let doc = const_view_string(path, &docs_from_attrs(attrs));
         // Set to empty string always because the field is no longer used.
@@ -94,6 +96,7 @@ pub fn derive_type_struct_tuple(
     // Output.
     let mut output = quote! {
         #spec_type_def
+        #client_type
 
         #spec_gen
 

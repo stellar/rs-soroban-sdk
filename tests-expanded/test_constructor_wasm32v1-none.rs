@@ -55,6 +55,9 @@ impl soroban_sdk::SpecTypeDef for DataKey {
             ),
         });
 }
+impl soroban_sdk::client::Type for DataKey {
+    type Ret = Self;
+}
 #[doc(hidden)]
 #[allow(dead_code)]
 #[link_section = "contractspecv0"]
@@ -348,7 +351,10 @@ impl<'a> ContractClient<'a> {
     /// Panics if the invoked contract returns an error or panics.
     ///
     /// Use [`Self::try_get_data`] to receive errors instead of panicking.
-    pub fn get_data(&self, key: &DataKey) -> Option<i64> {
+    pub fn get_data(
+        &self,
+        key: impl soroban_sdk::client::IntoArg<DataKey>,
+    ) -> soroban_sdk::client::Ret<Option<i64>> {
         use core::ops::Not;
         use soroban_sdk::{FromVal, IntoVal};
         let res = self.env.invoke_contract(
@@ -358,7 +364,13 @@ impl<'a> ContractClient<'a> {
                 const SYMBOL: soroban_sdk::Symbol = soroban_sdk::Symbol::short("get_data");
                 SYMBOL
             },
-            ::soroban_sdk::Vec::from_array(&self.env, [key.into_val(&self.env)]),
+            ::soroban_sdk::Vec::from_array(
+                &self.env,
+                [::core::borrow::Borrow::<DataKey>::borrow(
+                    &soroban_sdk::client::IntoArg::<DataKey>::into_arg(key),
+                )
+                .into_val(&self.env)],
+            ),
         );
         res
     }
@@ -369,14 +381,8 @@ impl<'a> ContractClient<'a> {
     /// Returns an error if the invoked contract returns an error or panics. A panic in the invoked contract is caught and returned as an error rather than panicking the caller.
     pub fn try_get_data(
         &self,
-        key: &DataKey,
-    ) -> Result<
-        Result<
-            Option<i64>,
-            <Option<i64> as soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val>>::Error,
-        >,
-        Result<soroban_sdk::Error, soroban_sdk::InvokeError>,
-    > {
+        key: impl soroban_sdk::client::IntoArg<DataKey>,
+    ) -> soroban_sdk::client::TryRet<Option<i64>> {
         use soroban_sdk::{FromVal, IntoVal};
         let res = self.env.try_invoke_contract(
             &self.address,
@@ -385,7 +391,13 @@ impl<'a> ContractClient<'a> {
                 const SYMBOL: soroban_sdk::Symbol = soroban_sdk::Symbol::short("get_data");
                 SYMBOL
             },
-            ::soroban_sdk::Vec::from_array(&self.env, [key.into_val(&self.env)]),
+            ::soroban_sdk::Vec::from_array(
+                &self.env,
+                [::core::borrow::Borrow::<DataKey>::borrow(
+                    &soroban_sdk::client::IntoArg::<DataKey>::into_arg(key),
+                )
+                .into_val(&self.env)],
+            ),
         );
         res
     }

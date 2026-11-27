@@ -1231,6 +1231,8 @@ mod spec_type_def;
 #[doc(hidden)]
 pub use spec_type_def::{SpecName, SpecTypeDef};
 
+pub mod client;
+
 #[doc(hidden)]
 #[deprecated(note = "use storage")]
 pub mod data {

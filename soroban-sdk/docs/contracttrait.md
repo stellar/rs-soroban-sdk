@@ -143,6 +143,39 @@ This proc macro:
    - **Args variants:** Enum variants for function arguments via `derive_args_impl`
    - **Test hooks:** Function registration for test environment via `derive_contract_function_registration_ctor`
 
+## Types of Default Functions
+
+The signatures of default functions are generated into code at the implementer, but the types in them are written relative to the trait definer, e.g. `Address` may only be imported where the trait is defined. Copying the types by name would require the implementer to have every type in scope by the same name.
+
+Instead, at Stage 2, each distinct type in the default functions is captured where the trait is defined, in the associated type of a hidden trait, one trait per type. The hidden traits are implemented for all types and added as supertraits of the trait:
+
+```rust
+#[doc(hidden)]
+pub trait __Pause_Address { type __Pause_Address; }
+impl<T: ?Sized> __Pause_Address for T { type __Pause_Address = Address; }
+
+pub trait Pause: __Pause_Address { ... }
+```
+
+The signatures captured by the trait macro replace each type with a placeholder, e.g. `fn f2(env: &Env, a: __contracttrait_type::Address)`. References and tuples are kept outside the placeholder, and types that mention `Self` are not captured. A generic type is captured without its arguments, as a generic associated type with a parameter for each argument, and each argument is captured on its own, e.g. `Vec<Point>` becomes `__contracttrait_type::Vec<__contracttrait_type::Point>`, so that the type keeps its arguments wherever it is named.
+
+At Stage 5, the placeholders are replaced with aliases in a module local to the implementer. Each alias projects its type through a trait local to the implementer, which projects each type from the supertraits of the trait. A supertrait's associated type can only be named through the trait in a generic context, which the local trait's blanket impl provides:
+
+```rust
+pub trait __Contract_Pause_project { type Address; }
+impl<T: Pause> __Contract_Pause_project for T { type Address = T::__Pause_Address; }
+
+pub mod __Contract_Pause_types {
+    pub type Address = <super::Contract as super::__Contract_Pause_project>::Address;
+}
+
+// fn f2(env: &Env, a: __Contract_Pause_types::Address)
+```
+
+The aliases have the names of the types they stand for, so that docs and IDEs show the type's name, e.g. `Address`, rather than the projection.
+
+The placeholder and projected types keep the last segment of the type's path as their name so that the `Env` argument is still recognized by its name. Every other decision about a type is made through traits implemented on the type, such as `SpecTypeDef` for the spec and `client::Type` for the client, so the projected types need no name.
+
 ## Why the `macro_rules!` Generated Helper Macro?
 
 The two-stage approach with a declarative generated helper macro is necessary because:

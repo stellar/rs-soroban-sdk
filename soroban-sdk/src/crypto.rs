@@ -76,9 +76,21 @@ impl<const N: usize> Hash<N> {
     }
 }
 
-impl<const N: usize> IntoVal<Env, Val> for Hash<N> {
-    fn into_val(&self, e: &Env) -> Val {
-        self.0.into_val(e)
+// A hash converts into a Val like the BytesN it contains, but not from a Val,
+// because a Val can't be guaranteed to contain a hash.
+impl<const N: usize> TryFromVal<Env, Hash<N>> for Val {
+    type Error = ConversionError;
+
+    fn try_from_val(_env: &Env, v: &Hash<N>) -> Result<Self, Self::Error> {
+        Ok(v.to_val())
+    }
+}
+
+impl<const N: usize> TryFromVal<Env, &Hash<N>> for Val {
+    type Error = ConversionError;
+
+    fn try_from_val(_env: &Env, v: &&Hash<N>) -> Result<Self, Self::Error> {
+        Ok(v.to_val())
     }
 }
 
