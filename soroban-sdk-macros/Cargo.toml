@@ -32,4 +32,5 @@ heck = "0.5.0"
 soroban-sdk = { path = "../soroban-sdk", features = ["testutils"] }
 
 [features]
+next = ["soroban-env-common/next"]
 testutils = []
